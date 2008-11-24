@@ -27,7 +27,7 @@ package ieee_11073.part_20601.phd.dim;
 public interface IMDS_Handler {
 
 	//Return system_id of the agent
-	public String setMDS(MDS mds);
+	public void setMDS(MDS mds);
 
 	public MDS getMDS ();
 

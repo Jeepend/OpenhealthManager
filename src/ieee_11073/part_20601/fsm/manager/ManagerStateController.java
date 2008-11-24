@@ -61,7 +61,6 @@ public class ManagerStateController implements StateController {
 
 	private IMDS_Handler mdsHandler;
 	//Caching of the system_id
-	private String system_id;
 
 	private boolean initialized = false;
 	private Timer timer;
@@ -88,7 +87,7 @@ public class ManagerStateController implements StateController {
 
 		@Override
 		public void setMDS(MDS newMds) {
-			system_id = mdsHandler.setMDS(newMds);
+			mdsHandler.setMDS(newMds);
 		}
 
 		@Override

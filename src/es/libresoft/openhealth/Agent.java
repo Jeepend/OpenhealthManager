@@ -45,7 +45,6 @@ public final class Agent extends Device {
 
 	private ManagerStateController stc;
 	private MDS mdsObj;
-	private String system_id;
 	private int id;
 
 	public final IMDS_Handler mdsHandler = new IMDS_Handler(){
@@ -55,16 +54,12 @@ public final class Agent extends Device {
 		}
 
 		@Override
-		public synchronized String setMDS(MDS mds) {
-			if (mds != null) {
-				mdsObj = mds;
-				mdsObj.setDevice(Agent.this);
-				system_id = DIM_Tools.byteArrayToString(
-						(byte[])mds.getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+		public synchronized void setMDS(MDS mds) {
+			if (mds == null)
+				return;
 
-				return system_id;
-			}
-			return null;
+			mdsObj = mds;
+			mdsObj.setDevice(Agent.this);
 		}
 	};
 
@@ -83,8 +78,6 @@ public final class Agent extends Device {
 		}
 	}
 
-	public String getSystem_id(){return system_id;}
-
 	@Override
 	public void freeResources() {
 		super.freeResources();
@@ -97,16 +90,14 @@ public final class Agent extends Device {
 
 	@Override
 	public boolean equals(Object o) {
-		if (system_id==null){
-			return false;
-		} else if (o instanceof Agent){
-			return system_id.equals(((Agent)o).getSystem_id());
+		if (o instanceof Agent) {
+			return this.id == ((Agent) o).id;
 		} else return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return system_id.hashCode();
+		return id;
 	}
 
 	public Iterator<Integer> getPM_StoresHandlers() {
