@@ -140,7 +140,6 @@ public class HealthService extends Service {
 
 		@Override
 		public void agents(List<IAgent> agentList) throws RemoteException {
-			System.out.println("TODO implement 'agents' method");
 			if (agentList == null)
 				agentList= new ArrayList<IAgent>();
 
@@ -163,6 +162,19 @@ public class HealthService extends Service {
 			if (clients.size() == 0) {
 				HealthService.this.stopSelf();
 			}
+		}
+
+	};
+
+	/**
+	 * The IAgentService is defined through IDL
+	 */
+	private final IAgentService.Stub agentServiceStub = new IAgentService.Stub() {
+
+		@Override
+		public void connect(IAgent agent) throws RemoteException {
+			/* TODO: Send signal conection to transport layer */
+			System.out.println("TODO: Connect with the agent");
 		}
 
 	};
