@@ -41,9 +41,12 @@ import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 public final class Agent extends Device {
 
+	private static int instance_id = 0;
+
 	private ManagerStateController stc;
 	private MDS mdsObj;
 	private String system_id;
+	private int id;
 
 	public final IMDS_Handler mdsHandler = new IMDS_Handler(){
 		@Override
@@ -71,6 +74,7 @@ public final class Agent extends Device {
 		mdsObj = new MDSManager(this);
 		stc = new ManagerStateController (mdsHandler);
 		stc.configureController(this.inputQueue, this.outputQueue, this.eventQueue);
+		id = instance_id++;
 		try {
 			stc.initFSMController();
 		} catch (InitializedException e) {
@@ -121,5 +125,9 @@ public final class Agent extends Device {
 	@Override
 	public void notifyDeviceUnplugged() {
 		InternalEventReporter.agentUnplugged(this);
+	}
+
+	public int getAgentId() {
+		return this.id;
 	}
 }
