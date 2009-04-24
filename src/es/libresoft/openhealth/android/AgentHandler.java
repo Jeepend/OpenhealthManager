@@ -21,34 +21,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-package es.libresoft.openhealth;
 
-import es.libresoft.openhealth.events.Event;
-import ieee_11073.part_20601.fsm.manager.ManagerStateController;
-import ieee_11073.part_20601.phd.channel.InitializedException;
+package es.libresoft.openhealth.android;
 
-public final class Agent extends Device{
+import es.libresoft.openhealth.Agent;
 
-	private ManagerStateController stc;
-	
-	public Agent() {
-		super();
-		stc = new ManagerStateController ();
-		stc.configureController(this.inputQueue, this.outputQueue, this.eventQueue);
-	}
-
-	@Override
-	protected void initStateMachine() throws InitializedException {
-		stc.initFSMController();
-	}
-	
-	@Override
-	public void freeResources() {
-		super.freeResources();
-		stc.freeResources();
-	}
-	
-	public void sendEvent(Event event){
-		stc.processEvent(event);
-	}
+public interface AgentHandler {
+	void addAgent(Agent newAgent);
 }

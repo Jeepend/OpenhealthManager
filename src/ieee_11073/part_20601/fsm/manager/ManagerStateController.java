@@ -128,6 +128,10 @@ public class ManagerStateController implements StateController {
 			throw new InitializedException("Manager state controller is already initialized.");
 	}
 	
+	public void freeResources (){
+		dispatcher.interrupt();
+		dispatcherEvents.interrupt();
+	}
 	public void processApdu (ApduType apdu){
 		inputQueue.add(apdu);
 	}

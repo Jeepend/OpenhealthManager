@@ -58,5 +58,9 @@ public abstract class Device {
 		initStateMachine();
 	}
 	
+	public void freeResources (){
+		vch.freeChannels();
+	}
+	
 	protected abstract void initStateMachine() throws InitializedException;
 }

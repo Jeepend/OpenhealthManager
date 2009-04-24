@@ -85,9 +85,15 @@ public class VirtualChannel {
 		sender = new SenderThread();
 		sender.start();
 		
-		//VirualChannel is ready to send and receive APDUs 
+		//VirtualChannel is ready to send and receive APDUs 
 		eventQueue.add(new Event(EventType.IND_TRANS_CONN));
 		initialized=true;
+	}
+	
+	public void freeChannels (){
+		for (int i=0; i < channels.length; i++){
+			channels[i].setReceiverStatus(false);
+		}
 	}
 	
 	public class SenderThread extends Thread { 

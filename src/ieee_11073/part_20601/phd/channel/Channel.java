@@ -38,7 +38,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.utils.IFIFO;
 
-public class Channel {
+public abstract class Channel {
 	private int id;
 	private InputStream input;
 	private OutputStream output;
@@ -89,7 +89,7 @@ public class Channel {
 		try {
 			repeatSem.acquire();
 			this.repeat = status;
-			if (!this.repeat && receiver.isInterrupted()) {
+			if (!this.repeat && !receiver.isInterrupted()) {
 				receiver.interrupt();
 			}
 		} catch (InterruptedException e) {
@@ -122,16 +122,22 @@ public class Channel {
 		 		try {
 		 			inputQueue.add(decoder.decode(input, ApduType.class));
 		 		}catch (InterruptedException e) {
-					System.err.println("Interrupted receiver (" + id + ")");
+					System.out.println("Interrupted receiver (" + id + ")");
 		 		}catch (NullPointerException e) {
 		 			//An APDUType is not received Ignore
-		 			System.err.println("APDUType is not received");;
+		 			System.err.println("APDUType is not received");
 				}catch (Exception e) {
 					//EOF readed because channel is closed
 					eventHandler.processEvent(new Event(EventType.IND_TRANS_DESC));
 				}
 			}
-			System.out.println("Receiver thread exiting (" + id + ")...");
+			System.out.println("Receiver thread exiting (" + id + ").");
+			releaseChannel();
 		}
 	}
+	
+	/**
+	 * Free resources taken by this channel
+	 */
+	public abstract void releaseChannel();
 }
