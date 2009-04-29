@@ -23,12 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth.messages;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-
-import org.bn.CoderFactory;
-import org.bn.IEncoder;
-import org.bn.types.BitString;
 import ieee_11073.part_20601.asn1.AareApdu;
 import ieee_11073.part_20601.asn1.Abort_reason;
 import ieee_11073.part_20601.asn1.AbrtApdu;
@@ -61,6 +55,13 @@ import ieee_11073.part_20601.asn1.RlreApdu;
 import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SystemType;
+
+import java.io.ByteArrayOutputStream;
+
+import org.bn.CoderFactory;
+import org.bn.IEncoder;
+import org.bn.types.BitString;
+
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.ManagerConfig;
@@ -70,11 +71,11 @@ import es.libresoft.openhealth.utils.ASN1_Values;
 public class MessageFactory {
 	  
 	// RlrqApdu
-	public static ApduType RlreApdu_NORMAL() {
+	public static final ApduType RlreApdu_NORMAL() {
 		return RlreApdu(ASN1_Values.REL_RES_RE_NORMAL);
 	}
 	
-	private static ApduType RlreApdu (int reason) {
+	private static final ApduType RlreApdu (int reason) {
 		ApduType apdu = new ApduType();
 		RlreApdu rlre = new RlreApdu();
 		rlre.setReason(new ReleaseResponseReason(new Integer(reason)));
@@ -83,15 +84,15 @@ public class MessageFactory {
 	}
 	
 	// AarqApdu
-	public static ApduType AareApdu_20601_ACCEPTED(DeviceConfig dev_conf){
+	public static final ApduType AareApdu_20601_ACCEPTED(DeviceConfig dev_conf){
 		return AareApdu_20601(ASN1_Values.AR_ACCEPTED, dev_conf);
 	}
 	
-	public static ApduType AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(DeviceConfig dev_conf){
+	public static final ApduType AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(DeviceConfig dev_conf){
 		return AareApdu_20601(ASN1_Values.AR_ACCEPTED_UNKNOWN_CONFIG, dev_conf);
 	}
 	
-	private static ApduType AareApdu_20601(int assoc_result, DeviceConfig dev_conf){
+	private static final ApduType AareApdu_20601(int assoc_result, DeviceConfig dev_conf){
 		ApduType apdu = new ApduType();
 		AareApdu aare = new AareApdu();
 		AssociateResult ar = new AssociateResult(assoc_result);
@@ -117,7 +118,7 @@ public class MessageFactory {
 		return apdu;
 	}
 	
-	private static PhdAssociationInformation generatePhdAssociationInformation(DeviceConfig dev_conf){
+	private static final PhdAssociationInformation generatePhdAssociationInformation(DeviceConfig dev_conf){
 		PhdAssociationInformation pai = new PhdAssociationInformation();
 		ProtocolVersion pv = new ProtocolVersion();
 		pv.setValue(new BitString (ManagerConfig.protocol_version));
@@ -156,19 +157,19 @@ public class MessageFactory {
 	
 	
 	//ReleaseRequest Apdu
-	public static ApduType RlrqApdu_NORMAL() {
+	public static final ApduType RlrqApdu_NORMAL() {
 		return RlrqApdu(ASN1_Values.REL_REQ_RE_NORMAL);
 	}
 	
-	public static ApduType RlrqApdu_NO_MORE_CONFIGURATIONS() {
+	public static final ApduType RlrqApdu_NO_MORE_CONFIGURATIONS() {
 		return RlrqApdu(ASN1_Values.REL_REQ_RE_NO_MORE_CONFIGURATIONS);
 	}
 	
-	public static ApduType RlrqApdu_CONFIGURATION_CHANGED() {
+	public static final ApduType RlrqApdu_CONFIGURATION_CHANGED() {
 		return RlrqApdu(ASN1_Values.REL_REQ_RE_CONFIGURATION_CHANGED);
 	}
 	
-	private static ApduType RlrqApdu (int reason){
+	private static final ApduType RlrqApdu (int reason){
 		ApduType apdu = new ApduType();
 		RlrqApdu rlrq = new RlrqApdu();
 		rlrq.setReason(new ReleaseRequestReason(
@@ -178,35 +179,35 @@ public class MessageFactory {
 	}
 	
 	//Rejected Apdu
-	public static ApduType AareRejectApdu_PERMANENT(){
+	public static final ApduType AareRejectApdu_PERMANENT(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_PERMANENT);
 	}
 	
-	public static ApduType AareRejectApdu_TRANSIENT(){
+	public static final ApduType AareRejectApdu_TRANSIENT(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_TRANSIENT);
 	}
 	
-	public static ApduType AareRejectApdu_NO_COMMON_PROTOCOL(){
+	public static final ApduType AareRejectApdu_NO_COMMON_PROTOCOL(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_NO_COMMON_PROTOCOL);
 	}
 	
-	public static ApduType AareRejectApdu_NO_COMMON_PARAMETER(){
+	public static final ApduType AareRejectApdu_NO_COMMON_PARAMETER(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_NO_COMMON_PARAMETER);
 	}
 	
-	public static ApduType AareRejectApdu_UNKNOWN(){
+	public static final ApduType AareRejectApdu_UNKNOWN(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_UNKNOWN);
 	}
 	
-	public static ApduType AareRejectApdu_UNAUTHORIZED(){
+	public static final ApduType AareRejectApdu_UNAUTHORIZED(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_UNAUTHORIZED);
 	}
 	
-	public static ApduType AareRejectApdu_UNSUPPORTED_ASSOC_VERSION(){
+	public static final ApduType AareRejectApdu_UNSUPPORTED_ASSOC_VERSION(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_UNSUPPORTED_ASSOC_VERSION);
 	}
 	
-	private static ApduType AareRejectApdu(int assoc_result) {
+	private static final ApduType AareRejectApdu(int assoc_result) {
 		//Create AARE response
 		byte[] empty = {};
 		ApduType apdu = new ApduType();
@@ -223,23 +224,23 @@ public class MessageFactory {
 	}
 	
 	/* Abort APDUs */
-	public static ApduType AbrtApdu_UNDEFINED() {
+	public static final ApduType AbrtApdu_UNDEFINED() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED);
 	}
 	
-	public static ApduType AbrtApdu_BUFFER_OVERFLOW() {
+	public static final ApduType AbrtApdu_BUFFER_OVERFLOW() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_BUFFER_OVERFLOW);
 	}
 	
-	public static ApduType AbrtApdu_RESPONSE_TIMEOUT() {
+	public static final ApduType AbrtApdu_RESPONSE_TIMEOUT() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
 	}
 	
-	public static ApduType AbrtApdu_CONFIGURATION_TIMEOUT() {
+	public static final ApduType AbrtApdu_CONFIGURATION_TIMEOUT() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_CONFIGURATION_TIMEOUT);
 	}
 	
-	private static ApduType AbrtApdu(int reason){
+	private static final ApduType AbrtApdu(int reason){
 		ApduType apdu = new ApduType();
 		AbrtApdu abrt = new AbrtApdu();
 		Abort_reason abrt_reason = new Abort_reason(ASN1_Values.ABRT_RE_UNDEFINED);
@@ -249,7 +250,7 @@ public class MessageFactory {
 	}
 	
 	//Confirmed measurement data transmission
-	public static ApduType PrstTypeResponse (DataApdu receivedData, DeviceConfig dev_conf) {
+	public static final ApduType PrstTypeResponse (DataApdu receivedData, DeviceConfig dev_conf) {
 		//Create PRST response
 		ApduType at = new ApduType();
 		PrstApdu pa = new PrstApdu();
@@ -271,7 +272,7 @@ public class MessageFactory {
 		return at;
 	}
 	
-	private static DataApdu generateDataApdu (DataApdu da, DeviceConfig dev_conf){
+	private static final DataApdu generateDataApdu (DataApdu da, DeviceConfig dev_conf){
 		
 		DataApdu data = new DataApdu();
 		InvokeIDType iit = new InvokeIDType(da.getInvoke_id().getValue()); //Mirrored from invocation
@@ -281,7 +282,7 @@ public class MessageFactory {
 		return data;
 	}
 	
-	private static DataApdu.MessageChoiceType getMessageResponse (DataApdu da){
+	private static final DataApdu.MessageChoiceType getMessageResponse (DataApdu da){
 		DataApdu.MessageChoiceType msg = da.getMessage();
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
@@ -326,7 +327,7 @@ public class MessageFactory {
 		return null;
 	}
 	
-	private static DataApdu.MessageChoiceType rors_cmip_confirmed_event_repor (DataApdu da){
+	private static final DataApdu.MessageChoiceType rors_cmip_confirmed_event_repor (DataApdu da){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		EventReportResultSimple errs = new EventReportResultSimple();
 		
@@ -354,31 +355,31 @@ public class MessageFactory {
 	}
 	
 
-	public static ApduType ROER_NO_SUCH_OBJECT_INSTANCE_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
+	public static final ApduType ROER_NO_SUCH_OBJECT_INSTANCE_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_NO_SUCH_OBJECT_INSTANCE);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType ROER_NO_SUCH_ACTION_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
+	public static final ApduType ROER_NO_SUCH_ACTION_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_NO_SUCH_ACTION);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType ROER_INVALID_OBJECT_INSTANCE_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
+	public static final ApduType ROER_INVALID_OBJECT_INSTANCE_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_INVALID_OBJECT_INSTANCE);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType ROER_PROTOCOL_VIOLATION_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
+	public static final ApduType ROER_PROTOCOL_VIOLATION_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_PROTOCOL_VIOLATION);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType ROER_NOT_ALLOWED_BY_OBJECT_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
+	public static final ApduType ROER_NOT_ALLOWED_BY_OBJECT_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_NOT_ALLOWED_BY_OBJECT);
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules
@@ -393,7 +394,7 @@ public class MessageFactory {
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType ROER_ACTION_TIMEOUT_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
+	public static final ApduType ROER_ACTION_TIMEOUT_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_ACTION_TIMEOUT);
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules
@@ -408,7 +409,7 @@ public class MessageFactory {
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType ROER_ACTION_ABORTED_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
+	public static final ApduType ROER_ACTION_ABORTED_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_ACTION_ABORTED);
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules
@@ -423,7 +424,7 @@ public class MessageFactory {
 		return composeApdu(data, dev_conf);
 	}
 	
-	public static ApduType composeApdu (DataApdu data, DeviceConfig dev_conf) {
+	public static final ApduType composeApdu (DataApdu data, DeviceConfig dev_conf) {
 		//Create PRST response
 		ApduType at = new ApduType();
 		PrstApdu pa = new PrstApdu();
@@ -442,7 +443,7 @@ public class MessageFactory {
 		return at;
 	}
 	
-	private static DataApdu generateRoerDataApdu(DataApdu receivedData, int error_value){
+	private static final DataApdu generateRoerDataApdu(DataApdu receivedData, int error_value){
 		DataApdu data = new DataApdu();
 		InvokeIDType iit = new InvokeIDType(receivedData.getInvoke_id().getValue()); //Mirrored from invocation
 		DataApdu.MessageChoiceType msg = getRoerMessageResponse(receivedData, error_value);
@@ -451,7 +452,7 @@ public class MessageFactory {
 		return data;
 	}
 	
-	private static DataApdu.MessageChoiceType getRoerMessageResponse (DataApdu receivedData, int error_value){
+	private static final DataApdu.MessageChoiceType getRoerMessageResponse (DataApdu receivedData, int error_value){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		ErrorResult roer = new ErrorResult();
 		RoerErrorValue rev = new RoerErrorValue();

@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2008-2009  Santiago Carot Nemesio
+email: scarot@libresoft.es
+
+This program is a (FLOS) free libre and open source implementation
+of a multiplatform manager device written in java according to the
+ISO/IEEE 11073-20601. Manager application is designed to work in 
+DalvikVM over android platform.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="es.libresoft.openhealth.android"
       android:versionCode="1"
       android:versionName="1.0.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/openhealth" android:label="@string/app_name">
         <activity android:name=".EHealth"
                   android:label="@string/app_name">
             <intent-filter>
@@ -11,7 +34,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:enabled="true" android:name=".DrDroid"></service>
+        <activity android:name=".DevicesActivity"></activity>
+        <service android:enabled="true" android:name=".DrDroid" android:process=":remote">
+        <intent-filter>
+                <!-- These are the interfaces supported by the service, which
+                     you can bind to. -->
+                <action android:name="es.libresoft.openhealth.android.IManagerCallbackService" />
+                <action android:name="es.libresoft.openhealth.android.IManagerRegister" />
+                <!-- This is an action code you can use to select the service
+                     without explicitly supplying the implementation class. -->
+                <action android:name="es.libresoft.openhealth.android.DRDROID_SERVICE" />
+            </intent-filter>
+        </service>
+        
+        
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-sdk android:minSdkVersion="3" />
 </manifest> 

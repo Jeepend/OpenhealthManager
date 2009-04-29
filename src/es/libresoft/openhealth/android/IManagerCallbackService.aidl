@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/*
 Copyright (C) 2008-2009  Santiago Carot Nemesio
 email: scarot@libresoft.es
 
@@ -20,34 +19,19 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<AbsoluteLayout
-android:id="@+id/widget0"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-<ScrollView
-android:id="@+id/widget28"
-android:layout_width="320px"
-android:layout_height="377px"
-android:layout_x="0px"
-android:layout_y="0px"
->
-<TextView
-android:id="@+id/widget29"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
->
-</TextView>
-</ScrollView>
-<Button
-android:id="@+id/widget30"
-android:layout_width="319px"
-android:layout_height="44px"
-android:text="Connect"
-android:layout_x="1px"
-android:layout_y="387px"
->
-</Button>
-</AbsoluteLayout>
+
+*/
+
+package es.libresoft.openhealth.android;
+
+/**
+ * Example of a callback interface used by IRemoteService to send
+ * synchronous notifications back to its clients.  Note that this is a
+ * one-way interface so the server does not block waiting for the client.
+ */
+oneway interface IManagerCallbackService {
+    /**
+     * Called when the service has a new value for you.
+     */
+    void valueChanged(int value);
+}

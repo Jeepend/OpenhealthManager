@@ -25,12 +25,12 @@ package es.libresoft.openhealth.events;
 
 public interface EventType {
 	
-	/* A condition asserted by a low layer of software though a well-defined API					*/
-	public final int IND_TRANS_CONN						=	1;		/* Transport Connection			*/ 
-	public final int IND_TRANS_DESC						=	2;		/* Transport Desconnection		*/
-	public final int IND_TIMEOUT						=	3;		/* Timeout						*/
+	/* A condition asserted by a low layer of software though a well-defined API							*/
+	public static final int IND_TRANS_CONN						=	1;		/* Transport Connection			*/ 
+	public static final int IND_TRANS_DESC						=	2;		/* Transport Desconnection		*/
+	public static final int IND_TIMEOUT							=	3;		/* Timeout						*/
 	
-	/* A Request from the application software interfacing with the state machine					*/
-	public final int REQ_ASSOC_REL						= 	4;		/* Association release request	*/
-	public final int REQ_ASSOC_ABORT					= 	5;		/* Association abort request	*/
+	/* A Request from the application software interfacing with the state machine							*/
+	public static final int REQ_ASSOC_REL						= 	4;		/* Association release request	*/
+	public static final int REQ_ASSOC_ABORT						= 	5;		/* Association abort request	*/
 }

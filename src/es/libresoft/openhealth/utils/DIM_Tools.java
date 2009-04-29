@@ -77,7 +77,7 @@ import ieee_11073.part_20601.asn1.TypeVerList;
 
 public class DIM_Tools {
 
-	public static String getAttributeName (int attrId){
+	public static final String getAttributeName (int attrId){
 		switch (attrId){
 		case Nomenclature.MDC_ATTR_CONFIRM_MODE : return "Confirm-Mode";
 		case Nomenclature.MDC_ATTR_CONFIRM_TIMEOUT : return "Confirm-Timeout";
@@ -161,7 +161,7 @@ public class DIM_Tools {
 		}
 	}
 	
-	public static Class getAttributeClass (int attrId){
+	public static final Class getAttributeClass (int attrId){
 		switch (attrId){
 		case Nomenclature.MDC_ATTR_CONFIRM_MODE : return ConfirmMode.class;
 		case Nomenclature.MDC_ATTR_CONFIRM_TIMEOUT : return RelativeTime.class;

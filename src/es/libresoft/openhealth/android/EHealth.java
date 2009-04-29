@@ -24,80 +24,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 
+
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 public class EHealth extends Activity {
-    /** Called when the activity is created. */
-	TextView output;
-	Button button;
-	ScrollView scroll;
-	boolean connected = false;
-	//TcpChannel tcpChannel;
-	ComponentName service;
 	
+	Button button1;
+	Button button2;
+	boolean connected = false;
+	
+	/** Called when the activity is created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        button = (Button) this.findViewById(R.id.widget30);
-        output = (TextView) this.findViewById(R.id.widget29);
-        scroll =  (ScrollView) this.findViewById(R.id.widget28);
+    	
+        setContentView(R.layout.main_windows);
         
-        button.setOnClickListener(new View.OnClickListener() {
-
+        button1 = (Button) this.findViewById(R.id.widget2);
+        button2 = (Button) this.findViewById(R.id.widget4);
+        button1.setOnClickListener(new View.OnClickListener (){
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View v) {
 				if (!connected){
-					//print("Starting server thread...");
-					//tcpChannel = new TcpChannel();
-					//tcpChannel.start();
-					startService();
-			        button.setText("Disconnect");
+					startService ();
+					button1.setText("Stop");
+					connected=true;
+					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
+					startActivity(intent);
 				}else{
-					//print("Stopping ManagerService...");
-					//System.out.println("Disconnecting...");
-					//tcpChannel.finish();
-					stopService();
-					button.setText("Connect");			        
+					stopService ();
+					button1.setText("Start");
+					connected=false;
 				}
-				connected = !connected;
-			}        	
+			}     	
         });
         
-        println("DeviceManager is running.");
+        button2.setOnClickListener(new View.OnClickListener (){
+			@Override
+			public void onClick(View v) {
+				finaliceEHealth();
+			}     	
+        });
+    }
+    
+    private void finaliceEHealth (){
+    	this.finish();
     }
     
     private void startService (){
-    	service = startService(new Intent(this,DrDroid.class));
+    	// Make sure the service is started.  It will continue running
+        // until someone calls stopService().
+        // We use an action code here, instead of explictly supplying
+        // the component name, so that other packages can replace
+        // the service.
+        startService(new Intent(DrDroid.droidEvent));
     }
     
     private void stopService (){
-    	try {
-			Class serviceClass = Class.forName(service.getClassName());
-			stopService(new Intent(this, serviceClass));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	// Cancel a previous call to startService().  Note that the
+        // service will not actually stop at this point if there are
+        // still bound clients.
+        stopService(new Intent(DrDroid.droidEvent));
     	
     }
-    
-    public void print (String msg) {
-		this.output.setText(output.getText() + msg);
-		scroll.fullScroll(ScrollView.FOCUS_DOWN);
-	}
-	
-	public void println (String msg) {
-		Log.i("THREAD","TOPRINT" + msg);
-		this.output.setText(output.getText() + msg + "\n");
-		scroll.fullScroll(ScrollView.FOCUS_DOWN);
-	}
 }

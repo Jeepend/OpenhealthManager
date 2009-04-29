@@ -40,7 +40,7 @@ public class ASN1_Tools {
 	 * @return Object instance class decoded from the byte array
 	 * @throws Exception
 	 */
-	public static<T> T decodeData(byte[] data, Class<T> objectClass, String enc_rules) throws Exception{
+	public static final <T> T decodeData(byte[] data, Class<T> objectClass, String enc_rules) throws Exception{
 		IDecoder decoder = CoderFactory.getInstance().newDecoder(enc_rules);
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
 		return decoder.decode(input, objectClass);
@@ -54,7 +54,7 @@ public class ASN1_Tools {
 	 * @return array of bytes which contains encoded object
 	 * @throws Exception
 	 */
-	public static <T> byte[] encodeData(T object, String enc_rules) throws Exception {
+	public static final <T> byte[] encodeData(T object, String enc_rules) throws Exception {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		IEncoder<T> encoder = CoderFactory.getInstance().newEncoder(enc_rules);
 		encoder.encode(object, os);

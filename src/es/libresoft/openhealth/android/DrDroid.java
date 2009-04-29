@@ -35,8 +35,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+
 public class DrDroid extends Service {
 
+	public static final String droidEvent = "es.libresoft.openhealth.android.DRDROID_SERVICE";
+	
 	private ArrayList<Agent> agents;
 	private TcpChannel channelTCP;
 	private AgentHandler agentHandler = new AgentHandler(){

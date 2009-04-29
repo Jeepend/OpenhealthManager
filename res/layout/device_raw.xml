@@ -21,33 +21,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<AbsoluteLayout
-android:id="@+id/widget0"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-<ScrollView
-android:id="@+id/widget28"
-android:layout_width="320px"
-android:layout_height="377px"
-android:layout_x="0px"
-android:layout_y="0px"
->
-<TextView
-android:id="@+id/widget29"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
->
-</TextView>
-</ScrollView>
-<Button
-android:id="@+id/widget30"
-android:layout_width="319px"
-android:layout_height="44px"
-android:text="Connect"
-android:layout_x="1px"
-android:layout_y="387px"
->
-</Button>
-</AbsoluteLayout>
+<TextView android:id="@+id/text1"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
