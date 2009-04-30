@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+package es.libresoft.openhealth.android;
+
 interface IAgentActionService {
     /**
      * Send event to some agent

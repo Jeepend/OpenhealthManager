@@ -177,7 +177,7 @@ public class DrDroid extends Service {
     
     
     /************************************************************
-	 * Action service
+	 * Action service implemented in the same class
 	 ************************************************************/
     /**
      * The IAgentRegister is defined through IDL
