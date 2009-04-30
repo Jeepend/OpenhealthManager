@@ -10,9 +10,9 @@ import android.os.IInterface;
 import android.os.Binder;
 import android.os.Parcel;
 /**
- * Example of a callback interface used by IRemoteService to send
- * synchronous notifications back to its clients.  Note that this is a
- * one-way interface so the server does not block waiting for the client.
+ * Manager notification interface, all clients registered with the remote service, will be
+ * notified when next events occurs.
+ * Note that this is a one-way interface so the server does not block waiting for the client.
  */
 public interface IManagerCallbackService extends android.os.IInterface
 {
@@ -53,12 +53,20 @@ case INTERFACE_TRANSACTION:
 reply.writeString(DESCRIPTOR);
 return true;
 }
-case TRANSACTION_valueChanged:
+case TRANSACTION_agentConnection:
 {
 data.enforceInterface(DESCRIPTOR);
-int _arg0;
-_arg0 = data.readInt();
-this.valueChanged(_arg0);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.agentConnection(_arg0);
+return true;
+}
+case TRANSACTION_agentDisconnection:
+{
+data.enforceInterface(DESCRIPTOR);
+java.lang.String _arg0;
+_arg0 = data.readString();
+this.agentDisconnection(_arg0);
 return true;
 }
 }
@@ -80,25 +88,45 @@ public java.lang.String getInterfaceDescriptor()
 return DESCRIPTOR;
 }
 /**
-     * Called when the service has a new value for you.
+     * Called when agent connect with the manager.
      */
-public void valueChanged(int value) throws android.os.RemoteException
+public void agentConnection(java.lang.String system_id) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
-_data.writeInt(value);
-mRemote.transact(Stub.TRANSACTION_valueChanged, _data, null, IBinder.FLAG_ONEWAY);
+_data.writeString(system_id);
+mRemote.transact(Stub.TRANSACTION_agentConnection, _data, null, IBinder.FLAG_ONEWAY);
+}
+finally {
+_data.recycle();
+}
+}
+/**
+     * Called when agent releases the association with the manager.
+     */
+public void agentDisconnection(java.lang.String system_id) throws android.os.RemoteException
+{
+android.os.Parcel _data = android.os.Parcel.obtain();
+try {
+_data.writeInterfaceToken(DESCRIPTOR);
+_data.writeString(system_id);
+mRemote.transact(Stub.TRANSACTION_agentDisconnection, _data, null, IBinder.FLAG_ONEWAY);
 }
 finally {
 _data.recycle();
 }
 }
 }
-static final int TRANSACTION_valueChanged = (IBinder.FIRST_CALL_TRANSACTION + 0);
+static final int TRANSACTION_agentConnection = (IBinder.FIRST_CALL_TRANSACTION + 0);
+static final int TRANSACTION_agentDisconnection = (IBinder.FIRST_CALL_TRANSACTION + 1);
 }
 /**
-     * Called when the service has a new value for you.
+     * Called when agent connect with the manager.
      */
-public void valueChanged(int value) throws android.os.RemoteException;
+public void agentConnection(java.lang.String system_id) throws android.os.RemoteException;
+/**
+     * Called when agent releases the association with the manager.
+     */
+public void agentDisconnection(java.lang.String system_id) throws android.os.RemoteException;
 }

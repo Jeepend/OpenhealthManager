@@ -25,13 +25,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 /**
- * Example of a callback interface used by IRemoteService to send
- * synchronous notifications back to its clients.  Note that this is a
- * one-way interface so the server does not block waiting for the client.
+ * Manager notification interface, all clients registered with the remote service, will be
+ * notified when next events occurs.
+ * Note that this is a one-way interface so the server does not block waiting for the client.
  */
 oneway interface IManagerCallbackService {
     /**
-     * Called when the service has a new value for you.
+     * Called when agent connect with the manager.
      */
-    void valueChanged(int value);
+    void agentConnection (String system_id);
+    
+    /**
+     * Called when agent releases the association with the manager.
+     */
+    void agentDisconnection (String system_id);
 }

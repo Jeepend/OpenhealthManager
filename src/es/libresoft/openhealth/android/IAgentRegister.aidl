@@ -24,21 +24,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import es.libresoft.openhealth.android.IManagerCallbackService;
+import es.libresoft.openhealth.android.IAgentCallbackService;
 
 /**
  * Interface for register Aplications on to a remote service for
- * to get notifications about generic manager events
+ * to get notifications about specific event of agents
  * (running in another process).
  */
-interface IManagerRegister {
+interface IAgentRegister {
     /**
-     * Call back to its clients when some event arrives.
+     * Call back to its clients when some event arrives on the agent identified by system_id.
      */
-    void registerCallback(IManagerCallbackService mc);
+    void registerAgentCallback(String system_id, IAgentCallbackService mc);
     
     /**
      * Remove a previously registered callback interface.
      */
-    void unregisterCallback(IManagerCallbackService mc);
+    void unregisterCallback(String system_id, IAgentCallbackService mc);
 }

@@ -10,7 +10,8 @@ import android.os.IInterface;
 import android.os.Binder;
 import android.os.Parcel;
 /**
- * Example of defining an interface for calling on to a remote service
+ * Interface for register Aplications on to a remote service for
+ * to get notifications about generic manager events
  * (running in another process).
  */
 public interface IManagerRegister extends android.os.IInterface
@@ -89,9 +90,7 @@ public java.lang.String getInterfaceDescriptor()
 return DESCRIPTOR;
 }
 /**
-     * Often you want to allow a service to call back to its clients.
-     * This shows how to do so, by registering a callback interface with
-     * the service.
+     * Call back to its clients when some event arrives.
      */
 public void registerCallback(es.libresoft.openhealth.android.IManagerCallbackService mc) throws android.os.RemoteException
 {
@@ -131,9 +130,7 @@ static final int TRANSACTION_registerCallback = (IBinder.FIRST_CALL_TRANSACTION 
 static final int TRANSACTION_unregisterCallback = (IBinder.FIRST_CALL_TRANSACTION + 1);
 }
 /**
-     * Often you want to allow a service to call back to its clients.
-     * This shows how to do so, by registering a callback interface with
-     * the service.
+     * Call back to its clients when some event arrives.
      */
 public void registerCallback(es.libresoft.openhealth.android.IManagerCallbackService mc) throws android.os.RemoteException;
 /**
