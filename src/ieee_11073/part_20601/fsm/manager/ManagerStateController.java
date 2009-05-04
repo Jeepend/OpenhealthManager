@@ -27,13 +27,16 @@ import java.util.Timer;
 import java.util.concurrent.Semaphore;
 
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.utils.IFIFO;
 import es.libresoft.openhealth.utils.IUnlock;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.fsm.Disconnected;
 import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.fsm.StateController;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.phd.channel.InitializedException;
+import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
 
 
@@ -50,7 +53,9 @@ public class ManagerStateController implements StateController {
 	private DispatcherApduThread dispatcher;
 	private DispatcherEventThread dispatcherEvents;
 	
-	private MDS mds;
+	private IMDS_Handler mdsHandler;
+	//Caching of the system_id
+	private String system_id;
 	
 	private boolean initialized = false;
 	private Timer timer;
@@ -59,14 +64,17 @@ public class ManagerStateController implements StateController {
 
 		@Override
 		public void changeState(State newState) {
-			java.text.SimpleDateFormat sdf =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
-			System.out.println(sdf.format(java.util.Calendar.getInstance().getTime()) + "\tState: " + newState.getStateName());
+			//Send event using internal reporter service
+			InternalEventReporter.agentChangeStatus(system_id, newState.getStateName());
+			if (newState instanceof Disconnected)
+				//Send event to indicate disconnection
+				InternalEventReporter.agentDisconnected(system_id);
 			state = newState;
 		}
 
 		@Override
 		public MDS getMDS() {
-			return mds;
+			return mdsHandler.getMDS();
 		}
 
 		@Override
@@ -76,7 +84,7 @@ public class ManagerStateController implements StateController {
 
 		@Override
 		public void setMDS(MDS newMds) {
-			mds = newMds;			
+			system_id = mdsHandler.setMDS(newMds);	
 		}
 
 		@Override
@@ -103,7 +111,8 @@ public class ManagerStateController implements StateController {
 		}
 	};
 	
-	public ManagerStateController () {
+	public ManagerStateController (IMDS_Handler handler) {
+		mdsHandler = handler;
 		timer = new Timer();
 		this.state = new MDisconnected(state_handler);
 	}

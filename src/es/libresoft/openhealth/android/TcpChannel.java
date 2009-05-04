@@ -37,11 +37,6 @@ import android.util.Log;
 public class TcpChannel extends Thread {
 	private boolean finish = false;
 	private ServerSocket ss;
-	private AgentHandler handler;
-	
-	TcpChannel (AgentHandler handler) {
-		this.handler = handler;
-	}
 	
 	public void run() {
 		String status="";
@@ -55,7 +50,6 @@ public class TcpChannel extends Thread {
 				VirtualChannel vch = new VirtualChannel(chnl);
 				Agent a = new Agent();
 				a.setVirtualChannel(vch);
-				handler.addAgent(a);
 			}
 			if (!ss.isClosed()) //Finishing in good way
 				ss.close();

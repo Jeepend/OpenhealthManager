@@ -25,12 +25,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.InternalEventManager;
+import es.libresoft.openhealth.events.InternalEventReporter;
 
 import android.app.Service;
 import android.content.Intent;
@@ -61,19 +64,14 @@ public class DrDroid extends Service {
 	
 	private ArrayList<Agent> agents;
 	private TcpChannel channelTCP;
-	private AgentHandler agentHandler = new AgentHandler(){
-		@Override
-		public synchronized void addAgent(Agent newAgent) {
-			System.out.println("Nuevo agente!!");
-			agents.add(newAgent);
-		}
-	};
 	
 	@Override
 	public void onCreate() {
 		System.out.println("Service created");
-		channelTCP = new TcpChannel(agentHandler);
+		channelTCP = new TcpChannel();
 		agents = new ArrayList<Agent>();
+		//Get internal events from manager
+		InternalEventReporter.setDefaultEventManager(ieManager);
 		super.onCreate();
 	}
 
@@ -202,5 +200,36 @@ public class DrDroid extends Service {
 			// TODO Auto-generated method stub
 			System.out.println("set service invoke on " + system_id);
 		}
+    };
+    
+    /************************************************************
+	 * Internal events triggered from manager thread
+	 ************************************************************/
+    private final InternalEventManager ieManager = new InternalEventManager(){
+
+    	//Manager events:
+		@Override
+		public void agentConnected(Agent agent) {
+			//Send a manager Event
+			System.out.println("Nuevo agente conectado " + agent.getSystem_id());
+		}
+
+		@Override
+		public void agentDisconnected(String system_id) {
+			System.out.println("Agente desconectado " + system_id);
+		}
+		
+		// Agent Events
+		@Override
+		public void agentChangeStatus(String system_id, String state) {
+			if (system_id!=null)
+				System.out.println("agente " + system_id + " changed to: " + state);
+		}
+
+		@Override
+		public void receivedMeasure(String system_id, float value, Date date) {
+			System.out.println("Received measure: " + value + ", date: date");
+		}
+    	
     };
 }

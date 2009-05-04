@@ -24,19 +24,57 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth;
 
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.InternalEventReporter;
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.fsm.manager.ManagerStateController;
 import ieee_11073.part_20601.phd.channel.InitializedException;
+import ieee_11073.part_20601.phd.dim.IMDS_Handler;
+import ieee_11073.part_20601.phd.dim.MDS;
 
 public final class Agent extends Device{
 
 	private ManagerStateController stc;
+	private MDS mdsObj;
+	private String system_id;
+	
+	public final IMDS_Handler mdsHandler = new IMDS_Handler(){
+		@Override
+		public synchronized MDS getMDS() {
+			return mdsObj;
+		}
+
+		@Override
+		public synchronized String setMDS(MDS mds) {
+			if ((mdsObj == null) && (mds!=null)) {
+				mdsObj = mds;
+				system_id = byteArrayToString((byte[])mds.getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+				//Send event using internal event report service
+				InternalEventReporter.agentConnected(Agent.this);
+				return system_id;
+			}
+			return null;
+		}
+		
+		private String byteArrayToString (byte[] id){
+			int length = id.length;
+			String s = "";
+			for (int i=0; i< length; i++){
+				s += (char)id[i];
+			}
+			return s;
+		}
+	};
+	
 	
 	public Agent() {
 		super();
-		stc = new ManagerStateController ();
+		stc = new ManagerStateController (mdsHandler);
 		stc.configureController(this.inputQueue, this.outputQueue, this.eventQueue);
 	}
 
+	public String getSystem_id(){return system_id;}
+	
+	
 	@Override
 	protected void initStateMachine() throws InitializedException {
 		stc.initFSMController();
@@ -51,4 +89,12 @@ public final class Agent extends Device{
 	public void sendEvent(Event event){
 		stc.processEvent(event);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (system_id==null)
+			return false;
+		else return system_id.equals(o);
+	}
+	
 }
