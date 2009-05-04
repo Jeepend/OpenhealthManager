@@ -27,7 +27,13 @@ package es.libresoft.openhealth.android;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -51,7 +57,65 @@ public class DevicesActivity extends Activity {
 		devices.add(0,"Thermomether1");
 		devices.add(0,"Thermomether2");
 		devices.add(0,"Thermomether3");
+		devices.add(0,"Thermomether4");
 		aa.notifyDataSetChanged();
+		
+		bindService();
 	}
+
+	/** The primary interface we will be calling on the service. */
+    IManagerRegister mService = new IManagerRegister(){
+
+		@Override
+		public void registerCallback(IManagerCallbackService mc)
+				throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void unregisterCallback(IManagerCallbackService mc)
+				throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public IBinder asBinder() {
+			// TODO Auto-generated method stub
+			return null;
+		} 
+    	
+    };
+    
+    private void bindService(){
+    	bindService(new Intent(IManagerRegister.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
+    }
+    
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			// TODO Auto-generated method stub
+			mService = IManagerRegister.Stub.asInterface(service);
+			IManagerCallbackService mc = null;
+			try {
+				mService.registerCallback(mc);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO Auto-generated method stub
+          // This is called when the connection with the service has been
+          // unexpectedly disconnected -- that is, its process crashed.
+          mService = null;
+		}
+    };
+    
+
 
 }
