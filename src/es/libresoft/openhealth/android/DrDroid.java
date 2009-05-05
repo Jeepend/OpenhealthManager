@@ -49,7 +49,7 @@ public class DrDroid extends Service {
      * service.  Note that this is package scoped (instead of private) so
      * that it can be accessed more efficiently from inner classes.
      */
-    final RemoteCallbackList<IManagerCallbackService> mCallbacks
+    private final RemoteCallbackList<IManagerCallbackService> mCallbacks
             = new RemoteCallbackList<IManagerCallbackService>();
     
     /**
@@ -57,19 +57,19 @@ public class DrDroid extends Service {
      * service.  Note that this is package scoped (instead of private) so
      * that it can be accessed more efficiently from inner classes.
      */
-    final HashMap<String,RemoteCallbackList<IAgentCallbackService>> aCallback
+    private final HashMap<String,RemoteCallbackList<IAgentCallbackService>> aCallback
     		= new HashMap<String,RemoteCallbackList<IAgentCallbackService>>();
+    
+    private final HashMap<String, Agent> agentsId = new HashMap<String, Agent>();
     
 	public static final String droidEvent = "es.libresoft.openhealth.android.DRDROID_SERVICE";
 	
-	private ArrayList<Agent> agents;
 	private TcpChannel channelTCP;
 	
 	@Override
 	public void onCreate() {
 		System.out.println("Service created");
 		channelTCP = new TcpChannel();
-		agents = new ArrayList<Agent>();
 		//Get internal events from manager
 		InternalEventReporter.setDefaultEventManager(ieManager);
 		super.onCreate();
@@ -86,7 +86,7 @@ public class DrDroid extends Service {
 	public void onDestroy() {
 		System.out.println("Service stopped");
 		channelTCP.finish();
-		Iterator<Agent> iterator = agents.iterator();
+		Iterator<Agent> iterator = agentsId.values().iterator();
 		Agent agent;
 		//Send abort signal to all agents
 		while (iterator.hasNext()){
@@ -95,16 +95,20 @@ public class DrDroid extends Service {
 		}
 		
 		//Free resources taken by agents 
-		iterator = agents.iterator();
+		iterator = agentsId.values().iterator();
 		while (iterator.hasNext()){
 			agent = iterator.next();
 			agent.freeResources();
 		}
-		agents.clear();
 		
 		// Unregister all callbacks.
         mCallbacks.kill();
-        
+        Iterator<String> i = aCallback.keySet().iterator();
+        while (i.hasNext()){
+        	aCallback.get(i.next()).kill();
+        }
+        agentsId.clear();
+        aCallback.clear();
 		super.onDestroy();
 	}
 
@@ -210,13 +214,44 @@ public class DrDroid extends Service {
     	//Manager events:
 		@Override
 		public void agentConnected(Agent agent) {
-			//Send a manager Event
+			// Create new input for callbacks events for the new agent
+			agentsId.put(agent.getSystem_id(), agent);
+			aCallback.put(agent.getSystem_id(), new RemoteCallbackList<IAgentCallbackService>());
+			
+			// Send a manager Broadcast Event to all clients.
+            final int N = mCallbacks.beginBroadcast();
+            for (int i=0; i<N; i++) {
+                try {
+                    mCallbacks.getBroadcastItem(i).agentConnection(agent.getSystem_id());
+                } catch (RemoteException e) {
+                    // The RemoteCallbackList will take care of removing
+                    // the dead object for us.
+                }
+            }
+            mCallbacks.finishBroadcast();
 			System.out.println("Nuevo agente conectado " + agent.getSystem_id());
 		}
 
 		@Override
 		public void agentDisconnected(String system_id) {
+			
+			// Send a manager Broadcast Event to all clients.
+            final int N = mCallbacks.beginBroadcast();
+            for (int i=0; i<N; i++) {
+                try {
+                    mCallbacks.getBroadcastItem(i).agentDisconnection(system_id);
+                } catch (RemoteException e) {
+                    // The RemoteCallbackList will take care of removing
+                    // the dead object for us.
+                }
+            }
+            mCallbacks.finishBroadcast();
 			System.out.println("Agente desconectado " + system_id);
+			
+			// Remove all inputs for this agent
+			agentsId.remove(system_id);
+			aCallback.get(system_id).kill();
+			aCallback.remove(system_id);
 		}
 		
 		// Agent Events

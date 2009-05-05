@@ -92,9 +92,15 @@ public final class Agent extends Device{
 
 	@Override
 	public boolean equals(Object o) {
-		if (system_id==null)
+		if (system_id==null){
 			return false;
-		else return system_id.equals(o);
+		} else if (o instanceof Agent){
+			return system_id.equals(((Agent)o).getSystem_id());
+		} else return false;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return system_id.hashCode();
+	}
 }
