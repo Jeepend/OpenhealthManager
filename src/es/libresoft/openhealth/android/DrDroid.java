@@ -24,22 +24,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import es.libresoft.openhealth.Agent;
-import es.libresoft.openhealth.events.Event;
-import es.libresoft.openhealth.events.EventType;
-import es.libresoft.openhealth.events.InternalEventManager;
-import es.libresoft.openhealth.events.InternalEventReporter;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.InternalEventManager;
+import es.libresoft.openhealth.events.InternalEventReporter;
 
 
 public class DrDroid extends Service {
@@ -141,14 +139,12 @@ public class DrDroid extends Service {
 		@Override
 		public void registerCallback(IManagerCallbackService mc)
 				throws RemoteException {
-			System.out.println("Register for manager events");
 			if (mc != null) mCallbacks.register(mc);		
 		}
 
 		@Override
 		public void unregisterCallback(IManagerCallbackService mc)
 				throws RemoteException {
-			System.out.println("Unregister for manager events");
 			if (mc != null) mCallbacks.unregister(mc);			
 		}
     };
@@ -161,16 +157,14 @@ public class DrDroid extends Service {
 		@Override
 		public void registerAgentCallback(String system_id,
 				IAgentCallbackService mc) throws RemoteException {
-			System.out.println("Register for agent events");
 			if (mc == null || !aCallback.containsKey(system_id))
-				return;
+				return;			
 			aCallback.get(system_id).register(mc);
 		}
 
 		@Override
 		public void unregisterCallback(String system_id,
 				IAgentCallbackService mc) throws RemoteException {
-			System.out.println("Unregister for agent events");
 			if (mc == null || !aCallback.containsKey(system_id))
 				return;
 			aCallback.get(system_id).unregister(mc);
@@ -210,8 +204,9 @@ public class DrDroid extends Service {
 	 * Internal events triggered from manager thread
 	 ************************************************************/
     private final InternalEventManager ieManager = new InternalEventManager(){
-
-    	//Manager events:
+    	//+++++++++++++++++++++++++++++++
+    	//+ Manager's events:
+    	//+++++++++++++++++++++++++++++++
 		@Override
 		public void agentConnected(Agent agent) {
 			// Create new input for callbacks events for the new agent
@@ -229,7 +224,6 @@ public class DrDroid extends Service {
                 }
             }
             mCallbacks.finishBroadcast();
-			System.out.println("Nuevo agente conectado " + agent.getSystem_id());
 		}
 
 		@Override
@@ -246,7 +240,6 @@ public class DrDroid extends Service {
                 }
             }
             mCallbacks.finishBroadcast();
-			System.out.println("Agente desconectado " + system_id);
 			
 			// Remove all inputs for this agent
 			agentsId.remove(system_id);
@@ -254,16 +247,48 @@ public class DrDroid extends Service {
 			aCallback.remove(system_id);
 		}
 		
-		// Agent Events
+		//+++++++++++++++++++++++++++++++
+		//+ Agent's Events
+		//+++++++++++++++++++++++++++++++
 		@Override
 		public void agentChangeStatus(String system_id, String state) {
-			if (system_id!=null)
-				System.out.println("agente " + system_id + " changed to: " + state);
+			if (system_id==null || !aCallback.containsKey(system_id))
+				//Unknown agent changes from disconnect state to unassociated (system_id is not received yet) 
+				return;
+			
+			// Send a agent Broadcast Event to all clients.
+			final RemoteCallbackList<IAgentCallbackService> agentCallbacks = aCallback.get(system_id);
+            final int N = agentCallbacks.beginBroadcast();
+            for (int i=0; i<N; i++) {
+                try {
+                	agentCallbacks.getBroadcastItem(i).agentStateChanged(state);
+                } catch (RemoteException e) {
+                    // The RemoteCallbackList will take care of removing
+                    // the dead object for us.
+                }
+            }
+            agentCallbacks.finishBroadcast();
+			System.out.println("agente " + system_id + " changed to: " + state);
 		}
 
 		@Override
 		public void receivedMeasure(String system_id, float value, Date date) {
-			System.out.println("Received measure: " + value + ", date: date");
+			// TODO:
+			if (system_id==null || !aCallback.containsKey(system_id))
+				return;
+			// Send a agent Broadcast Event to all clients.
+			final RemoteCallbackList<IAgentCallbackService> agentCallbacks = aCallback.get(system_id);
+            final int N = agentCallbacks.beginBroadcast();
+            for (int i=0; i<N; i++) {
+                try {
+                	agentCallbacks.getBroadcastItem(i).agentMeasureReceived(system_id, date.toString());
+                } catch (RemoteException e) {
+                    // The RemoteCallbackList will take care of removing
+                    // the dead object for us.
+                }
+            }
+            agentCallbacks.finishBroadcast();
+			System.out.println("Recivida medida de " + system_id);
 		}
     	
     };
