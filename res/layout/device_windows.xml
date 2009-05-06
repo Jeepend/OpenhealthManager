@@ -35,10 +35,12 @@ android:layout_height="wrap_content"
 android:text="Medical devices connected:"
 >
 </TextView>
+
 <ListView
 android:id="@+id/widget30"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
 >
 </ListView>
+
 </LinearLayout>

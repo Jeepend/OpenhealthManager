@@ -26,71 +26,140 @@ package es.libresoft.openhealth.android;
 
 import java.util.ArrayList;
 
+
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class DevicesActivity extends Activity {
 
-	private ListView deviceList;
+public class DevicesActivity extends ListActivity {
+
+	private ArrayList<String> devices; 
+	/** The primary interface we will be calling on the service. */
+    IManagerRegister mService;    
+    
+    private Handler handler = new Handler();
+        
+    private Runnable doUpdateGUI = new Runnable(){
+    	public void run(){
+    		updateGUI();
+    	}    	
+    };
+    
+    private void updateGUI(){
+    	System.out.println("en updateGUI");
+    	setListAdapter(new ArrayAdapter<String>(this,
+	          	   	   android.R.layout.simple_list_item_1, devices));
+    	getListView().setTextFilterEnabled(true);
+    }
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.device_windows);
-		deviceList = (ListView)findViewById(R.id.widget30);
+		devices = new ArrayList<String>();
+		//devices.add("prueba");  
+		setListAdapter(new ArrayAdapter<String>(this,
+		          	   android.R.layout.simple_list_item_1, devices));
+		getListView().setTextFilterEnabled(true);
+
+//		setContentView(R.layout.device_windows);
+//		deviceList = (ListView)findViewById(android.R.id.list);
+//		
+//		devices = new ArrayList<String>();
+//		devices.add("prueba");
+//		aa = new ArrayAdapter<String>(
+//				this,
+//				R.layout.device_raw,
+//				devices);
+//
+////		aa.notifyDataSetChanged();
+//		setListAdapter(aa);
+//		getListView().setTextFilterEnabled(true);
+////		deviceList.setAdapter(aa);
+////		aa.notifyDataSetChanged();
 		
-		final ArrayList<String> devices = new ArrayList<String>();
-		final ArrayAdapter<String> aa = new ArrayAdapter<String>(
-				this,
-				R.layout.device_raw,
-				devices);
-		deviceList.setAdapter(aa);
-		
-		devices.add(0,"Thermomether1");
-		devices.add(0,"Thermomether2");
-		devices.add(0,"Thermomether3");
-		devices.add(0,"Thermomether4");
-		aa.notifyDataSetChanged();
-		
-		bindService();
+        bindService(new Intent(IManagerRegister.class.getName()),
+        			mConnection, Context.BIND_AUTO_CREATE);
 	}
-
-	/** The primary interface we will be calling on the service. */
-    IManagerRegister mService = new IManagerRegister(){
-
-		@Override
-		public void registerCallback(IManagerCallbackService mc)
-				throws RemoteException {
-			// TODO Auto-generated method stub
-			
+	
+	protected void onDestroy(){
+		System.out.println("estoy en onDestroy");
+		// Detach our existing connection.
+		// If we have received the service, and hence registered with
+        // it, then now is the time to unregister.
+//        if (mService != null) {
+//            try {
+//                mService.unregisterCallback(mCallback);
+//            } catch (RemoteException e) {
+//                // There is nothing special we need to do if the service
+//                // has crashed.
+//            }
+//        }
+		try {
+			mService.unregisterCallback(mCallback);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		@Override
-		public void unregisterCallback(IManagerCallbackService mc)
-				throws RemoteException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public IBinder asBinder() {
-			// TODO Auto-generated method stub
-			return null;
-		} 
-    	
-    };
+        unbindService(mConnection);
+        super.onDestroy();
+	}
     
-    private void bindService(){
-    	bindService(new Intent(IManagerRegister.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
-    }
+	protected void onResume(Bundle savedInstanceState){
+		  System.out.println("estoy en onResume");
+          // If we have received the service, and hence registered with
+          // it, then now is the time to unregister.
+          if (mService != null) {
+              try {
+                  mService.unregisterCallback(mCallback);
+              } catch (RemoteException e) {
+                  // There is nothing special we need to do if the service
+                  // has crashed.
+              }
+          }
+          // Detach our existing connection.
+          //unbindService(mConnection);
+	}
+	
+    /**
+     * This implementation is used to receive callbacks from the remote
+     * service.
+     */
+    private IManagerCallbackService mCallback = new IManagerCallbackService.Stub() {
+        /**
+         * This is called by the remote service regularly to tell us about
+         * new values.  Note that IPC calls are dispatched through a thread
+         * pool running in each process, so the code executing here will
+         * NOT be running in our main thread like most other things -- so,
+         * to update the UI, we need to use a Handler to hop over there.
+         */
+
+		@Override
+		public void agentConnection(String system_id) throws RemoteException {
+			// TODO Auto-generated method stub
+			System.out.println("Estoy en agentConnection!!!!");
+			devices.add(system_id);
+			handler.post(doUpdateGUI);
+		}
+
+		@Override
+		public void agentDisconnection(String system_id) throws RemoteException {
+			// TODO Auto-generated method stub
+			System.out.println("Estoy en agentDisconnection!!!!");
+			devices.remove(system_id);
+			handler.post(doUpdateGUI);
+		}
+    };
     
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -98,9 +167,8 @@ public class DevicesActivity extends Activity {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			// TODO Auto-generated method stub
 			mService = IManagerRegister.Stub.asInterface(service);
-			IManagerCallbackService mc = null;
 			try {
-				mService.registerCallback(mc);
+				mService.registerCallback(mCallback);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,10 +180,9 @@ public class DevicesActivity extends Activity {
 			// TODO Auto-generated method stub
           // This is called when the connection with the service has been
           // unexpectedly disconnected -- that is, its process crashed.
+		  System.out.println("estoy en ServiceDisconnected");	
           mService = null;
 		}
     };
     
-
-
 }
