@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </intent-filter>
         </activity>
         <activity android:name=".DevicesActivity"></activity>
+        <activity android:name=".DeviceManage"></activity>
         <service android:enabled="true" android:name=".DrDroid" android:process=":remote">
         <intent-filter>
                 <!-- These are the interfaces supported by the service, which

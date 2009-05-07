@@ -27,7 +27,7 @@ package es.libresoft.openhealth.android;
 import java.util.ArrayList;
 
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,8 +37,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 
 public class DevicesActivity extends ListActivity {
@@ -67,51 +73,30 @@ public class DevicesActivity extends ListActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		devices = new ArrayList<String>();
-		//devices.add("prueba");  
-		setListAdapter(new ArrayAdapter<String>(this,
-		          	   android.R.layout.simple_list_item_1, devices));
-		getListView().setTextFilterEnabled(true);
-
-//		setContentView(R.layout.device_windows);
-//		deviceList = (ListView)findViewById(android.R.id.list);
-//		
-//		devices = new ArrayList<String>();
-//		devices.add("prueba");
-//		aa = new ArrayAdapter<String>(
-//				this,
-//				R.layout.device_raw,
-//				devices);
-//
-////		aa.notifyDataSetChanged();
-//		setListAdapter(aa);
-//		getListView().setTextFilterEnabled(true);
-////		deviceList.setAdapter(aa);
-////		aa.notifyDataSetChanged();
+		devices.add("prueba");  
+		devices.add("prueba2");
+    	setListAdapter(new ArrayAdapter<String>(this,
+       	   	   android.R.layout.simple_list_item_1, devices));
+	    getListView().setTextFilterEnabled(true);
 		
+	    // ***************************************************
+	    // binding to the service
+	    // ***************************************************
         bindService(new Intent(IManagerRegister.class.getName()),
         			mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	protected void onDestroy(){
 		System.out.println("estoy en onDestroy");
-		// Detach our existing connection.
-		// If we have received the service, and hence registered with
-        // it, then now is the time to unregister.
-//        if (mService != null) {
-//            try {
-//                mService.unregisterCallback(mCallback);
-//            } catch (RemoteException e) {
-//                // There is nothing special we need to do if the service
-//                // has crashed.
-//            }
-//        }
 		try {
 			mService.unregisterCallback(mCallback);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		// Detach our existing connection.
         unbindService(mConnection);
+        
         super.onDestroy();
 	}
     
@@ -127,10 +112,17 @@ public class DevicesActivity extends ListActivity {
                   // has crashed.
               }
           }
-          // Detach our existing connection.
-          //unbindService(mConnection);
 	}
 	
+	@Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		System.out.println("estoy en onListItemClick " + devices.get(position) + " " + id);
+		Intent intent = new Intent(this, DeviceManage.class);
+		intent.putExtra("agent", devices.get(position));
+		startActivity(intent);
+    }
+
     /**
      * This implementation is used to receive callbacks from the remote
      * service.
