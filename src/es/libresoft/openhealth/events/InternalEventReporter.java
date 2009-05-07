@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
-import java.util.Date;
+import java.util.List;
 
 import es.libresoft.openhealth.Agent;
 
@@ -51,8 +51,8 @@ public class InternalEventReporter {
 			iEvent.agentChangeStatus(system_id, state);
 	}
 
-	public static void receivedMeasure(String system_id, float value, Date date) {
+	public static void receivedMeasure(String system_id, List measures) {
 		if (iEvent!=null)
-			iEvent.receivedMeasure(system_id, value, date);
+			iEvent.receivedMeasure(system_id, measures);
 	}
 }

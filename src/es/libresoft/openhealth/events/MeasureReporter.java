@@ -26,31 +26,9 @@ package es.libresoft.openhealth.events;
 
 import java.util.List;
 
-import es.libresoft.openhealth.Agent;
+public interface MeasureReporter {
 
-public interface InternalEventManager {
-	/**
-	 * Agent event to indicate that new measure has been received from agent
-	 * @param value
-	 * @param date
-	 */
-	public void receivedMeasure(String system_id, List measures);
-	
-	/**
-	 * Agent event to indicate that the agents has changed is state
-	 * @param system_id
-	 * @param state
-	 */
-	public void agentChangeStatus(String system_id, String state);
-	
-	/**
-	 * Send a manager event to indicate that new agent has connected
-	 * @param agent The agent device connected
-	 */
-	public void agentConnected(Agent agent);
-	/**
-	 * Send a manager event to indicate that  previus connected agent has connected
-	 * @param system_id the system id of the agent
-	 */
-	public void agentDisconnected(String system_id);
+	void addMeasure (int mType, Object data);
+	List getMeasures();
+	void clearMeasures();
 }

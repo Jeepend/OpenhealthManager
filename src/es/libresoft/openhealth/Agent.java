@@ -25,6 +25,7 @@ package es.libresoft.openhealth;
 
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.utils.DIM_Tools;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.fsm.manager.ManagerStateController;
 import ieee_11073.part_20601.phd.channel.InitializedException;
@@ -47,21 +48,13 @@ public final class Agent extends Device{
 		public synchronized String setMDS(MDS mds) {
 			if ((mdsObj == null) && (mds!=null)) {
 				mdsObj = mds;
-				system_id = byteArrayToString((byte[])mds.getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+				system_id = DIM_Tools.byteArrayToString(
+						(byte[])mds.getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
 				//Send event using internal event report service
 				InternalEventReporter.agentConnected(Agent.this);
 				return system_id;
 			}
 			return null;
-		}
-		
-		private String byteArrayToString (byte[] id){
-			int length = id.length;
-			String s = "";
-			for (int i=0; i< length; i++){
-				s += (char)id[i];
-			}
-			return s;
 		}
 	};
 	

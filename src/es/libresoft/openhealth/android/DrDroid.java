@@ -27,6 +27,7 @@ package es.libresoft.openhealth.android;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import android.app.Service;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporter;
 
 
 public class DrDroid extends Service {
@@ -189,8 +191,10 @@ public class DrDroid extends Service {
 		@Override
 		public void sendEvent(String system_id, int eventType)
 				throws RemoteException {
-			// TODO Auto-generated method stub
-			System.out.println("send event " + eventType +" to " + system_id);
+			Agent agt = agentsId.get(system_id);
+			if (agt==null)
+				return;
+			agt.sendEvent(new Event(eventType));
 		}
 
 		@Override
@@ -272,7 +276,7 @@ public class DrDroid extends Service {
 		}
 
 		@Override
-		public void receivedMeasure(String system_id, float value, Date date) {
+		public void receivedMeasure(String system_id, List measures) {
 			// TODO:
 			if (system_id==null || !aCallback.containsKey(system_id))
 				return;
@@ -281,7 +285,9 @@ public class DrDroid extends Service {
             final int N = agentCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
                 try {
-                	agentCallbacks.getBroadcastItem(i).agentMeasureReceived(system_id, date.toString());
+                	//TODO:
+                	throw new RemoteException ();
+                	//agentCallbacks.getBroadcastItem(i).agentMeasureReceived(system_id, date.toString());
                 } catch (RemoteException e) {
                     // The RemoteCallbackList will take care of removing
                     // the dead object for us.

@@ -22,35 +22,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.events;
+package es.libresoft.openhealth.android;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import es.libresoft.openhealth.Agent;
+import android.os.Parcelable;
+import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.events.MeasureReporter;
 
-public interface InternalEventManager {
-	/**
-	 * Agent event to indicate that new measure has been received from agent
-	 * @param value
-	 * @param date
-	 */
-	public void receivedMeasure(String system_id, List measures);
+public class AndroidMeasureReporter implements MeasureReporter{
+
+	private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
 	
-	/**
-	 * Agent event to indicate that the agents has changed is state
-	 * @param system_id
-	 * @param state
-	 */
-	public void agentChangeStatus(String system_id, String state);
-	
-	/**
-	 * Send a manager event to indicate that new agent has connected
-	 * @param agent The agent device connected
-	 */
-	public void agentConnected(Agent agent);
-	/**
-	 * Send a manager event to indicate that  previus connected agent has connected
-	 * @param system_id the system id of the agent
-	 */
-	public void agentDisconnected(String system_id);
+	@Override
+	public void addMeasure(int mType, Object data) {
+		if (data instanceof SFloatType){
+			System.out.println("Instancia de SFLOAT");
+			SFloatType sf = (SFloatType)data;
+			measures.add(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+		}else if (data instanceof Date){
+			System.out.println("TODO: Instancia de DATE");
+		}else System.out.println("Instancia desconocida para " + mType);
+	}
+
+	@Override
+	public List getMeasures(){
+		return measures;
+	}
+
+	@Override
+	public void clearMeasures() {
+		measures.clear();
+	}
 }

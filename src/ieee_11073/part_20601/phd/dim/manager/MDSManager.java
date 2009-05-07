@@ -54,6 +54,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporter;
+import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
@@ -159,10 +162,12 @@ public abstract class MDSManager extends MDS {
 	@Override
 	public void MDS_Dynamic_Data_Update_Fixed(ScanReportInfoFixed info) {
 		try{
-			//System.out.println("data req id: " + srif.getData_req_id().getValue());
-			//System.out.println("report_no: " + srif.getScan_report_no());
+			String system_id = DIM_Tools.byteArrayToString(
+					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+			
 			Iterator<ObservationScanFixed> i= info.getObs_scan_fixed().iterator();
 			ObservationScanFixed obs;
+			MeasureReporter mr = MeasureReporterFactory.getMeasureReporterFor(MeasureReporterFactory.ANDROID);
 			while (i.hasNext()) {
 				obs=i.next();
 				
@@ -171,17 +176,20 @@ public abstract class MDSManager extends MDS {
 				AttrValMap avm = (AttrValMap)numeric.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				DataExtractor de = new DataExtractor(obs.getObs_val_data());
+				
 				while (it.hasNext()){
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
 					int length = attr.getAttribute_len();
 					try {
-						decodeRawData(attrId,de.getData(length));
+						mr.addMeasure(attrId, decodeRawData(attrId,de.getData(length)));
 					}catch(Exception e){
 						System.err.println("Error: Can not get attribute " + attrId);
 						e.printStackTrace();
 					}
 				}
+				InternalEventReporter.receivedMeasure(system_id, mr.getMeasures());
+				mr.clearMeasures();
 			}
 		}catch (Exception e){
 			e.printStackTrace();

@@ -77,6 +77,16 @@ import ieee_11073.part_20601.asn1.TypeVerList;
 
 public class DIM_Tools {
 
+	
+	public static final String byteArrayToString (byte[] id){
+		int length = id.length;
+		String s = "";
+		for (int i=0; i< length; i++){
+			s += (char)id[i];
+		}
+		return s;
+	}
+	
 	public static final String getAttributeName (int attrId){
 		switch (attrId){
 		case Nomenclature.MDC_ATTR_CONFIRM_MODE : return "Confirm-Mode";

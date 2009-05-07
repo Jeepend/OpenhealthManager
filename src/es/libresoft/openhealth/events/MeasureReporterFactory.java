@@ -24,33 +24,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
-import java.util.List;
+import es.libresoft.openhealth.android.AndroidMeasureReporter;
 
-import es.libresoft.openhealth.Agent;
+public class MeasureReporterFactory {
 
-public interface InternalEventManager {
-	/**
-	 * Agent event to indicate that new measure has been received from agent
-	 * @param value
-	 * @param date
-	 */
-	public void receivedMeasure(String system_id, List measures);
+	//Supported platforms
+	public static final int ANDROID = 1;
 	
 	/**
-	 * Agent event to indicate that the agents has changed is state
-	 * @param system_id
-	 * @param state
+	 * Get measure reporter class to send measure events from manager to application layer
+	 * @param platform
+	 * @return 
 	 */
-	public void agentChangeStatus(String system_id, String state);
-	
-	/**
-	 * Send a manager event to indicate that new agent has connected
-	 * @param agent The agent device connected
-	 */
-	public void agentConnected(Agent agent);
-	/**
-	 * Send a manager event to indicate that  previus connected agent has connected
-	 * @param system_id the system id of the agent
-	 */
-	public void agentDisconnected(String system_id);
+	public static final MeasureReporter getMeasureReporterFor(int platform){
+		switch (platform) {
+		case ANDROID : return new AndroidMeasureReporter();
+		default : return null;
+		}
+	}
 }

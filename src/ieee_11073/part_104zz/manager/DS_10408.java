@@ -171,9 +171,8 @@ public final class DS_10408 extends MDSManager {
 			case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
 				INT_U16 iu = decoder.decode(input, INT_U16.class);
 				SFloatType ft = new SFloatType(iu.getValue());
-				Double measure = ft.doubleValueRepresentation();
-				System.out.println("Measure: " + measure);
-				return (T)measure;
+				System.out.println("Measure: " + ft.doubleValueRepresentation());
+				return (T)ft;
 			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
 				AbsoluteTime at = decoder.decode(input, AbsoluteTime.class);
 				String source = at.getYear().getValue() + "/" +
