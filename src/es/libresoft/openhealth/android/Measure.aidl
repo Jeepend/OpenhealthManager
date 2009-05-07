@@ -24,21 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import es.libresoft.openhealth.android.Measure;
-
-/**
- * Agent notification interface, all clients registered with the remote service, will be
- * notified when next events occurs in the agent.
- * Note that this is a one-way interface so the server does not block waiting for the client.
- */
-oneway interface IAgentCallbackService {
-    /**
-     * Called when agent change of state.
-     */
-    void agentStateChanged (String state);
-    
-    /**
-     * Called when manager receives a measure from agent.
-     */
-    void agentMeasureReceived (String system_id, out List<Measure> measures);
-}
+// Declare Measure so AIDL can find it and knows that it implements
+// the parcelable protocol.
+parcelable Measure;

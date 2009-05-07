@@ -28,10 +28,7 @@ import es.libresoft.mdnf.FloatType;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AndroidValueMeasure implements Parcelable {
-
-	//Indicates the measure type 
-	private int measure_type;
+public class AndroidValueMeasure extends Measure implements Parcelable {
 	
 	//internal value representation by exponent and mantissa (float is not needed to be pass from ipc call)
 	private int value_exp;

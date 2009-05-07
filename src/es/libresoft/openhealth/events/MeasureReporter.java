@@ -29,6 +29,6 @@ import java.util.List;
 public interface MeasureReporter {
 
 	void addMeasure (int mType, Object data);
-	List getMeasures();
+	<T> List<T> getMeasures();
 	void clearMeasures();
 }

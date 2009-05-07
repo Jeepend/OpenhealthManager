@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +38,6 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
-import es.libresoft.openhealth.events.MeasureReporter;
 
 
 public class DrDroid extends Service {
@@ -207,7 +205,7 @@ public class DrDroid extends Service {
     /************************************************************
 	 * Internal events triggered from manager thread
 	 ************************************************************/
-    private final InternalEventManager ieManager = new InternalEventManager(){
+    private final InternalEventManager<Measure> ieManager = new InternalEventManager<Measure>(){
     	//+++++++++++++++++++++++++++++++
     	//+ Manager's events:
     	//+++++++++++++++++++++++++++++++
@@ -272,11 +270,11 @@ public class DrDroid extends Service {
                 }
             }
             agentCallbacks.finishBroadcast();
-			System.out.println("agente " + system_id + " changed to: " + state);
+			//System.out.println("agente " + system_id + " changed to: " + state);
 		}
 
 		@Override
-		public void receivedMeasure(String system_id, List measures) {
+		public void receivedMeasure(String system_id, List<Measure> measures) {
 			// TODO:
 			if (system_id==null || !aCallback.containsKey(system_id))
 				return;
@@ -285,12 +283,12 @@ public class DrDroid extends Service {
             final int N = agentCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
                 try {
-                	//TODO:
-                	throw new RemoteException ();
-                	//agentCallbacks.getBroadcastItem(i).agentMeasureReceived(system_id, date.toString());
+                	agentCallbacks.getBroadcastItem(i).agentMeasureReceived(system_id, measures);
                 } catch (RemoteException e) {
                     // The RemoteCallbackList will take care of removing
                     // the dead object for us.
+                	System.out.println("Excepcionaca!!!");
+                	e.printStackTrace();
                 }
             }
             agentCallbacks.finishBroadcast();

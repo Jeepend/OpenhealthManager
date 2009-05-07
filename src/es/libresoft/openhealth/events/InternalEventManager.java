@@ -28,13 +28,13 @@ import java.util.List;
 
 import es.libresoft.openhealth.Agent;
 
-public interface InternalEventManager {
+public interface InternalEventManager<T> {
 	/**
 	 * Agent event to indicate that new measure has been received from agent
 	 * @param value
 	 * @param date
 	 */
-	public void receivedMeasure(String system_id, List measures);
+	public void receivedMeasure(String system_id, List<T> measures);
 	
 	/**
 	 * Agent event to indicate that the agents has changed is state

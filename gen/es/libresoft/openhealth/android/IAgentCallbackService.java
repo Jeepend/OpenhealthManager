@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Binder;
 import android.os.Parcel;
+import java.util.List;
 /**
  * Agent notification interface, all clients registered with the remote service, will be
  * notified when next events occurs in the agent.
@@ -66,9 +67,10 @@ case TRANSACTION_agentMeasureReceived:
 data.enforceInterface(DESCRIPTOR);
 java.lang.String _arg0;
 _arg0 = data.readString();
-java.lang.String _arg1;
-_arg1 = data.readString();
+java.util.List<es.libresoft.openhealth.android.Measure> _arg1;
+_arg1 = new java.util.ArrayList<es.libresoft.openhealth.android.Measure>();
 this.agentMeasureReceived(_arg0, _arg1);
+reply.writeTypedList(_arg1);
 return true;
 }
 }
@@ -105,15 +107,14 @@ _data.recycle();
 }
 }
 /**
-     * Called when agent releases the association with the manager.
+     * Called when manager receives a measure from agent.
      */
-public void agentMeasureReceived(java.lang.String system_id, java.lang.String date) throws android.os.RemoteException
+public void agentMeasureReceived(java.lang.String system_id, java.util.List<es.libresoft.openhealth.android.Measure> measures) throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
 _data.writeString(system_id);
-_data.writeString(date);
 mRemote.transact(Stub.TRANSACTION_agentMeasureReceived, _data, null, IBinder.FLAG_ONEWAY);
 }
 finally {
@@ -129,7 +130,7 @@ static final int TRANSACTION_agentMeasureReceived = (IBinder.FIRST_CALL_TRANSACT
      */
 public void agentStateChanged(java.lang.String state) throws android.os.RemoteException;
 /**
-     * Called when agent releases the association with the manager.
+     * Called when manager receives a measure from agent.
      */
-public void agentMeasureReceived(java.lang.String system_id, java.lang.String date) throws android.os.RemoteException;
+public void agentMeasureReceived(java.lang.String system_id, java.util.List<es.libresoft.openhealth.android.Measure> measures) throws android.os.RemoteException;
 }

@@ -34,7 +34,7 @@ import es.libresoft.openhealth.events.MeasureReporter;
 
 public class AndroidMeasureReporter implements MeasureReporter{
 
-	private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
+	private final ArrayList<Measure> measures = new ArrayList<Measure>();
 	
 	@Override
 	public void addMeasure(int mType, Object data) {
