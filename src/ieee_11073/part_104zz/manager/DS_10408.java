@@ -56,6 +56,7 @@ import org.bn.IDecoder;
 import org.bn.types.BitString;
 
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
 	/**
@@ -174,14 +175,23 @@ public final class DS_10408 extends MDSManager {
 				System.out.println("Measure: " + ft.doubleValueRepresentation());
 				return (T)ft;
 			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
-				AbsoluteTime at = decoder.decode(input, AbsoluteTime.class);
-				String source = at.getYear().getValue() + "/" +
-						at.getMonth().getValue() + "/" +
-						at.getDay().getValue() + " " +
-						at.getHour().getValue() + ":" +
-						at.getMinute().getValue() + ":" + 
-						at.getSecond().getValue() + ":" + 
-						at.getSec_fractions().getValue();
+				/*
+				 * The absolute time data type specifies the time of day with a resolution of 1/100 
+				 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
+				 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit 
+				 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19 
+				 * in the century field and the hexadecimal value 0x96 in the year field. This format is 
+				 * easily converted to character- or integer-based representations. See AbsoluteTime 
+				 * structure for details.
+				 */
+				final String rawDate = ASN1_Tools.getHexString(data);
+				final String source = rawDate.substring(0, 4) + "/" + /*century + year(first 2Bytes)*/
+						rawDate.substring(4, 6) + "/" +   /* month next 2B*/
+						rawDate.substring(6, 8) + " " +   /* day next 2B */
+						rawDate.substring(8, 10) + ":" +  /* hour next 2B */
+						rawDate.substring(10, 12) + ":" + /* minute next 2B */
+						rawDate.substring(12, 14) + ":" + /* second next 2B */
+						rawDate.substring(14); /* frac-sec last 2B */
 				SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
 				Date d = sdf.parse(source);
 				System.out.println("date: " + d);

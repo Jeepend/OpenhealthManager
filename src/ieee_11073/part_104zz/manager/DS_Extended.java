@@ -41,32 +41,9 @@ import org.bn.CoderFactory;
 import org.bn.IDecoder;
 
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public class DS_Extended extends MDSManager {
-
-	static final byte[] HEX_CHAR_TABLE = {
-	    (byte)'0', (byte)'1', (byte)'2', (byte)'3',
-	    (byte)'4', (byte)'5', (byte)'6', (byte)'7',
-	    (byte)'8', (byte)'9', (byte)'a', (byte)'b',
-	    (byte)'c', (byte)'d', (byte)'e', (byte)'f'
-	  }; 
-
-	  public static String getHexString(byte[] raw) 
-	  {
-	    byte[] hex = new byte[2 * raw.length];
-	    int index = 0;
-
-	    for (byte b : raw) {
-	      int v = b & 0xFF;
-	      hex[index++] = HEX_CHAR_TABLE[v >>> 4];
-	      hex[index++] = HEX_CHAR_TABLE[v & 0xF];
-	    }
-	    try {
-			return new String(hex, "ASCII");
-		} catch (UnsupportedEncodingException e) {
-			return "MAL";
-		}
-	  }
 	  
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
@@ -93,21 +70,17 @@ public class DS_Extended extends MDSManager {
 			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit 
 			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19 
 			 * in the century field and the hexadecimal value 0x96 in the year field. This format is 
-			 * easily converted to character- or integer-based representations.
+			 * easily converted to character- or integer-based representations. See AbsoluteTime 
+			 * structure for details.
 			 */
-			String rawDate = getHexString(data);
-			System.out.println("Raw AbsTime: " + getHexString(data));
-			AbsoluteTime at = decoder.decode(input, AbsoluteTime.class);
-			String source =
-					at.getCentury().getValue() + "_" +
-					at.getYear().getValue() + "/" +
-					at.getMonth().getValue() + "/" +
-					at.getDay().getValue() + " " +
-					at.getHour().getValue() + ":" +
-					at.getMinute().getValue() + ":" + 
-					at.getSecond().getValue() + ":" + 
-					at.getSec_fractions().getValue();
-			System.out.println("value: " + source);
+			final String rawDate = ASN1_Tools.getHexString(data);
+			final String source = rawDate.substring(0, 4) + "/" + /*century + year(first 2Bytes)*/
+					rawDate.substring(4, 6) + "/" +   /* month next 2B*/
+					rawDate.substring(6, 8) + " " +   /* day next 2B */
+					rawDate.substring(8, 10) + ":" +  /* hour next 2B */
+					rawDate.substring(10, 12) + ":" + /* minute next 2B */
+					rawDate.substring(12, 14) + ":" + /* second next 2B */
+					rawDate.substring(14); /* frac-sec last 2B */
 			SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
 			Date d = sdf.parse(source);
 			System.out.println("date: " + d);

@@ -62,28 +62,6 @@ import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 
 public abstract class MDSManager extends MDS {
-
-	private static final byte[] HEX_CHAR_TABLE = {
-	    (byte)'0', (byte)'1', (byte)'2', (byte)'3',
-	    (byte)'4', (byte)'5', (byte)'6', (byte)'7',
-	    (byte)'8', (byte)'9', (byte)'a', (byte)'b',
-	    (byte)'c', (byte)'d', (byte)'e', (byte)'f'
-	  }; 
-
-	  private String getHexString(byte[] raw) 
-	  {
-		try {
-		    byte[] hex = new byte[2 * raw.length];
-		    int index = 0;
-	
-		    for (byte b : raw) {
-		      int v = b & 0xFF;
-		      hex[index++] = HEX_CHAR_TABLE[v >>> 4];
-		      hex[index++] = HEX_CHAR_TABLE[v & 0xF];
-		    }
-		    return new String(hex, "ASCII");
-		}catch (Exception e){return "";}
-	  }
 	  
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
@@ -257,7 +235,7 @@ public abstract class MDSManager extends MDS {
 				break;
 			case Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL:
 				MetricSpecSmall mss = (MetricSpecSmall)attribs.get(new Integer(id)).getAttributeType();
-				System.out.println("partition: " + getHexString(mss.getValue().getValue()));
+				//System.out.println("partition: " + getHexString(mss.getValue().getValue()));
 				System.out.println("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC :
