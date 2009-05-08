@@ -160,6 +160,7 @@ public class DrDroid extends Service {
 		@Override
 		public void registerAgentCallback(String system_id,
 				IAgentCallbackService mc) throws RemoteException {
+			System.err.println("Registrando agent callback");
 			if (mc == null || !aCallback.containsKey(system_id))
 				return;			
 			aCallback.get(system_id).register(mc);

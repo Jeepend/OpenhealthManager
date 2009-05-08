@@ -27,7 +27,6 @@ package es.libresoft.openhealth.android;
 import java.util.ArrayList;
 
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,14 +36,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+
 
 
 public class DevicesActivity extends ListActivity {
@@ -112,6 +107,20 @@ public class DevicesActivity extends ListActivity {
                   // has crashed.
               }
           }
+	}
+	
+	protected void onPause(Bundle savedInstanceState){
+		  System.out.println("estoy en onResume");
+        // If we have received the service, and hence registered with
+        // it, then now is the time to unregister.
+        if (mService != null) {
+            try {
+                mService.unregisterCallback(mCallback);
+            } catch (RemoteException e) {
+                // There is nothing special we need to do if the service
+                // has crashed.
+            }
+        }
 	}
 	
 	@Override
