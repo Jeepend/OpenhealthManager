@@ -47,8 +47,8 @@ public class DeviceManage extends Activity {
 		if (extras != null){
 			deviceName = extras.getString("agent");
 		}
-		//setContentView(R.layout.device_manage);
-		//system_id = (TextView) findViewById(R.id.widgetagentid);
+		setContentView(R.layout.device_manage);
+		system_id = (TextView) findViewById(R.id.widgetagentid);
 		system_id.setText(deviceName);
 	}
 
