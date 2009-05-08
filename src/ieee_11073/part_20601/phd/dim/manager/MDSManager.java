@@ -167,7 +167,7 @@ public abstract class MDSManager extends MDS {
 			
 			Iterator<ObservationScanFixed> i= info.getObs_scan_fixed().iterator();
 			ObservationScanFixed obs;
-			MeasureReporter mr = MeasureReporterFactory.getMeasureReporterFor(MeasureReporterFactory.ANDROID);
+			MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
 			while (i.hasNext()) {
 				obs=i.next();
 				

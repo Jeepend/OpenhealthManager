@@ -38,6 +38,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporterFactory;
 
 
 public class DrDroid extends Service {
@@ -68,8 +69,10 @@ public class DrDroid extends Service {
 	public void onCreate() {
 		System.out.println("Service created");
 		channelTCP = new TcpChannel();
-		//Get internal events from manager
+		//Set the event manager handler to get internal events from the manager thread
 		InternalEventReporter.setDefaultEventManager(ieManager);
+		//Set target platform to android to report measures using IPC mechanism
+		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.ANDROID);
 		super.onCreate();
 	}
 

@@ -28,8 +28,29 @@ import es.libresoft.openhealth.android.AndroidMeasureReporter;
 
 public class MeasureReporterFactory {
 
+	private static int defaultReporter = 0; //not measure reporter set
+	
 	//Supported platforms
 	public static final int ANDROID = 1;
+	
+	/**
+	 * Set the default measure reporter of the entire system
+	 * @param platform target platform
+	 */
+	public static final void setDefaultMeasureReporter (int platform) {
+		defaultReporter = platform;
+	}
+	
+	/**
+	 * Get default measure reporter established for thye target platform
+	 * @return the target measure reporter for the specific platform
+	 * @throws Exception if the target measure reporter is not set
+	 */
+	public static final MeasureReporter getDefaultMeasureReporter () throws Exception {
+		if (defaultReporter==0)
+			throw new Exception("Measure reporter is not setted to any target platform");
+		return getMeasureReporterFor(defaultReporter);
+	}
 	
 	/**
 	 * Get measure reporter class to send measure events from manager to application layer

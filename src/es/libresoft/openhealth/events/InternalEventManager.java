@@ -49,7 +49,7 @@ public interface InternalEventManager<T> {
 	 */
 	public void agentConnected(Agent agent);
 	/**
-	 * Send a manager event to indicate that  previus connected agent has connected
+	 * Send a manager event to indicate a disconnection of some agent
 	 * @param system_id the system id of the agent
 	 */
 	public void agentDisconnected(String system_id);

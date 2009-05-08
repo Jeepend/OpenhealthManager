@@ -23,7 +23,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_104zz.manager;
 
+import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.AbsoluteTime;
+import ieee_11073.part_20601.asn1.ConfigId;
+import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
+import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
+import ieee_11073.part_20601.asn1.ScanReportInfoVar;
+import ieee_11073.part_20601.phd.dim.manager.MDSManager;
+
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,19 +41,33 @@ import org.bn.CoderFactory;
 import org.bn.IDecoder;
 
 import es.libresoft.mdnf.SFloatType;
-import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.AbsoluteTime;
-import ieee_11073.part_20601.asn1.ConfigId;
-import ieee_11073.part_20601.asn1.ConfigReport;
-import ieee_11073.part_20601.asn1.ConfigReportRsp;
-import ieee_11073.part_20601.asn1.INT_U16;
-import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
-import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
-import ieee_11073.part_20601.asn1.ScanReportInfoVar;
-import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 public class DS_Extended extends MDSManager {
 
+	static final byte[] HEX_CHAR_TABLE = {
+	    (byte)'0', (byte)'1', (byte)'2', (byte)'3',
+	    (byte)'4', (byte)'5', (byte)'6', (byte)'7',
+	    (byte)'8', (byte)'9', (byte)'a', (byte)'b',
+	    (byte)'c', (byte)'d', (byte)'e', (byte)'f'
+	  }; 
+
+	  public static String getHexString(byte[] raw) 
+	  {
+	    byte[] hex = new byte[2 * raw.length];
+	    int index = 0;
+
+	    for (byte b : raw) {
+	      int v = b & 0xFF;
+	      hex[index++] = HEX_CHAR_TABLE[v >>> 4];
+	      hex[index++] = HEX_CHAR_TABLE[v & 0xF];
+	    }
+	    try {
+			return new String(hex, "ASCII");
+		} catch (UnsupportedEncodingException e) {
+			return "MAL";
+		}
+	  }
+	  
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
 	 */
@@ -63,14 +87,27 @@ public class DS_Extended extends MDSManager {
 			System.out.println("Measure: " + ft.doubleValueRepresentation());
 			return (T)ft;
 		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
+			/*
+			 * The absolute time data type specifies the time of day with a resolution of 1/100 
+			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
+			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit 
+			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19 
+			 * in the century field and the hexadecimal value 0x96 in the year field. This format is 
+			 * easily converted to character- or integer-based representations.
+			 */
+			String rawDate = getHexString(data);
+			System.out.println("Raw AbsTime: " + getHexString(data));
 			AbsoluteTime at = decoder.decode(input, AbsoluteTime.class);
-			String source = at.getYear().getValue() + "/" +
+			String source =
+					at.getCentury().getValue() + "_" +
+					at.getYear().getValue() + "/" +
 					at.getMonth().getValue() + "/" +
 					at.getDay().getValue() + " " +
 					at.getHour().getValue() + ":" +
 					at.getMinute().getValue() + ":" + 
 					at.getSecond().getValue() + ":" + 
 					at.getSec_fractions().getValue();
+			System.out.println("value: " + source);
 			SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
 			Date d = sdf.parse(source);
 			System.out.println("date: " + d);
