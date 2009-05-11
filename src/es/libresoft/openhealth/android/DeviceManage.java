@@ -114,21 +114,12 @@ public class DeviceManage extends Activity {
     private IAgentCallbackService mCallback = new IAgentCallbackService.Stub() {
 
 		@Override
-		public void agentMeasureReceived(String system_id,
-				List<Measure> measures) throws RemoteException {
-			System.out.println("Agente: " + system_id);
+		public void agentMeasureReceived(List measures) throws RemoteException {
 			System.out.println("mesaures: " + measures.size());
-			Iterator<Measure> i = measures.iterator();
-			Measure measure;
+			Iterator i = measures.iterator();
+			Object measure;
 			while (i.hasNext()){
 				measure = i.next();
-				try {
-					System.out.println("Medida: " + measure.getFloatType());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				/*
 				if (measure instanceof AndroidValueMeasure){
 					try {
 						System.out.println("valor: " + ((AndroidValueMeasure)measure).getFloatType());
@@ -136,8 +127,9 @@ public class DeviceManage extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else System.out.println("DATO NO IMPLEMENTADO!!!");
-				*/
+				}else if (measure instanceof AndroidDateMeasure) {
+					System.out.println("timestamp: " + (AndroidDateMeasure)measure);
+				}
 			}
 			handler.post(doUpdateGUI);
 			

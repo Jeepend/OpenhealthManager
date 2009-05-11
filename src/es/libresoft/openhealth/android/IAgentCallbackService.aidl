@@ -24,7 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import es.libresoft.openhealth.android.Measure;
+import es.libresoft.openhealth.android.AndroidValueMeasure;
+import es.libresoft.openhealth.android.AndroidDateMeasure;
 
 /**
  * Agent notification interface, all clients registered with the remote service, will be
@@ -40,5 +41,5 @@ oneway interface IAgentCallbackService {
     /**
      * Called when manager receives a measure from agent.
      */
-    void agentMeasureReceived (String system_id, in List<Measure> measures);
+    void agentMeasureReceived (in List measures);
 }

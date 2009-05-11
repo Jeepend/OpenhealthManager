@@ -32,7 +32,7 @@ public class InternalEventReporter {
 
 	private static InternalEventManager iEvent;
 	
-	public static synchronized <T> void setDefaultEventManager (InternalEventManager<T> handler){
+	public static synchronized void setDefaultEventManager (InternalEventManager handler){
 		iEvent = handler;
 	}
 
@@ -51,7 +51,7 @@ public class InternalEventReporter {
 			iEvent.agentChangeStatus(system_id, state);
 	}
 
-	public static <T> void receivedMeasure(String system_id, List<T> measures) {
+	public static void receivedMeasure(String system_id, List measures) {
 		if (iEvent!=null)
 			iEvent.receivedMeasure(system_id, measures);
 	}

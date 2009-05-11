@@ -31,6 +31,7 @@ import java.util.List;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import es.libresoft.openhealth.Agent;
@@ -209,7 +210,7 @@ public class DrDroid extends Service {
     /************************************************************
 	 * Internal events triggered from manager thread
 	 ************************************************************/
-    private final InternalEventManager<Measure> ieManager = new InternalEventManager<Measure>(){
+    private final InternalEventManager ieManager = new InternalEventManager(){
     	//+++++++++++++++++++++++++++++++
     	//+ Manager's events:
     	//+++++++++++++++++++++++++++++++
@@ -278,29 +279,23 @@ public class DrDroid extends Service {
 		}
 
 		@Override
-		public void receivedMeasure(String system_id, List<Measure> measures) {
+		public void receivedMeasure(String system_id, List measures) {
 			if (system_id==null || !aCallback.containsKey(system_id))
 				return;
-			System.out.println("Contenido de measures:");
-			Iterator<Measure> it = measures.iterator();
-			while (it.hasNext()){
-				System.out.println("Measure: " + it.next());
-			}
 			// Send a agent Broadcast Event to all clients.
 			final RemoteCallbackList<IAgentCallbackService> agentCallbacks = aCallback.get(system_id);
             final int N = agentCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
                 try {
-                	agentCallbacks.getBroadcastItem(i).agentMeasureReceived(system_id, measures);
+                	agentCallbacks.getBroadcastItem(i).agentMeasureReceived(measures);
                 } catch (RemoteException e) {
                     // The RemoteCallbackList will take care of removing
                     // the dead object for us.
-                	System.out.println("Excepcionaca!!!");
                 	e.printStackTrace();
                 }
             }
             agentCallbacks.finishBroadcast();
-			System.out.println("Recivida medida de " + system_id);
+			//System.out.println("Received measure from " + system_id);
 		}
     	
     };

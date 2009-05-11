@@ -24,37 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import android.os.Parcelable;
-
-import es.libresoft.mdnf.SFloatType;
-import es.libresoft.openhealth.events.MeasureReporter;
-
-public class AndroidMeasureReporter implements MeasureReporter{
-
-	private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
-	
-	@Override
-	public void addMeasure(int mType, Object data) {
-		if (data instanceof SFloatType){
-			SFloatType sf = (SFloatType)data;
-			measures.add(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
-		}else if (data instanceof Date){
-			Date timestamp = (Date)data;
-			measures.add(new AndroidDateMeasure(mType,timestamp));
-		}else System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
-	}
-
-	@Override
-	public List getMeasures(){
-		return measures;
-	}
-
-	@Override
-	public void clearMeasures() {
-		measures.clear();
-	}
-}
+// Declare the value measure so AIDL can find it and knows that it implements
+// the parcelable protocol.
+parcelable AndroidValueMeasure;

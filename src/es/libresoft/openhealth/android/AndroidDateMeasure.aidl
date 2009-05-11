@@ -24,6 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-// Declare Measure so AIDL can find it and knows that it implements
+// Declare Date Measure so AIDL can find it and knows that it implements
 // the parcelable protocol.
-parcelable Measure;
+parcelable AndroidDateMeasure;

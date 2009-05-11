@@ -29,7 +29,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class AndroidValueMeasure implements Parcelable {
-	
+	private int measure_type;
 	//internal value representation by exponent and mantissa (float is not needed to be pass from ipc call)
 	private int value_exp;
 	private int value_mag;
@@ -46,16 +46,18 @@ public class AndroidValueMeasure implements Parcelable {
 	};
 	
 	private AndroidValueMeasure (Parcel in){
-    	//measure_type = in.readInt();
+    	measure_type = in.readInt();
     	value_exp = in.readInt();
     	value_mag = in.readInt();
     }
 	
 	public AndroidValueMeasure (int mType, int exp, int mag){
-		//measure_type = mType;
+		measure_type = mType;
 		value_exp = exp;
 		value_mag = mag;
 	}
+	
+	public int getMeasureType(){return measure_type;}
 	
 	@Override
 	public int describeContents() {
@@ -64,7 +66,7 @@ public class AndroidValueMeasure implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		//dest.writeInt(measure_type);
+		dest.writeInt(measure_type);
 		dest.writeInt(value_exp);
 		dest.writeInt(value_mag);
 	}
