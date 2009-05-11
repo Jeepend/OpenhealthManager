@@ -161,10 +161,12 @@ public class DrDroid extends Service {
 		@Override
 		public void registerAgentCallback(String system_id,
 				IAgentCallbackService mc) throws RemoteException {
-			System.err.println("Registrando agent callback");
-			if (mc == null || !aCallback.containsKey(system_id))
-				return;			
+			System.err.println("Registering agent callback");
+			if (mc == null || !aCallback.containsKey(system_id)){
+				return;	
+			}
 			aCallback.get(system_id).register(mc);
+			System.err.println("Registered callback for agent " + system_id);
 		}
 
 		@Override
@@ -295,7 +297,6 @@ public class DrDroid extends Service {
                 }
             }
             agentCallbacks.finishBroadcast();
-			//System.out.println("Received measure from " + system_id);
 		}
     	
     };

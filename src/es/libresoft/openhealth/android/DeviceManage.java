@@ -115,7 +115,7 @@ public class DeviceManage extends Activity {
 
 		@Override
 		public void agentMeasureReceived(List measures) throws RemoteException {
-			System.out.println("mesaures: " + measures.size());
+			System.out.println("******************** mesaures: " + measures.size());
 			Iterator i = measures.iterator();
 			Object measure;
 			while (i.hasNext()){

@@ -10,7 +10,8 @@ public class AndroidDateMeasure implements Parcelable{
 	
 	private int measure_type;	
 	//internal value representation of the date
-	private Date timestamp;
+	private long timestamp;
+	private Date date;
 	
 	public static final Parcelable.Creator<AndroidDateMeasure> CREATOR = 
 			new Parcelable.Creator<AndroidDateMeasure>() {
@@ -25,17 +26,21 @@ public class AndroidDateMeasure implements Parcelable{
 	
 	private AndroidDateMeasure (Parcel in){
     	measure_type = in.readInt();
-    	timestamp.setTime(in.readLong());
+    	timestamp = in.readLong();
+    	date = new Date(timestamp);
     }
 	
-	public AndroidDateMeasure (int mType, Date timestamp){
+	public AndroidDateMeasure (int mType, long timestamp){
 		measure_type = mType;
 		this.timestamp = timestamp;
+		date = new Date(timestamp);
 	}
 	
 	public int getMeasureType(){return measure_type;}
 	
-	public Date getTimeStamp(){return timestamp;}
+	public Date getTimeStamp(){
+		return date;
+	}
 	
 	@Override
 	public int describeContents() {
@@ -45,7 +50,7 @@ public class AndroidDateMeasure implements Parcelable{
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(measure_type);
-		dest.writeLong(timestamp.getTime());
+		dest.writeLong(timestamp);
 	}
 
 	

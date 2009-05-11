@@ -44,7 +44,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 			measures.add(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;
-			measures.add(new AndroidDateMeasure(mType,timestamp));
+			measures.add(new AndroidDateMeasure(mType,timestamp.getTime()));
 		}else System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
 	}
 
