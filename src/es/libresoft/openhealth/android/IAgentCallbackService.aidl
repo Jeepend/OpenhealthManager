@@ -40,5 +40,5 @@ oneway interface IAgentCallbackService {
     /**
      * Called when manager receives a measure from agent.
      */
-    void agentMeasureReceived (String system_id, out List<Measure> measures);
+    void agentMeasureReceived (String system_id, in List<Measure> measures);
 }

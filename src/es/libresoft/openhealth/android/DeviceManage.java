@@ -116,11 +116,19 @@ public class DeviceManage extends Activity {
 		@Override
 		public void agentMeasureReceived(String system_id,
 				List<Measure> measures) throws RemoteException {
+			System.out.println("Agente: " + system_id);
 			System.out.println("mesaures: " + measures.size());
 			Iterator<Measure> i = measures.iterator();
 			Measure measure;
 			while (i.hasNext()){
 				measure = i.next();
+				try {
+					System.out.println("Medida: " + measure.getFloatType());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				/*
 				if (measure instanceof AndroidValueMeasure){
 					try {
 						System.out.println("valor: " + ((AndroidValueMeasure)measure).getFloatType());
@@ -129,6 +137,7 @@ public class DeviceManage extends Activity {
 						e.printStackTrace();
 					}
 				}else System.out.println("DATO NO IMPLEMENTADO!!!");
+				*/
 			}
 			handler.post(doUpdateGUI);
 			

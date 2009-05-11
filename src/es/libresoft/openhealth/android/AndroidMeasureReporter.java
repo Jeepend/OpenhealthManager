@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.os.Parcelable;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.events.MeasureReporter;
 
@@ -41,7 +40,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 		if (data instanceof SFloatType){
 			System.out.println("Instancia de SFLOAT");
 			SFloatType sf = (SFloatType)data;
-			measures.add(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+			measures.add(new Measure(mType,sf.getExponent(),sf.getMagnitude()));
 		}else if (data instanceof Date){
 			System.out.println("TODO: Instancia de DATE");
 		}else System.out.println("Instancia desconocida para " + mType);
