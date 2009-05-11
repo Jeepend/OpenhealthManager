@@ -279,9 +279,13 @@ public class DrDroid extends Service {
 
 		@Override
 		public void receivedMeasure(String system_id, List<Measure> measures) {
-			// TODO:
 			if (system_id==null || !aCallback.containsKey(system_id))
 				return;
+			System.out.println("Contenido de measures:");
+			Iterator<Measure> it = measures.iterator();
+			while (it.hasNext()){
+				System.out.println("Measure: " + it.next());
+			}
 			// Send a agent Broadcast Event to all clients.
 			final RemoteCallbackList<IAgentCallbackService> agentCallbacks = aCallback.get(system_id);
             final int N = agentCallbacks.beginBroadcast();

@@ -145,7 +145,6 @@ public abstract class MDSManager extends MDS {
 			
 			Iterator<ObservationScanFixed> i= info.getObs_scan_fixed().iterator();
 			ObservationScanFixed obs;
-			MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
 			while (i.hasNext()) {
 				obs=i.next();
 				
@@ -154,7 +153,7 @@ public abstract class MDSManager extends MDS {
 				AttrValMap avm = (AttrValMap)numeric.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				DataExtractor de = new DataExtractor(obs.getObs_val_data());
-				
+				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
 				while (it.hasNext()){
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
@@ -167,7 +166,6 @@ public abstract class MDSManager extends MDS {
 					}
 				}
 				InternalEventReporter.receivedMeasure(system_id, mr.getMeasures());
-				mr.clearMeasures();
 			}
 		}catch (Exception e){
 			e.printStackTrace();

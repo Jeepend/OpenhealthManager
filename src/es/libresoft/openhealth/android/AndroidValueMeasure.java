@@ -72,4 +72,8 @@ public class AndroidValueMeasure extends Measure implements Parcelable {
 	public FloatType getFloatType () throws Exception{
 		return new FloatType(value_exp,value_mag);
 	}
+	
+	public String toString(){
+		return value_mag + "*10^" + value_exp;
+	}
 }

@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_104zz.manager;
 
 import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
@@ -33,7 +32,6 @@ import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
