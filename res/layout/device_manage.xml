@@ -28,7 +28,7 @@ android:layout_height="fill_parent"
 xmlns:android="http://schemas.android.com/apk/res/android"
 >
 <Button
-android:id="@+id/widget28"
+android:id="@+id/widgetget"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="Get"
@@ -37,7 +37,7 @@ android:layout_y="242px"
 >
 </Button>
 <Button
-android:id="@+id/widget29"
+android:id="@+id/widgetset"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="Set"
@@ -46,7 +46,7 @@ android:layout_y="241px"
 >
 </Button>
 <Button
-android:id="@+id/widget30"
+android:id="@+id/widgetdisconnect"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="Disconnect"
