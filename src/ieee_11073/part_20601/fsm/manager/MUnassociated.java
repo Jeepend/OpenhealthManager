@@ -229,8 +229,8 @@ public final class MUnassociated extends Unassociated {
 		int id = phd.getDev_config_id().getValue().intValue();
 		if ((ASN1_Values.CONF_ID_STANDARD_CONFIG_START <= id) && (id <= ASN1_Values.CONF_ID_STANDARD_CONFIG_END)){
 			// Standard Configuration
-			//processStandardConfiguration(phd);
-			processExtendedConfiguration(phd);
+			processStandardConfiguration(phd);
+			//processExtendedConfiguration(phd);
 		}else if ((ASN1_Values.CONF_ID_EXTENDED_CONFIG_START <= id) && (id <= ASN1_Values.CONF_ID_EXTENDED_CONFIG_END)){
 			//Extended configuration
 			processExtendedConfiguration(phd);

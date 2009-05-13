@@ -196,6 +196,7 @@ public class DrDroid extends Service {
 		@Override
 		public void sendEvent(String system_id, int eventType)
 				throws RemoteException {
+			System.out.println("disconnect service invoke on " + system_id);
 			Agent agt = agentsId.get(system_id);
 			if (agt==null)
 				return;

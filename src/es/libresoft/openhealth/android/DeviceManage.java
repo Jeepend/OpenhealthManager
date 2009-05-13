@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import es.libresoft.mdnf.FloatType;
+import es.libresoft.openhealth.events.EventType;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -169,7 +170,7 @@ public class DeviceManage extends Activity {
 	    // Register the onClick listener with the implementation above
 	    buttonSet.setOnClickListener(setListener);
 	    // Capture our button from layout
-	    buttonDisconnect = (Button)findViewById(R.id.widgetget);
+	    buttonDisconnect = (Button)findViewById(R.id.widgetdisconnect);
 	    // Register the onClick listener with the implementation above
 	    buttonDisconnect.setOnClickListener(disconnectListener);
     }
@@ -204,7 +205,7 @@ public class DeviceManage extends Activity {
         public void onClick(View v) {
           // do something when the button is clicked
         	try {
-				actionService.sendEvent(deviceName, BIND_AUTO_CREATE);
+				actionService.sendEvent(deviceName, EventType.REQ_ASSOC_REL);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -68,8 +68,8 @@ public class DevicesActivity extends ListActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		devices = new ArrayList<String>();
-		devices.add("prueba");  
-		devices.add("prueba2");
+//		devices.add("prueba");  
+//		devices.add("prueba2");
     	setListAdapter(new ArrayAdapter<String>(this,
        	   	   android.R.layout.simple_list_item_1, devices));
 	    getListView().setTextFilterEnabled(true);
