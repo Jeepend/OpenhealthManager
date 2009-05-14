@@ -39,6 +39,7 @@ import android.os.RemoteException;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 
@@ -68,12 +69,17 @@ public class DevicesActivity extends ListActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		devices = new ArrayList<String>();
-//		devices.add("prueba");  
-//		devices.add("prueba2");
-    	setListAdapter(new ArrayAdapter<String>(this,
-       	   	   android.R.layout.simple_list_item_1, devices));
-	    getListView().setTextFilterEnabled(true);
 		
+		TextView label = new TextView(this);
+		label.setText("Agents connected: ");
+		getListView().addHeaderView(label, null, false);
+		
+    	setListAdapter(new ArrayAdapter<String>(this,
+       	   	   		   android.R.layout.simple_list_item_1, devices));
+    	
+    	getListView().setTextFilterEnabled(true);
+		
+	    
 	    // ***************************************************
 	    // binding to the service
 	    // ***************************************************
@@ -82,7 +88,7 @@ public class DevicesActivity extends ListActivity {
 	}
 	
 	protected void onDestroy(){
-		System.out.println("estoy en onDestroy");
+		System.err.println("estoy en onDestroy devicesActivity");
 		try {
 			mService.unregisterCallback(mCallback);
 		} catch (RemoteException e) {
@@ -96,21 +102,12 @@ public class DevicesActivity extends ListActivity {
 	}
     
 	protected void onResume(Bundle savedInstanceState){
-		  System.out.println("estoy en onResume");
-          // If we have received the service, and hence registered with
-          // it, then now is the time to unregister.
-          if (mService != null) {
-              try {
-                  mService.unregisterCallback(mCallback);
-              } catch (RemoteException e) {
-                  // There is nothing special we need to do if the service
-                  // has crashed.
-              }
-          }
+		  System.err.println("estoy en onResume devicesActivity");
+
 	}
 	
 	protected void onPause(Bundle savedInstanceState){
-		  System.out.println("estoy en onResume");
+		  System.err.println("estoy en onPause devicesActivity");
         // If we have received the service, and hence registered with
         // it, then now is the time to unregister.
         if (mService != null) {
@@ -126,9 +123,9 @@ public class DevicesActivity extends ListActivity {
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		System.out.println("estoy en onListItemClick " + devices.get(position) + " " + id);
+		System.out.println("estoy en onListItemClick " + devices.get(position-1) + " " + id);
 		Intent intent = new Intent(this, DeviceManage.class);
-		intent.putExtra("agent", devices.get(position));
+		intent.putExtra("agent", devices.get(position-1));
 		startActivity(intent);
     }
 

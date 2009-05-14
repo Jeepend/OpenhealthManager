@@ -47,6 +47,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DeviceManage extends Activity {
 	
@@ -65,10 +66,12 @@ public class DeviceManage extends Activity {
     Button buttonDisconnect;
     
 	String deviceName = "init";
-	String stateAgent = "init";
+	String stateAgent = "Operating";
 	String measureAgent = "init";
 	String date = "init";
 	
+	
+	/////// LYFE CYCLE OF AN ANDROID ACTIVITY /////////
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -92,7 +95,7 @@ public class DeviceManage extends Activity {
 	}
 
 	protected void onDestroy(){
-		System.out.println("estoy en onDestroy");
+		System.err.println("estoy en onDestroy deviceManage");
 		try {
 			mService.unregisterCallback(deviceName, mCallback);
 		} catch (RemoteException e) {
@@ -107,21 +110,13 @@ public class DeviceManage extends Activity {
 	}
     
 	protected void onResume(Bundle savedInstanceState){
-		  System.out.println("estoy en onResume");
-          // If we have received the service, and hence registered with
-          // it, then now is the time to unregister.
-          if (mService != null) {
-              try {
-                  mService.unregisterCallback(deviceName, mCallback);
-              } catch (RemoteException e) {
-                  // There is nothing special we need to do if the service
-                  // has crashed.
-              }
-          }
+		super.onResume();
+		System.err.println("estoy en onResume deviceManage");
 	}
 	
 	protected void onPause(Bundle savedInstanceState){
-		  System.out.println("estoy en onResume");
+		super.onPause();
+		System.err.println("estoy en onPause deviceManage");
         // If we have received the service, and hence registered with
         // it, then now is the time to unregister.
         if (mService != null) {
@@ -134,6 +129,17 @@ public class DeviceManage extends Activity {
         }
 	}
 	
+	protected void onStop(Bundle savedInstanceState){
+		super.onStop();
+		System.err.println("estoy en onStop deviceManage");
+	}
+	
+	protected void onRestart(Bundle savedInstanceState){
+		super.onRestart();
+		System.err.println("estoy en onRestart deviceManage");
+	}
+	///////////////////////////////////////////////////////////////////
+	
 	
 	// handler for updating the GUI 
     private Handler handler = new Handler();
@@ -141,6 +147,13 @@ public class DeviceManage extends Activity {
     private Runnable doUpdateGUI = new Runnable(){
     	public void run(){
     		updateGUI();
+    	}    	
+    };
+    
+    private Runnable doUpdateState = new Runnable(){
+    	
+    	public void run(){
+    		updateState();
     	}    	
     };
     
@@ -174,7 +187,31 @@ public class DeviceManage extends Activity {
 	    // Register the onClick listener with the implementation above
 	    buttonDisconnect.setOnClickListener(disconnectListener);
     }
+    
+    private void updateState(){
+    	System.out.println("en updateState");
+    	System.out.println(stateAgent);	
+    	if ("Disconected".equals(stateAgent)){
+    		System.out.println("entro en disconnected !!!");
+    		// updating agent state, measure and date 
+    		stateView = (TextView) findViewById(R.id.widgetstate);
+    		stateView.setText(stateAgent);
+			// show a dialog
+			showMessage("Agent disconnected");
+			// disable the buttons 
+			buttonDisconnect.setEnabled(false);
+			buttonGet.setEnabled(false);
+			buttonSet.setEnabled(false);
+    	} else {
+    		// updating agent state, measure and date 
+    		stateView = (TextView) findViewById(R.id.widgetstate);
+    		stateView.setText(stateAgent);
+    	}
+    }
 	
+    private void showMessage(CharSequence msg) {
+    	Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    } 
     
     // listeners for the buttons events
     private OnClickListener getListener = new OnClickListener() {
@@ -237,7 +274,7 @@ public class DeviceManage extends Activity {
 						e.printStackTrace();
 					}
 				}else if (measure instanceof AndroidDateMeasure) {
-					//System.out.println("timestamp: " + (AndroidDateMeasure)measure);
+					System.out.println("timestamp: " + (AndroidDateMeasure)measure);
 					date = ((AndroidDateMeasure)measure).toString();
 					handler.post(doUpdateGUI);
 				}
@@ -246,9 +283,9 @@ public class DeviceManage extends Activity {
 
 		@Override
 		public void agentStateChanged(String state) throws RemoteException {
-			//System.out.println("Agente en estado: " + state);
+			System.out.println("Agente en estado: " + state);
 			stateAgent = state;
-			handler.post(doUpdateGUI);
+			handler.post(doUpdateState);
 		}
 
    };
