@@ -24,8 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 
+import java.util.List;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -44,32 +47,137 @@ public class EHealth extends Activity {
     	
         setContentView(R.layout.main_windows);
         
-        button1 = (Button) this.findViewById(R.id.widget2);
-        button2 = (Button) this.findViewById(R.id.widget4);
-        button1.setOnClickListener(new View.OnClickListener (){
-			@Override
-			public void onClick(View v) {
-				if (!connected){
-					startService ();
-					button1.setText("Stop");
-					connected=true;
+        // checking whether the activity is already started
+        ActivityManager a = (ActivityManager)getSystemService(Activity.ACTIVITY_SERVICE);
+        List<RunningServiceInfo> servicesInfo= a.getRunningServices(15);
+        //System.err.println("Numero servicios activos: " + servicesInfo.size());
+        
+        for (RunningServiceInfo ele : servicesInfo) {
+        	//System.err.println("Proceso..." + ele.process.toString());
+	        if (ele.process.equals("es.libresoft.openhealth.android:remote")) {
+	        	if(ele.started){
+	        		System.err.println("Ele..." + ele);
+	        		// service already started
 					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
 					startActivity(intent);
-				}else{
-					stopService ();
-					button1.setText("Start");
-					connected=false;
-				}
-			}     	
-        });
-        
-        button2.setOnClickListener(new View.OnClickListener (){
-			@Override
-			public void onClick(View v) {
-				finaliceEHealth();
-			}     	
-        });
-    }
+	        		connected=true;
+	        		button1 = (Button) this.findViewById(R.id.widget2);
+	        		button1.setText("Stop");
+	                button2 = (Button) this.findViewById(R.id.widget4);
+	                button1.setOnClickListener(new View.OnClickListener (){
+	        			@Override
+	        			public void onClick(View v) {
+	        				if (!connected){
+	        					startService ();
+	        					button1.setText("Stop");
+	        					connected=true;
+	        					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
+	        					startActivity(intent);
+	        				}else{
+	        					stopService ();
+	        					button1.setText("Start");
+	        					connected=false;
+	        				}
+	        			}     	
+	                });
+	                
+	                button2.setOnClickListener(new View.OnClickListener (){
+	        			@Override
+	        			public void onClick(View v) {
+	        				finaliceEHealth();
+	        			}     	
+	                });
+	                break;
+	        	} else {
+	        		System.err.println("service not started!!");
+	        		//connected=true;
+	        		button1 = (Button) this.findViewById(R.id.widget2);
+	        		button1.setText("Stop");
+	                button2 = (Button) this.findViewById(R.id.widget4);
+	                button1.setOnClickListener(new View.OnClickListener (){
+	        			@Override
+	        			public void onClick(View v) {
+	        				if (!connected){
+	        					startService ();
+	        					button1.setText("Stop");
+	        					connected=true;
+	        					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
+	        					//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+	        					startActivity(intent);
+	        				}else{
+	        					stopService ();
+	        					button1.setText("Start");
+	        					connected=false;
+	        				}
+	        			}     	
+	                });
+	                
+	                button2.setOnClickListener(new View.OnClickListener (){
+	        			@Override
+	        			public void onClick(View v) {
+	        				finaliceEHealth();
+	        			}     	
+	                });
+	        		break;
+	        	}
+	        }else{
+	        	button1 = (Button) this.findViewById(R.id.widget2);
+                button2 = (Button) this.findViewById(R.id.widget4);
+                button1.setOnClickListener(new View.OnClickListener (){
+        			@Override
+        			public void onClick(View v) {
+        				if (!connected){
+        					startService ();
+        					button1.setText("Stop");
+        					connected=true;
+        					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
+        					//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        					startActivity(intent);
+        				}else{
+        					stopService ();
+        					button1.setText("Start");
+        					connected=false;
+        				}
+        			}     	
+                });
+                
+                button2.setOnClickListener(new View.OnClickListener (){
+        			@Override
+        			public void onClick(View v) {
+        				finaliceEHealth();
+        			}     	
+                });
+	        }
+        } 
+    }    
+          
+//        button1 = (Button) this.findViewById(R.id.widget2);
+//        button2 = (Button) this.findViewById(R.id.widget4);
+//        button1.setOnClickListener(new View.OnClickListener (){
+//			@Override
+//			public void onClick(View v) {
+//				if (!connected){
+//					startService ();
+//					button1.setText("Stop");
+//					connected=true;
+//					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
+//					//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+//					startActivity(intent);
+//				}else{
+//					stopService ();
+//					button1.setText("Start");
+//					connected=false;
+//				}
+//			}     	
+//        });
+//        
+//        button2.setOnClickListener(new View.OnClickListener (){
+//			@Override
+//			public void onClick(View v) {
+//				finaliceEHealth();
+//			}     	
+//        });
+
     
     private void finaliceEHealth (){
     	this.finish();
@@ -81,7 +189,9 @@ public class EHealth extends Activity {
         // We use an action code here, instead of explictly supplying
         // the component name, so that other packages can replace
         // the service.
-        startService(new Intent(DrDroid.droidEvent));
+    	Intent intentDroid = new Intent(DrDroid.droidEvent);
+    	//intentDroid.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); 
+        startService(intentDroid);
     }
     
     private void stopService (){

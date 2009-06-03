@@ -83,7 +83,19 @@ public class DrDroid extends Service {
 		channelTCP.start();
 		super.onStart(intent, startId);
 	}
+	
+	public void onPause(){
+		System.out.println("Service paused");
+	}
 
+	public void onResume(){
+		System.out.println("Service resumed");
+	}
+	
+	public void onStop(){
+		System.out.println("Service Stopped");
+	}
+	
 	@Override
 	public void onDestroy() {
 		System.out.println("Service stopped");

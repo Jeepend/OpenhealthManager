@@ -40,12 +40,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
 public class DevicesActivity extends ListActivity {
 
-	private ArrayList<String> devices; 
+	//private ArrayList<String> devices = new ArrayList<String>(); 
 	/** The primary interface we will be calling on the service. */
     IManagerRegister mService;    
     
@@ -60,7 +61,7 @@ public class DevicesActivity extends ListActivity {
     private void updateGUI(){
     	System.out.println("en updateGUI");
     	setListAdapter(new ArrayAdapter<String>(this,
-	          	   	   android.R.layout.simple_list_item_1, devices));
+	          	   	   android.R.layout.simple_list_item_1, DevicesList.devices));
     	getListView().setTextFilterEnabled(true);
     }
     
@@ -68,14 +69,13 @@ public class DevicesActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		devices = new ArrayList<String>();
-		
+				
 		TextView label = new TextView(this);
 		label.setText("Agents connected: ");
 		getListView().addHeaderView(label, null, false);
 		
     	setListAdapter(new ArrayAdapter<String>(this,
-       	   	   		   android.R.layout.simple_list_item_1, devices));
+       	   	   		   android.R.layout.simple_list_item_1, DevicesList.devices));
     	
     	getListView().setTextFilterEnabled(true);
 		
@@ -97,10 +97,16 @@ public class DevicesActivity extends ListActivity {
 		}
 		// Detach our existing connection.
         unbindService(mConnection);
-        
         super.onDestroy();
 	}
     
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState); // the UI component values are saved here.
+		//outState.putStringArrayList("agentsConnected", DevicesList.devices); // adding a string in bundle
+		System.err.println("saving instance");
+	}
+	
 	protected void onResume(Bundle savedInstanceState){
 		  System.err.println("estoy en onResume devicesActivity");
 
@@ -123,9 +129,9 @@ public class DevicesActivity extends ListActivity {
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		System.out.println("estoy en onListItemClick " + devices.get(position-1) + " " + id);
+		System.out.println("estoy en onListItemClick " + DevicesList.devices.get(position-1) + " " + id);
 		Intent intent = new Intent(this, DeviceManage.class);
-		intent.putExtra("agent", devices.get(position-1));
+		intent.putExtra("agent", DevicesList.devices.get(position-1));
 		startActivity(intent);
     }
 
@@ -146,7 +152,7 @@ public class DevicesActivity extends ListActivity {
 		public void agentConnection(String system_id) throws RemoteException {
 			// TODO Auto-generated method stub
 			System.out.println("Estoy en agentConnection!!!!");
-			devices.add(system_id);
+			DevicesList.devices.add(system_id);
 			handler.post(doUpdateGUI);
 		}
 
@@ -154,7 +160,7 @@ public class DevicesActivity extends ListActivity {
 		public void agentDisconnection(String system_id) throws RemoteException {
 			// TODO Auto-generated method stub
 			System.out.println("Estoy en agentDisconnection!!!!");
-			devices.remove(system_id);
+			DevicesList.devices.remove(system_id);
 			handler.post(doUpdateGUI);
 		}
     };
