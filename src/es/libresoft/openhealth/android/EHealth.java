@@ -50,10 +50,8 @@ public class EHealth extends Activity {
         // checking whether the activity is already started
         ActivityManager a = (ActivityManager)getSystemService(Activity.ACTIVITY_SERVICE);
         List<RunningServiceInfo> servicesInfo= a.getRunningServices(15);
-        //System.err.println("Numero servicios activos: " + servicesInfo.size());
         
         for (RunningServiceInfo ele : servicesInfo) {
-        	//System.err.println("Proceso..." + ele.process.toString());
 	        if (ele.process.equals("es.libresoft.openhealth.android:remote")) {
 	        	if(ele.started){
 	        		System.err.println("Ele..." + ele);
@@ -102,7 +100,6 @@ public class EHealth extends Activity {
 	        					button1.setText("Stop");
 	        					connected=true;
 	        					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
-	        					//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 	        					startActivity(intent);
 	        				}else{
 	        					stopService ();
@@ -150,33 +147,6 @@ public class EHealth extends Activity {
 	        }
         } 
     }    
-          
-//        button1 = (Button) this.findViewById(R.id.widget2);
-//        button2 = (Button) this.findViewById(R.id.widget4);
-//        button1.setOnClickListener(new View.OnClickListener (){
-//			@Override
-//			public void onClick(View v) {
-//				if (!connected){
-//					startService ();
-//					button1.setText("Stop");
-//					connected=true;
-//					Intent intent = new Intent (EHealth.this,DevicesActivity.class);
-//					//intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-//					startActivity(intent);
-//				}else{
-//					stopService ();
-//					button1.setText("Start");
-//					connected=false;
-//				}
-//			}     	
-//        });
-//        
-//        button2.setOnClickListener(new View.OnClickListener (){
-//			@Override
-//			public void onClick(View v) {
-//				finaliceEHealth();
-//			}     	
-//        });
 
     
     private void finaliceEHealth (){
@@ -189,8 +159,7 @@ public class EHealth extends Activity {
         // We use an action code here, instead of explictly supplying
         // the component name, so that other packages can replace
         // the service.
-    	Intent intentDroid = new Intent(DrDroid.droidEvent);
-    	//intentDroid.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); 
+    	Intent intentDroid = new Intent(DrDroid.droidEvent); 
         startService(intentDroid);
     }
     
