@@ -26,6 +26,8 @@ package es.libresoft.openhealth.android;
 
 import java.util.List;
 
+import es.libresoft.openhealth.android.webaccess.BondiActivity;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -38,6 +40,7 @@ public class EHealth extends Activity {
 	
 	Button button1;
 	Button button2;
+	Button button3; // To launch the manager with Webview
 	boolean connected = false;
 	
 	/** Called when the activity is created. */
@@ -46,6 +49,16 @@ public class EHealth extends Activity {
     	super.onCreate(savedInstanceState);
     	
         setContentView(R.layout.main_windows);
+        
+        button3 = (Button) this.findViewById(R.id.widget5);
+        
+        button3.setOnClickListener(new View.OnClickListener (){
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent (EHealth.this ,BondiActivity.class);
+				startActivity(intent);
+			}     	
+        });
         
         // checking whether the activity is already started
         ActivityManager a = (ActivityManager)getSystemService(Activity.ACTIVITY_SERVICE);

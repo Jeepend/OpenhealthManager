@@ -36,6 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </activity>
         <activity android:name=".DevicesActivity"></activity>
         <activity android:name=".DeviceManage"></activity>
+        <activity android:name="es.libresoft.openhealth.android.webaccess.BondiActivity"></activity>
+        <activity android:name="es.libresoft.openhealth.android.webaccess.AgentActivity"></activity>
         <service android:enabled="true" android:name=".DrDroid" android:process=":remote" android:launchMode="singleTask"> 
         <intent-filter>
                 <!-- These are the interfaces supported by the service, which

@@ -63,4 +63,11 @@ android:layout_x="173px"
 android:layout_y="358px"
 >
 </Button>
+<Button
+android:id="@+id/widget5"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="WebView"
+android:layout_y="22px" android:layout_x="230px">
+</Button>
 </AbsoluteLayout>
