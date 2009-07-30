@@ -30,9 +30,6 @@ public class BondiActivity extends Activity {
 	
 	//Agent agent;
 	
-	
-	
-	
 	public String new_device = "init";
 	public WebView wv;
 	/** The primary interface we will be calling on the service. */

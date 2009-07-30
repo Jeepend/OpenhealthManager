@@ -24,11 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android.webaccess;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -137,14 +137,10 @@ public class AgentActivity extends Activity
 			
 			public void run() {
 				
-					   bindService(new Intent(IAgentRegister.class.getName()),
-				    			mConnection, Context.BIND_AUTO_CREATE);
+					   bindService(new Intent(IAgentRegister.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
 				    
-						bindService(new Intent(IAgentActionService.class.getName()),
-				    			agentConnection, Context.BIND_AUTO_CREATE);
-						
-						
-						
+					   bindService(new Intent(IAgentActionService.class.getName()), agentConnection, Context.BIND_AUTO_CREATE);
+																	
 			}
 			private void showTemp(){
 				try{
@@ -156,12 +152,21 @@ public class AgentActivity extends Activity
 				   Log.w("Waiting...","");
 				   sock = servsock.accept();
 				   Log.w("Accepted connection : " , sock.toString());
-
+				   
+				   BufferedReader br=new BufferedReader(new
+		    				InputStreamReader(sock.getInputStream()));
+		    	   String getCallback = br.readLine().split(" ")[1].split("callback=")[1];
+				   
+				   /*
 				   String js = "var temperature = " + my_temp + "\n";
 				   js = js + "function getData(){\n";
 				   js = js + "    return(temperature);\n";
 				   js = js + "}";
-					    	  
+				   */
+				   
+				   String js = getCallback;
+				   js = js + "([{\"temperature\":" + my_temp +"}]);";
+				   
 				   String prueba = "HTTP/1.0  200 OK\r\n";
 				   prueba = prueba + "Content-type: text/plain\r\n";
 				   prueba = prueba + "Content-length: " + js.length() + "\r\n";
