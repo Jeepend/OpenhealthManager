@@ -76,8 +76,8 @@ public class AgentActivity extends Activity
     String full_data = "";
 	String deviceName = "init";
 	String stateAgent = "Operating";
-	String measureAgent = "init";
-	String date = "init";
+	static String measureAgent = "init";
+	static String date = "init";
 	
 	public WebView wv;
 
@@ -131,7 +131,6 @@ public class AgentActivity extends Activity
 
 		Thread server = new Thread (){
 			
-			String my_temp = "init";
 			ServerSocket servsock;
 			Socket sock;
 			
@@ -140,48 +139,44 @@ public class AgentActivity extends Activity
 					   bindService(new Intent(IAgentRegister.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
 				    
 					   bindService(new Intent(IAgentActionService.class.getName()), agentConnection, Context.BIND_AUTO_CREATE);
-																	
+													
+					   showTemp();
 			}
 			private void showTemp(){
+
 				try{
-				   
-				   //this.sleep(5000L);
-					
-				   servsock = new ServerSocket(8000);
-				   
-				   Log.w("Waiting...","");
-				   sock = servsock.accept();
-				   Log.w("Accepted connection : " , sock.toString());
-				   
-				   BufferedReader br=new BufferedReader(new
-		    				InputStreamReader(sock.getInputStream()));
-		    	   String getCallback = br.readLine().split(" ")[1].split("callback=")[1];
-				   
-				   /*
-				   String js = "var temperature = " + my_temp + "\n";
-				   js = js + "function getData(){\n";
-				   js = js + "    return(temperature);\n";
-				   js = js + "}";
-				   */
-				   
-				   String js = getCallback;
-				   js = js + "([{\"temperature\":" + my_temp +"}]);";
-				   
-				   String prueba = "HTTP/1.0  200 OK\r\n";
-				   prueba = prueba + "Content-type: text/plain\r\n";
-				   prueba = prueba + "Content-length: " + js.length() + "\r\n";
-				   prueba = prueba + "\r\n";
-				   prueba = prueba + js;
-					    		  
-				   Log.w("sending JS",".......");
-				    		  			    		  
-				   PrintStream out = new PrintStream( sock.getOutputStream() );
-				   out.println(prueba);
-				   sock.close();
-				   servsock.close();
-				}
+					servsock = new ServerSocket(8000);
+				}catch(Exception e){}
 				
-				catch(Exception e){}
+				for(;;){
+					try{
+						
+						Log.w("Waiting...","");
+						sock = servsock.accept();
+						Log.w("Accepted connection : " , sock.toString());
+				   
+						BufferedReader br=new BufferedReader(new
+								InputStreamReader(sock.getInputStream()));
+						String getCallback = br.readLine().split(" ")[1].split("callback=")[1];
+				   
+						String js = getCallback;
+						js = js + "([{\"temperature\":" + measureAgent +",\"date\":\"" + date + "\"}]);";
+				   
+						String prueba = "HTTP/1.0  200 OK\r\n";
+						prueba = prueba + "Content-type: text/plain\r\n";
+						prueba = prueba + "Content-length: " + js.length() + "\r\n";
+						prueba = prueba + "\r\n";
+						prueba = prueba + js;
+					    		  
+						Log.w("sending JS",".......");
+				    		  			    		  
+						PrintStream out = new PrintStream( sock.getOutputStream() );
+						out.println(prueba);
+						sock.close();
+					}
+				
+					catch(Exception e){}
+				}//end for(;;)
 			}
 			///////////////////
 			private IAgentCallbackService mCallback = new IAgentCallbackService.Stub() {
@@ -199,15 +194,15 @@ public class AgentActivity extends Activity
 								DecimalFormat formater = new DecimalFormat("00.00");
 								FloatType aux_measure = ((AndroidValueMeasure)measure).getFloatType();
 								Double doubleMeasure = aux_measure.doubleValueRepresentation();
-								my_temp = formater.format(doubleMeasure);
-													
+								measureAgent = formater.format(doubleMeasure);
+								/*				
 								try{
 									showTemp();
 								}
 								catch (Exception e){
 									//there are another showTemp
 								}
-								//handler.post(doGetData);
+								*/
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -279,6 +274,8 @@ public class AgentActivity extends Activity
        
 	}
 	 
+	
+	
 	
    /*
    public class MyClient extends Thread {
