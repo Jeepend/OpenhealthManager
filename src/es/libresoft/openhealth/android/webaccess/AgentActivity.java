@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android.webaccess;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
@@ -39,13 +40,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.TextView;
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.openhealth.android.AndroidDateMeasure;
 import es.libresoft.openhealth.android.AndroidValueMeasure;
@@ -60,48 +58,14 @@ public class AgentActivity extends Activity
 	/** The primary interface we will be calling on the service. */
     IAgentRegister mService;
     IAgentActionService actionService;
-    
-    // var for interacting with the GUI  
-    TextView system_id;
-    TextView stateView;
-    TextView measureView;
-    TextView dateView;
-    
-    Boolean new_data = false;
-    
-    Button buttonGet;
-    Button buttonSet;
-    Button buttonDisconnect;
-    
-    String full_data = "";
-	String deviceName = "init";
-	String stateAgent = "Operating";
+
+	static String deviceName = "init";
+	static String stateAgent = "Operating";
 	static String measureAgent = "init";
 	static String date = "init";
 	
-	public WebView wv;
-
-	private void setWv (WebView wv){
-    	this.wv = wv;
-    }
-	
-	private Handler handler = new Handler();
-		
-	private Runnable doGetData = new Runnable(){
-	   	public void run(){
-	   		getData();
-	   	}    	
-	};
-    public void getData(){
-
-   		Log.i("------------", measureAgent);
-   		//full_data = "[measureAgent]:" + measureAgent + ",[deviceName]:" + deviceName + ",[stateAgent]:" + stateAgent + ",[date]:" + date ;
-		//wv.loadUrl("javascript:successCallback('" + full_data +"')");
-
-   	}
-    public String getMeasureAgent(){
-    	return measureAgent;
-    }
+	static boolean running = false;
+	static Thread server;
     	
 	/////// LYFE CYCLE OF AN ANDROID ACTIVITY /////////
 	@Override
@@ -118,29 +82,18 @@ public class AgentActivity extends Activity
     	new_wv.getSettings().setJavaScriptEnabled(true);
     	
         new_wv.loadUrl("file:///android_asset/index.html");
-        //setWv(new_wv);
-		
-    	// ***************************************************
-	    // binding to the Manager service and to the Agent Action service
-	    // ***************************************************
-		//bindService(new Intent(IAgentRegister.class.getName()),
-    	//		mConnection, Context.BIND_AUTO_CREATE);
-    
-		//bindService(new Intent(IAgentActionService.class.getName()),
-    	//		agentConnection, Context.BIND_AUTO_CREATE);
+        
+        bindService(new Intent(IAgentRegister.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
+		bindService(new Intent(IAgentActionService.class.getName()), agentConnection, Context.BIND_AUTO_CREATE);
 
-		Thread server = new Thread (){
+		running = true;
+		server = new Thread (){
 			
 			ServerSocket servsock;
 			Socket sock;
 			
 			public void run() {
-				
-					   bindService(new Intent(IAgentRegister.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
-				    
-					   bindService(new Intent(IAgentActionService.class.getName()), agentConnection, Context.BIND_AUTO_CREATE);
-													
-					   showTemp();
+				showTemp();
 			}
 			private void showTemp(){
 
@@ -148,9 +101,9 @@ public class AgentActivity extends Activity
 					servsock = new ServerSocket(8000);
 				}catch(Exception e){}
 				
-				for(;;){
+				while(running){
 					try{
-						
+
 						Log.w("Waiting...","");
 						sock = servsock.accept();
 						Log.w("Accepted connection : " , sock.toString());
@@ -160,8 +113,12 @@ public class AgentActivity extends Activity
 						String getCallback = br.readLine().split(" ")[1].split("callback=")[1];
 				   
 						String js = getCallback;
-						js = js + "([{\"temperature\":" + measureAgent +",\"date\":\"" + date + "\"}]);";
-				   
+						js = js + "([{\"temperature\":\"" + measureAgent +"\"";
+						js = js + ",\"date\":\"" + date + "\"";
+						js = js + ",\"stateAgent\":\"" + stateAgent + "\"";
+						js = js + ",\"deviceName\":\"" + deviceName + "\"";
+						js = js + "}]);";
+
 						String prueba = "HTTP/1.0  200 OK\r\n";
 						prueba = prueba + "Content-type: text/plain\r\n";
 						prueba = prueba + "Content-length: " + js.length() + "\r\n";
@@ -176,139 +133,100 @@ public class AgentActivity extends Activity
 					}
 				
 					catch(Exception e){}
-				}//end for(;;)
-			}
-			///////////////////
-			private IAgentCallbackService mCallback = new IAgentCallbackService.Stub() {
-
-				@Override
-				public void agentMeasureReceived(List measures) throws RemoteException {
-					
-					Iterator i = measures.iterator();
-					Object measure;
-					while (i.hasNext()){
-						measure = i.next();
-						if (measure instanceof AndroidValueMeasure){
-							try {
-								//System.out.println("valor: " + ((AndroidValueMeasure)measure).getFloatType());
-								DecimalFormat formater = new DecimalFormat("00.00");
-								FloatType aux_measure = ((AndroidValueMeasure)measure).getFloatType();
-								Double doubleMeasure = aux_measure.doubleValueRepresentation();
-								measureAgent = formater.format(doubleMeasure);
-								/*				
-								try{
-									showTemp();
-								}
-								catch (Exception e){
-									//there are another showTemp
-								}
-								*/
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}else if (measure instanceof AndroidDateMeasure) {
-							AndroidDateMeasure m = (AndroidDateMeasure)measure;
-							date = m.toString();
-							//handler.post(doUpdateGUI);
-						}
-					}
-					new_data = true;
-				}
-
-				@Override
-				public void agentStateChanged(String state) throws RemoteException {
-					System.out.println("Agente en estado: ");
-				}
-
-		   };
-		   
-		   
-		   //  implement the ServiceConnection interface 
-		   private ServiceConnection mConnection = new ServiceConnection() {
-
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-				// TODO Auto-generated method stub
-				mService = IAgentRegister.Stub.asInterface(service);
+				}//end while
+				
+				System.out.println("closing the thread");
 				try {
-					mService.registerAgentCallback(deviceName, mCallback);
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				// TODO Auto-generated method stub
-				// unexpectedly disconnected -- that is, its process crashed.
-				System.out.println("estoy en ServiceDisconnected");	
-				mService = null;
-			}
-		   };
-		   
-		   private ServiceConnection agentConnection = new ServiceConnection() {
-
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-				// TODO Auto-generated method stub
-				actionService = IAgentActionService.Stub.asInterface(service);
-			}
-
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				// TODO Auto-generated method stub
-				System.out.println("estoy en ServiceDisconnected");	
-				actionService = null;
-			}
-			   
-		   };
-			
-		};
-		//MyServer server = new MyServer();
-        server.start();
-        
-        //MyClient client = new MyClient();
-        //client.start();
-       
-	}
-	 
-	
-	
-	
-   /*
-   public class MyClient extends Thread {
-		@Override
-		public void run() {
-			for(;;){
-				try {
-					this.sleep(5000L);
-					Log.w("Conectando","CLIENTE");
-					Socket c = new Socket("localhost",8000);
-					String s="hola socket!";
-					byte[] b = new byte[200];
-					c.getInputStream().read(b);
-					String salida="";
-					for (int i=0;i<199;i++)
-						salida+=(char)b[i];
-					Log.w("Recivido:", salida);
-					
-					//c.getOutputStream().write(s.getBytes());
-					c.close();
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					servsock.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-				
+			}//end showtemp
+
+		}; //End of Thread
+		
+        server.start();
+       
+	}
+///////////////////
+	private IAgentCallbackService mCallback = new IAgentCallbackService.Stub() {
+
+		@Override
+		public void agentMeasureReceived(List measures) throws RemoteException {
+			
+			Iterator i = measures.iterator();
+			Object measure;
+			while (i.hasNext()){
+				measure = i.next();
+				if (measure instanceof AndroidValueMeasure){
+					try {
+
+						DecimalFormat formater = new DecimalFormat("00.00");
+						FloatType aux_measure = ((AndroidValueMeasure)measure).getFloatType();
+						Double doubleMeasure = aux_measure.doubleValueRepresentation();
+						measureAgent = formater.format(doubleMeasure);
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else if (measure instanceof AndroidDateMeasure) {
+					AndroidDateMeasure m = (AndroidDateMeasure)measure;
+					date = m.toString();
+				}
 			}
 		}
-	}*/
-    
+
+		@Override
+		public void agentStateChanged(String state) throws RemoteException {
+			System.out.println("Agente en estado---: " + state);
+			stateAgent = state;
+		}
+
+   };
+   
+   
+   //  implement the ServiceConnection interface 
+   private ServiceConnection mConnection = new ServiceConnection() {
+
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		// TODO Auto-generated method stub
+		mService = IAgentRegister.Stub.asInterface(service);
+		try {
+			mService.registerAgentCallback(deviceName, mCallback);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		// TODO Auto-generated method stub
+		// unexpectedly disconnected -- that is, its process crashed.
+		System.out.println("estoy en ServiceDisconnected");	
+		mService = null;
+	}
+   };
+   
+   private ServiceConnection agentConnection = new ServiceConnection() {
+
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		// TODO Auto-generated method stub
+		System.out.println("Un agente esta conectado");
+		actionService = IAgentActionService.Stub.asInterface(service);
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		// TODO Auto-generated method stub
+		System.out.println("estoy en ServiceDisconnected");	
+		actionService = null;
+	}
+	   
+   };
+	    
 }
