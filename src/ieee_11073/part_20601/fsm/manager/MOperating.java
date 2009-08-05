@@ -1,6 +1,8 @@
 /*
 Copyright (C) 2008-2009  Santiago Carot Nemesio
 email: scarot@libresoft.es
+Copyright (C) 2008-2009  José Antonio Santos Cadenas
+email: jcaden __at__ libresoft __dot__ es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -21,6 +23,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+/*
+ * Changelog:
+ * 
+ * 2009/08/04 jcaden: Implemented process_MDS_Object_Event for 
+ *                    MDC_NOTI_SCAN_REPORT_VAR
+ * 
+ * */
 package ieee_11073.part_20601.fsm.manager;
 
 import es.libresoft.openhealth.events.Event;
@@ -34,6 +44,7 @@ import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
+import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
@@ -184,8 +195,7 @@ public final class MOperating extends Operating {
 				System.out.println("MDC_NOTI_CONFIG");
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_VAR:
-				//TODO:
-				System.out.println("MDC_NOTI_SCAN_REPORT_VAR");
+				mdc_noti_scan_report_var(msg);
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_FIXED:
 				mdc_noti_scan_report_fixed(msg);
@@ -200,6 +210,7 @@ public final class MOperating extends Operating {
 				break;
 		}		
 	}
+	
 	private void mdc_noti_scan_report_fixed (MessageChoiceType msg){
 		try {
 			ScanReportInfoFixed srif = ASN1_Tools.decodeData(msg.getRoiv_cmip_confirmed_event_report().getEvent_info(), 
@@ -211,5 +222,18 @@ public final class MOperating extends Operating {
 			e.printStackTrace();
 		}
 			
+	}
+	
+	private void mdc_noti_scan_report_var(MessageChoiceType msg) {
+		try {
+			ScanReportInfoVar sriv = ASN1_Tools.decodeData(msg.getRoiv_cmip_confirmed_event_report().getEvent_info(), 
+					ScanReportInfoVar.class, 
+					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Var(sriv);
+		} catch (Exception e) {
+			System.out.println("Error decoding mdc_noti_scan_report_var");
+			e.printStackTrace();
+		}
+		
 	}
 }
