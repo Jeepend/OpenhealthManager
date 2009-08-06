@@ -186,7 +186,6 @@ public abstract class MDSManager extends MDS {
 	
 	@Override
 	public void MDS_Dynamic_Data_Update_Var(ScanReportInfoVar info) {
-		// TODO Auto-generated method stub
 		try{
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
