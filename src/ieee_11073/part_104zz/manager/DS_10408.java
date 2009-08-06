@@ -1,8 +1,6 @@
 /*
 Copyright (C) 2008-2009  Santiago Carot Nemesio
 email: scarot@libresoft.es
-Copyright (C) 2008-2009  José Antonio Santos Cadenas
-email: jcaden __at__ libresoft __dot__ es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -24,12 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-/*
- * Changelog:
- * 
- * 2009/08/04 jcaden: Implemented MDS_Dynamic_Data_Update_Var
- * 
- * */
 package ieee_11073.part_104zz.manager;
 
 import ieee_11073.part_10101.Nomenclature;
@@ -239,34 +231,6 @@ public final class DS_10408 extends MDSManager {
 		@Override
 		public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info) {
 			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void MDS_Dynamic_Data_Update_Var(ScanReportInfoVar info) {
-			// TODO Auto-generated method stub
-			try{
-				String system_id = DIM_Tools.byteArrayToString(
-						(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
-				
-				Iterator<ObservationScan> i= info.getObs_scan_var().iterator();
-				ObservationScan obs;
-				while (i.hasNext()) {
-					obs=i.next();
-					
-					Iterator<AVA_Type> it = obs.getAttributes().getValue().iterator();
-					MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
-					while (it.hasNext()){
-						AVA_Type att = it.next();
-						Integer att_id = att.getAttribute_id().getValue().getValue();
-						byte[] att_value = att.getAttribute_value();
-						mr.addMeasure(att_id, decodeRawData(att_id,att_value));
-					}
-					InternalEventReporter.receivedMeasure(system_id, mr.getMeasures());
-				}
-			}catch (Exception e){
-				e.printStackTrace();
-			}
 			
 		}
 
