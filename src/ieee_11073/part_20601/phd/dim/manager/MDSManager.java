@@ -53,15 +53,12 @@ import ieee_11073.part_20601.asn1.ObservationScan;
 import ieee_11073.part_20601.asn1.ObservationScanFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
-import ieee_11073.part_20601.asn1.SimpleNuObsValue;
 import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.phd.dim.Attribute;
-import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.Numeric;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 import java.util.Iterator;
 

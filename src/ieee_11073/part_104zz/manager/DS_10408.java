@@ -25,7 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_104zz.manager;
 
 import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.AVA_Type;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigReport;
@@ -35,10 +34,8 @@ import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
-import ieee_11073.part_20601.asn1.ObservationScan;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
-import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -49,19 +46,14 @@ import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
 import org.bn.types.BitString;
 
 import es.libresoft.mdnf.SFloatType;
-import es.libresoft.openhealth.events.InternalEventReporter;
-import es.libresoft.openhealth.events.MeasureReporter;
-import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
-import es.libresoft.openhealth.utils.DIM_Tools;
 
 	/**
 	 * This class defines the device specialization for the thermometer (IEEE Std 11073-10408),

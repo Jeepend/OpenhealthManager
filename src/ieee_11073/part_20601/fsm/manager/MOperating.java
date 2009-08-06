@@ -33,11 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 package ieee_11073.part_20601.fsm.manager;
 
-import es.libresoft.openhealth.events.Event;
-import es.libresoft.openhealth.events.EventType;
-import es.libresoft.openhealth.messages.MessageFactory;
-import es.libresoft.openhealth.utils.ASN1_Tools;
-import es.libresoft.openhealth.utils.ASN1_Values;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
@@ -48,7 +43,11 @@ import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
-import ieee_11073.part_20601.phd.dim.TimeOuts;
+import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
+import es.libresoft.openhealth.utils.ASN1_Values;
 
 public final class MOperating extends Operating {
 

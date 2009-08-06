@@ -27,11 +27,8 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.utils.FIFO;
 import es.libresoft.openhealth.utils.IFIFO;
 import ieee_11073.part_20601.asn1.ApduType;
-import ieee_11073.part_20601.fsm.StateController;
-import ieee_11073.part_20601.fsm.manager.ManagerStateController;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.channel.VirtualChannel;
-import ieee_11073.part_20601.phd.dim.MDS;
 
 public abstract class Device {
 

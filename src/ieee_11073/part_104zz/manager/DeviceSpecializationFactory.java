@@ -61,7 +61,6 @@ public class DeviceSpecializationFactory {
 									handle));
 			
 			//from Part 10408: {"Manufacturer","Model"}
-			Charset ch = Charset.forName("ASCII");
 			SystemModel systemModel = new SystemModel();
 			systemModel.setManufacturer("Manufacturer".getBytes("ASCII"));
 			systemModel.setModel_number("Model".getBytes("ASCII"));

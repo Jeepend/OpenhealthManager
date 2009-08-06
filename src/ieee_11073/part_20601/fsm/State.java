@@ -24,9 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_20601.fsm;
 
 import es.libresoft.openhealth.events.Event;
-import es.libresoft.openhealth.events.EventType;
 import ieee_11073.part_20601.asn1.ApduType;
-import ieee_11073.part_20601.fsm.manager.MDisconnected;
 
 	/**
 	 * This is the top level class for all states of the association  state machine defined

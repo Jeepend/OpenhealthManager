@@ -31,7 +31,6 @@ import java.util.List;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import es.libresoft.openhealth.Agent;

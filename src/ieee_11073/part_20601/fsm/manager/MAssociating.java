@@ -23,20 +23,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.fsm.manager;
 
-import java.util.Iterator;
-
-import es.libresoft.openhealth.ManagerConfig;
-import es.libresoft.openhealth.events.Event;
-import es.libresoft.openhealth.utils.ASN1_Values;
-import ieee_11073.part_20601.asn1.AareApdu;
-import ieee_11073.part_20601.asn1.AarqApdu;
 import ieee_11073.part_20601.asn1.ApduType;
-import ieee_11073.part_20601.asn1.AssociateResult;
-import ieee_11073.part_20601.asn1.DataProto;
-import ieee_11073.part_20601.asn1.DataProtoId;
-import ieee_11073.part_20601.asn1.DataProtoList;
 import ieee_11073.part_20601.fsm.Associating;
 import ieee_11073.part_20601.fsm.StateHandler;
+import es.libresoft.openhealth.events.Event;
 
 public final class MAssociating extends Associating {
 
