@@ -2,7 +2,7 @@
 Copyright (C) 2008-2009  Santiago Carot Nemesio
 email: scarot@libresoft.es
 Copyright (C) 2008-2009  José Antonio Santos Cadenas
-email: jcaden __at__ libresoft __dot__ es
+email: jcaden@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -24,13 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-/*
- * Changelog:
- * 
- * 2009/08/04 jcaden: Implemented process_MDS_Object_Event for 
- *                    MDC_NOTI_SCAN_REPORT_VAR
- * 
- * */
 package ieee_11073.part_20601.fsm.manager;
 
 import ieee_11073.part_10101.Nomenclature;
