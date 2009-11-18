@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
+import cmdTester.ShellMeasureReporter;
 import es.libresoft.openhealth.android.AndroidMeasureReporter;
 
 public class MeasureReporterFactory {
@@ -32,6 +33,7 @@ public class MeasureReporterFactory {
 	
 	//Supported platforms
 	public static final int ANDROID = 1;
+	public static final int SHELL = 2;
 	
 	/**
 	 * Set the default measure reporter of the entire system
@@ -60,6 +62,7 @@ public class MeasureReporterFactory {
 	public static final MeasureReporter getMeasureReporterFor(int platform){
 		switch (platform) {
 		case ANDROID : return new AndroidMeasureReporter();
+		case SHELL : return new ShellMeasureReporter();
 		default : return null;
 		}
 	}
