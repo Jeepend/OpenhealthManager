@@ -27,6 +27,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.utils.FIFO;
 import es.libresoft.openhealth.utils.IFIFO;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.phd.channel.Channel;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.channel.VirtualChannel;
 
@@ -46,18 +47,15 @@ public abstract class Device {
 		inputQueue = new FIFO<ApduType>();
 		outputQueue = new FIFO<ApduType>();
 		eventQueue = new FIFO<Event>();
+		vch = new VirtualChannel(inputQueue, outputQueue, eventQueue);
 	}
-	
-	public void setVirtualChannel (VirtualChannel vchannel) throws InitializedException
+
+	public void addChannel (Channel channel) throws InitializedException
 	{
-		vch = vchannel;
-		vch.configureChannels(inputQueue, outputQueue, eventQueue);
-		initStateMachine();
+		vch.addChannel(channel);
 	}
 	
 	public void freeResources (){
 		vch.freeChannels();
 	}
-	
-	protected abstract void initStateMachine() throws InitializedException;
 }

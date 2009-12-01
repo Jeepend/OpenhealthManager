@@ -7,4 +7,10 @@ public class HDPConfig {
 	private String provName;
 	private FeatureGroup[] features;
 
+	public HDPConfig (String srvName, String srvDecName, String provName, FeatureGroup[] features) {
+		this.serveName = srvName;
+		this.servDecName = srvDecName;
+		this.provName = provName;
+		this.features = features;
+	}
 }

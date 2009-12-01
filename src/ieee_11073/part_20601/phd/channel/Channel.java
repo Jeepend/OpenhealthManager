@@ -42,6 +42,7 @@ public abstract class Channel {
 	private int id;
 	private InputStream input;
 	private OutputStream output;
+	private boolean open;
 	
 	private IDecoder decoder;
 	private IEncoder<ApduType> encoder;
@@ -67,7 +68,6 @@ public abstract class Channel {
 	public synchronized void configureChannel (int id, IFIFO<ApduType> inputQueue, ChannelEventHandler eventHandler) throws InitializedException {
 		if (initialized)
 			throw new InitializedException ("Channel is already initialized");
-		
 		this.id = id;
 		this.eventHandler = eventHandler;
 		this.inputQueue = inputQueue;
@@ -118,9 +118,13 @@ public abstract class Channel {
 	
 	public class ReceiverThread extends Thread {
 		public void run() {
+			ApduType recvApdu;
 			while(shouldRepeat ()){
 		 		try {
-		 			inputQueue.add(decoder.decode(input, ApduType.class));
+		 			System.out.println("Recibiendo APDUs " + id);
+		 			recvApdu = decoder.decode(input, ApduType.class);
+		 			recvApdu.setChannel(id);
+		 			inputQueue.add(recvApdu);
 		 		}catch (InterruptedException e) {
 					System.out.println("Interrupted receiver (" + id + ")");
 		 		}catch (NullPointerException e) {

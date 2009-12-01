@@ -1,6 +1,6 @@
 package es.libresoft.hdp;
 
-public abstract class HDPSession {
+public class HDPSession {
 
 	private HDPConfig config;
 	private HDPCallbacks callbacks;

@@ -249,13 +249,28 @@ public class MessageFactory {
 		return apdu;
 	}
 	
+	private static final int getChannelPreference (DataApdu da) {
+		if (da.getMessage().isRoiv_cmip_event_reportSelected() ||
+				da.getMessage().isRoiv_cmip_setSelected() ||
+				da.getMessage().isRoiv_cmip_actionSelected() ||
+				da.getMessage().isRoerSelected() ||
+				da.getMessage().isRorjSelected())
+			/* Not primary channel preference */
+			return -1;
+		else
+			/* Primary channel preference */
+			return 0;
+	}
+	
 	//Confirmed measurement data transmission
 	public static final ApduType PrstTypeResponse (DataApdu receivedData, DeviceConfig dev_conf) {
 		//Create PRST response
 		ApduType at = new ApduType();
 		PrstApdu pa = new PrstApdu();
+		
 		//Get response from data
 		DataApdu da = generateDataApdu(receivedData, dev_conf);
+		at.setChannel(getChannelPreference(da));
 		
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules

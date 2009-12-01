@@ -28,14 +28,17 @@ import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.utils.*;
 import ieee_11073.part_20601.asn1.ApduType;
 
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class VirtualChannel {
 	
-	private Channel[] channels;
+	private ArrayList<Channel> channels;
 	private IFIFO<ApduType> outputQueue;
+	private IFIFO<ApduType> inputQueue;
 	private IFIFO<Event> eventQueue;
 	private boolean initialized = false;
+	private boolean open = false;
 	
 	private SenderThread sender;	
 	private Semaphore sem = new Semaphore(0);
@@ -49,10 +52,11 @@ public class VirtualChannel {
 	private ChannelEventHandler eventHandler = new ChannelEventHandler(){
 		@Override
 		public synchronized void processEvent(Event e) {
+			int len = channels.size();
 			if (e.getTypeOfEvent()==EventType.IND_TRANS_DESC) {				
 				//interrupt all threads blocked in input channels
-				for (int i=0; i < channels.length; i++){
-					channels[i].setReceiverStatus(false);
+				for (int i=0; i < len; i++){
+					channels.get(i).setReceiverStatus(false);
 				}
 				//interrupt sender thread
 				sender.interrupt();
@@ -61,39 +65,77 @@ public class VirtualChannel {
 			}
 		}
 	};
+	
+	public VirtualChannel (IFIFO<ApduType> inputQueue, IFIFO<ApduType> outputQueue, IFIFO<Event> eventQueue) {
 		
-	public VirtualChannel (Channel channel) {
-		channels = new Channel[1];
-		channels[0] = channel;
+		channels = new ArrayList<Channel>();		
+		this.eventQueue = eventQueue;
+		this.outputQueue = outputQueue;
+		this.inputQueue = inputQueue;
+		this.outputQueue.setHandler(senderController);
+		
+		sender = new SenderThread();
+		sender.start();
 	}
 	
-	public VirtualChannel (Channel[] channels) {
-		this.channels = channels;
+	public void addChannel (Channel chan) {
+		int index = channels.size();
+		try {
+			channels.add(chan);		
+			chan.configureChannel(index, this.inputQueue, this.eventHandler);
+			if (!open) {
+				open = true;
+				//VirtualChannel is ready to send and receive APDUs 
+				eventQueue.add(new Event(EventType.IND_TRANS_CONN));
+			}
+		} catch (InitializedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	
+	/*
 	public void configureChannels(IFIFO<ApduType> inputQueue, IFIFO<ApduType> outputQueue, IFIFO<Event> eventQueue) throws InitializedException {
+		int len = channels.size();
 		if (initialized)
 			throw new InitializedException("VirtualChannel is already initialized.");
 		
+		System.out.println("Canal virtual configurado");
 		this.eventQueue = eventQueue;
 		this.outputQueue = outputQueue;
+		this.inputQueue = inputQueue;
 		this.outputQueue.setHandler(senderController);
 		
-		for (int i=0; i < channels.length; i++){
-			channels[i].configureChannel(i,inputQueue,eventHandler);
+		for (int i=0; i < len; i++){
+			channels.get(i).configureChannel(i,inputQueue,eventHandler);
 		}
 		sender = new SenderThread();
 		sender.start();
 		
-		//VirtualChannel is ready to send and receive APDUs 
-		eventQueue.add(new Event(EventType.IND_TRANS_CONN));
 		initialized=true;
 	}
+	*/
 	
 	public void freeChannels (){
-		for (int i=0; i < channels.length; i++){
-			channels[i].setReceiverStatus(false);
+		int len = channels.size();
+		for (int i=0; i < len; i++){
+			channels.get(i).setReceiverStatus(false);
 		}
+	}
+	
+	public void sendApdu (ApduType apdu) throws Exception {
+		int channel;
+		if (channels.size() == 1)
+			channel = 0;
+		else {
+			channel = apdu.getChannel();
+			if (channel < 0) {
+				System.out.println("TODO: The APDU can be sended for other channel (not primary)");
+				/* Not preferences are setted */
+				channel = 0;
+			}
+		}		
+		channels.get(0).sendAPDU(apdu);
 	}
 	
 	public class SenderThread extends Thread { 
@@ -103,7 +145,7 @@ public class VirtualChannel {
 			while(repeat) {
 				try {
 					sem.acquire();
-					channels[0].sendAPDU(outputQueue.remove());
+					sendApdu(outputQueue.remove());
 				} catch (InterruptedException e) {
 					System.out.println("Interrupted sender");
 					repeat = false;

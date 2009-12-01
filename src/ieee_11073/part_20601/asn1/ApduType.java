@@ -29,6 +29,8 @@ package ieee_11073.part_20601.asn1;
 // Any modifications to this file will be lost upon recompilation of the source ASN.1. 
 //
 
+import ieee_11073.part_20601.phd.channel.ApduChannelType;
+
 import org.bn.*;
 import org.bn.annotations.*;
 import org.bn.annotations.constraints.*;
@@ -40,7 +42,7 @@ import org.bn.types.*;
 
     @ASN1PreparedElement
     @ASN1Choice ( name = "ApduType" )
-    public class ApduType implements IASN1PreparedElement {
+    public class ApduType extends ApduChannelType {
             
         @ASN1Element ( name = "aarq", isOptional =  false , hasTag =  true, tag = 57856 , hasDefaultValue =  false, hasExplicitOrder = true, declarationOrder = 0  )
     

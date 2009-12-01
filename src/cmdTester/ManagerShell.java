@@ -1,10 +1,11 @@
 package cmdTester;
 
+import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
+
 import java.util.Iterator;
 import java.util.List;
 
 import es.libresoft.openhealth.Agent;
-import es.libresoft.openhealth.android.TcpChannel;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -45,8 +46,8 @@ public class ManagerShell {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Arrancando manager.");
-		TcpChannel channelTCP = new TcpChannel();
+		System.out.println("Starting CmdManager.");
+		TcpManagerChannel channelTCP = new TcpManagerChannel();
 		//Set the event manager handler to get internal events from the manager thread
 		InternalEventReporter.setDefaultEventManager(ieManager);
 		//Set target platform to android to report measures using IPC mechanism

@@ -21,10 +21,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-package es.libresoft.openhealth;
 
-import ieee_11073.part_20601.phd.channel.InitializedException;
+package ieee_11073.part_20601.phd.channel.tcp;
 
-public final class Manager extends Device {
+import ieee_11073.part_20601.phd.channel.Channel;
+
+import java.io.IOException;
+import java.net.Socket;
+
+public class TCPChannel extends Channel {
+
+	private Socket socket;
+	
+	public TCPChannel (Socket s) throws Exception{
+		super(s.getInputStream(),s.getOutputStream());
+		socket = s;
+	}
+	
+	@Override
+	public void releaseChannel() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

@@ -63,15 +63,15 @@ public final class Agent extends Device{
 		super();
 		stc = new ManagerStateController (mdsHandler);
 		stc.configureController(this.inputQueue, this.outputQueue, this.eventQueue);
+		try {
+			stc.initFSMController();
+		} catch (InitializedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String getSystem_id(){return system_id;}
-	
-	
-	@Override
-	protected void initStateMachine() throws InitializedException {
-		stc.initFSMController();
-	}
 	
 	@Override
 	public void freeResources() {

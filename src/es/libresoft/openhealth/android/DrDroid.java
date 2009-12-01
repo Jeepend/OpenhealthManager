@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,12 +65,12 @@ public class DrDroid extends Service {
     
 	public static final String droidEvent = "es.libresoft.openhealth.android.DRDROID_SERVICE";
 	
-	private TcpChannel channelTCP;
+	private TcpManagerChannel channelTCP;
 	
 	@Override
 	public void onCreate() {
 		System.out.println("Service created");
-		channelTCP = new TcpChannel();
+		channelTCP = new TcpManagerChannel();
 		//Set the event manager handler to get internal events from the manager thread
 		InternalEventReporter.setDefaultEventManager(ieManager);
 		//Set target platform to android to report measures using IPC mechanism
