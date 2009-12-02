@@ -23,8 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.channel.tcp;
 
-import ieee_11073.part_20601.phd.channel.VirtualChannel;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

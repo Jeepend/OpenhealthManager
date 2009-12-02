@@ -39,10 +39,9 @@ import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.utils.IFIFO;
 
 public abstract class Channel {
-	private int id;
 	private InputStream input;
 	private OutputStream output;
-	private boolean open;
+	private boolean primary;
 	
 	private IDecoder decoder;
 	private IEncoder<ApduType> encoder;
@@ -65,16 +64,15 @@ public abstract class Channel {
 		encoder = CoderFactory.getInstance().newEncoder(Device.MDER_DEFUALT);
 	}	
 	
-	public synchronized void configureChannel (int id, IFIFO<ApduType> inputQueue, ChannelEventHandler eventHandler) throws InitializedException {
+	public synchronized void configureChannel (boolean primary, IFIFO<ApduType> inputQueue, ChannelEventHandler eventHandler) throws InitializedException {
 		if (initialized)
 			throw new InitializedException ("Channel is already initialized");
-		this.id = id;
+		this.primary = primary;
 		this.eventHandler = eventHandler;
 		this.inputQueue = inputQueue;
 		
 		receiver = new ReceiverThread();
 		receiver.start();
-		
 		initialized = true;
 	}
 	
@@ -93,7 +91,7 @@ public abstract class Channel {
 				receiver.interrupt();
 			}
 		} catch (InterruptedException e) {
-			System.out.println("Interrupted receiver (" + id + ")");
+			System.out.println("Interrupted receiver (" + this.getChannelId() + ")");
 		} finally {
 			repeatSem.release();
 		}
@@ -105,12 +103,14 @@ public abstract class Channel {
 			repeatSem.acquire();
 			r = this.repeat;
 		} catch (InterruptedException e) {
-			System.out.println("Interrupted receiver (" + id + ")");
+			System.out.println("Interrupted receiver (" + this.getChannelId() + ")");
 		} finally {
 			repeatSem.release();
 		}
 		return r;
 	}
+	
+	
 	/**
 	 * Receiver thread for the input channel
 	 * @author sancane
@@ -118,6 +118,7 @@ public abstract class Channel {
 	
 	public class ReceiverThread extends Thread {
 		public void run() {
+			int id = getChannelId();
 			ApduType recvApdu;
 			while(shouldRepeat ()){
 		 		try {
@@ -132,7 +133,8 @@ public abstract class Channel {
 		 			System.err.println("APDUType is not received");
 				}catch (Exception e) {
 					//EOF readed because channel is closed
-					eventHandler.processEvent(new Event(EventType.IND_TRANS_DESC));
+					if (primary) 
+						eventHandler.processEvent(new Event(EventType.IND_TRANS_DESC));
 				}
 			}
 			System.out.println("Receiver thread exiting (" + id + ").");
@@ -144,4 +146,9 @@ public abstract class Channel {
 	 * Free resources taken by this channel
 	 */
 	public abstract void releaseChannel();
+	
+	/**
+	 * Free resources taken by this channel
+	 */
+	public abstract int getChannelId();
 }

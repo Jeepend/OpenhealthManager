@@ -37,7 +37,6 @@ public class VirtualChannel {
 	private IFIFO<ApduType> outputQueue;
 	private IFIFO<ApduType> inputQueue;
 	private IFIFO<Event> eventQueue;
-	private boolean initialized = false;
 	private boolean open = false;
 	
 	private SenderThread sender;	
@@ -53,16 +52,17 @@ public class VirtualChannel {
 		@Override
 		public synchronized void processEvent(Event e) {
 			int len = channels.size();
-			if (e.getTypeOfEvent()==EventType.IND_TRANS_DESC) {				
-				//interrupt all threads blocked in input channels
-				for (int i=0; i < len; i++){
-					channels.get(i).setReceiverStatus(false);
-				}
-				//interrupt sender thread
-				sender.interrupt();
-				//Send disconnected event to fsm
-				eventQueue.add(e);
+			if (e.getTypeOfEvent()!=EventType.IND_TRANS_DESC)
+				return;
+			
+			//interrupt all threads blocked in input channels
+			for (int i=0; i < len; i++){
+				channels.get(i).setReceiverStatus(false);
 			}
+			//interrupt sender thread
+			sender.interrupt();
+			//Send disconnected event to fsm
+			eventQueue.add(e);
 		}
 	};
 	
@@ -79,10 +79,10 @@ public class VirtualChannel {
 	}
 	
 	public void addChannel (Channel chan) {
-		int index = channels.size();
+		int size = channels.size();
 		try {
 			channels.add(chan);		
-			chan.configureChannel(index, this.inputQueue, this.eventHandler);
+			chan.configureChannel(size == 0, this.inputQueue, this.eventHandler);
 			if (!open) {
 				open = true;
 				//VirtualChannel is ready to send and receive APDUs 
@@ -92,6 +92,19 @@ public class VirtualChannel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+	}
+	
+	public void delChannel (Channel chan) {
+		int size = channels.size();
+		Channel channel;
+		for (int i = 0; i < size; i++) {
+			channel = channels.get(i);
+			if (channel.getChannelId() != chan.getChannelId())
+				continue;
+			channel.setReceiverStatus(false);
+			channels.remove(i);
+			break;
+		}
 	}
 	
 	/*

@@ -31,10 +31,12 @@ import java.net.Socket;
 
 public class TCPChannel extends Channel {
 
+	private int id;
 	private Socket socket;
 	
 	public TCPChannel (Socket s) throws Exception{
 		super(s.getInputStream(),s.getOutputStream());
+		id = 0;
 		socket = s;
 	}
 	
@@ -45,6 +47,11 @@ public class TCPChannel extends Channel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public int getChannelId() {
+		return id;
 	}
 
 }
