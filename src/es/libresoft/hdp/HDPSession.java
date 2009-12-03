@@ -35,6 +35,7 @@ public class HDPSession {
 	public HDPSession(HDPConfig config, HDPCallbacks callbacks){
 		this.config = config;
 		this.callbacks = callbacks;
+		//Call to native method to start HDP session
 	}
 
 	/*

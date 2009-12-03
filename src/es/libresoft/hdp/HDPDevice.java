@@ -29,6 +29,7 @@ package es.libresoft.hdp;
 public class HDPDevice{
 
 	//Mapped with hdp_know_dev_t
+	private String bdaddr;
 
 	public HDPDataChannel createDataChannel(int options){
 		return null;

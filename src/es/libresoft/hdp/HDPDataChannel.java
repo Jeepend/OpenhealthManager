@@ -34,6 +34,8 @@ import java.io.OutputStream;
 
 public class HDPDataChannel extends Channel {
 
+	// Mapped with hdp_dc_t
+	
 	public HDPDataChannel(InputStream input, OutputStream output)
 			throws Exception {
 		super(input, output);
@@ -41,13 +43,14 @@ public class HDPDataChannel extends Channel {
 	}
 
 	private HDPDevice dev;
+	private int mdlid; //uint16_t
 
 	public InputStream getInputStream(){
-		return null;
+		return new HDPInputStream(this);
 	}
 
 	public OutputStream getOutputStream(){
-		return null;
+		return new HDPOutputStream(this);
 	}
 
 	public void close(){
@@ -71,6 +74,16 @@ public class HDPDataChannel extends Channel {
 	@Override
 	public int getChannelId() {
 		// TODO Auto-generated method stub
+		return this.mdlid;
+	}
+
+	protected int read() { //Native method
+		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void write(int oneByte) { //Native method
+		// TODO Auto-generated method stub
+		
 	}
 }
