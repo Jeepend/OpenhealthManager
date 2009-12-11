@@ -32,11 +32,15 @@ public class HDPSession {
 	private HDPConfig config;
 	private HDPCallbacks callbacks;
 
-	public HDPSession(HDPConfig config, HDPCallbacks callbacks){
+	public HDPSession(HDPConfig config, HDPCallbacks callbacks) throws Exception{
 		this.config = config;
 		this.callbacks = callbacks;
 		//Call to native method to start HDP session
+		if (!init_hdp())
+			throw new Exception();
 	}
+
+	private native boolean init_hdp();
 
 	/*
 	 * Esperar HDPDevice
