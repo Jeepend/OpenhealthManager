@@ -77,7 +77,7 @@ public class HDPManagerChannel {
 		
 	};
 	
-	public HDPManagerChannel () {
+	public HDPManagerChannel () throws Exception {
 		Feature[] f = {
 				new Feature(0, "desc0"),
 				new Feature(1, "desc1"),
@@ -89,7 +89,7 @@ public class HDPManagerChannel {
 		hdps = new HDPSession(config, callbacks);
 	}
 	
-	public HDPManagerChannel (String sName, String sDscName, String pName, FeatureGroup[] fgrp) {
+	public HDPManagerChannel (String sName, String sDscName, String pName, FeatureGroup[] fgrp) throws Exception {
 		config = new HDPConfig (sName, sDscName, pName, fgrp );
 		hdps = new HDPSession(config, callbacks);
 	}
