@@ -52,6 +52,10 @@ public class HDPSession {
 	 */
 
 	public void close(){
-
+		System.out.println("Adios");
+	}
+	
+	static {
+		System.loadLibrary("es_libresoft_hdp_HDPSession");
 	}
 }
