@@ -28,19 +28,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.hdp;
 
 public class HDPSession {
-
-	private HDPConfig config;
-	private HDPCallbacks callbacks;
+	
+	private static native void initIDs ();
 
 	public HDPSession(HDPConfig config, HDPCallbacks callbacks) throws Exception{
-		this.config = config;
-		this.callbacks = callbacks;
-		//Call to native method to start HDP session
-		if (!init_hdp())
+		if (config == null) //|| (callbacks == null))
 			throw new Exception();
+		//Call to native method to start HDP session
+		init_hdp(config, callbacks);
 	}
 
-	private native boolean init_hdp();
+	private native void init_hdp(HDPConfig config, HDPCallbacks callbacks);
 
 	/*
 	 * Esperar HDPDevice
@@ -57,5 +55,6 @@ public class HDPSession {
 	
 	static {
 		System.loadLibrary("es_libresoft_hdp_HDPSession");
+		initIDs();
 	}
 }

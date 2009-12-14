@@ -29,9 +29,9 @@ package es.libresoft.hdp;
 
 public class FeatureGroup {
 
-	private int mdep_id;
-	private Feature[] features;
 	private int role;
+	private Feature[] features;
+	
 
 	public FeatureGroup(Feature[] features, int role){
 		this.features = features;
