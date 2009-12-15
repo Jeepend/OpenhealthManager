@@ -29,17 +29,28 @@ package es.libresoft.hdp;
 
 public class HDPSession {
 	
+	/* peer field stores the underlying C++ pointer class */
+	private long peer;
+	
 	private static native void initIDs ();
+	private native void init_hdp(HDPConfig config, HDPCallbacks callbacks);
+	private native synchronized void HDPfree (long peer);
 
 	public HDPSession(HDPConfig config, HDPCallbacks callbacks) throws Exception{
-		if (config == null) //|| (callbacks == null))
+		if ((config == null) || (callbacks == null))
 			throw new Exception();
 		//Call to native method to start HDP session
 		init_hdp(config, callbacks);
 	}
 
-	private native void init_hdp(HDPConfig config, HDPCallbacks callbacks);
-
+	public void free () {
+		HDPfree(peer);
+	}
+	
+	protected void finalize() {
+		free();
+	}
+	
 	/*
 	 * Esperar HDPDevice
 	 * Esperar HDPdc en HDPDevice
