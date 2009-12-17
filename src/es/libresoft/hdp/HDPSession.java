@@ -31,16 +31,18 @@ public class HDPSession {
 	
 	/* peer field stores the underlying C++ pointer class */
 	private long peer;
+	private HDPCallbacks cb;
 	
 	private static native void initIDs ();
-	private native void init_hdp(HDPConfig config, HDPCallbacks callbacks);
+	private native void init_hdp(HDPConfig config);
 	private native synchronized void HDPfree (long peer);
 
 	public HDPSession(HDPConfig config, HDPCallbacks callbacks) throws Exception{
 		if ((config == null) || (callbacks == null))
 			throw new Exception();
 		//Call to native method to start HDP session
-		init_hdp(config, callbacks);
+		init_hdp(config);
+		cb = callbacks;
 	}
 
 	public void free () {
@@ -51,15 +53,6 @@ public class HDPSession {
 		free();
 	}
 	
-	/*
-	 * Esperar HDPDevice
-	 * Esperar HDPdc en HDPDevice
-	 * Crear HDPdc en HDPDevice
-	 * Borrar HDPdc
-	 * Cerrar HDPdc
-	 *
-	 */
-
 	public void close(){
 		System.out.println("Adios");
 	}
@@ -67,5 +60,20 @@ public class HDPSession {
 	static {
 		System.loadLibrary("es_libresoft_hdp_HDPSession");
 		initIDs();
+	}
+	
+	/* Invoked from native code */
+	private void device_connected(String btaddr) {
+		cb.new_device_connected(new HDPDevice(btaddr));
+	}
+	
+	/* Invoked from native code */
+	private void device_disconected(String btaddr) {
+		cb.device_disconected(new HDPDevice(btaddr));
+	}
+	
+	/* Invoked from native code */
+	private void dc_connected(String btaddr, int mdlid) {
+		cb.dc_connected(null);
 	}
 }

@@ -35,16 +35,23 @@ import java.io.OutputStream;
 public class HDPDataChannel extends Channel {
 
 	// Mapped with hdp_dc_t
-	
+	/*
 	public HDPDataChannel(InputStream input, OutputStream output)
 			throws Exception {
 		super(input, output);
 		// TODO Auto-generated constructor stub
 	}
-
+	*/
 	private HDPDevice dev;
 	private int mdlid; //uint16_t
 
+	public HDPDataChannel(HDPDevice dev, int mdlid) throws Exception
+	{
+		super(null, null);
+		/*super(inputstream, outputstream);*/
+		this.dev = dev;
+		this.mdlid = mdlid;
+	}
 	public InputStream getInputStream(){
 		return new HDPInputStream(this);
 	}
