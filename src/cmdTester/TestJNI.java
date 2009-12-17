@@ -75,6 +75,7 @@ public class TestJNI {
 			hdp.close();
 			System.out.println("Push any key to exit");
 			System.in.read();
+			hdp.free();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
