@@ -64,16 +64,23 @@ public class HDPSession {
 	
 	/* Invoked from native code */
 	private void device_connected(String btaddr) {
-		cb.new_device_connected(new HDPDevice(btaddr));
+		System.out.println("JAVA_CONNECTED::::::::::::::::::Got: " + btaddr);
+		//cb.new_device_connected(new HDPDevice(btaddr));
 	}
 	
 	/* Invoked from native code */
 	private void device_disconected(String btaddr) {
-		cb.device_disconected(new HDPDevice(btaddr));
+		System.out.println("JAVA_DISCONNECTED::::::::::::::::::Got: " + btaddr);
+		//cb.device_disconected(new HDPDevice(btaddr));
 	}
 	
 	/* Invoked from native code */
 	private void dc_connected(String btaddr, int mdlid) {
+		
 		cb.dc_connected(null);
+	}
+	public int read(String btaddr, int mdlid) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

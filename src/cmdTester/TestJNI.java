@@ -62,12 +62,68 @@ public class TestJNI {
 	 */
 	public static void main(String[] args) {
 		Feature[] fs = new Feature [] {
-				new Feature (0, "feature1"),
+				new Feature (4100, "Pulse-oximeter"),
+/*
 				new Feature (1, "feature2"),
+				new Feature (2, "feature1"),
+				new Feature (3, "feature2"),
+				new Feature (4, "feature1"),
+				new Feature (5, "feature2"),
+				new Feature (6, "feature1"),
+				new Feature (7, "feature2"),
+				new Feature (8, "feature1"),
+				new Feature (9, "feature2"),
+				new Feature (10, "feature1"),
+				new Feature (11, "feature2"),
+				new Feature (12, "feature1"),
+				new Feature (13, "feature2"),
+				new Feature (14, "feature1"),
+				new Feature (15, "feature2"),
+				new Feature (16, "feature1"),
+				new Feature (17, "feature2"),
+				new Feature (18, "feature1"),
+				new Feature (19, "feature2"),
+				new Feature (20, "feature1"),
+				new Feature (21, "feature2"),
+				new Feature (22, "feature1"),
+				new Feature (23, "feature2"),
+				new Feature (24, "feature1"),
+				new Feature (25, "feature2"),
+				new Feature (26, "feature1"),
+				new Feature (27, "feature2"),
+				new Feature (28, "feature1"),
+				new Feature (29, "feature2"),
+*/
 		};
 		FeatureGroup[] fg = new FeatureGroup[] {
-				new FeatureGroup(fs,0),
+				new FeatureGroup(fs,FeatureGroup.SINK_ROLE),
+/*
 				new FeatureGroup(fs,1),
+				new FeatureGroup(fs,2),
+				new FeatureGroup(fs,3),
+				new FeatureGroup(fs,4),
+				new FeatureGroup(fs,5),
+				new FeatureGroup(fs,6),
+				new FeatureGroup(fs,7),
+				new FeatureGroup(fs,8),
+				new FeatureGroup(fs,9),
+				new FeatureGroup(fs,10),
+				new FeatureGroup(fs,11),
+				new FeatureGroup(fs,12),
+				new FeatureGroup(fs,13),
+				new FeatureGroup(fs,14),
+				new FeatureGroup(fs,15),
+				new FeatureGroup(fs,16),
+				new FeatureGroup(fs,17),
+				new FeatureGroup(fs,18),
+				new FeatureGroup(fs,19),
+				new FeatureGroup(fs,20),
+				new FeatureGroup(fs,21),
+				new FeatureGroup(fs,22),
+				new FeatureGroup(fs,23),
+				new FeatureGroup(fs,24),
+				new FeatureGroup(fs,25),
+*/
 		};
 		HDPConfig conf = new HDPConfig("string1", "string2", "string3", fg);
 		try {
@@ -76,6 +132,9 @@ public class TestJNI {
 			System.out.println("Push any key to exit");
 			System.in.read();
 			hdp.free();
+			System.out.println("Exiting...");
+			System.in.read();
+			System.out.println("Exited.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

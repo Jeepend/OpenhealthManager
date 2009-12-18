@@ -52,6 +52,7 @@ public class HDPDataChannel extends Channel {
 		this.dev = dev;
 		this.mdlid = mdlid;
 	}
+/*
 	public InputStream getInputStream(){
 		return new HDPInputStream(this);
 	}
@@ -59,7 +60,7 @@ public class HDPDataChannel extends Channel {
 	public OutputStream getOutputStream(){
 		return new HDPOutputStream(this);
 	}
-
+*/
 	public void close(){
 
 	}

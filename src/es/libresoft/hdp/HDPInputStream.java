@@ -5,14 +5,18 @@ import java.io.InputStream;
 
 public class HDPInputStream extends InputStream{
 
-		private HDPDataChannel dc;
+		private HDPSession session;
+		private String btaddr;
+		private int mdlid;
 		
-		HDPInputStream(HDPDataChannel dc){
-			this.dc = dc;
+		HDPInputStream(HDPSession session, String btaddr, int mdlid){
+			this.session = session;
+			this.btaddr = btaddr;
+			this.mdlid = mdlid;
 		}
 
 		@Override
 		public int read() throws IOException {
-			return dc.read();
+			return session.read(btaddr, mdlid);
 		}
 }

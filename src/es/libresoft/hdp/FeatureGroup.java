@@ -29,6 +29,9 @@ package es.libresoft.hdp;
 
 public class FeatureGroup {
 
+	public static final int SOURCE_ROLE = 0;
+	public static final int SINK_ROLE = 1;
+	
 	private int role;
 	private Feature[] features;
 	

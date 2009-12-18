@@ -27,8 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.hdp;
 
-public class Feature {
-
+public class Feature { 
+	
 	private int type;
 	private String description;
 
