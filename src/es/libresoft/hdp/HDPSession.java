@@ -31,6 +31,7 @@ public class HDPSession {
 	
 	/* peer field stores the underlying C++ pointer class */
 	private long peer;
+	
 	private HDPCallbacks cb;
 	
 	private static native void initIDs ();
