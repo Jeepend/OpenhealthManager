@@ -35,32 +35,19 @@ import java.io.OutputStream;
 public class HDPDataChannel extends Channel {
 
 	// Mapped with hdp_dc_t
-	/*
-	public HDPDataChannel(InputStream input, OutputStream output)
-			throws Exception {
-		super(input, output);
-		// TODO Auto-generated constructor stub
-	}
-	*/
+	private long hdp_dc;
+	private int mdlid;
 	private HDPDevice dev;
-	private int mdlid; //uint16_t
 
-	public HDPDataChannel(HDPDevice dev, int mdlid) throws Exception
-	{
-		super(null, null);
-		/*super(inputstream, outputstream);*/
+	
+	public HDPDataChannel(long hdp_dc, int mdlid, HDPDevice dev)
+			throws Exception {
+		super(new HDPInputStream(dev.getHDPSession(), hdp_dc),
+				new HDPOutputStream(dev.getHDPSession(), hdp_dc));
 		this.dev = dev;
 		this.mdlid = mdlid;
 	}
-/*
-	public InputStream getInputStream(){
-		return new HDPInputStream(this);
-	}
 
-	public OutputStream getOutputStream(){
-		return new HDPOutputStream(this);
-	}
-*/
 	public void close(){
 
 	}
@@ -72,7 +59,7 @@ public class HDPDataChannel extends Channel {
 	public HDPDevice getDevice(){
 		return this.dev;
 	}
-
+	
 	@Override
 	public void releaseChannel() {
 		// TODO Auto-generated method stub
@@ -83,15 +70,5 @@ public class HDPDataChannel extends Channel {
 	public int getChannelId() {
 		// TODO Auto-generated method stub
 		return this.mdlid;
-	}
-
-	protected int read() { //Native method
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public void write(int oneByte) { //Native method
-		// TODO Auto-generated method stub
-		
 	}
 }

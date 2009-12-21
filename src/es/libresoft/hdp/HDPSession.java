@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.hdp;
 
+import java.io.IOException;
+
 public class HDPSession {
 	
 	/* peer field stores the underlying C++ pointer class */
@@ -58,30 +60,54 @@ public class HDPSession {
 		System.out.println("Adios");
 	}
 	
-	static {
-		System.loadLibrary("es_libresoft_hdp_HDPSession");
-		initIDs();
-	}
-	
 	/* Invoked from native code */
 	private void device_connected(String btaddr) {
 		System.out.println("JAVA_CONNECTED::::::::::::::::::Got: " + btaddr);
-		//cb.new_device_connected(new HDPDevice(btaddr));
+		cb.new_device_connected(new HDPDevice(btaddr, this));
 	}
 	
 	/* Invoked from native code */
 	private void device_disconected(String btaddr) {
 		System.out.println("JAVA_DISCONNECTED::::::::::::::::::Got: " + btaddr);
-		//cb.device_disconected(new HDPDevice(btaddr));
+		cb.device_disconected(new HDPDevice(btaddr, this));
 	}
 	
 	/* Invoked from native code */
-	private void dc_connected(String btaddr, int mdlid) {
+	private void dc_connected(long dchannel, int mdlid, String btaddr) {
+		System.out.println("JAVA_DC_CREATED::::::::::::::::::Got: " + dchannel
+				+ ", mdlid: " + mdlid + ", dev: " + btaddr);
 		
-		cb.dc_connected(null);
+		try {
+			HDPDevice dev = new HDPDevice(btaddr, this);
+			HDPDataChannel dc = new HDPDataChannel(dchannel, mdlid, dev);
+			cb.dc_connected(dc);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	public int read(String btaddr, int mdlid) {
-		// TODO Auto-generated method stub
-		return 0;
+	
+	public int read(long dc, byte[] b, int offset, int length) throws IOException  {
+		if (b == null) {
+            throw new NullPointerException("byte array is null");
+        }
+        if ((offset | length) < 0 || length > b.length - offset) {
+            throw new ArrayIndexOutOfBoundsException("invalid offset or length");
+        }
+        return 0;
+	}
+	
+	public void write(long dc, byte[] b, int offset, int count) {
+		if (b == null) {
+            throw new NullPointerException("buffer is null");
+        }
+        if ((offset | count) < 0 || count > b.length - offset) {
+            throw new IndexOutOfBoundsException("invalid offset or length");
+        }
+	}
+	
+	static {
+		System.loadLibrary("es_libresoft_hdp_HDPSession");
+		initIDs();
 	}
 }

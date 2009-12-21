@@ -28,12 +28,13 @@ package es.libresoft.hdp;
 
 public class HDPDevice{
 
-	//Mapped with hdp_know_dev_t
 	private String btaddr;
+	private HDPSession session;
 	
-	public HDPDevice (String addr)
+	public HDPDevice (String addr, HDPSession session)
 	{
 		btaddr = addr;
+		this.session = session;
 	}
 
 	public HDPDataChannel createDataChannel(int options){
@@ -44,12 +45,24 @@ public class HDPDevice{
 
 	}
 
-	// TODO Needed to identify agents
 	public boolean equals(Object o) {
+		HDPDevice dev;
 		
-		return super.equals(o);
+		if (!(o instanceof HDPDevice))
+			return false;
+		
+		dev = (HDPDevice)o;
+		return btaddr.equalsIgnoreCase(dev.getBtAddress());
 	}
 
+	public HDPSession getHDPSession() {
+		return session;
+	}
+	
+	public String getBtAddress () {
+		return this.btaddr;
+	}
+	
 	public void close(){
 
 	}
