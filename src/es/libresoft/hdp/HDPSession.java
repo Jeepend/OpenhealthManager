@@ -62,21 +62,16 @@ public class HDPSession {
 	
 	/* Invoked from native code */
 	private void device_connected(String btaddr) {
-		System.out.println("JAVA_CONNECTED::::::::::::::::::Got: " + btaddr);
 		cb.new_device_connected(new HDPDevice(btaddr, this));
 	}
 	
 	/* Invoked from native code */
 	private void device_disconected(String btaddr) {
-		System.out.println("JAVA_DISCONNECTED::::::::::::::::::Got: " + btaddr);
 		cb.device_disconected(new HDPDevice(btaddr, this));
 	}
 	
 	/* Invoked from native code */
 	private void dc_connected(long dchannel, int mdlid, String btaddr) {
-		System.out.println("JAVA_DC_CREATED::::::::::::::::::Got: " + dchannel
-				+ ", mdlid: " + mdlid + ", dev: " + btaddr);
-		
 		try {
 			HDPDevice dev = new HDPDevice(btaddr, this);
 			HDPDataChannel dc = new HDPDataChannel(dchannel, mdlid, dev);
@@ -87,6 +82,8 @@ public class HDPSession {
 		}
 	}
 	
+	private native int HDPread (long cobj, long dc, byte[] b, int offset, int length);
+	
 	public int read(long dc, byte[] b, int offset, int length) throws IOException  {
 		if (b == null) {
             throw new NullPointerException("byte array is null");
@@ -94,16 +91,23 @@ public class HDPSession {
         if ((offset | length) < 0 || length > b.length - offset) {
             throw new ArrayIndexOutOfBoundsException("invalid offset or length");
         }
-        return 0;
+        return HDPread(peer, dc, b, offset, length);
 	}
 	
+	private native void HDPwrite (long cobj, long dc, byte[] b, int offset, int count);
+	
 	public void write(long dc, byte[] b, int offset, int count) {
+		System.out.println("JNI TODO: Write in output streams");
+		/*
 		if (b == null) {
             throw new NullPointerException("buffer is null");
         }
         if ((offset | count) < 0 || count > b.length - offset) {
             throw new IndexOutOfBoundsException("invalid offset or length");
         }
+        
+        HDPwrite(peer, dc, b, offset, count);
+        */
 	}
 	
 	static {

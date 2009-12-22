@@ -1,5 +1,6 @@
 package cmdTester;
 
+import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 
 import java.util.Iterator;
@@ -47,14 +48,26 @@ public class ManagerShell {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Starting CmdManager.");
-		TcpManagerChannel channelTCP = new TcpManagerChannel();
-		//Set the event manager handler to get internal events from the manager thread
-		InternalEventReporter.setDefaultEventManager(ieManager);
-		//Set target platform to android to report measures using IPC mechanism
-		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.SHELL);
-
-		//Start TCP server
-		channelTCP.start();
+		try {
+			HDPManagerChannel chanHDP = new HDPManagerChannel();
+			//TcpManagerChannel channelTCP = new TcpManagerChannel();
+			//Set the event manager handler to get internal events from the manager thread
+			InternalEventReporter.setDefaultEventManager(ieManager);
+			//Set target platform to android to report measures using IPC mechanism
+			MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.SHELL);
+			
+			//Start TCP server
+			//channelTCP.start();
+			
+			System.out.println("Push any key to exit");
+			System.in.read();
+			
+			chanHDP.finish();
+			//channelTCP.finish();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

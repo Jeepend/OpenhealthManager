@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.channel.bluetooth;
 
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.channel.VirtualChannel;
 import es.libresoft.hdp.Feature;
@@ -48,6 +49,7 @@ public class HDPManagerChannel {
 
 		@Override
 		public void dc_connected(HDPDataChannel dc) {
+			System.out.println("JAVA_DATA_CHANNEL_CREATE");
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
 			con.addDataChannel(dc);
 			
@@ -55,18 +57,21 @@ public class HDPManagerChannel {
 
 		@Override
 		public void dc_deleted(HDPDataChannel dc) {
+			System.out.println("JAVA_DATA_CHANNEL_DELETED");
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
 			con.delDataChannel(dc);
 		}
 
 		@Override
 		public void device_disconected(HDPDevice dev) {
+			System.out.println("JAVA_DISCONNECTED");
 			HDPConnection con = devices.getHDPConnection(dev);
 			devices.delHDPDevice(con);		
 		}
 
 		@Override
 		public void new_device_connected(HDPDevice dev) {
+			System.out.println("JAVA_CONNECTED");
 			HDPConnection con = devices.getHDPConnection(dev);
 			if (con != null) {
 				System.out.println("TODO: HDP Dispositivo reconectado");
@@ -77,14 +82,14 @@ public class HDPManagerChannel {
 		
 	};
 	
-	public HDPManagerChannel () throws Exception {
-		Feature[] f = {
-				new Feature(0, "desc0"),
-				new Feature(1, "desc1"),
+	public HDPManagerChannel () throws Exception {		
+		Feature[] fs = new Feature [] {
+				new Feature (Nomenclature.MDC_DEV_SPEC_PROFILE_PULS_OXIM, "Pulse-oximeter"),
 		};
-		FeatureGroup[] fgrp = { new FeatureGroup(f, 0) };
-		
-		config = new HDPConfig (srvName, srvDescName, provName, fgrp );
+		FeatureGroup[] fg = new FeatureGroup[] {
+				new FeatureGroup(fs,FeatureGroup.SINK_ROLE),
+		};
+		config = new HDPConfig(srvName, srvDescName, provName, fg);
 		devices = new HDPManagedDevices();
 		hdps = new HDPSession(config, callbacks);
 	}
@@ -97,5 +102,6 @@ public class HDPManagerChannel {
 	public void finish() {
 		System.out.println("Closing HDP manager service...");
 		hdps.close();
+		hdps.free();
 	}
 }
