@@ -46,7 +46,11 @@ public class HDPManagedDevices {
 	public synchronized boolean delHDPDevice (HDPConnection con) {
 		if (con == null)
 			return false;
-		return devices.remove(con);
+		if (devices.remove(con)){
+			con.freeResources();
+			return true;
+		}
+		return false;
 	}
 	
 	public synchronized HDPConnection getHDPConnection (HDPDevice dev) {		
@@ -58,5 +62,15 @@ public class HDPManagedDevices {
 				return obj;
 		}
 		return null;
+	}
+	
+	public synchronized void freeAllResources () {
+		Iterator<HDPConnection> i = devices.iterator();
+		HDPConnection obj;
+		while (i.hasNext()) {
+			obj = i.next();
+			obj.freeResources();
+		}
+		devices.clear();
 	}
 }

@@ -9,9 +9,20 @@ public class HDPInputStream extends InputStream{
 		/*Data channel descriptor*/
 		private long dcd;
 		
+		protected byte buff[];
+		protected int coun;
+		protected int mark;
+		protected int pos;
+		
+		private static final int L2CAP_DEFAULT_MTU = 672;
+		
 		HDPInputStream(HDPSession session, long dc){
 			this.session = session;
 			this.dcd = dc;
+			buff = new byte[L2CAP_DEFAULT_MTU];
+			coun = 0;
+			mark = 0;
+			pos = 0;
 		}
 
 		@Override
@@ -27,8 +38,8 @@ public class HDPInputStream extends InputStream{
 
 		@Override
 		public int read(byte[] b, int offset, int length) throws IOException {
+			System.out.println("READ with array");
 			return session.read(dcd, b, offset, length);
-		}
-		
+		}		
 		
 }

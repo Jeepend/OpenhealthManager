@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.channel.bluetooth;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.channel.VirtualChannel;
@@ -35,6 +38,7 @@ import es.libresoft.hdp.HDPDataChannel;
 import es.libresoft.hdp.HDPDevice;
 import es.libresoft.hdp.HDPSession;
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public class HDPManagerChannel {
 	
@@ -49,35 +53,50 @@ public class HDPManagerChannel {
 
 		@Override
 		public void dc_connected(HDPDataChannel dc) {
-			System.out.println("JAVA_DATA_CHANNEL_CREATE");
+			System.out.println("JAVA_DATA_CHANNEL_CREATE on " + dc.getDevice().getBtAddress() + " mdlid " + dc.getChannelId());
+			ReaderThread rt = new ReaderThread(dc.getIS());
+			rt.start();
+			/*
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
-			con.addDataChannel(dc);
-			
+			con.addDataChannel(dc);			
+			*/
 		}
 
 		@Override
 		public void dc_deleted(HDPDataChannel dc) {
 			System.out.println("JAVA_DATA_CHANNEL_DELETED");
+			/*
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
 			con.delDataChannel(dc);
+			*/
 		}
 
 		@Override
 		public void device_disconected(HDPDevice dev) {
 			System.out.println("JAVA_DISCONNECTED");
+			/*
 			HDPConnection con = devices.getHDPConnection(dev);
+			if (con == null) {
+				System.out.println("TODO: Revice disconnect device");
+				return;
+			}
 			devices.delHDPDevice(con);		
+			*/
 		}
 
 		@Override
 		public void new_device_connected(HDPDevice dev) {
 			System.out.println("JAVA_CONNECTED");
+			/*
 			HDPConnection con = devices.getHDPConnection(dev);
 			if (con != null) {
 				System.out.println("TODO: HDP Dispositivo reconectado");
 				return;
 			}
-			devices.addHDPDevice(con);				
+			
+			con = new HDPConnection (dev);
+			devices.addHDPDevice(con);
+			*/				
 		}
 		
 	};
@@ -103,5 +122,31 @@ public class HDPManagerChannel {
 		System.out.println("Closing HDP manager service...");
 		hdps.close();
 		hdps.free();
+		devices.freeAllResources();
+	}
+	
+	
+	
+	public class ReaderThread extends Thread {
+		InputStream is;
+		public ReaderThread (InputStream is) {
+			this.is = is;
+		}
+		
+		public void run() {
+			System.out.println("*********************************Reader thread running");
+			byte b[] = new byte[1];
+			for(;;) {
+				try {
+					b[0] = (byte)is.read();
+					System.out.println("" + ASN1_Tools.getHexString(b));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					break;
+				}
+			}
+			System.out.println("Exiting reader");
+		}
 	}
 }

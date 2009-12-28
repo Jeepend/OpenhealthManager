@@ -49,6 +49,9 @@ public class HDPConnection {
 		agent.delChannel(chan);
 	}
 
+	public void freeResources() {
+		agent.freeResources();
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof HDPConnection)

@@ -85,6 +85,7 @@ public class HDPSession {
 	private native int HDPread (long cobj, long dc, byte[] b, int offset, int length);
 	
 	public int read(long dc, byte[] b, int offset, int length) throws IOException  {
+		//System.out.println("JAVA READ: buff len: " + b.length + ", offset: " + offset + ", length to read: " + length);
 		if (b == null) {
             throw new NullPointerException("byte array is null");
         }
