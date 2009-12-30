@@ -122,9 +122,7 @@ public abstract class Channel {
 			ApduType recvApdu;
 			while(shouldRepeat ()){
 		 		try {
-		 			System.out.println("Recibiendo APDUs " + id);
 		 			recvApdu = decoder.decode(input, ApduType.class);
-		 			System.out.println("******************BIEEEEEEEEEEEEEEEEEEEEEEEEEEEEN LEIDO APDU ");
 		 			recvApdu.setChannel(id);
 		 			inputQueue.add(recvApdu);
 		 		}catch (InterruptedException e) {
@@ -150,9 +148,4 @@ public abstract class Channel {
 	
 
 	public abstract int getChannelId();
-	
-	/* Used only for testing */
-	public InputStream getIS() {
-		return this.input;
-	}
 }

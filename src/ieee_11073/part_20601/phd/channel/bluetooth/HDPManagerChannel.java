@@ -54,12 +54,9 @@ public class HDPManagerChannel {
 		@Override
 		public void dc_connected(HDPDataChannel dc) {
 			System.out.println("JAVA_DATA_CHANNEL_CREATE on " + dc.getDevice().getBtAddress() + " mdlid " + dc.getChannelId());
-			ReaderThread rt = new ReaderThread(dc.getIS());
-			rt.start();
-			/*
+
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
 			con.addDataChannel(dc);			
-			*/
 		}
 
 		@Override
@@ -74,20 +71,18 @@ public class HDPManagerChannel {
 		@Override
 		public void device_disconected(HDPDevice dev) {
 			System.out.println("JAVA_DISCONNECTED");
-			/*
+			
 			HDPConnection con = devices.getHDPConnection(dev);
 			if (con == null) {
 				System.out.println("TODO: Revice disconnect device");
 				return;
 			}
 			devices.delHDPDevice(con);		
-			*/
 		}
 
 		@Override
 		public void new_device_connected(HDPDevice dev) {
 			System.out.println("JAVA_CONNECTED");
-			/*
 			HDPConnection con = devices.getHDPConnection(dev);
 			if (con != null) {
 				System.out.println("TODO: HDP Dispositivo reconectado");
@@ -95,8 +90,7 @@ public class HDPManagerChannel {
 			}
 			
 			con = new HDPConnection (dev);
-			devices.addHDPDevice(con);
-			*/				
+			devices.addHDPDevice(con);	
 		}
 		
 	};
@@ -123,30 +117,5 @@ public class HDPManagerChannel {
 		hdps.close();
 		hdps.free();
 		devices.freeAllResources();
-	}
-	
-	
-	
-	public class ReaderThread extends Thread {
-		InputStream is;
-		public ReaderThread (InputStream is) {
-			this.is = is;
-		}
-		
-		public void run() {
-			System.out.println("*********************************Reader thread running");
-			byte b[] = new byte[1];
-			for(;;) {
-				try {
-					b[0] = (byte)is.read();
-					System.out.println("" + ASN1_Tools.getHexString(b));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					break;
-				}
-			}
-			System.out.println("Exiting reader");
-		}
 	}
 }

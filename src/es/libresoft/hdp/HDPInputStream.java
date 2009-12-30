@@ -13,10 +13,8 @@ public class HDPInputStream extends InputStream{
 		protected int coun;
 		protected int pos;
 		
-		private static final int L2CAP_DEFAULT_MTU = 6; /* TODO: Value used to test change for 672 */ //672;
-		
-		private InputStream in; /*Used only for testing without connect the intput stream to a L2CAP socket*/
-		
+		private static final int L2CAP_DEFAULT_MTU = 672;
+				
 		public HDPInputStream(HDPSession session, long dc){
 			this.session = session;
 			this.dcd = dc;
@@ -24,40 +22,23 @@ public class HDPInputStream extends InputStream{
 			coun = 0;
 			pos = 0;
 		}
-
-		public HDPInputStream(InputStream input){
-			in = input;
-			buff = new byte[L2CAP_DEFAULT_MTU];
-			coun = 0;
-			pos = 0;
-		}
-		
+	
 		@Override
 		public int read() throws IOException {
 			if (pos >= coun) {
 				int ret;
 				/* get next packet */
-				//ret = session.read(dcd, buff, 0, L2CAP_DEFAULT_MTU);
-				ret = in.read(buff, 0, L2CAP_DEFAULT_MTU);
+				ret = session.read(dcd, buff, 0, L2CAP_DEFAULT_MTU);
 				if (ret <= 0)
 					return -1;
 				coun = ret;
 				pos = 0;
-				//System.out.println("leidos: " + coun + ", pos: " + pos);
+				//System.out.println("readed: " + coun + ", pos: " + pos);
 			}
 			
 			//System.out.println("coun: " + coun + ", pos: " + pos);
 			
 			return (int)buff[pos++] & 0xff;
-			/*
-			byte b[] = new byte[1];
-	        int ret = session.read(dcd, b, 0, 1);
-	        if (ret == 1) {
-	            return (int)b[0] & 0xff;
-	        } else {
-	            return -1;
-	        }
-	        */
 		}
 
 		@Override
@@ -65,8 +46,7 @@ public class HDPInputStream extends InputStream{
 			int r;
 			if (pos >= coun) {
 				/* get next packet */
-				//r = session.read(dcd, buff, 0, L2CAP_DEFAULT_MTU);
-				r = in.read(buff, 0, L2CAP_DEFAULT_MTU);
+				r = session.read(dcd, buff, 0, L2CAP_DEFAULT_MTU);
 				if (r <= 0)
 					return r;
 				coun = r;

@@ -16,6 +16,7 @@ public class InputStreamTester {
 	public static String file = "test.txt";
 	
 	public static void main(String[] args) {
+		/*
 		try {			
 			HDPInputStream in1 = new HDPInputStream (
 					new FileInputStream (
@@ -46,11 +47,6 @@ public class InputStreamTester {
 				len = buff.length - offset;
 				System.out.println("offset=" + offset + ", len=" + len);
 			}
-			/*
-			while ((r = in2.read(buff, offset, buff.length)) > 0) {
-				System.out.println("Readed: " + r);
-			}
-			*/
 			for (int i = 0; i < 33; i++)
 				System.out.print((char)buff[i]);
 		} catch (FileNotFoundException e) {
@@ -60,6 +56,7 @@ public class InputStreamTester {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 	}
 
 }
