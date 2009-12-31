@@ -39,6 +39,8 @@ public class HDPSession {
 	private static native void initIDs ();
 	private native void init_hdp(HDPConfig config);
 	private native synchronized void HDPfree (long peer);
+	private native int HDPread (long cobj, long dc, byte[] b, int offset, int length) throws IOException;
+	private native void HDPwrite (long cobj, long dc, byte[] b, int offset, int count) throws IOException;
 
 	public HDPSession(HDPConfig config, HDPCallbacks callbacks) throws Exception{
 		if ((config == null) || (callbacks == null))
@@ -82,10 +84,7 @@ public class HDPSession {
 		}
 	}
 	
-	private native int HDPread (long cobj, long dc, byte[] b, int offset, int length);
-	
 	public int read(long dc, byte[] b, int offset, int length) throws IOException  {
-		//System.out.println("JAVA READ: buff len: " + b.length + ", offset: " + offset + ", length to read: " + length);
 		if (b == null) {
             throw new NullPointerException("byte array is null");
         }
@@ -95,11 +94,7 @@ public class HDPSession {
         return HDPread(peer, dc, b, offset, length);
 	}
 	
-	private native void HDPwrite (long cobj, long dc, byte[] b, int offset, int count);
-	
-	public void write(long dc, byte[] b, int offset, int count) {
-		System.out.println("JNI TODO: Write in output streams");
-		/*
+	public void write(long dc, byte[] b, int offset, int count) throws IOException {
 		if (b == null) {
             throw new NullPointerException("buffer is null");
         }
@@ -108,7 +103,6 @@ public class HDPSession {
         }
         
         HDPwrite(peer, dc, b, offset, count);
-        */
 	}
 	
 	static {

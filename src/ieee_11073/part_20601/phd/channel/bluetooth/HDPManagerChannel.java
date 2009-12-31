@@ -24,12 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.channel.bluetooth;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.phd.channel.InitializedException;
-import ieee_11073.part_20601.phd.channel.VirtualChannel;
 import es.libresoft.hdp.Feature;
 import es.libresoft.hdp.FeatureGroup;
 import es.libresoft.hdp.HDPCallbacks;
@@ -37,8 +32,6 @@ import es.libresoft.hdp.HDPConfig;
 import es.libresoft.hdp.HDPDataChannel;
 import es.libresoft.hdp.HDPDevice;
 import es.libresoft.hdp.HDPSession;
-import es.libresoft.openhealth.Agent;
-import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public class HDPManagerChannel {
 	
