@@ -56,6 +56,7 @@ public interface Nomenclature {
 	public static final int MDC_MOC_VMS_MDS_SIMP				=	37;		/*                               */
 	public static final int MDC_MOC_VMO_PMSTORE					=	61;		/*                               */
 	public static final int MDC_MOC_PM_SEGMENT					=	62;		/*                               */
+	public static final int MDC_ATTR_AL_OP_STAT					=	2310;	/*                               */
 	public static final int MDC_ATTR_CONFIRM_MODE				=	2323;	/*                               */
 	public static final int MDC_ATTR_CONFIRM_TIMEOUT			=	2324;	/*                               */
 	public static final int MDC_ATTR_ID_HANDLE					=	2337;	/*                               */
@@ -65,6 +66,7 @@ public interface Nomenclature {
     public static final int MDC_ATTR_ID_PHYSIO					=	2347;	/*                               */
     public static final int MDC_ATTR_ID_PROD_SPECN				=	2349;	/*                               */         
     public static final int MDC_ATTR_ID_TYPE					=	2351;	/*                               */
+    public static final int MDC_ATTR_LIMIT_CURR					=	2356;	/*                               */
     public static final int MDC_ATTR_METRIC_STORE_CAPAC_CNT		=	2369;	/*                               */
     public static final int MDC_ATTR_METRIC_STORE_SAMPLE_ALG 	=	2371;	/*                               */
     public static final int MDC_ATTR_METRIC_STORE_USAGE_CNT 	=	2372;	/*                               */
@@ -96,6 +98,8 @@ public interface Nomenclature {
 	public static final int MDC_ATTR_UNIT_LABEL_STRING			=	2457;	/*                               */
 	public static final int MDC_ATTR_VAL_BATT_CHARGE			=	2460;	/*                               */
 	public static final int MDC_ATTR_VAL_ENUM_OBS				=   2462;	/*                               */
+	public static final int MDC_ATTR_AL_COND					=	2476;	/*                               */
+	public static final int MDC_ATTR_AL_OP_TEXT_STRING			=	2478;	/*                               */
 	public static final int MDC_ATTR_TIME_REL_HI_RES			=   2536;	/*                               */
 	public static final int MDC_ATTR_TIME_STAMP_REL_HI_RES		=	2537;	/*                               */
 	public static final int MDC_ATTR_DEV_CONFIG_ID				=   2628;	/*                               */
@@ -162,10 +166,25 @@ public interface Nomenclature {
 	/*************************************************************************************************
 	* From Medical supervisory control and data acquisition (MDC_PART_SCADA)
 	**************************************************************************************************/
+	public static final int MDC_PULS_OXIM_PULS_RATE 			=	18458;	/*                               */
+	public static final int MDC_SAT_O2_QUAL 					= 	19248;	/*                               */
 	public static final int MDC_TEMP_BODY						=	19292;	/*                               */
+	public static final int MDC_PULS_OXIM_PERF_REL 				= 	19376;	/*                               */
+	public static final int MDC_PULS_OXIM_PLETH 				= 	19380;	/*                               */
+	public static final int MDC_PULS_OXIM_SAT_O2 				= 	19384;	/*                               */
+	public static final int MDC_PULS_OXIM_PULS_CHAR 			= 	19512;	/*                               */
+	public static final int MDC_PULS_OXIM_DEV_STATUS 			= 	19532;	/*                               */
+	public static final int MDC_TRIG 							= 	53250;	/*                               */
+	public static final int MDC_TRIG_BEAT 						= 	53251;	/*                               */
+	public static final int MDC_TRIG_BEAT_MAX_INRUSH 			= 	53259;	/*                               */
 	public static final int MDC_MASS_BODY_ACTUAL 				=	57664;	/*                               */
 	/* Partition: SCADA/Other                                                        						 */
 	public static final int MDC_BODY_FAT						=	57676;	/*                               */
+	public static final int MDC_METRIC_NOS 						= 	61439;	/*                               */
+	
+	public static final int MDC_MODALITY_FAST 					= 	19508;	/*                               */
+	public static final int MDC_MODALITY_SLOW 					= 	19512;	/*                               */
+	public static final int MDC_MODALITY_SPOT 					= 	19516;	/*                               */
 	
 	/*************************************************************************************************
 	* From Dimensions (MDC_PART_DIM)
@@ -175,6 +194,7 @@ public interface Nomenclature {
 	public static final int MDC_DIM_MIN							=	2208;	/* min    	                     */
 	public static final int MDC_DIM_HR							=	2240;	/* h          	                 */
 	public static final int MDC_DIM_DAY							=	2272;	/* d              	             */
+	public static final int MDC_DIM_BEAT_PER_MIN				=	2720; 	/* bpm 737						 */
 	public static final int MDC_DIM_DEGC						=	6048;	/* ºC                 	         */
 
 	/*************************************************************************************************

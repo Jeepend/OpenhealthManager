@@ -62,8 +62,8 @@ public class DeviceSpecializationFactory {
 			
 			//from Part 10408: {"Manufacturer","Model"}
 			SystemModel systemModel = new SystemModel();
-			systemModel.setManufacturer("Manufacturer".getBytes("ASCII"));
-			systemModel.setModel_number("Model".getBytes("ASCII"));
+			systemModel.setManufacturer("Thermometer".getBytes("ASCII"));
+			systemModel.setModel_number("10408".getBytes("ASCII"));
 			mandatoryAttributes.put(Nomenclature.MDC_ATTR_ID_MODEL, 
 					new Attribute(Nomenclature.MDC_ATTR_ID_MODEL,
 									systemModel));
@@ -77,17 +77,17 @@ public class DeviceSpecializationFactory {
 									devConfig_id));
 			
 			//from Part 10408: {MDC_DEV_SPEC_PROFILE_TEMP,1}
-			TypeVerList syst_type_data_list = new TypeVerList();
-			syst_type_data_list.initValue();
+			TypeVerList syst_type_spec_list = new TypeVerList();
+			syst_type_spec_list.initValue();
 			TypeVer item = new TypeVer();
 			OID_Type oid = new OID_Type();
 			oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_DEV_SPEC_PROFILE_TEMP)));
 			item.setType(oid);
 			item.setVersion(new Integer(1));
-			syst_type_data_list.add(item);
+			syst_type_spec_list.add(item);
 			mandatoryAttributes.put(Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST, 
 					new Attribute(Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST,
-									syst_type_data_list));
+							syst_type_spec_list));
 			thermometer = new DS_10408 (mandatoryAttributes);
 			
 		} catch (InvalidAttributeException e) {/*Never thrown in standadard configuration*/
@@ -96,5 +96,55 @@ public class DeviceSpecializationFactory {
 			e.printStackTrace();
 		}
 		return thermometer;
+	}
+	
+	public static DS_10404 getOxymeter10404 (byte[] system_id, ConfigId devConfig_id){
+		DS_10404 oximeter = null;
+		
+		Hashtable<Integer,Attribute> mandatoryAttributes = new Hashtable<Integer,Attribute>();
+		try {
+			//from Part 10404: Handle=0
+			HANDLE handle = new HANDLE();
+			handle.setValue(new INT_U16(new Integer(0)));
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_ID_HANDLE, 
+					new Attribute(Nomenclature.MDC_ATTR_ID_HANDLE,
+									handle));
+			
+			//from Part 10404: {"Manufacturer","Model"}
+			SystemModel systemModel = new SystemModel();
+			systemModel.setManufacturer("Oximeter".getBytes("ASCII"));
+			systemModel.setModel_number("10404".getBytes("ASCII"));
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_ID_MODEL, 
+					new Attribute(Nomenclature.MDC_ATTR_ID_MODEL,
+									systemModel));
+			
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_SYS_ID, 
+					new Attribute(Nomenclature.MDC_ATTR_SYS_ID,
+									system_id));
+			
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_DEV_CONFIG_ID, 
+					new Attribute(Nomenclature.MDC_ATTR_DEV_CONFIG_ID,
+									devConfig_id));
+			
+			//from Part 10404: {MDC_DEV_SPEC_PROFILE_PULS_OXIM,1}
+			TypeVerList syst_type_spec_list = new TypeVerList();
+			syst_type_spec_list.initValue();
+			TypeVer item = new TypeVer();
+			OID_Type oid = new OID_Type();
+			oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_DEV_SPEC_PROFILE_PULS_OXIM)));
+			item.setType(oid);
+			item.setVersion(new Integer(1));
+			syst_type_spec_list.add(item);
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST, 
+					new Attribute(Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST,
+							syst_type_spec_list));
+			oximeter = new DS_10404 (mandatoryAttributes);
+			
+		} catch (InvalidAttributeException e) {/*Never thrown in standadard configuration*/
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return oximeter;
 	}
 }

@@ -49,21 +49,23 @@ public class ManagerShell {
 	public static void main(String[] args) {
 		System.out.println("Starting CmdManager.");
 		try {
-			HDPManagerChannel chanHDP = new HDPManagerChannel();
-			//TcpManagerChannel channelTCP = new TcpManagerChannel();
+			/* uncomment next line to get HDP support for agents */
+			//HDPManagerChannel chanHDP = new HDPManagerChannel();
+			/* uncomment next line to get TCP support for agents */
+			TcpManagerChannel channelTCP = new TcpManagerChannel();
 			//Set the event manager handler to get internal events from the manager thread
 			InternalEventReporter.setDefaultEventManager(ieManager);
 			//Set target platform to android to report measures using IPC mechanism
 			MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.SHELL);
 			
-			//Start TCP server
-			//channelTCP.start();
+			/* Start TCP server */
+			channelTCP.start();
 			
 			System.out.println("Push any key to exit");
 			System.in.read();
 			
-			chanHDP.finish();
-			//channelTCP.finish();
+			//chanHDP.finish();
+			channelTCP.finish();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
