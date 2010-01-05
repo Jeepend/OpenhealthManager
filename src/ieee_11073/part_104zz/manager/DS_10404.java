@@ -202,12 +202,6 @@ public final class DS_10404 extends MDSManager {
 		if (!attributes.containsKey(ownMandatoryIds))
 			throw new InvalidAttributeException("Attribute id " + ownMandatoryIds + " is not assigned.");
 	}
-	
-	@Override
-	public <T> T decodeRawData(int attrId, byte[] data) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void MDS_DATA_REQUEST() {

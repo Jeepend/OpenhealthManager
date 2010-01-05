@@ -37,7 +37,7 @@ public class ManagerShell {
 
 			System.out.println("Measures received from: " + systemId);
 			while (i.hasNext()) {
-				System.out.println("" + i.next().toString());
+				System.out.println("" + i.next());
 			}
 		}
 

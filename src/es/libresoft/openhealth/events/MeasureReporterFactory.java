@@ -44,7 +44,7 @@ public class MeasureReporterFactory {
 	}
 	
 	/**
-	 * Get default measure reporter established for thye target platform
+	 * Get default measure reporter established for the target platform
 	 * @return the target measure reporter for the specific platform
 	 * @throws Exception if the target measure reporter is not set
 	 */

@@ -160,43 +160,6 @@ public final class DS_10408 extends MDSManager {
 		}
 
 		@Override
-		public <T> T decodeRawData(int attrId, byte[] data) throws Exception {
-			ByteArrayInputStream input = new ByteArrayInputStream(data);
-			//Decode AttrValMap using accorded enc_rules
-			IDecoder decoder = CoderFactory.getInstance().newDecoder(this.getDeviceConf().getEncondigRules());
-			switch (attrId){
-			case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
-				INT_U16 iu = decoder.decode(input, INT_U16.class);
-				SFloatType ft = new SFloatType(iu.getValue());
-				System.out.println("Measure: " + ft.doubleValueRepresentation());
-				return (T)ft;
-			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
-				/*
-				 * The absolute time data type specifies the time of day with a resolution of 1/100 
-				 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
-				 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit 
-				 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19 
-				 * in the century field and the hexadecimal value 0x96 in the year field. This format is 
-				 * easily converted to character- or integer-based representations. See AbsoluteTime 
-				 * structure for details.
-				 */
-				final String rawDate = ASN1_Tools.getHexString(data);
-				final String source = rawDate.substring(0, 4) + "/" + /*century + year(first 2Bytes)*/
-						rawDate.substring(4, 6) + "/" +   /* month next 2B*/
-						rawDate.substring(6, 8) + " " +   /* day next 2B */
-						rawDate.substring(8, 10) + ":" +  /* hour next 2B */
-						rawDate.substring(10, 12) + ":" + /* minute next 2B */
-						rawDate.substring(12, 14) + ":" + /* second next 2B */
-						rawDate.substring(14); /* frac-sec last 2B */
-				SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
-				Date d = sdf.parse(source);
-				System.out.println("date: " + d);
-				return (T)d;
-			}
-			throw new Exception ("Attribute " + attrId + " unknown.");
-		}
-
-		@Override
 		public void MDS_DATA_REQUEST() {
 			// TODO Auto-generated method stub
 			
