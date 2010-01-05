@@ -94,6 +94,7 @@ public abstract class MDSManager extends MDS {
 				confObj = i.next();
 				//Get Attributes
 				Hashtable<Integer,Attribute> attribs = getAttributes(confObj.getAttributes());
+				//checkGotAttributes(attribs);
 				
 				//Generate attribute Handle:
 				HANDLE handle = new HANDLE();
