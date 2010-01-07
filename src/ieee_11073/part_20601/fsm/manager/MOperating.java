@@ -127,9 +127,11 @@ public final class MOperating extends Operating {
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_event_report");
+			System.out.println(">> ******Roiv_cmip_event_report");
+			roiv_cmip_event_report(msg.getRoiv_cmip_event_report(), msg);
+			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
-			roiv_cmip_confirmed_event_repor(msg);
+			roiv_cmip_event_report(msg.getRoiv_cmip_confirmed_event_report(), msg);
 			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 		}else if (msg.isRoiv_cmip_getSelected()) {
 			//TODO:
@@ -167,30 +169,28 @@ public final class MOperating extends Operating {
 		}
 	}
 	
-	private void roiv_cmip_confirmed_event_repor(MessageChoiceType msg){
+	private void roiv_cmip_event_report(EventReportArgumentSimple event, MessageChoiceType msg){
 		//(A.10.3 EVENT REPORT service)
-		EventReportArgumentSimple event = msg.getRoiv_cmip_confirmed_event_report();
 		if (event.getObj_handle().getValue().getValue() == 0){
 			//obj-handle is 0 to represent the MDS 
-			process_MDS_Object_Event(msg);
+			process_MDS_Object_Event(event, msg);
 		}else{
 			//TODO: handle representing a scanner or PM-store object.
 			System.err.println("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in Operating state. Ignore.");
 		}
 	}
 	
-	private void process_MDS_Object_Event(MessageChoiceType msg){
-		EventReportArgumentSimple event = msg.getRoiv_cmip_confirmed_event_report();
+	private void process_MDS_Object_Event(EventReportArgumentSimple event, MessageChoiceType msg){
 		switch (event.getEvent_type().getValue().getValue().intValue()){
 			case Nomenclature.MDC_NOTI_CONFIG:
 				//TODO:
 				System.out.println("MDC_NOTI_CONFIG");
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_VAR:
-				mdc_noti_scan_report_var(msg);
+				mdc_noti_scan_report_var(event.getEvent_info());
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_FIXED:
-				mdc_noti_scan_report_fixed(msg);
+				mdc_noti_scan_report_fixed(event.getEvent_info());
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR: 
 				//TODO:
@@ -203,9 +203,9 @@ public final class MOperating extends Operating {
 		}		
 	}
 	
-	private void mdc_noti_scan_report_fixed (MessageChoiceType msg){
+	private void mdc_noti_scan_report_fixed (byte[] einfo){
 		try {
-			ScanReportInfoFixed srif = ASN1_Tools.decodeData(msg.getRoiv_cmip_confirmed_event_report().getEvent_info(), 
+			ScanReportInfoFixed srif = ASN1_Tools.decodeData(einfo, 
 					ScanReportInfoFixed.class, 
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Fixed(srif);
@@ -216,9 +216,9 @@ public final class MOperating extends Operating {
 			
 	}
 	
-	private void mdc_noti_scan_report_var(MessageChoiceType msg) {
+	private void mdc_noti_scan_report_var(byte[] einfo) {
 		try {
-			ScanReportInfoVar sriv = ASN1_Tools.decodeData(msg.getRoiv_cmip_confirmed_event_report().getEvent_info(), 
+			ScanReportInfoVar sriv = ASN1_Tools.decodeData(einfo, 
 					ScanReportInfoVar.class, 
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Var(sriv);

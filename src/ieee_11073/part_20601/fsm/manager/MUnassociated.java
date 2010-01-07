@@ -256,6 +256,7 @@ public final class MUnassociated extends Unassociated {
 		
 		if ((400 <= id) && (id <= 499)){
 			System.out.println("Testing Pulse Oximeter");
+			//processExtendedConfiguration(phd);
 			acceptStandardAssociation(
 					DeviceSpecializationFactory.getOxymeter10404(
 							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
