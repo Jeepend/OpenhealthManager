@@ -140,6 +140,7 @@ public class ManagerStateController implements StateController {
 	public void freeResources (){
 		dispatcher.interrupt();
 		dispatcherEvents.interrupt();
+		timer.cancel();
 	}
 	public void processApdu (ApduType apdu){
 		inputQueue.add(apdu);

@@ -34,6 +34,7 @@ import es.libresoft.openhealth.Agent;
 public class TcpManagerChannel extends Thread {
 	private boolean finish = false;
 	private ServerSocket ss;
+	private TCPManagedAgents agents = new TCPManagedAgents();
 	
 	public void run() {
 		String status="";
@@ -46,6 +47,7 @@ public class TcpManagerChannel extends Thread {
 				TCPChannel chnl = new TCPChannel (s);
 				Agent a = new Agent();
 				a.addChannel(chnl);
+				agents.addAgent(a);
 			}
 			if (!ss.isClosed()) //Finishing in good way
 				ss.close();
@@ -62,6 +64,7 @@ public class TcpManagerChannel extends Thread {
 		} finally {
 			System.out.println("manager service exiting..." + status);
 		}
+		agents.freeAllResources();
 	}
 
 	public void finish() {
