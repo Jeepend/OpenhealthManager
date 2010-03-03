@@ -48,6 +48,7 @@ public class HDPSession {
 		//Call to native method to start HDP session
 		init_hdp(config);
 		cb = callbacks;
+		Runtime.getRuntime().exec("su -c /data/hdp_reg");
 	}
 
 	public void free () {
@@ -107,6 +108,6 @@ public class HDPSession {
 	
 	static {
 		System.loadLibrary("es_libresoft_hdp_HDPSession");
-		initIDs();
+		HDPSession.initIDs();
 	}
 }

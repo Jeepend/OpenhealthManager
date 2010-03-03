@@ -292,6 +292,7 @@ public class MessageFactory {
 		DataApdu data = new DataApdu();
 		InvokeIDType iit = new InvokeIDType(da.getInvoke_id().getValue()); //Mirrored from invocation
 		DataApdu.MessageChoiceType msg = getMessageResponse(da);
+		System.out.println("Invoke id type: " + iit.getValue());
 		data.setInvoke_id(iit);
 		data.setMessage(msg);
 		return data;
@@ -302,7 +303,8 @@ public class MessageFactory {
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_event_report");
+			System.out.println("(>> Roiv_cmip_event_report) FAIL: Manager Shall not confirm cmip_event report");
+			//return rors_cmip_event_repor(da);
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
 			return rors_cmip_confirmed_event_repor(da);
 		}else if (msg.isRoiv_cmip_getSelected()) {
@@ -341,7 +343,32 @@ public class MessageFactory {
 		}
 		return null;
 	}
-	
+	/*
+	private static final DataApdu.MessageChoiceType rors_cmip_event_repor (DataApdu da){
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		EventReportResultSimple errs = new EventReportResultSimple();
+		
+		HANDLE h = new HANDLE();
+		h.setValue(new INT_U16(0)); //The MDS object
+		
+		if (da.getMessage().getRoiv_cmip_event_report().getEvent_time().getValue().getValue() != 0x00FFFFFFFFL)
+			System.err.println("Warning: Agent supports Relative time. Response sent is not valid");
+		
+		RelativeTime rt = new RelativeTime();
+		rt.setValue(new INT_U32(0L));
+		
+		byte[] byteArray = {(byte)0, (byte)0};
+		errs.setObj_handle(h);
+		errs.setCurrentTime(rt);
+		
+		//The event-type of the result shall be a copy of the event-type from the invocation
+		errs.setEvent_type(da.getMessage().getRoiv_cmip_event_report().getEvent_type());
+		errs.setEvent_reply_info(byteArray);
+		
+		msg.selectRors_cmip_confirmed_event_report(errs);		
+		return msg;
+	}
+	*/
 	private static final DataApdu.MessageChoiceType rors_cmip_confirmed_event_repor (DataApdu da){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		EventReportResultSimple errs = new EventReportResultSimple();

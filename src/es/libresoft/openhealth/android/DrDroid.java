@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 
 import java.util.HashMap;
@@ -66,6 +67,7 @@ public class DrDroid extends Service {
 	public static final String droidEvent = "es.libresoft.openhealth.android.DRDROID_SERVICE";
 	
 	private TcpManagerChannel channelTCP;
+	private HDPManagerChannel chanHDP;
 	
 	@Override
 	public void onCreate() {
@@ -80,9 +82,15 @@ public class DrDroid extends Service {
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-		System.out.println("Service started");
-		channelTCP.start();
-		super.onStart(intent, startId);
+		try {
+			channelTCP.start();
+			chanHDP = new HDPManagerChannel();
+			System.out.println("Service started");
+			super.onStart(intent, startId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void onPause(){
@@ -101,6 +109,7 @@ public class DrDroid extends Service {
 	public void onDestroy() {
 		System.out.println("Service stopped");
 		channelTCP.finish();
+		chanHDP.finish();
 		Iterator<Agent> iterator = agentsId.values().iterator();
 		Agent agent;
 		//Send abort signal to all agents
