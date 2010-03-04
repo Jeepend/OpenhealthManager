@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2008-2009  Santiago Carot Nemesio
+Copyright (C) 2008-2010  Santiago Carot Nemesio
 email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
@@ -22,22 +22,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android;
+package es.libresoft.openhealth.events;
 
-import es.libresoft.openhealth.android.AgentDevice;
-/**
- * Manager notification interface, all clients registered with the remote service, will be
- * notified when next events occurs.
- * Note that this is a one-way interface so the server does not block waiting for the client.
- */
-oneway interface IManagerCallbackService {
-    /**
-     * Called when agent connect with the manager.
-     */
-    void agentConnection (in AgentDevice agent);
-    
-    /**
-     * Called when agent releases the association with the manager.
-     */
-    void agentDisconnection (String system_id);
+import java.util.List;
+	/**
+	 * This class represent a metric measure sended from remote agent. It
+	 * is used to represent a metric object from DIM in application context.
+	 * @author sancane
+	 *
+	 */
+public class MetricReport {
+	int mdc_attr_id_type;
+	int mdc_attr_unit_code;
+	
+	public MetricReport (int type, int unit_code) {
+		mdc_attr_id_type = type;
+		mdc_attr_unit_code = unit_code;
+	}
 }

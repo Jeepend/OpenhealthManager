@@ -24,20 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import es.libresoft.openhealth.android.AgentDevice;
-/**
- * Manager notification interface, all clients registered with the remote service, will be
- * notified when next events occurs.
- * Note that this is a one-way interface so the server does not block waiting for the client.
- */
-oneway interface IManagerCallbackService {
-    /**
-     * Called when agent connect with the manager.
-     */
-    void agentConnection (in AgentDevice agent);
-    
-    /**
-     * Called when agent releases the association with the manager.
-     */
-    void agentDisconnection (String system_id);
-}
+// Declare the value measure so AIDL can find it and knows that it implements
+// the parcelable protocol.
+parcelable AndroidAttribute;

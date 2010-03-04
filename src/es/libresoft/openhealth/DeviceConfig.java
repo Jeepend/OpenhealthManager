@@ -26,6 +26,7 @@ package es.libresoft.openhealth;
 public class DeviceConfig {
 	
 	private int data_proto_id;
+	private int phdid;
 	private String enc_rules;
 	private int protocol_version;
 	private int nomenclature_version;
@@ -33,10 +34,11 @@ public class DeviceConfig {
 	private int data_req_init_manager_count;
 	private byte[] data_req_mode_flags;
 	
-	public DeviceConfig(int proto_id, String enc_rules, int p_version, int n_version,
+	public DeviceConfig(int proto_id, int phdid, String enc_rules, int p_version, int n_version,
 			int driac, int drimc, byte[] drmf) 
 	{
 		this.data_proto_id = proto_id;
+		this.phdid = phdid;
 		this.enc_rules = enc_rules;
 		this.protocol_version = p_version;
 		this.nomenclature_version = n_version;
@@ -46,6 +48,8 @@ public class DeviceConfig {
 	}
 	
 	public int getDataProtoId(){return this.data_proto_id;}
+	
+	public int getPhdId(){return this.phdid;}
 	
 	public String getEncondigRules(){return this.enc_rules;}
 	

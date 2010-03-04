@@ -201,6 +201,7 @@ public final class MUnassociated extends Unassociated {
 	private DeviceConfig getDeviceConfiguration (PhdAssociationInformation phd, int data_proto_id) {
 		DeviceConfigCreator dev_conf = new DeviceConfigCreator();
 		dev_conf.setDataProtoId(data_proto_id);
+		dev_conf.setPhdId(phd.getDev_config_id().getValue().intValue());
 		dev_conf.setProtocolVersion(1);
 		
 		/* Check encoding rules */
@@ -252,7 +253,7 @@ public final class MUnassociated extends Unassociated {
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
 		
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
-		int id = phd.getDev_config_id().getValue().intValue();
+		int id = dev_conf.getPhdId();
 		
 		if ((400 <= id) && (id <= 499)){
 			System.out.println("Testing Pulse Oximeter");

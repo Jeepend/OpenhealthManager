@@ -24,8 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
+import ieee_11073.part_20601.phd.dim.Attribute;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +47,7 @@ import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.utils.DIM_Tools;
 
 
 public class DrDroid extends Service {
@@ -234,6 +238,19 @@ public class DrDroid extends Service {
 		}
     };
     
+    private AgentDevice getAgentDevice (Agent a) {
+    	String manufacturer = "Unknown";
+    	String model = "Unknown";
+		Attribute attr = a.mdsHandler.getMDS().getAttribute(Nomenclature.MDC_ATTR_ID_MODEL);
+		if (attr != null) {
+			SystemModel sm = (SystemModel)attr.getAttributeType();
+			manufacturer = DIM_Tools.byteArrayToString(sm.getManufacturer());
+			model = DIM_Tools.byteArrayToString(sm.getModel_number());
+		}
+		AgentDevice ad = new AgentDevice (a.mdsHandler.getMDS().getDeviceConf().getPhdId(),
+				a.getSystem_id(),manufacturer, model);
+		return ad;
+    }
     /************************************************************
 	 * Internal events triggered from manager thread
 	 ************************************************************/
@@ -243,6 +260,7 @@ public class DrDroid extends Service {
     	//+++++++++++++++++++++++++++++++
 		@Override
 		public void agentConnected(Agent agent) {
+			
 			// Create new input for callbacks events for the new agent
 			agentsId.put(agent.getSystem_id(), agent);
 			aCallback.put(agent.getSystem_id(), new RemoteCallbackList<IAgentCallbackService>());
@@ -251,7 +269,7 @@ public class DrDroid extends Service {
             final int N = mCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
                 try {
-                    mCallbacks.getBroadcastItem(i).agentConnection(agent.getSystem_id());
+                    mCallbacks.getBroadcastItem(i).agentConnection(getAgentDevice(agent));
                 } catch (RemoteException e) {
                     // The RemoteCallbackList will take care of removing
                     // the dead object for us.
