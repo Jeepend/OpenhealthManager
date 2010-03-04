@@ -34,7 +34,7 @@ public interface InternalEventManager {
 	 * @param value
 	 * @param date
 	 */
-	public void receivedMeasure(String system_id, List measures);
+	public void receivedMeasure(String system_id, MeasureReporter mr);
 	
 	/**
 	 * Agent event to indicate that the agents has changed is state

@@ -34,6 +34,7 @@ import java.util.List;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import es.libresoft.openhealth.Agent;
@@ -41,6 +42,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 
 
@@ -84,7 +86,7 @@ public class DrDroid extends Service {
 	public void onStart(Intent intent, int startId) {
 		try {
 			channelTCP.start();
-			chanHDP = new HDPManagerChannel();
+			//chanHDP = new HDPManagerChannel();
 			System.out.println("Service started");
 			super.onStart(intent, startId);
 		} catch (Exception e) {
@@ -109,7 +111,7 @@ public class DrDroid extends Service {
 	public void onDestroy() {
 		System.out.println("Service stopped");
 		channelTCP.finish();
-		chanHDP.finish();
+		//chanHDP.finish();
 		Iterator<Agent> iterator = agentsId.values().iterator();
 		Agent agent;
 		//Send abort signal to all agents
@@ -304,7 +306,9 @@ public class DrDroid extends Service {
 		}
 
 		@Override
-		public void receivedMeasure(String system_id, List measures) {
+		public void receivedMeasure(String system_id, MeasureReporter mr) {
+			AndroidMeasureReporter amr = (AndroidMeasureReporter)mr;
+			
 			if (system_id==null || !aCallback.containsKey(system_id))
 				return;
 			// Send a agent Broadcast Event to all clients.
@@ -312,7 +316,8 @@ public class DrDroid extends Service {
             final int N = agentCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
                 try {
-                	agentCallbacks.getBroadcastItem(i).agentMeasureReceived(measures);
+                	//agentCallbacks.getBroadcastItem(i).agentMeasureReceived(mr.getMeasures());
+                	agentCallbacks.getBroadcastItem(i).metricReceived(amr.getMetric());
                 } catch (RemoteException e) {
                     // The RemoteCallbackList will take care of removing
                     // the dead object for us.

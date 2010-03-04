@@ -9,6 +9,7 @@ import java.util.List;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 
 public class ManagerShell {
@@ -31,7 +32,8 @@ public class ManagerShell {
 		}
 
 		@Override
-		public void receivedMeasure(String systemId, List measures) {
+		public void receivedMeasure(String systemId, MeasureReporter mr) {
+			List measures = mr.getMeasures();
 			Iterator i = measures.iterator();
 			if (measures.isEmpty()) return;
 

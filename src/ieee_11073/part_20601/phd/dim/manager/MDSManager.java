@@ -51,6 +51,7 @@ import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.MDS;
+import ieee_11073.part_20601.phd.dim.Metric;
 import ieee_11073.part_20601.phd.dim.Numeric;
 
 import java.io.ByteArrayInputStream;
@@ -164,6 +165,7 @@ public abstract class MDSManager extends MDS {
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				DataExtractor de = new DataExtractor(obs.getObs_val_data());
 				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
+				addAttributesToReport(mr,numeric);
 				while (it.hasNext()){
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
@@ -175,7 +177,7 @@ public abstract class MDSManager extends MDS {
 						e.printStackTrace();
 					}
 				}
-				InternalEventReporter.receivedMeasure(system_id, mr.getMeasures());
+				InternalEventReporter.receivedMeasure(system_id, mr);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -188,10 +190,6 @@ public abstract class MDSManager extends MDS {
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
 			
-			//System.out.println("****************Dynamic-Data_Update_Var: System ID: " + system_id);
-			//System.out.println("Data Req Id: " + info.getData_req_id().getValue() + " Agent initiated (61440)");
-			//System.out.println("Scan-report-no: " + info.getScan_report_no());
-			
 			Iterator<ObservationScan> i= info.getObs_scan_var().iterator();
 			ObservationScan obs;
 			MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
@@ -200,6 +198,7 @@ public abstract class MDSManager extends MDS {
 				obs=i.next();
 				//Get Numeric from Handle_id
 				Numeric numeric = getNumeric(obs.getObj_handle());
+				addAttributesToReport(mr,numeric);
 				if (numeric == null)
 					throw new Exception("Numeric class not found for handle: " + obs.getObj_handle().getValue().getValue());
 				
@@ -210,7 +209,7 @@ public abstract class MDSManager extends MDS {
 					byte[] att_value = att.getAttribute_value();
 					mr.addMeasure(att_id, decodeRawData(att_id,att_value));
 				}
-				InternalEventReporter.receivedMeasure(system_id, mr.getMeasures());
+				InternalEventReporter.receivedMeasure(system_id, mr);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -218,7 +217,19 @@ public abstract class MDSManager extends MDS {
 		
 	}
 	
-	
+	/* Next method add additional info to report to application layer. Please, feel 
+	 * free to make changes. */
+	private void addAttributesToReport (MeasureReporter mr, Metric measure) {
+		Attribute at;
+		
+		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
+		TYPE type = (TYPE)at.getAttributeType();
+		mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
+		
+		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
+		OID_Type unit_cod = (OID_Type)at.getAttributeType();
+		mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
+	}
 	/**
 	 * Get data defined in the Attribute-Value-Map of the object
 	 * @param <T>

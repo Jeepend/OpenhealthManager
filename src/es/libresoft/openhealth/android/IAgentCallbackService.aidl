@@ -26,6 +26,8 @@ package es.libresoft.openhealth.android;
 
 import es.libresoft.openhealth.android.AndroidValueMeasure;
 import es.libresoft.openhealth.android.AndroidDateMeasure;
+import es.libresoft.openhealth.android.AndroidAttribute;
+import es.libresoft.openhealth.android.AgentMetric;
 
 /**
  * Agent notification interface, all clients registered with the remote service, will be
@@ -42,4 +44,5 @@ oneway interface IAgentCallbackService {
      * Called when manager receives a measure from agent.
      */
     void agentMeasureReceived (in List measures);
+    void metricReceived (in AgentMetric metric);
 }

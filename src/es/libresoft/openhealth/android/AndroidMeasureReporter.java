@@ -35,26 +35,42 @@ import es.libresoft.openhealth.events.MeasureReporter;
 
 public class AndroidMeasureReporter implements MeasureReporter{
 
-	private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
+	//private final ArrayList<Parcelable> attributes = new ArrayList<Parcelable>();
+	//private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
+	AgentMetric metric = new AgentMetric();
 	
 	@Override
 	public void addMeasure(int mType, Object data) {
 		if (data instanceof SFloatType){
 			SFloatType sf = (SFloatType)data;
-			measures.add(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+			metric.addMeasure(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;
-			measures.add(new AndroidDateMeasure(mType,timestamp.getTime()));
+			metric.addMeasure(new AndroidDateMeasure(mType,timestamp.getTime()));
 		}else System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
 	}
 
 	@Override
 	public List getMeasures(){
-		return measures;
+		return metric.getMeasures();
+	}
+	
+	public List getAttributes(){
+		return metric.getAttributes();
 	}
 
 	@Override
 	public void clearMeasures() {
-		measures.clear();
+		metric.clearMeasures();
 	}
+
+	@Override
+	public void set_attribute(int type, int value) {
+		metric.addAttribute(new AndroidAttribute(type, value));
+	}
+	
+	public AgentMetric getMetric() {
+		return metric;
+	}
+
 }

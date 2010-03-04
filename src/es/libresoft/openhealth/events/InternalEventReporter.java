@@ -51,8 +51,8 @@ public class InternalEventReporter {
 			iEvent.agentChangeStatus(system_id, state);
 	}
 
-	public static void receivedMeasure(String system_id, List measures) {
+	public static void receivedMeasure(String system_id, MeasureReporter mr) {
 		if (iEvent!=null)
-			iEvent.receivedMeasure(system_id, measures);
+			iEvent.receivedMeasure(system_id, mr);
 	}
 }

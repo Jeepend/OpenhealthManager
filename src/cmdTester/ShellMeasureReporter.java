@@ -1,5 +1,6 @@
 package cmdTester;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,18 @@ public class ShellMeasureReporter implements MeasureReporter {
 	@Override
 	public List getMeasures() {
 		return measures;
+	}
+
+	@Override
+	public void set_attribute(int type, int value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> List<T> getAttributes() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

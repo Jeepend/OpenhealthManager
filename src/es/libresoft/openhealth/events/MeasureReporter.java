@@ -24,11 +24,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
+import java.io.Serializable;
 import java.util.List;
 
 public interface MeasureReporter {
-
+	void set_attribute(int type, int value);
 	void addMeasure (int mType, Object data);
 	<T> List<T> getMeasures();
+	<T> List<T> getAttributes();
 	void clearMeasures();
 }
