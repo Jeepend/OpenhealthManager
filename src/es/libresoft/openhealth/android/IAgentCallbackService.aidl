@@ -43,6 +43,5 @@ oneway interface IAgentCallbackService {
     /**
      * Called when manager receives a measure from agent.
      */
-    void agentMeasureReceived (in List measures);
     void metricReceived (in AgentMetric metric);
 }

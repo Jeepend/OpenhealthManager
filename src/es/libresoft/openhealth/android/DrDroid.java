@@ -316,7 +316,6 @@ public class DrDroid extends Service {
             final int N = agentCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
                 try {
-                	//agentCallbacks.getBroadcastItem(i).agentMeasureReceived(mr.getMeasures());
                 	agentCallbacks.getBroadcastItem(i).metricReceived(amr.getMetric());
                 } catch (RemoteException e) {
                     // The RemoteCallbackList will take care of removing
