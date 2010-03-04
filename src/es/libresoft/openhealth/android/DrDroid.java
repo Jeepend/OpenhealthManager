@@ -304,6 +304,7 @@ public class DrDroid extends Service {
 		//+++++++++++++++++++++++++++++++
 		@Override
 		public void agentChangeStatus(String system_id, String state) {
+			System.out.println("=======>Agent Change state: " + state);
 			if (system_id==null || !aCallback.containsKey(system_id))
 				//Unknown agent changes from disconnect state to unassociated (system_id is not received yet) 
 				return;

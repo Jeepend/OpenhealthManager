@@ -256,17 +256,21 @@ public final class MUnassociated extends Unassociated {
 		int id = dev_conf.getPhdId();
 		
 		if ((400 <= id) && (id <= 499)){
-			System.out.println("Testing Pulse Oximeter");
-			//processExtendedConfiguration(phd);
+			processExtendedConfiguration(phd);
+			/*
 			acceptStandardAssociation(
 					DeviceSpecializationFactory.getOxymeter10404(
 							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
+			*/
 		}else if ((700 <= id) && (id <= 799)){
 			System.out.println("Blood Pressure is not yet supported");
 		}else if ((800 <= id) && (id <= 899)){ //Thermometer
+			processExtendedConfiguration(phd);
+			/*
 			acceptStandardAssociation(
 					DeviceSpecializationFactory.getThermometer10408(
 							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
+			*/
 		}else if ((1500 <= id) && (id <= 1599)){
 			System.out.println("Weighing Scale is not yet supported");
 		}else if ((1700 <= id) && (id <= 1799)){
