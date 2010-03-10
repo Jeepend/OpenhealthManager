@@ -91,10 +91,13 @@ public class HDPManagerChannel {
 	public HDPManagerChannel () throws Exception {		
 		Feature[] fs = new Feature [] {
 				new Feature (Nomenclature.MDC_DEV_SPEC_PROFILE_PULS_OXIM, "Pulse-oximeter"),
+		};
+		Feature[] fs2 = new Feature [] {
 				new Feature (Nomenclature.MDC_DEV_SPEC_PROFILE_SCALE, "Weighing-scale"),
 		};
 		FeatureGroup[] fg = new FeatureGroup[] {
 				new FeatureGroup(fs,FeatureGroup.SINK_ROLE),
+				new FeatureGroup(fs2,FeatureGroup.SINK_ROLE),
 		};
 		config = new HDPConfig(srvName, srvDescName, provName, fg);
 		devices = new HDPManagedDevices();
