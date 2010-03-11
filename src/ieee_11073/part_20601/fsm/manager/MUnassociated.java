@@ -272,7 +272,11 @@ public final class MUnassociated extends Unassociated {
 							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
 			*/
 		}else if ((1500 <= id) && (id <= 1599)){
-			System.out.println("Weighing Scale is not yet supported");
+			processExtendedConfiguration(phd);
+			/*
+			acceptStandardAssociation(
+					DeviceSpecializationFactory.getWeighingScale10415(phd.getSystem_id(), phd.getDev_config_id()),dev_conf);
+			*/
 		}else if ((1700 <= id) && (id <= 1799)){
 			System.out.println("Glucose is not yet supported");
 		}else if ((4100 <= id) && (id <= 4199)){

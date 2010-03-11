@@ -147,4 +147,54 @@ public class DeviceSpecializationFactory {
 		}
 		return oximeter;
 	}
+	
+	public static DS_10415 getWeighingScale10415 (byte[] system_id, ConfigId devConfig_id){
+		DS_10415 weighing_scale = null;
+		
+		Hashtable<Integer,Attribute> mandatoryAttributes = new Hashtable<Integer,Attribute>();
+		try {
+			//from Part 10415: Handle=0
+			HANDLE handle = new HANDLE();
+			handle.setValue(new INT_U16(new Integer(0)));
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_ID_HANDLE, 
+					new Attribute(Nomenclature.MDC_ATTR_ID_HANDLE,
+									handle));
+			
+			//from Part 10415: {"Manufacturer","Model"}
+			SystemModel systemModel = new SystemModel();
+			systemModel.setManufacturer("Weighing_scale".getBytes("ASCII"));
+			systemModel.setModel_number("10415".getBytes("ASCII"));
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_ID_MODEL, 
+					new Attribute(Nomenclature.MDC_ATTR_ID_MODEL,
+									systemModel));
+			
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_SYS_ID, 
+					new Attribute(Nomenclature.MDC_ATTR_SYS_ID,
+									system_id));
+			
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_DEV_CONFIG_ID, 
+					new Attribute(Nomenclature.MDC_ATTR_DEV_CONFIG_ID,
+									devConfig_id));
+			
+			//from Part 10415: {MDC_DEV_SPEC_PROFILE_SCALE,1}
+			TypeVerList syst_type_spec_list = new TypeVerList();
+			syst_type_spec_list.initValue();
+			TypeVer item = new TypeVer();
+			OID_Type oid = new OID_Type();
+			oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_DEV_SPEC_PROFILE_SCALE)));
+			item.setType(oid);
+			item.setVersion(new Integer(1));
+			syst_type_spec_list.add(item);
+			mandatoryAttributes.put(Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST, 
+					new Attribute(Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST,
+							syst_type_spec_list));
+			weighing_scale = new DS_10415 (mandatoryAttributes);
+			
+		} catch (InvalidAttributeException e) {/*Never thrown in standard configuration*/
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return weighing_scale;
+	}
 }

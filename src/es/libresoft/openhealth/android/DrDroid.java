@@ -90,7 +90,7 @@ public class DrDroid extends Service {
 	public void onStart(Intent intent, int startId) {
 		try {
 			channelTCP.start();
-			//chanHDP = new HDPManagerChannel();
+			chanHDP = new HDPManagerChannel();
 			System.out.println("Service started");
 			super.onStart(intent, startId);
 		} catch (Exception e) {
@@ -115,7 +115,7 @@ public class DrDroid extends Service {
 	public void onDestroy() {
 		System.out.println("Service stopped");
 		channelTCP.finish();
-		//chanHDP.finish();
+		chanHDP.finish();
 		Iterator<Agent> iterator = agentsId.values().iterator();
 		Agent agent;
 		//Send abort signal to all agents

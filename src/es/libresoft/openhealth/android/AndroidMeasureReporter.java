@@ -30,6 +30,7 @@ import java.util.List;
 
 import android.os.Parcelable;
 
+import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.events.MeasureReporter;
 
@@ -43,6 +44,9 @@ public class AndroidMeasureReporter implements MeasureReporter{
 	public void addMeasure(int mType, Object data) {
 		if (data instanceof SFloatType){
 			SFloatType sf = (SFloatType)data;
+			metric.addMeasure(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+		}else if (data instanceof FloatType){
+			FloatType sf = (FloatType)data;
 			metric.addMeasure(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;

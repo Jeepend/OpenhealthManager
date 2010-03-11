@@ -41,6 +41,7 @@ import ieee_11073.part_20601.asn1.ConfigReportRsp;
 import ieee_11073.part_20601.asn1.ConfigResult;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.ObservationScan;
@@ -63,6 +64,7 @@ import java.util.Iterator;
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
 
+import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
@@ -246,6 +248,11 @@ public abstract class MDSManager extends MDS {
 			SFloatType ft = new SFloatType(iu.getValue());
 			System.out.println("Measure: " + ft.doubleValueRepresentation());
 			return (T)ft;
+		case Nomenclature.MDC_ATTR_NU_VAL_OBS_SIMP:
+			INT_U32 iu2 = decoder.decode(input, INT_U32.class);
+			FloatType ft2 = new FloatType(iu2.getValue());
+			System.out.println("Measure: " + ft2.doubleValueRepresentation());
+			return (T)ft2;
 		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
 			/*
 			 * The absolute time data type specifies the time of day with a resolution of 1/100 
