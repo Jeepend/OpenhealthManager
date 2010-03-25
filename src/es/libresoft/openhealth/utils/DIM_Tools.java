@@ -48,6 +48,7 @@ import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.MeasurementStatus;
+import ieee_11073.part_20601.asn1.MetricIdList;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.MetricStructureSmall;
 import ieee_11073.part_20601.asn1.NomPartition;
@@ -165,7 +166,7 @@ public class DIM_Tools {
 		case Nomenclature.MDC_ATTR_METRIC_STRUCT_SMALL : return "Metric-Structure-Small";
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_SIMP : return "Compund-Simple-Nu-Observed-Value";
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC : return "Compund-Basic-Nu-Observed-Value";
-		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST : return "Metric-Id";
+		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST : return "Metric-Id-List";
 		case Nomenclature.MDC_ATTR_SCAN_HANDLE_LIST : return "Scan-Handle-List";
 		default: return null;
 		}
@@ -249,7 +250,7 @@ public class DIM_Tools {
 		case Nomenclature.MDC_ATTR_METRIC_STRUCT_SMALL : return MetricStructureSmall.class;
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_SIMP : return SimpleNuObsValueCmp.class;
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC : return BasicNuObsValueCmp.class;
-		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST : return OID_Type.class;
+		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST : return MetricIdList.class;
 		case Nomenclature.MDC_ATTR_SCAN_HANDLE_LIST : return HANDLEList.class;
 		default: return null;
 		}

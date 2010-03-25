@@ -1,4 +1,5 @@
 /*
+Copyright (C) 2009-2010  Universidad Rey Juan Carlos
 Copyright (C) 2009-2010  Andago Labs
 
 This program is a (FLOS) free libre and open source implementation
