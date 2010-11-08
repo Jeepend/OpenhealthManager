@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ public final class CheckingConfig extends Configuring {
 	public CheckingConfig (StateHandler handler) {
 		super(handler);
 	}
-	
+
 	@Override
 	public synchronized String getStateName() {
 		return "CheckingConfig";
@@ -69,7 +69,7 @@ public final class CheckingConfig extends Configuring {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAarqSelected() || apdu.isAareSelected() || apdu.isRlreSelected()){
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
-			state_handler.changeState(new MUnassociated(state_handler));			
+			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAbrtSelected()){
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
@@ -91,10 +91,10 @@ public final class CheckingConfig extends Configuring {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
 	}
-	
+
 	/**
 	 * This method set the current state to CheckingConfig State (if it is not yet)
-	 * and shall check the provided data to determinate if it should transit to Operating 
+	 * and shall check the provided data to determinate if it should transit to Operating
 	 * state or not.
 	 * @param data
 	 */
@@ -109,27 +109,27 @@ public final class CheckingConfig extends Configuring {
 			System.err.println("TODO: Send Response Error");
 		}
 	}
-	
+
 	//---------------------------------------------PRIVATE--------------------------------------------------------------
 	private void process_PrstApdu(PrstApdu prst){
 		try {
 			/*
-			 * The DataApdu and the related structures in A.10 shall use encoding rules 
+			 * The DataApdu and the related structures in A.10 shall use encoding rules
 			 * as negotiated during the association procedure as described in 8.7.3.1.
 			 */
-			processDataApdu(ASN1_Tools.decodeData(prst.getValue(), 
-					DataApdu.class, 
+			processDataApdu(ASN1_Tools.decodeData(prst.getValue(),
+					DataApdu.class,
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules()));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Error getting DataApdu encoded with " + 
-					this.state_handler.getMDS().getDeviceConf().getEncondigRules() + 
+			System.err.println("Error getting DataApdu encoded with " +
+					this.state_handler.getMDS().getDeviceConf().getEncondigRules() +
 					". The connection will be released.");
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
-			state_handler.changeState(new MDisassociating(state_handler));			
+			state_handler.changeState(new MDisassociating(state_handler));
 		}
 	}
-	
+
 	private void processDataApdu(DataApdu data) {
 		MessageChoiceType msg = data.getMessage();
 		//Process the message received
@@ -191,7 +191,7 @@ public final class CheckingConfig extends Configuring {
 			//(A.10.3 EVENT REPORT service)
 			EventReportArgumentSimple event = data.getMessage().getRoiv_cmip_confirmed_event_report();
 			if (event.getObj_handle().getValue().getValue() == 0){
-				//obj-handle is 0 to represent the MDS 
+				//obj-handle is 0 to represent the MDS
 				process_MDS_Object_Event(data);
 			}else{
 				//TODO: handle representing a scanner or PM-store object.
@@ -203,7 +203,7 @@ public final class CheckingConfig extends Configuring {
 			System.err.println("TODO: Send Response Error");
 		}
 	}
-	
+
 	private void process_MDS_Object_Event(DataApdu data) throws Exception{
 		// The agent is sending measurements before a configuration is agreed to.
 		MessageChoiceType msg = data.getMessage();
@@ -221,16 +221,16 @@ public final class CheckingConfig extends Configuring {
 					state_handler.getMDS().getDeviceConf()));
 		}
 	}
-	
+
 	private ConfigReportRsp getConfigResponse (EventReportArgumentSimple event) throws Exception{
 		ConfigReport config = ASN1_Tools.decodeData(
-				event.getEvent_info(), 
-				ConfigReport.class, 
+				event.getEvent_info(),
+				ConfigReport.class,
 				state_handler.getMDS().getDeviceConf().getEncondigRules());
 		//Send event to MDS class
 		return state_handler.getMDS().MDS_Configuration_Event(config);
 	}
-	
+
 	private void checkingConfig (DataApdu data, ConfigReportRsp response) throws Exception{
 		state_handler.send(composeResponse(data,response));
 		//Set next state
@@ -238,12 +238,12 @@ public final class CheckingConfig extends Configuring {
 			state_handler.changeState(new MOperating(state_handler));
 		else state_handler.changeState(new WaitingForConfig(state_handler));
 	}
-	
+
 	private ApduType composeResponse (DataApdu data, ConfigReportRsp response) throws Exception {
 		DataApdu confRsp = new DataApdu();
 		MessageChoiceType msgRsp = new MessageChoiceType();
 		EventReportResultSimple eventRRS = new EventReportResultSimple();
-		
+
 		HANDLE mdsHandle = (HANDLE)state_handler.getMDS().getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 		//Handle of the MDS object
 		eventRRS.setObj_handle(mdsHandle);
@@ -253,7 +253,7 @@ public final class CheckingConfig extends Configuring {
 		eventRRS.setCurrentTime(rt);
 		//The event-type of the result shall be a copy of the event-type from the invocation.
 		eventRRS.setEvent_type(data.getMessage().getRoiv_cmip_confirmed_event_report().getEvent_type());
-		
+
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules
 		IEncoder<ConfigReportRsp> encoderConfRsp;
@@ -261,9 +261,9 @@ public final class CheckingConfig extends Configuring {
 					state_handler.getMDS().getDeviceConf().getEncondigRules());
 		encoderConfRsp.encode(response, output);
 		eventRRS.setEvent_reply_info(output.toByteArray());
-		
+
 		msgRsp.selectRors_cmip_confirmed_event_report(eventRRS);
-		
+
 		confRsp.setInvoke_id(data.getInvoke_id());
 		confRsp.setMessage(msgRsp);
 		return MessageFactory.composeApdu (confRsp, state_handler.getMDS().getDeviceConf());

@@ -9,13 +9,13 @@ public class AndroidAttribute implements Parcelable {
 
 	private int type; /* Id type */
 	private int code; /* value */
-	
-	public static final Parcelable.Creator<AndroidAttribute> CREATOR = 
+
+	public static final Parcelable.Creator<AndroidAttribute> CREATOR =
 			new Parcelable.Creator<AndroidAttribute>() {
 	    public AndroidAttribute createFromParcel(Parcel in) {
 	        return new AndroidAttribute(in);
 	    }
-	
+
 	    public AndroidAttribute[] newArray(int size) {
 	        return new AndroidAttribute[size];
 	    }
@@ -47,7 +47,7 @@ public class AndroidAttribute implements Parcelable {
 	public int getAttrId () {
 		return this.type;
 	}
-	
+
 	public int getCode () {
 		return this.code;
 	}

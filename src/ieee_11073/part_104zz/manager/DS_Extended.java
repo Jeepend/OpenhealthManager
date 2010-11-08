@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -42,42 +42,42 @@ import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public class DS_Extended extends MDSManager {
-	  
+
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
 	 */
 	public DS_Extended(byte[] system_id, ConfigId devConfig_id){
 		super(system_id,devConfig_id);
-	} 
+	}
 
 	@Override
 	public void MDS_DATA_REQUEST() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void Set_Time() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void GET() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Fixed(ScanReportInfoMPFixed info) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

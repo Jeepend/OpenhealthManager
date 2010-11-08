@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -28,12 +28,12 @@ import java.util.ArrayList;
 public class FIFO<T> implements IFIFO<T>{
 	private ArrayList<T> fifoList;;
 	private IUnlock handler;
-	
-	public FIFO () 
+
+	public FIFO ()
 	{
 		fifoList = new ArrayList<T>();
 	}
-	
+
 	@Override
 	public synchronized boolean add(T obj) {
 		if (fifoList.add(obj)){
@@ -51,7 +51,7 @@ public class FIFO<T> implements IFIFO<T>{
 	public synchronized int size() {
 		return fifoList.size();
 	}
-	
+
 	public synchronized String toString(){
 		return fifoList.toString();
 	}
@@ -65,5 +65,5 @@ public class FIFO<T> implements IFIFO<T>{
 	public synchronized void setHandler(IUnlock handler) {
 		this.handler = handler;
 	}
-	
+
 }

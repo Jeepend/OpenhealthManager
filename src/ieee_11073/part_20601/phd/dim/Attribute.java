@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -36,12 +36,12 @@ public class Attribute {
 		NotRecomended,
 		Optional
 	}
-	
+
 	private String attrName; 				/* Friendly name of this attribute */
 	private int attrId; 					/* Attribute ID given from ISO/IEEE 11073/10101 */
 	private Object attrType; 	/* The ASN.1 definition class given from Annex A */
 	//private Qualifier qual;					/* qualifier of this attribute, it may be optional, mandatory or conditional */
-	
+
 	public Attribute (int id, Object type) throws InvalidAttributeException {
 		if (!((0<=id)&&(id<=65535)))
 			throw new InvalidAttributeException("ID: " + id +" is not in ISO/IEEE 11073-10101 partition");
@@ -62,9 +62,9 @@ public class Attribute {
 			this.attrType = type;
 		}
 		this.attrName = name;
-		this.attrId = id;		
+		this.attrId = id;
 	}
-	
+
 	/**
 	 * Get friendly name for this attribute
 	 * @return Attribute name
@@ -72,7 +72,7 @@ public class Attribute {
 	public String getAttributeName() {
 		return attrName;
 	}
-	
+
 	/**
 	 * Get nomenclature reference ID for this attribute
 	 * @return Attribute_ID
@@ -81,7 +81,7 @@ public class Attribute {
 	{
 		return attrId;
 	}
-	
+
 	/**
 	 * Get the ASN.1 attribute type
 	 * @return Attribute Type
@@ -89,7 +89,7 @@ public class Attribute {
 	public Object getAttributeType (){
 		return attrType;
 	}
-	
+
 	/*
 	public Qualifier getQualifier (){
 		return this.qual;

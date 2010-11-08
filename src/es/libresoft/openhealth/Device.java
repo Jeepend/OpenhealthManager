@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -33,14 +33,14 @@ import ieee_11073.part_20601.phd.channel.VirtualChannel;
 public abstract class Device {
 
 	public static final String MDER_DEFUALT = "MDER";
-	
+
 	private VirtualChannel vch;
-	
+
 	protected IFIFO<ApduType> inputQueue;
 	protected IFIFO<ApduType> outputQueue;
 	protected IFIFO<Event> eventQueue;
 
-	
+
 	public Device ()
 	{
 		inputQueue = new FIFO<ApduType>();
@@ -53,12 +53,12 @@ public abstract class Device {
 	{
 		vch.addChannel(channel);
 	}
-	
+
 	public void delChannel (Channel channel)
 	{
 		vch.delChannel(channel);
 	}
-	
+
 	public void freeResources (){
 		vch.freeChannels();
 	}

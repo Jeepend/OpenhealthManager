@@ -29,7 +29,7 @@ public class ShellMeasureReporter implements MeasureReporter {
 	@Override
 	public void set_attribute(int type, int value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

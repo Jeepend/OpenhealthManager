@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -32,17 +32,17 @@ import es.libresoft.hdp.HDPDevice;
 public class HDPManagedDevices {
 
 	private ArrayList<HDPConnection> devices;
-	
+
 	public HDPManagedDevices () {
 		devices = new ArrayList<HDPConnection>();
 	}
-	
+
 	public synchronized boolean addHDPDevice (HDPConnection newcon) {
 		if (newcon == null)
 			return true;
 		return devices.add(newcon);
 	}
-	
+
 	public synchronized boolean delHDPDevice (HDPConnection con) {
 		if (con == null)
 			return false;
@@ -52,8 +52,8 @@ public class HDPManagedDevices {
 		}
 		return false;
 	}
-	
-	public synchronized HDPConnection getHDPConnection (HDPDevice dev) {		
+
+	public synchronized HDPConnection getHDPConnection (HDPDevice dev) {
 		Iterator<HDPConnection> i = devices.iterator();
 		HDPConnection obj;
 		while (i.hasNext()) {
@@ -63,7 +63,7 @@ public class HDPManagedDevices {
 		}
 		return null;
 	}
-	
+
 	public synchronized void freeAllResources () {
 		Iterator<HDPConnection> i = devices.iterator();
 		HDPConnection obj;

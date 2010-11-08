@@ -59,13 +59,13 @@ public class ManagerShell {
 			InternalEventReporter.setDefaultEventManager(ieManager);
 			//Set target platform to android to report measures using IPC mechanism
 			MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.SHELL);
-			
+
 			/* Start TCP server */
 			channelTCP.start();
-			
+
 			System.out.println("Push any key to exit");
 			System.in.read();
-			
+
 			chanHDP.finish();
 			channelTCP.finish();
 		} catch (Exception e) {

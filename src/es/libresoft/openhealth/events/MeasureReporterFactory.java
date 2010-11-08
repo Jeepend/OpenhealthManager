@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ import es.libresoft.openhealth.android.AndroidMeasureReporter;
 public class MeasureReporterFactory {
 
 	private static int defaultReporter = 0; //not measure reporter set
-	
+
 	//Supported platforms
 	public static final int ANDROID = 1;
 	public static final int SHELL = 2;
-	
+
 	/**
 	 * Set the default measure reporter of the entire system
 	 * @param platform target platform
@@ -42,7 +42,7 @@ public class MeasureReporterFactory {
 	public static final void setDefaultMeasureReporter (int platform) {
 		defaultReporter = platform;
 	}
-	
+
 	/**
 	 * Get default measure reporter established for the target platform
 	 * @return the target measure reporter for the specific platform
@@ -53,11 +53,11 @@ public class MeasureReporterFactory {
 			throw new Exception("Measure reporter is not setted to any target platform");
 		return getMeasureReporterFor(defaultReporter);
 	}
-	
+
 	/**
 	 * Get measure reporter class to send measure events from manager to application layer
 	 * @param platform
-	 * @return 
+	 * @return
 	 */
 	public static final MeasureReporter getMeasureReporterFor(int platform){
 		switch (platform) {

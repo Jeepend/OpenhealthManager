@@ -7,7 +7,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ package es.libresoft.hdp;
 import java.io.IOException;
 
 public class HDPSession {
-	
+
 	/* peer field stores the underlying C++ pointer class */
 	private long peer;
-	
+
 	private HDPCallbacks cb;
-	
+
 	private static native void initIDs ();
 	private native void init_hdp(HDPConfig config);
 	private native synchronized void HDPfree (long peer);
@@ -54,25 +54,25 @@ public class HDPSession {
 	public void free () {
 		HDPfree(peer);
 	}
-	
+
 	protected void finalize() {
 		free();
 	}
-	
+
 	public void close(){
 		System.out.println("Adios");
 	}
-	
+
 	/* Invoked from native code */
 	private void device_connected(String btaddr) {
 		cb.new_device_connected(new HDPDevice(btaddr, this));
 	}
-	
+
 	/* Invoked from native code */
 	private void device_disconected(String btaddr) {
 		cb.device_disconected(new HDPDevice(btaddr, this));
 	}
-	
+
 	/* Invoked from native code */
 	private void dc_connected(long dchannel, int mdlid, String btaddr) {
 		try {
@@ -84,7 +84,7 @@ public class HDPSession {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int read(long dc, byte[] b, int offset, int length) throws IOException  {
 		if (b == null) {
             throw new NullPointerException("byte array is null");
@@ -94,7 +94,7 @@ public class HDPSession {
         }
         return HDPread(peer, dc, b, offset, length);
 	}
-	
+
 	public void write(long dc, byte[] b, int offset, int count) throws IOException {
 		if (b == null) {
             throw new NullPointerException("buffer is null");
@@ -102,10 +102,10 @@ public class HDPSession {
         if ((offset | count) < 0 || count > b.length - offset) {
             throw new IndexOutOfBoundsException("invalid offset or length");
         }
-        
+
         HDPwrite(peer, dc, b, offset, count);
 	}
-	
+
 	static {
 		System.loadLibrary("es_libresoft_hdp_HDPSession");
 		HDPSession.initIDs();

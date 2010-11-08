@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ import java.util.Hashtable;
 import ieee_11073.part_10101.Nomenclature;
 
 	/**
-	 * An instance of the PM-segment class represents a persistently stored episode of measurement 
+	 * An instance of the PM-segment class represents a persistently stored episode of measurement
 	 * data. A PM-segment object is not part of the static agent configuration because the number of
-	 * instantiated PM-segment instances may dynamically change. The manager accesses PM-segment 
+	 * instantiated PM-segment instances may dynamically change. The manager accesses PM-segment
 	 * objects indirectly by methods and events of the PM-store object.
 	 */
 public class PM_Segment extends DIM {
@@ -38,7 +38,7 @@ public class PM_Segment extends DIM {
 	public PM_Segment(Hashtable<Integer,Attribute> attributeList) throws InvalidAttributeException {
 		super(attributeList);
 	}
-	
+
 	public int getNomenclatureCode (){
 		return Nomenclature.MDC_MOC_PM_SEGMENT;
 	}
@@ -47,6 +47,6 @@ public class PM_Segment extends DIM {
 	protected void checkAttributes(Hashtable<Integer, Attribute> attributes)
 			throws InvalidAttributeException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

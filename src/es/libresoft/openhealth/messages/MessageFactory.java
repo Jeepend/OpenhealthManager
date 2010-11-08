@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -69,12 +69,12 @@ import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
 public class MessageFactory {
-	  
+
 	// RlrqApdu
 	public static final ApduType RlreApdu_NORMAL() {
 		return RlreApdu(ASN1_Values.REL_RES_RE_NORMAL);
 	}
-	
+
 	private static final ApduType RlreApdu (int reason) {
 		ApduType apdu = new ApduType();
 		RlreApdu rlre = new RlreApdu();
@@ -82,42 +82,42 @@ public class MessageFactory {
 		apdu.selectRlre(rlre);
 		return apdu;
 	}
-	
+
 	// AarqApdu
 	public static final ApduType AareApdu_20601_ACCEPTED(DeviceConfig dev_conf){
 		return AareApdu_20601(ASN1_Values.AR_ACCEPTED, dev_conf);
 	}
-	
+
 	public static final ApduType AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(DeviceConfig dev_conf){
 		return AareApdu_20601(ASN1_Values.AR_ACCEPTED_UNKNOWN_CONFIG, dev_conf);
 	}
-	
+
 	private static final ApduType AareApdu_20601(int assoc_result, DeviceConfig dev_conf){
 		ApduType apdu = new ApduType();
 		AareApdu aare = new AareApdu();
 		AssociateResult ar = new AssociateResult(assoc_result);
 		DataProto dp = new DataProto();
 		DataProtoId dpi= new DataProtoId(ASN1_Values.DATA_PROTO_ID_20601);
-		
+
 		PhdAssociationInformation phd = generatePhdAssociationInformation(dev_conf);
 		byte[] any = {};
-		
+
 		try {
 			//MDER encoding rules shall always apply to the structures in A.8.
 			any = ASN1_Tools.encodeData(phd, Device.MDER_DEFUALT);
 		} catch (Exception e) { //Never Thrown
 			e.printStackTrace();
-		} 
-		
+		}
+
 		dp.setData_proto_id(dpi);
 		dp.setData_proto_info(any);
 		aare.setResult(ar);
 		aare.setSelected_data_proto(dp);
 		apdu.selectAare(aare);
-		
+
 		return apdu;
 	}
-	
+
 	private static final PhdAssociationInformation generatePhdAssociationInformation(DeviceConfig dev_conf){
 		PhdAssociationInformation pai = new PhdAssociationInformation();
 		ProtocolVersion pv = new ProtocolVersion();
@@ -125,13 +125,13 @@ public class MessageFactory {
 		EncodingRules er = new EncodingRules(
 				new BitString(dev_conf.getEncondigRulesToArray()));
 		NomenclatureVersion nv = new NomenclatureVersion(
-				new BitString(ManagerConfig.nomenclature_version));		
+				new BitString(ManagerConfig.nomenclature_version));
 		byte[] byteArray = {(byte)0, (byte)0, (byte)0, (byte)0};
 		FunctionalUnits fn = new FunctionalUnits(new BitString(byteArray));
 		SystemType st = new SystemType(
 				new BitString(ManagerConfig.syste_type));
 		ConfigId cid = new ConfigId(ASN1_Values.CONF_ID_MANAGER_CONFIG_RESPONSE);
-		
+
 		/* DataReqModeCapab should be zero in the response */
 		DataReqModeCapab drmc = new DataReqModeCapab();
 		DataReqModeFlags drmf = new DataReqModeFlags();
@@ -151,24 +151,24 @@ public class MessageFactory {
 		pai.setDev_config_id(cid);
 		pai.setData_req_mode_capab(drmc);
 		pai.setOption_list(al);
-		
+
 		return pai;
 	}
-	
-	
+
+
 	//ReleaseRequest Apdu
 	public static final ApduType RlrqApdu_NORMAL() {
 		return RlrqApdu(ASN1_Values.REL_REQ_RE_NORMAL);
 	}
-	
+
 	public static final ApduType RlrqApdu_NO_MORE_CONFIGURATIONS() {
 		return RlrqApdu(ASN1_Values.REL_REQ_RE_NO_MORE_CONFIGURATIONS);
 	}
-	
+
 	public static final ApduType RlrqApdu_CONFIGURATION_CHANGED() {
 		return RlrqApdu(ASN1_Values.REL_REQ_RE_CONFIGURATION_CHANGED);
 	}
-	
+
 	private static final ApduType RlrqApdu (int reason){
 		ApduType apdu = new ApduType();
 		RlrqApdu rlrq = new RlrqApdu();
@@ -177,36 +177,36 @@ public class MessageFactory {
 		apdu.selectRlrq(rlrq);
 		return apdu;
 	}
-	
+
 	//Rejected Apdu
 	public static final ApduType AareRejectApdu_PERMANENT(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_PERMANENT);
 	}
-	
+
 	public static final ApduType AareRejectApdu_TRANSIENT(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_TRANSIENT);
 	}
-	
+
 	public static final ApduType AareRejectApdu_NO_COMMON_PROTOCOL(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_NO_COMMON_PROTOCOL);
 	}
-	
+
 	public static final ApduType AareRejectApdu_NO_COMMON_PARAMETER(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_NO_COMMON_PARAMETER);
 	}
-	
+
 	public static final ApduType AareRejectApdu_UNKNOWN(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_UNKNOWN);
 	}
-	
+
 	public static final ApduType AareRejectApdu_UNAUTHORIZED(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_UNAUTHORIZED);
 	}
-	
+
 	public static final ApduType AareRejectApdu_UNSUPPORTED_ASSOC_VERSION(){
 		return AareRejectApdu(ASN1_Values.AR_REJECTED_UNSUPPORTED_ASSOC_VERSION);
 	}
-	
+
 	private static final ApduType AareRejectApdu(int assoc_result) {
 		//Create AARE response
 		byte[] empty = {};
@@ -222,24 +222,24 @@ public class MessageFactory {
 		apdu.selectAare(aare);
 		return apdu;
 	}
-	
+
 	/* Abort APDUs */
 	public static final ApduType AbrtApdu_UNDEFINED() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED);
 	}
-	
+
 	public static final ApduType AbrtApdu_BUFFER_OVERFLOW() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_BUFFER_OVERFLOW);
 	}
-	
+
 	public static final ApduType AbrtApdu_RESPONSE_TIMEOUT() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
 	}
-	
+
 	public static final ApduType AbrtApdu_CONFIGURATION_TIMEOUT() {
 		return AbrtApdu(ASN1_Values.ABRT_RE_CONFIGURATION_TIMEOUT);
 	}
-	
+
 	private static final ApduType AbrtApdu(int reason){
 		ApduType apdu = new ApduType();
 		AbrtApdu abrt = new AbrtApdu();
@@ -248,7 +248,7 @@ public class MessageFactory {
 		apdu.selectAbrt(abrt);
 		return apdu;
 	}
-	
+
 	private static final int getChannelPreference (DataApdu da) {
 		if (da.getMessage().isRoiv_cmip_event_reportSelected() ||
 				da.getMessage().isRoiv_cmip_setSelected() ||
@@ -261,17 +261,17 @@ public class MessageFactory {
 			/* Primary channel preference */
 			return 0;
 	}
-	
+
 	//Confirmed measurement data transmission
 	public static final ApduType PrstTypeResponse (DataApdu receivedData, DeviceConfig dev_conf) {
 		//Create PRST response
 		ApduType at = new ApduType();
 		PrstApdu pa = new PrstApdu();
-		
+
 		//Get response from data
 		DataApdu da = generateDataApdu(receivedData, dev_conf);
 		at.setChannel(getChannelPreference(da));
-		
+
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules
 		IEncoder<DataApdu> encoderDataApdu;
@@ -286,9 +286,9 @@ public class MessageFactory {
 		at.selectPrst(pa);
 		return at;
 	}
-	
+
 	private static final DataApdu generateDataApdu (DataApdu da, DeviceConfig dev_conf){
-		
+
 		DataApdu data = new DataApdu();
 		InvokeIDType iit = new InvokeIDType(da.getInvoke_id().getValue()); //Mirrored from invocation
 		DataApdu.MessageChoiceType msg = getMessageResponse(da);
@@ -297,7 +297,7 @@ public class MessageFactory {
 		data.setMessage(msg);
 		return data;
 	}
-	
+
 	private static final DataApdu.MessageChoiceType getMessageResponse (DataApdu da){
 		DataApdu.MessageChoiceType msg = da.getMessage();
 		//Process the message received
@@ -347,80 +347,80 @@ public class MessageFactory {
 	private static final DataApdu.MessageChoiceType rors_cmip_event_repor (DataApdu da){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		EventReportResultSimple errs = new EventReportResultSimple();
-		
+
 		HANDLE h = new HANDLE();
 		h.setValue(new INT_U16(0)); //The MDS object
-		
+
 		if (da.getMessage().getRoiv_cmip_event_report().getEvent_time().getValue().getValue() != 0x00FFFFFFFFL)
 			System.err.println("Warning: Agent supports Relative time. Response sent is not valid");
-		
+
 		RelativeTime rt = new RelativeTime();
 		rt.setValue(new INT_U32(0L));
-		
+
 		byte[] byteArray = {(byte)0, (byte)0};
 		errs.setObj_handle(h);
 		errs.setCurrentTime(rt);
-		
+
 		//The event-type of the result shall be a copy of the event-type from the invocation
 		errs.setEvent_type(da.getMessage().getRoiv_cmip_event_report().getEvent_type());
 		errs.setEvent_reply_info(byteArray);
-		
-		msg.selectRors_cmip_confirmed_event_report(errs);		
+
+		msg.selectRors_cmip_confirmed_event_report(errs);
 		return msg;
 	}
 	*/
 	private static final DataApdu.MessageChoiceType rors_cmip_confirmed_event_repor (DataApdu da){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		EventReportResultSimple errs = new EventReportResultSimple();
-		
+
 		HANDLE h = new HANDLE();
 		h.setValue(new INT_U16(0)); //The MDS object
-		
+
 		if (da.getMessage().getRoiv_cmip_confirmed_event_report().getEvent_time().getValue().getValue() != 0x00FFFFFFFFL)
 			System.err.println("Warning: Agent supports Relative time. Response sent is not valid");
-		
+
 		RelativeTime rt = new RelativeTime();
 		rt.setValue(new INT_U32(0L));
-		
+
 		byte[] byteArray = {(byte)0, (byte)0};
 		errs.setObj_handle(h);
 		errs.setCurrentTime(rt);
-		
+
 		//The event-type of the result shall be a copy of the event-type from the invocation
 		errs.setEvent_type(da.getMessage().
 				getRoiv_cmip_confirmed_event_report().
 				getEvent_type());
 		errs.setEvent_reply_info(byteArray);
-		
-		msg.selectRors_cmip_confirmed_event_report(errs);		
+
+		msg.selectRors_cmip_confirmed_event_report(errs);
 		return msg;
 	}
-	
+
 
 	public static final ApduType ROER_NO_SUCH_OBJECT_INSTANCE_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_NO_SUCH_OBJECT_INSTANCE);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType ROER_NO_SUCH_ACTION_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_NO_SUCH_ACTION);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType ROER_INVALID_OBJECT_INSTANCE_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_INVALID_OBJECT_INSTANCE);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType ROER_PROTOCOL_VIOLATION_Apdu (DataApdu receivedData, DeviceConfig dev_conf){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_PROTOCOL_VIOLATION);
 		data.getMessage().getRoer().setParameter(new byte[]{});
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType ROER_NOT_ALLOWED_BY_OBJECT_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_NOT_ALLOWED_BY_OBJECT);
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
@@ -435,7 +435,7 @@ public class MessageFactory {
 		data.getMessage().getRoer().setParameter(output.toByteArray());
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType ROER_ACTION_TIMEOUT_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_ACTION_TIMEOUT);
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
@@ -450,7 +450,7 @@ public class MessageFactory {
 		data.getMessage().getRoer().setParameter(output.toByteArray());
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType ROER_ACTION_ABORTED_Apdu (DataApdu receivedData, DeviceConfig dev_conf, OID_Type oid){
 		DataApdu data = generateRoerDataApdu(receivedData, ASN1_Values.ROER_ACTION_ABORTED);
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
@@ -465,12 +465,12 @@ public class MessageFactory {
 		data.getMessage().getRoer().setParameter(output.toByteArray());
 		return composeApdu(data, dev_conf);
 	}
-	
+
 	public static final ApduType composeApdu (DataApdu data, DeviceConfig dev_conf) {
 		//Create PRST response
 		ApduType at = new ApduType();
 		PrstApdu pa = new PrstApdu();
-		
+
 		ByteArrayOutputStream output= new ByteArrayOutputStream();
 		//Parse data using negotiated encoding rules
 		IEncoder<DataApdu> encoderDataApdu;
@@ -484,7 +484,7 @@ public class MessageFactory {
 		at.selectPrst(pa);
 		return at;
 	}
-	
+
 	private static final DataApdu generateRoerDataApdu(DataApdu receivedData, int error_value){
 		DataApdu data = new DataApdu();
 		InvokeIDType iit = new InvokeIDType(receivedData.getInvoke_id().getValue()); //Mirrored from invocation
@@ -493,7 +493,7 @@ public class MessageFactory {
 		data.setMessage(msg);
 		return data;
 	}
-	
+
 	private static final DataApdu.MessageChoiceType getRoerMessageResponse (DataApdu receivedData, int error_value){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		ErrorResult roer = new ErrorResult();

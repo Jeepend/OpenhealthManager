@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -35,14 +35,14 @@ public interface InternalEventManager {
 	 * @param date
 	 */
 	public void receivedMeasure(String system_id, MeasureReporter mr);
-	
+
 	/**
 	 * Agent event to indicate that the agents has changed is state
 	 * @param system_id
 	 * @param state
 	 */
 	public void agentChangeStatus(String system_id, String state);
-	
+
 	/**
 	 * Send a manager event to indicate that new agent has connected
 	 * @param agent The agent device connected

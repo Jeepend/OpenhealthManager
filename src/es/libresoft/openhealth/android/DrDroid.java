@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ public class DrDroid extends Service {
      */
     private final RemoteCallbackList<IManagerCallbackService> mCallbacks
             = new RemoteCallbackList<IManagerCallbackService>();
-    
+
     /**
      * This is a list of callbacks that have been registered with the agent
      * service.  Note that this is package scoped (instead of private) so
@@ -67,14 +67,14 @@ public class DrDroid extends Service {
      */
     private final HashMap<String,RemoteCallbackList<IAgentCallbackService>> aCallback
     		= new HashMap<String,RemoteCallbackList<IAgentCallbackService>>();
-    
+
     private final HashMap<String, Agent> agentsId = new HashMap<String, Agent>();
-    
+
 	public static final String droidEvent = "es.libresoft.openhealth.android.DRDROID_SERVICE";
-	
+
 	private TcpManagerChannel channelTCP;
 	private HDPManagerChannel chanHDP;
-	
+
 	@Override
 	public void onCreate() {
 		System.out.println("Service created");
@@ -98,7 +98,7 @@ public class DrDroid extends Service {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void onPause(){
 		System.out.println("Service paused");
 	}
@@ -106,11 +106,11 @@ public class DrDroid extends Service {
 	public void onResume(){
 		System.out.println("Service resumed");
 	}
-	
+
 	public void onStop(){
 		System.out.println("Service Stopped");
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		System.out.println("Service stopped");
@@ -123,14 +123,14 @@ public class DrDroid extends Service {
 			agent = iterator.next();
 			agent.sendEvent(new Event(EventType.REQ_ASSOC_ABORT));
 		}
-		
-		//Free resources taken by agents 
+
+		//Free resources taken by agents
 		iterator = agentsId.values().iterator();
 		while (iterator.hasNext()){
 			agent = iterator.next();
 			agent.freeResources();
 		}
-		
+
 		// Unregister all callbacks.
         mCallbacks.kill();
         Iterator<String> i = aCallback.keySet().iterator();
@@ -144,7 +144,7 @@ public class DrDroid extends Service {
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// Select the interface to return.  
+		// Select the interface to return.
         if (IManagerRegister.class.getName().equals(arg0.getAction())) {
         	//Register for manager events
             return mRegisterServiceStub;
@@ -156,13 +156,13 @@ public class DrDroid extends Service {
         	return aActionServiceStub;
         } else return null;
 	}
-	
+
 	//---------------------------------Private Methods----------------------------------------
-	
+
 	/************************************************************
 	 * Call back service implementation in the same class
 	 ************************************************************/
-	
+
 	/**
      * The IManagerRegister is defined through IDL
      */
@@ -171,16 +171,16 @@ public class DrDroid extends Service {
 		@Override
 		public void registerCallback(IManagerCallbackService mc)
 				throws RemoteException {
-			if (mc != null) mCallbacks.register(mc);		
+			if (mc != null) mCallbacks.register(mc);
 		}
 
 		@Override
 		public void unregisterCallback(IManagerCallbackService mc)
 				throws RemoteException {
-			if (mc != null) mCallbacks.unregister(mc);			
+			if (mc != null) mCallbacks.unregister(mc);
 		}
     };
-    
+
     /**
      * The IAgentRegister is defined through IDL
      */
@@ -191,7 +191,7 @@ public class DrDroid extends Service {
 				IAgentCallbackService mc) throws RemoteException {
 			System.err.println("Registering agent callback");
 			if (mc == null || !aCallback.containsKey(system_id)){
-				return;	
+				return;
 			}
 			aCallback.get(system_id).register(mc);
 			System.err.println("Registered callback for agent " + system_id);
@@ -205,8 +205,8 @@ public class DrDroid extends Service {
 			aCallback.get(system_id).unregister(mc);
 		}
     };
-    
-    
+
+
     /************************************************************
 	 * Action service implemented in the same class
 	 ************************************************************/
@@ -237,7 +237,7 @@ public class DrDroid extends Service {
 			System.out.println("set service invoke on " + system_id);
 		}
     };
-    
+
     private AgentDevice getAgentDevice (Agent a) {
     	String manufacturer = "Unknown";
     	String model = "Unknown";
@@ -260,11 +260,11 @@ public class DrDroid extends Service {
     	//+++++++++++++++++++++++++++++++
 		@Override
 		public void agentConnected(Agent agent) {
-			
+
 			// Create new input for callbacks events for the new agent
 			agentsId.put(agent.getSystem_id(), agent);
 			aCallback.put(agent.getSystem_id(), new RemoteCallbackList<IAgentCallbackService>());
-			
+
 			// Send a manager Broadcast Event to all clients.
             final int N = mCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
@@ -280,7 +280,7 @@ public class DrDroid extends Service {
 
 		@Override
 		public void agentDisconnected(String system_id) {
-			
+
 			// Send a manager Broadcast Event to all clients.
             final int N = mCallbacks.beginBroadcast();
             for (int i=0; i<N; i++) {
@@ -292,13 +292,13 @@ public class DrDroid extends Service {
                 }
             }
             mCallbacks.finishBroadcast();
-			
+
 			// Remove all inputs for this agent
 			agentsId.remove(system_id);
 			aCallback.get(system_id).kill();
 			aCallback.remove(system_id);
 		}
-		
+
 		//+++++++++++++++++++++++++++++++
 		//+ Agent's Events
 		//+++++++++++++++++++++++++++++++
@@ -306,9 +306,9 @@ public class DrDroid extends Service {
 		public void agentChangeStatus(String system_id, String state) {
 			System.out.println("=======>Agent Change state: " + state);
 			if (system_id==null || !aCallback.containsKey(system_id))
-				//Unknown agent changes from disconnect state to unassociated (system_id is not received yet) 
+				//Unknown agent changes from disconnect state to unassociated (system_id is not received yet)
 				return;
-			
+
 			// Send a agent Broadcast Event to all clients.
 			final RemoteCallbackList<IAgentCallbackService> agentCallbacks = aCallback.get(system_id);
             final int N = agentCallbacks.beginBroadcast();
@@ -327,7 +327,7 @@ public class DrDroid extends Service {
 		@Override
 		public void receivedMeasure(String system_id, MeasureReporter mr) {
 			AndroidMeasureReporter amr = (AndroidMeasureReporter)mr;
-			
+
 			if (system_id==null || !aCallback.containsKey(system_id))
 				return;
 			// Send a agent Broadcast Event to all clients.
@@ -344,6 +344,6 @@ public class DrDroid extends Service {
             }
             agentCallbacks.finishBroadcast();
 		}
-    	
+
     };
 }

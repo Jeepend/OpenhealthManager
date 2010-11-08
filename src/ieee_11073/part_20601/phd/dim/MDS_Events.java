@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ public interface MDS_Events {
 	 * supported measurement capabilities of the agent.
 	 */
 	public ConfigReportRsp MDS_Configuration_Event(ConfigReport config);
-	
+
 	/**
 	 * This event provides dynamic data (typically measurements) from the agent for some or all of the
 	 * objects that the agent supports. Data for reported objects are reported using a generic attribute list
@@ -49,7 +49,7 @@ public interface MDS_Events {
 	 * control a manager can assert.
 	 */
 	public void MDS_Dynamic_Data_Update_Var(ScanReportInfoVar info);
-	
+
 	/**
 	 * This event provides dynamic data (typically measurements) from the agent for some or all of the
 	 * metric objects or the MDS object that the agent supports. Data are reported in the fixed format defined
@@ -61,14 +61,14 @@ public interface MDS_Events {
 	 * activation and/or period of the data transmission. For agents that do not support manager-initiated
 	 * measurement data transmission, refer to 8.9.3.3.2 for information on the limited control a manager can
 	 * assert.
-	 */	
+	 */
 	public void MDS_Dynamic_Data_Update_Fixed(ScanReportInfoFixed info);
-	
+
 	/**
 	 * This is the same as MDS-Dynamic-Data-Update-Var, but allows inclusion of data from multiple persons.
 	 */
 	public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info);
-	
+
 	/**
 	 * This is the same as MDS-Dynamic-Data-Update-Fixed, but allows inclusion of data from multiple persons.
 	 */

@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ import java.util.List;
 public class MetricReport {
 	int mdc_attr_id_type;
 	int mdc_attr_unit_code;
-	
+
 	public MetricReport (int type, int unit_code) {
 		mdc_attr_id_type = type;
 		mdc_attr_unit_code = unit_code;

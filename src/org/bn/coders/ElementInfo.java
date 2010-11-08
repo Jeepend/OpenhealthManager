@@ -1,19 +1,19 @@
 /*
  * Copyright 2006 Abdulla G. Abdurakhmanov (abdulla.abdurakhmanov@gmail.com).
- * 
+ *
  * Licensed under the LGPL, Version 2 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.gnu.org/copyleft/lgpl.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * With any your questions welcome to my e-mail 
+ *
+ * With any your questions welcome to my e-mail
  * or blog at http://abdulla-a.blogspot.com.
  */
 package org.bn.coders;
@@ -36,9 +36,9 @@ public final class ElementInfo {
     private ASN1ElementMetadata preparedElementMetadata;
     private int maxAvailableLen = -1;
 
-    public ElementInfo() {            
+    public ElementInfo() {
     }
-       
+
     public ASN1Element getASN1ElementInfo() {
         return element;
     }
@@ -46,7 +46,7 @@ public final class ElementInfo {
     public void setASN1ElementInfo(ASN1Element element) {
         this.element = element;
     }
-    
+
     public void setASN1ElementInfoForClass(AnnotatedElement anElement) {
         this.element = anElement.getAnnotation(ASN1Element.class);
     }
@@ -54,15 +54,15 @@ public final class ElementInfo {
     public AnnotatedElement  getAnnotatedClass() {
         return this.annotatedClass;
     }
-    
+
     public void setAnnotatedClass(AnnotatedElement cls) {
         this.annotatedClass = cls;
     }
-        
+
     public void setGenericInfo(Type info) {
         this.genericInfo = info;
     }
-    
+
     public Type getGenericInfo() {
         return this.genericInfo;
     }
@@ -91,9 +91,9 @@ public final class ElementInfo {
         this.preparedInfo = preparedInfo;
         if(preparedInfo!=null) {
             setPreparedASN1ElementInfo(preparedInfo.getASN1ElementInfo());
-        }       
+        }
     }
-    
+
     public boolean hasPreparedInfo() {
         return this.preparedInfo !=null;
     }
@@ -105,11 +105,11 @@ public final class ElementInfo {
     public void setPreparedInstance(Object preparedInstance) {
         this.preparedInstance = preparedInstance;
     }
-    
+
     public boolean hasPreparedInstance() {
         return this.preparedInstance!=null;
     }
-    
+
     public Field[] getFields(Class objClass) {
         if(hasPreparedInfo()) {
             return getPreparedInfo().getFields();
@@ -125,7 +125,7 @@ public final class ElementInfo {
     public void setPreparedASN1ElementInfo(ASN1ElementMetadata value) {
         this.preparedElementMetadata = value;
     }
-    
+
     public boolean hasPreparedASN1ElementInfo() {
         return this.preparedElementMetadata != null;
     }

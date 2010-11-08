@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -24,19 +24,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.utils;
 
 public interface IFIFO<T> {
-	
+
 	void setHandler (IUnlock handler);
-	
+
 	/** Add an object to the end of the FIFO queue */
     boolean add (T obj);
 
-    /** Remove an object from the front of the FIFO queue 
+    /** Remove an object from the front of the FIFO queue
      * @return */
     T remove();
 
     /** Return the number of elements in the FIFO queue */
     int size();
-    
+
     /** Delete all elements in the FIFO queue */
     void clear ();
 

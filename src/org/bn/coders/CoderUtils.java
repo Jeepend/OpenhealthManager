@@ -1,19 +1,19 @@
 /*
  * Copyright 2006 Abdulla G. Abdurakhmanov (abdulla.abdurakhmanov@gmail.com).
- * 
+ *
  * Licensed under the LGPL, Version 2 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.gnu.org/copyleft/lgpl.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * With any your questions welcome to my e-mail 
+ *
+ * With any your questions welcome to my e-mail
  * or blog at http://abdulla-a.blogspot.com.
  */
 package org.bn.coders;
@@ -70,7 +70,7 @@ public class CoderUtils {
     public static int getPositiveIntegerLength(int value) {
         if (value < 0) {
             long mask = 0x7f800000L;
-            int sizeOfInt = 4;        
+            int sizeOfInt = 4;
             while (((mask & ~value) == mask) && (sizeOfInt > 1)) {
               mask = mask >> 8 ;
               sizeOfInt-- ;
@@ -80,11 +80,11 @@ public class CoderUtils {
         else
             return getIntegerLength(value);
     }
-    
+
     public static int getPositiveIntegerLength(long value) {
         if (value < 0) {
             long mask = 0x7f80000000000000L;
-            int sizeOfInt = 8;        
+            int sizeOfInt = 8;
             while (((mask & ~value) == mask) && (sizeOfInt > 1)) {
               mask = mask >> 8 ;
               sizeOfInt-- ;
@@ -94,7 +94,7 @@ public class CoderUtils {
         else
             return getIntegerLength(value);
     }
-    
+
     public static BitString defStringToOctetString(String bhString) {
         if(bhString.length() < 4)
             return new BitString(new byte[0]);
@@ -104,7 +104,7 @@ public class CoderUtils {
             return hexStringToOctetString(bhString.substring(1,bhString.length()-2));
     }
 
-    private static BitString bitStringToOctetString(String bhString) {        
+    private static BitString bitStringToOctetString(String bhString) {
         boolean hasTrailBits = bhString.length()%2!=0;
         int trailBits = 0;
         byte[] resultBuf = new byte[bhString.length()/8 + (hasTrailBits?1:0)];
@@ -117,13 +117,13 @@ public class CoderUtils {
                     bt |=  ( 0x01 << (7- (bitCnt-currentStrPos)));
                 bitCnt++;
             }
-            currentStrPos+=8;            
+            currentStrPos+=8;
             if(bitCnt!=currentStrPos)
                 trailBits = 8 - (currentStrPos - bitCnt);
             // hi byte
             resultBuf[i] = bt;
         }
-        BitString result = new BitString (resultBuf,trailBits);        
+        BitString result = new BitString (resultBuf,trailBits);
         return result;
     }
 
@@ -131,19 +131,19 @@ public class CoderUtils {
            boolean hasTrailBits = bhString.length()%2!=0;
            BitString result = new BitString (new byte[bhString.length()/2 + (hasTrailBits ? 1:0)], hasTrailBits? 4:0);
            final byte hex[] = {0, 1, 2,3, 4, 5, 6, 7, 8, 9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA, 0xB, 0xC, 0xD, 0xE,0xF};
-           
+
            for(int i=0;i<result.getLength();i++) {
                // high byte
                result.getValue()[i] = (byte)(hex[((int)(bhString.charAt(i*2)) - 0x30)] << 4);
-               if(!hasTrailBits || (hasTrailBits && i<result.getLength()-1))                
+               if(!hasTrailBits || (hasTrailBits && i<result.getLength()-1))
                 result.getValue()[i] |= (byte)(hex[((int)(bhString.charAt(i*2+1)) - 0x30)] & 0x0F);
            }
            return result;
-    }    
-    
+    }
+
     public static SortedMap<Integer,Field> getSetOrder(Class<?> objectClass){
         SortedMap<Integer, Field> fieldOrder = new TreeMap<Integer,Field>();
-        int tagNA = -1;        
+        int tagNA = -1;
         for ( Field field : objectClass.getDeclaredFields() ) {
             ASN1Element element = field.getAnnotation(ASN1Element.class);
             if(element!=null) {
@@ -155,20 +155,20 @@ public class CoderUtils {
         }
         return fieldOrder;
     }
-    
+
     // IMPORTANT!!
-    // All virtual machines doesn't return fields in declaration order. Eg DalvikVM for Android. 
-    // Though maybe it happens to work on Java sun VM, it is explicitly documented that there is 
+    // All virtual machines doesn't return fields in declaration order. Eg DalvikVM for Android.
+    // Though maybe it happens to work on Java sun VM, it is explicitly documented that there is
     // no guarantee about the ordering there either. The javadoc for Class.getFields says, in part:
     // "Returns an array containing Field objects reflecting all the
     // accessible public fields of the class or interface represented by this
     // Class object. The elements in the array returned are not sorted and
     // are not in any particular order."
     // This is and implementation-specific behavior and not something we can rely on
-    // Solution: Use annotations to set meta-information about declaration order. 
+    // Solution: Use annotations to set meta-information about declaration order.
     public static Field[] getOrderedFields (Class<?> objectClass){
     	SortedMap<Integer, Field> fieldOrder = new TreeMap<Integer,Field>();
-        try {        
+        try {
 	        for ( Field field : objectClass.getDeclaredFields() ) {
 	            ASN1Element element = field.getAnnotation(ASN1Element.class);
 	            if(element!=null) {
@@ -185,10 +185,10 @@ public class CoderUtils {
         	return objectClass.getDeclaredFields();
         }
     }
-    
+
     public static  int getStringTagForElement(ElementInfo elementInfo) {
         int result = UniversalTag.PrintableString;
-        if(elementInfo.hasPreparedInfo()) {            
+        if(elementInfo.hasPreparedInfo()) {
             result = ((ASN1StringMetadata)elementInfo.getPreparedInfo().getTypeMetadata()).getStringType();
         }
         else
@@ -196,15 +196,15 @@ public class CoderUtils {
             ASN1String value = elementInfo.getAnnotatedClass().getAnnotation(ASN1String.class);
             result = value.stringType();
         }
-        else 
+        else
         if(elementInfo.getParentAnnotated()!=null && elementInfo.getParentAnnotated().isAnnotationPresent(ASN1String.class)) {
             ASN1String value = elementInfo.getParentAnnotated().getAnnotation(ASN1String.class);
             result = value.stringType();
         }
-        
+
         return result;
     }
-    
+
     public static void checkConstraints(long value, ElementInfo elementInfo) throws Exception {
         if(elementInfo.hasPreparedInfo()) {
             if(elementInfo.getPreparedInfo().hasConstraint())
@@ -221,11 +221,11 @@ public class CoderUtils {
                 ASN1SizeConstraint constraint = elementInfo.getAnnotatedClass().getAnnotation(ASN1SizeConstraint.class);
                 if(value!= constraint.max())
                     throw new Exception("Length of '"+elementInfo.getAnnotatedClass().toString()+"' out of bound");
-            }        
+            }
         }
     }
-    
-    /*public static boolean isImplements(Class<?> objectClass, Class<?> interfaceClass) {        
+
+    /*public static boolean isImplements(Class<?> objectClass, Class<?> interfaceClass) {
         return objectClass.isAnnotationPresent(ASN1PreparedElement.class);
         /*for(Class<?> item: objectClass.getInterfaces()) {
             if(item.equals(interfaceClass)) {
@@ -234,14 +234,14 @@ public class CoderUtils {
         }
         return false;/
     }*/
-    
+
     public static boolean isAnyField(Field field, ElementInfo elementInfo) {
         boolean isAny = false;
         if(elementInfo.hasPreparedInfo()) {
             isAny = elementInfo.getPreparedInfo().getTypeMetadata() instanceof ASN1AnyMetadata;
         }
         else
-            isAny = field.isAnnotationPresent(ASN1Any.class);        
+            isAny = field.isAnnotationPresent(ASN1Any.class);
         return isAny;
     }
 
@@ -252,11 +252,11 @@ public class CoderUtils {
         }
         else {
             isNull = field.isAnnotationPresent(ASN1Null.class);
-        }        
+        }
         return isNull;
     }
-        
-    
+
+
     public static boolean isOptionalField(Field field, ElementInfo elementInfo) {
         if(elementInfo.hasPreparedInfo()) {
             if(elementInfo.hasPreparedASN1ElementInfo())
@@ -268,10 +268,10 @@ public class CoderUtils {
             ASN1Element info = field.getAnnotation(ASN1Element.class);
             if(info.isOptional() || info.hasDefaultValue())
                 return true;
-        }        
+        }
         return false;
     }
-    
+
     public static boolean isOptional(ElementInfo elementInfo) {
         boolean result = false;
         if(elementInfo.hasPreparedInfo()) {
@@ -281,15 +281,15 @@ public class CoderUtils {
             result= elementInfo.getASN1ElementInfo()!=null && elementInfo.getASN1ElementInfo().isOptional();
         return result;
     }
-    
-    
+
+
     public static void checkForOptionalField(Field field, ElementInfo elementInfo) throws Exception {
         if( isOptionalField(field, elementInfo) )
                 return;
         throw new  IllegalArgumentException ("The mandatory field '" + field.getName() + "' does not have a value!");
     }
-        
-        
+
+
     public static boolean isSequenceSet(ElementInfo elementInfo) {
         boolean isEqual = false;
         if(elementInfo.hasPreparedInfo()) {
@@ -298,7 +298,7 @@ public class CoderUtils {
         else {
             ASN1Sequence seq = elementInfo.getAnnotatedClass().getAnnotation(ASN1Sequence.class);
             isEqual = seq.isSet();
-        }        
+        }
         return isEqual;
     }
 
@@ -310,10 +310,10 @@ public class CoderUtils {
         else {
             ASN1SequenceOf seq = elementInfo.getAnnotatedClass().getAnnotation(ASN1SequenceOf.class);
             isEqual = seq.isSetOf();
-        }        
+        }
         return isEqual;
     }
-    
+
     public static Method findMethodForField(String methodName, Class<?> objectClass, Class<?> paramClass ) throws NoSuchMethodException {
         try {
             return objectClass.getMethod(methodName, new Class[] {paramClass});
@@ -327,19 +327,19 @@ public class CoderUtils {
             }
             throw ex;
         }
-    }      
-    
+    }
+
     public static Method findSetterMethodForField(Field field, Class<?> objectClass, Class<?> paramClass) throws NoSuchMethodException {
         String methodName = "set"+field.getName().toUpperCase().substring(0,1)+field.getName().substring(1);
         return findMethodForField(methodName, objectClass, paramClass);
     }
-    
+
     public static Method findDoSelectMethodForField(Field field, Class<?> objectClass, Class<?> paramClass) throws NoSuchMethodException {
         String methodName = "select"+field.getName().toUpperCase().substring(0,1)+field.getName().substring(1);
         return findMethodForField(methodName, objectClass, paramClass);
     }
-    
-    
+
+
     public static Method findGetterMethodForField(Field field, Class<?> objectClass) throws NoSuchMethodException {
         String getterMethodName = "get"+field.getName().toUpperCase().substring(0,1)+field.getName().substring(1);
         return objectClass.getMethod(getterMethodName,(java.lang.Class[])null);
@@ -348,8 +348,8 @@ public class CoderUtils {
     public static Method findIsSelectedMethodForField(Field field, Class<?> objectClass) throws NoSuchMethodException {
         String methodName = "is"+field.getName().toUpperCase().substring(0,1)+field.getName().substring(1)+"Selected";
         return objectClass.getMethod(methodName,(java.lang.Class[])null);
-    }    
-    
+    }
+
     public static boolean isMemberClass(Class<?> objectClass, ElementInfo elementInfo) {
         //return objectClass.isMemberClass();
         if(elementInfo.hasPreparedInfo()) {
@@ -361,7 +361,7 @@ public class CoderUtils {
 
     public static byte[] ASN1StringToBuffer(Object obj, ElementInfo elementInfo) throws UnsupportedEncodingException {
         byte[] strBuf = null;
-        int stringTag = getStringTagForElement(elementInfo); 
+        int stringTag = getStringTagForElement(elementInfo);
         if(stringTag == UniversalTag.UTF8String) {
             strBuf = obj.toString().getBytes("utf-8");
         } else if (stringTag == UniversalTag.BMPString) {
@@ -372,11 +372,11 @@ public class CoderUtils {
         }
 	return strBuf;
     }
-    
+
     public static String bufferToASN1String(byte[] byteBuf, ElementInfo elementInfo) throws UnsupportedEncodingException {
         String result = null;
-        int stringTag = getStringTagForElement(elementInfo); 
-        if(stringTag == UniversalTag.UTF8String) {        
+        int stringTag = getStringTagForElement(elementInfo);
+        if(stringTag == UniversalTag.UTF8String) {
             result = new String(byteBuf, "utf-8");
         }
         else if (stringTag == UniversalTag.BMPString) {

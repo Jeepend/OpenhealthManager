@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ public class ASN1_Tools {
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
 		return decoder.decode(input, objectClass);
 	}
-	
+
 	/**
 	 * Encode an object in a byte array using specified encoding rules
 	 * @param <T> Type of the object class to encode
@@ -61,7 +61,7 @@ public class ASN1_Tools {
 		encoder.encode(object, os);
 		return os.toByteArray();
 	}
-		
+
 	/**
 	 * Get hexadecimal string representation about raw data
 	 * @param raw data
@@ -79,7 +79,7 @@ public class ASN1_Tools {
 	    }
 	    return new String(hex, "ASCII");
 	  }
-	
+
 	private static final byte[] HEX_CHAR_TABLE = {
 	    (byte)'0', (byte)'1', (byte)'2', (byte)'3',
 	    (byte)'4', (byte)'5', (byte)'6', (byte)'7',

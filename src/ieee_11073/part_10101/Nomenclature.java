@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ package ieee_11073.part_10101;
 	 * The format used here follows the one defined in ISO/IEEE 11073-10101.
 	 *************************************************************************************************/
 public interface Nomenclature {
-	
-	/* Partition codes																				 		 */                                       
-	public static final int MDC_PART_OBJ						=	1;		/* Object Infrastr.              */                
+
+	/* Partition codes																				 		 */
+	public static final int MDC_PART_OBJ						=	1;		/* Object Infrastr.              */
 	public static final int MDC_PART_SCADA						=	2;		/* SCADA (Physio IDs             */
 	public static final int MDC_PART_DIM						=	4;		/* Dimension                     */
 	public static final int MDC_PART_INFRA						=	8;		/* Infrastructure                */
@@ -41,7 +41,7 @@ public interface Nomenclature {
 	public static final int MDC_PART_PHD_AI						=	130;	/* Aging Independently           */
 	public static final int MDC_PART_RET_CODE					=	255;	/* Return Codes                  */
 	public static final int MDC_PART_EXT_NOM					=	256;	/* Ext. Nomenclature             */
-	
+
 	/*************************************************************************************************
 	* From Object Infrastructure (MDC_PART_OBJ)
 	**************************************************************************************************/
@@ -64,7 +64,7 @@ public interface Nomenclature {
     public static final int MDC_ATTR_ID_LABEL_STRING			=	2343;	/*                               */
     public static final int MDC_ATTR_ID_MODEL					=	2344;	/*                               */
     public static final int MDC_ATTR_ID_PHYSIO					=	2347;	/*                               */
-    public static final int MDC_ATTR_ID_PROD_SPECN				=	2349;	/*                               */         
+    public static final int MDC_ATTR_ID_PROD_SPECN				=	2349;	/*                               */
     public static final int MDC_ATTR_ID_TYPE					=	2351;	/*                               */
     public static final int MDC_ATTR_LIMIT_CURR					=	2356;	/*                               */
     public static final int MDC_ATTR_METRIC_STORE_CAPAC_CNT		=	2369;	/*                               */
@@ -128,7 +128,7 @@ public interface Nomenclature {
 	public static final int MDC_ATTR_METRIC_ID_PART				=   2655;	/*                               */
 	public static final int MDC_ATTR_ENUM_OBS_VAL_PART       	=	2656;	/*                               */
 	public static final int MDC_ATTR_SUPPLEMENTAL_TYPES      	=	2657;	/*                               */
-	public static final int MDC_ATTR_TIME_ABS_ADJUST        	=	2658;	/*                               */	
+	public static final int MDC_ATTR_TIME_ABS_ADJUST        	=	2658;	/*                               */
 	public static final int MDC_ATTR_CLEAR_TIMEOUT				=   2659;	/*                               */
 	public static final int MDC_ATTR_TRANSFER_TIMEOUT        	=	2660;	/*                               */
 	public static final int MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR  =	2661;	/*                               */
@@ -181,14 +181,14 @@ public interface Nomenclature {
 	/* Partition: SCADA/Other                                                        						 */
 	public static final int MDC_BODY_FAT						=	57676;	/*                               */
 	public static final int MDC_METRIC_NOS 						= 	61439;	/*                               */
-	
+
 	public static final int MDC_MODALITY_FAST 					= 	19508;	/*                               */
 	public static final int MDC_MODALITY_SLOW 					= 	19512;	/*                               */
 	public static final int MDC_MODALITY_SPOT 					= 	19516;	/*                               */
-	
+
 	/*************************************************************************************************
 	* From Dimensions (MDC_PART_DIM)
-	**************************************************************************************************/                                             
+	**************************************************************************************************/
 	public static final int MDC_DIM_PERCENT						=	544;	/* %                          	 */
 	public static final int MDC_DIM_KILO_G						=	1731;	/* kg 	                         */
 	public static final int MDC_DIM_MIN							=	2208;	/* min    	                     */
@@ -206,9 +206,9 @@ public interface Nomenclature {
 	public static final int MDC_DEV_SPEC_PROFILE_SCALE			=	4111;	/*                               */
 	public static final int MDC_DEV_SPEC_PROFILE_GLUCOSE		=	4113;	/*                               */
 	public static final int MDC_DEV_SPEC_PROFILE_HF_CARDIO		=	4137;	/*                               */
-	public static final int MDC_DEV_SPEC_PROFILE_HF_STRENGTH 	=	4138;	/*                               */                                                      
-	public static final int MDC_DEV_SPEC_PROFILE_AI_ACTIVITY_HUB = 4167;	/*                               */                                                
-	public static final int MDC_DEV_SPEC_PROFILE_AI_MED_MINDER	=	4168;	/*                               */                                                 
+	public static final int MDC_DEV_SPEC_PROFILE_HF_STRENGTH 	=	4138;	/*                               */
+	public static final int MDC_DEV_SPEC_PROFILE_AI_ACTIVITY_HUB = 4167;	/*                               */
+	public static final int MDC_DEV_SPEC_PROFILE_AI_MED_MINDER	=	4168;	/*                               */
 	/* Placed 256 back from the start of the last Partition: OptionalPackageIdentifiers (i.e., 8192-256). 				  */
 	public static final int MDC_TIME_SYNC_NONE					=	7936;	/* no time synchronization protocol supported */
 	public static final int MDC_TIME_SYNC_NTPV3					=	7937;	/* RFC 1305 1992 Mar obs: 1119,1059,958 	  */

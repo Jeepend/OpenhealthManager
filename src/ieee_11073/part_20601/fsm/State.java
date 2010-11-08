@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -33,22 +33,22 @@ import ieee_11073.part_20601.asn1.ApduType;
 public abstract class State {
 
 	protected StateHandler state_handler;
-	
+
 	public State (StateHandler handler) {
 		this.state_handler = handler;
 	}
-	
+
 	/**
 	 * Process an APDU that has arrived on the input data stream
 	 * @param apdu
 	 */
 	public abstract void process(ApduType apdu);
-	
+
 	/**
 	 * Process an outer event
 	 * @param apdu
 	 */
 	public abstract void processEvent(Event event);
-	
+
 	public abstract String getStateName();
 }

@@ -4,7 +4,7 @@ email: jcaden __at__ libresoft _dot__ es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -35,17 +35,17 @@ import es.libresoft.openhealth.Agent;
 public class TCPManagedAgents {
 
 	private ArrayList<Agent> agents;
-	
+
 	public TCPManagedAgents() {
 		agents = new ArrayList<Agent>();
 	}
-	
+
 	public synchronized boolean addAgent (Agent agent) {
 		if (agent == null)
 			return true;
 		return agents.add(agent);
 	}
-	
+
 	public synchronized boolean delAgent (Agent agent) {
 		if (agent == null)
 			return false;
@@ -55,7 +55,7 @@ public class TCPManagedAgents {
 		}
 		return false;
 	}
-	
+
 	public synchronized void freeAllResources () {
 		Iterator<Agent> i = agents.iterator();
 		while (i.hasNext()) {

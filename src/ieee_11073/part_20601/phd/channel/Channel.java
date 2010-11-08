@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -42,46 +42,46 @@ public abstract class Channel {
 	private InputStream input;
 	private OutputStream output;
 	private boolean primary;
-	
+
 	private IDecoder decoder;
 	private IEncoder<ApduType> encoder;
-	
+
 	private IFIFO<ApduType> inputQueue;
 	private ChannelEventHandler eventHandler;
-	
+
 	private ReceiverThread receiver;
-	
+
 	private boolean initialized = false;
-	
+
 	private Semaphore repeatSem = new Semaphore(1);
 	private boolean repeat = true;
-	
+
 	public Channel (InputStream input, OutputStream output) throws Exception {
 		this.input = input;
-		this.output = output;		
+		this.output = output;
 		//Set default encoding rules to MDER
 		decoder = CoderFactory.getInstance().newDecoder(Device.MDER_DEFUALT);
 		encoder = CoderFactory.getInstance().newEncoder(Device.MDER_DEFUALT);
-	}	
-	
+	}
+
 	public synchronized void configureChannel (boolean primary, IFIFO<ApduType> inputQueue, ChannelEventHandler eventHandler) throws InitializedException {
 		if (initialized)
 			throw new InitializedException ("Channel is already initialized");
 		this.primary = primary;
 		this.eventHandler = eventHandler;
 		this.inputQueue = inputQueue;
-		
+
 		receiver = new ReceiverThread();
 		receiver.start();
 		initialized = true;
 	}
-	
+
 	public synchronized void sendAPDU (ApduType apdu) throws Exception {
 		if (!initialized)
 			throw new InitializedException ("Channel is not initialized");
 		encoder.encode(apdu, output);
 	}
-	
+
 
 	public void setReceiverStatus (boolean status) {
 		try {
@@ -96,7 +96,7 @@ public abstract class Channel {
 			repeatSem.release();
 		}
 	}
-	
+
 	private boolean shouldRepeat () {
 		boolean r = false;
 		try {
@@ -109,13 +109,13 @@ public abstract class Channel {
 		}
 		return r;
 	}
-	
-	
+
+
 	/**
 	 * Receiver thread for the input channel
 	 * @author sancane
 	 */
-	
+
 	public class ReceiverThread extends Thread {
 		public void run() {
 			int id = getChannelId();
@@ -132,7 +132,7 @@ public abstract class Channel {
 		 			System.err.println("APDUType is not received");
 				}catch (Exception e) {
 					//EOF readed because channel is closed
-					if (primary) 
+					if (primary)
 						eventHandler.processEvent(new Event(EventType.IND_TRANS_DESC));
 				}
 			}
@@ -140,12 +140,12 @@ public abstract class Channel {
 			releaseChannel();
 		}
 	}
-	
+
 	/**
 	 * Free resources taken by this channel
 	 */
 	public abstract void releaseChannel();
-	
+
 
 	public abstract int getChannelId();
 }

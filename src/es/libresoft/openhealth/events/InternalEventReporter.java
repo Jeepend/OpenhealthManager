@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import es.libresoft.openhealth.Agent;
 public class InternalEventReporter {
 
 	private static InternalEventManager iEvent;
-	
+
 	public static synchronized void setDefaultEventManager (InternalEventManager handler){
 		iEvent = handler;
 	}
@@ -40,7 +40,7 @@ public class InternalEventReporter {
 		if (iEvent!=null)
 			iEvent.agentConnected(agent);
 	}
-	
+
 	public static void agentDisconnected(String system_id) {
 		if (iEvent!=null)
 			iEvent.agentDisconnected(system_id);

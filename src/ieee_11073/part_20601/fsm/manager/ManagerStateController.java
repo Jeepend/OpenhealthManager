@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -45,21 +45,21 @@ public class ManagerStateController implements StateController {
 	private State state;
 	private Semaphore semInputs = new Semaphore(0);
 	private Semaphore semEvents = new Semaphore(0);
-	
+
 	private IFIFO<ApduType> inputQueue;
 	private IFIFO<ApduType> outputQueue;
 	private IFIFO<Event> eventQueue;
-	
+
 	private DispatcherApduThread dispatcher;
 	private DispatcherEventThread dispatcherEvents;
-	
+
 	private IMDS_Handler mdsHandler;
 	//Caching of the system_id
 	private String system_id;
-	
+
 	private boolean initialized = false;
 	private Timer timer;
-	
+
 	private StateHandler state_handler = new StateHandler(){
 
 		@Override
@@ -84,7 +84,7 @@ public class ManagerStateController implements StateController {
 
 		@Override
 		public void setMDS(MDS newMds) {
-			system_id = mdsHandler.setMDS(newMds);	
+			system_id = mdsHandler.setMDS(newMds);
 		}
 
 		@Override
@@ -96,27 +96,27 @@ public class ManagerStateController implements StateController {
 		public Timer getTimer() {
 			return timer;
 		}
-		
+
 	};
-	
+
 	private IUnlock dispatcherController = new IUnlock(){
 		public void unlock() {
 			semInputs.release();
 		}
 	};
-	
+
 	private IUnlock eventController = new IUnlock(){
 		public void unlock() {
 			semEvents.release();
 		}
 	};
-	
+
 	public ManagerStateController (IMDS_Handler handler) {
 		mdsHandler = handler;
 		timer = new Timer();
 		this.state = new MDisconnected(state_handler);
 	}
-	
+
 	public void configureController(IFIFO<ApduType> inputQueue, IFIFO<ApduType> outputQueue, IFIFO<Event> eventQueue){
 		//dev_handler = handler;
 		this.eventQueue = eventQueue;
@@ -125,7 +125,7 @@ public class ManagerStateController implements StateController {
 		this.inputQueue.setHandler(dispatcherController);
 		this.outputQueue = outputQueue;
 	}
-	
+
 	public void initFSMController() throws InitializedException{
 		if (!initialized){
 			dispatcher = new DispatcherApduThread();
@@ -136,7 +136,7 @@ public class ManagerStateController implements StateController {
 		}else
 			throw new InitializedException("Manager state controller is already initialized.");
 	}
-	
+
 	public void freeResources (){
 		dispatcher.interrupt();
 		dispatcherEvents.interrupt();
@@ -145,18 +145,18 @@ public class ManagerStateController implements StateController {
 	public void processApdu (ApduType apdu){
 		inputQueue.add(apdu);
 	}
-	
+
 	public void processEvent(Event event) {
 		eventQueue.add(event);
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Receiver thread for the input channel
 	 * @author sancane
-	 */	
+	 */
 	public class DispatcherApduThread extends Thread {
 		public void run() {
 			boolean repeat = true;
@@ -181,7 +181,7 @@ public class ManagerStateController implements StateController {
 	/**
 	 * Receiver thread for events input channel
 	 * @author sancane
-	 */	
+	 */
 	public class DispatcherEventThread extends Thread {
 		public void run() {
 			boolean repeat = true;

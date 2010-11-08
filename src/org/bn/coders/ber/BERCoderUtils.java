@@ -1,19 +1,19 @@
 /*
  * Copyright 2006 Abdulla G. Abdurakhmanov (abdulla.abdurakhmanov@gmail.com).
- * 
+ *
  * Licensed under the LGPL, Version 2 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.gnu.org/copyleft/lgpl.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * With any your questions welcome to my e-mail 
+ *
+ * With any your questions welcome to my e-mail
  * or blog at http://abdulla-a.blogspot.com.
  */
 package org.bn.coders.ber;
@@ -26,7 +26,7 @@ import org.bn.coders.UniversalTag;
 import org.bn.metadata.ASN1ElementMetadata;
 
 public class BERCoderUtils {
-    
+
     public static DecodedObject<Integer> getTagValueForElement(ElementInfo info, int tagClass, int elemenType, int universalTag) {
         DecodedObject<Integer> result = new DecodedObject<Integer>();
         result.setSize(1);
@@ -40,7 +40,7 @@ public class BERCoderUtils {
         if(info.hasPreparedInfo()) {
             ASN1ElementMetadata meta = info.getPreparedASN1ElementInfo();
             if(meta!=null && meta.hasTag()) {
-                result = getTagValue(tagClass,elemenType,universalTag, 
+                result = getTagValue(tagClass,elemenType,universalTag,
                     meta.getTag(),
                     meta.getTagClass()
                 );
@@ -55,7 +55,7 @@ public class BERCoderUtils {
             if(info.getAnnotatedClass().isAnnotationPresent(ASN1Element.class)) {
                 elementInfo = info.getAnnotatedClass().getAnnotation(ASN1Element.class);
             }
-            
+
             if(elementInfo!=null) {
                 if(elementInfo.hasTag()) {
                     result = getTagValue(tagClass,elemenType,universalTag, elementInfo.tag(),elementInfo.tagClass());
@@ -64,11 +64,11 @@ public class BERCoderUtils {
         }
         return result;
     }
-    
+
     public static DecodedObject<Integer> getTagValue(int tagClass, int elemenType, int universalTag, int userTag, int userTagClass) {
         DecodedObject<Integer> resultObj = new DecodedObject<Integer>();
         int result = tagClass | elemenType | universalTag;
-        
+
         tagClass = userTagClass;
         if (userTag < 31) {
             result = tagClass | elemenType | userTag;
@@ -86,7 +86,7 @@ public class BERCoderUtils {
             {
                 result <<= 16;
                 result |= (((userTag & 0x3fff) >> 7) | 0x80) << 8;
-                result |= ((userTag & 0x3fff) & 0x7f);                
+                result |= ((userTag & 0x3fff) & 0x7f);
                 resultObj.setSize(3);
             }
             else
@@ -97,7 +97,7 @@ public class BERCoderUtils {
                 result |= (((userTag & 0x3FFFF) >> 7) | 0x80) << 8;
                 result |= ((userTag & 0x3FFFF) & 0x3f);
                 resultObj.setSize(4);
-            }        
+            }
         }
         resultObj.setValue(result);
         return resultObj;

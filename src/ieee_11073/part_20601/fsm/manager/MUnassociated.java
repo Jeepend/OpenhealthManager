@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ public final class MUnassociated extends Unassociated {
 	public MUnassociated(StateHandler handler) {
 		super(handler);
 	}
-	
+
 	@Override
 	public synchronized void process(ApduType apdu) {
 		if (apdu.isAarqSelected()){
@@ -78,11 +78,11 @@ public final class MUnassociated extends Unassociated {
 		}
 		*/
 	}
-	
-	
-	
+
+
+
 	//----------------------------------PRIVATE--------------------------------------------------------
-	
+
 	//Associating state is omitted, its functionality is implemented in next private method
 	private void associating(AarqApdu aarq) {
 		if (areArraysEquals(aarq.getAssoc_version().getValue().getValue(),ManagerConfig.assoc_version)) {
@@ -97,7 +97,7 @@ public final class MUnassociated extends Unassociated {
 					try {
 						/* Get PhdAssociationInformation data structure*/
 						PhdAssociationInformation phd = ASN1_Tools.decodeData(dp.getData_proto_info(),
-																			PhdAssociationInformation.class, 
+																			PhdAssociationInformation.class,
 																			Device.MDER_DEFUALT);
 						if (isValidPhdAssociationInformation(phd)){
 							processDeviceConnection(phd);
@@ -108,14 +108,14 @@ public final class MUnassociated extends Unassociated {
 					} catch (Exception e) {
 						/* Could not get the PhdAssociationInformation: Search another DataProto in the list*/
 						e.printStackTrace();
-					}					
+					}
 				}
 				/*
 				 * else if (dp.getData_proto_id().getValue().intValue() == ASN1_Values.DATA_PROTO_ID_EXTERNAL)
 					System.err.println("Warning: DATA_PROTO_ID_EXTERNAL configuration is not supported.");
 				 */
 			}
-			
+
 			if (!selected) {
 				/* Reject because there is not common data protocol found in DataProtoList sent from the agent */
 				state_handler.send(MessageFactory.AareRejectApdu_NO_COMMON_PROTOCOL());
@@ -125,8 +125,8 @@ public final class MUnassociated extends Unassociated {
 			state_handler.send(MessageFactory.AareRejectApdu_UNSUPPORTED_ASSOC_VERSION());
 		}
 	}
-	
-	
+
+
 	private boolean areArraysEquals (byte[] a1, byte[] a2) {
 		if (a1.length != a2.length)
 			return false;
@@ -136,49 +136,49 @@ public final class MUnassociated extends Unassociated {
 		}
 		return true;
 	}
-	
+
 	private boolean isValidPhdAssociationInformation (PhdAssociationInformation phd) {
-		
+
 		/* Check protocol version (only version 1) */
 		if (!areArraysEquals(phd.getProtocol_version().getValue().getValue(),ManagerConfig.protocol_version)){
-			/*TODO: If there is not a common protocol version, the manager shall reject the association 
+			/*TODO: If there is not a common protocol version, the manager shall reject the association
 			request and set the protocolVersion to all zeros.
 			*/
 			return false;
 		}
-		
+
 		/* Check if MDER encoding rules bit is set */
 		int bytes = 0x000000FF & phd.getEncoding_rules().getValue().getValue()[0];
 		bytes = (bytes << 8) | phd.getEncoding_rules().getValue().getValue()[1];
-		if ((bytes & ASN1_Values.ENC_MDER) != ASN1_Values.ENC_MDER){ 
+		if ((bytes & ASN1_Values.ENC_MDER) != ASN1_Values.ENC_MDER){
 			/* Not support MDER */
 			return false;
 		}
-		
+
 		/* check nomenclature version */
 		bytes = phd.getEncoding_rules().getValue().getValue()[0];
 		bytes = (bytes << 24);
 		if ((bytes & ASN1_Values.NOMENCLATURE_VERSION1) != ASN1_Values.NOMENCLATURE_VERSION1){
 			return false;
 		}
-		
+
 		/* Check functional units */
 		if ((phd.getFunctional_units().getValue().getValue()[0] | 0x00 )!=0){
 			//Not supported this functionality
 			return false;
 		}
-		
+
 		/* Check system type*/
 		long flags = 0;
 		for (int i=0; i<phd.getSystem_type().getValue().getValue().length; i++){
 			flags = (flags << 8) | (0x00000000000000FFL & phd.getSystem_type().getValue().getValue()[i]);
-		}		
+		}
 		if ((flags & ASN1_Values.SYS_TYPE_MANAGER) == ASN1_Values.SYS_TYPE_MANAGER) {
 			return false;
 		}else if ((flags & ASN1_Values.SYS_TYPE_AGENT) != ASN1_Values.SYS_TYPE_AGENT){
 			return false;
 		}
-		
+
 		DataReqModeCapab drmc = phd.getData_req_mode_capab();
 		if (!(drmc.getData_req_init_agent_count()==0 || drmc.getData_req_init_agent_count()==1)){
 			 /* maximum number of parallel agent initiated data requests/ flows.
@@ -186,7 +186,7 @@ public final class MUnassociated extends Unassociated {
 			  */
 			return false;
 		}
-		
+
 		/* Check AttributeList */
 		/*TODO: Get the information of services used to access object attributes
 		Iterator<AVA_Type> i = phd.getOption_list().getValue().iterator();
@@ -197,13 +197,13 @@ public final class MUnassociated extends Unassociated {
 		*/
 		return true;
 	}
-	
+
 	private DeviceConfig getDeviceConfiguration (PhdAssociationInformation phd, int data_proto_id) {
 		DeviceConfigCreator dev_conf = new DeviceConfigCreator();
 		dev_conf.setDataProtoId(data_proto_id);
 		dev_conf.setPhdId(phd.getDev_config_id().getValue().intValue());
 		dev_conf.setProtocolVersion(1);
-		
+
 		/* Check encoding rules */
 		int bytes = 0x000000FF & phd.getEncoding_rules().getValue().getValue()[0];
 		bytes = (bytes << 8) | phd.getEncoding_rules().getValue().getValue()[1];
@@ -214,18 +214,18 @@ public final class MUnassociated extends Unassociated {
 		//	srules = "XER"; //Not supported by binary notes
 		dev_conf.setEncondigRules(srules);
 		dev_conf.setNomenclatureVersion(1);
-		
-		DataReqModeCapab drmc = phd.getData_req_mode_capab();		
+
+		DataReqModeCapab drmc = phd.getData_req_mode_capab();
 		/*Data req mode flags*/
 		dev_conf.setDataReqModeFlags(drmc.getData_req_mode_flags().getValue().getValue());
-		
+
 		dev_conf.setDataReqInitAgentCount(drmc.getData_req_init_agent_count());
 		// Maximum number of parallel manager initiated data requests:
 		dev_conf.setDataReqInitManagerCount(drmc.getData_req_init_manager_count());
-		
+
 		return dev_conf.getDeviceConfig();
 	}
-	
+
 	private void processDeviceConnection(PhdAssociationInformation phd){
 		int id = phd.getDev_config_id().getValue().intValue();
 		if ((ASN1_Values.CONF_ID_STANDARD_CONFIG_START <= id) && (id <= ASN1_Values.CONF_ID_STANDARD_CONFIG_END)){
@@ -237,7 +237,7 @@ public final class MUnassociated extends Unassociated {
 			processExtendedConfiguration(phd);
 		}
 	}
-	
+
 	private void processExtendedConfiguration(PhdAssociationInformation phd) {
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
 		DS_Extended extMDS = DeviceSpecializationFactory.getExtendedMDS(phd.getSystem_id(),phd.getDev_config_id());
@@ -249,12 +249,12 @@ public final class MUnassociated extends Unassociated {
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(dev_conf));
 		state_handler.changeState(new WaitingForConfig(state_handler));
 	}
-	
+
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
-		
+
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
 		int id = dev_conf.getPhdId();
-		
+
 		if ((400 <= id) && (id <= 499)){
 			processExtendedConfiguration(phd);
 			/*
@@ -287,14 +287,14 @@ public final class MUnassociated extends Unassociated {
 			System.out.println("Activity Hub is not yet supported");
 		}
 	}
-	
+
 	private void acceptStandardAssociation (MDS mds, DeviceConfig dev_conf){
 		//Set device config
 		mds.setDeviceConfig(dev_conf);
 		//Set MDS Object
 		state_handler.setMDS(mds);
-		
-		
+
+
 		//Send AareApdu Accepted and transit to Operating
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED(
 				state_handler.getMDS().getDeviceConf()));

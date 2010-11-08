@@ -7,7 +7,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ public class FeatureGroup {
 
 	public static final int SOURCE_ROLE = 0;
 	public static final int SINK_ROLE = 1;
-	
+
 	private int role;
 	private Feature[] features;
-	
+
 
 	public FeatureGroup(Feature[] features, int role){
 		this.features = features;

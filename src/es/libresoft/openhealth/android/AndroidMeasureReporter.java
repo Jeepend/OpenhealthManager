@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 	//private final ArrayList<Parcelable> attributes = new ArrayList<Parcelable>();
 	//private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
 	AgentMetric metric = new AgentMetric();
-	
+
 	@Override
 	public void addMeasure(int mType, Object data) {
 		if (data instanceof SFloatType){
@@ -58,7 +58,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 	public List getMeasures(){
 		return metric.getMeasures();
 	}
-	
+
 	public List getAttributes(){
 		return metric.getAttributes();
 	}
@@ -72,7 +72,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 	public void set_attribute(int type, int value) {
 		metric.addAttribute(new AndroidAttribute(type, value));
 	}
-	
+
 	public AgentMetric getMetric() {
 		return metric;
 	}

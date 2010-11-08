@@ -6,7 +6,7 @@ email: jcaden@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -74,14 +74,14 @@ import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 
 public abstract class MDSManager extends MDS {
-	  
+
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
 	 */
 	public MDSManager (byte[] system_id, ConfigId devConfig_id){
 		super(system_id,devConfig_id);
 	}
-	
+
 	public MDSManager(Hashtable<Integer, Attribute> attributeList)
 		throws InvalidAttributeException {
 		super(attributeList);
@@ -98,7 +98,7 @@ public abstract class MDSManager extends MDS {
 				//Get Attributes
 				Hashtable<Integer,Attribute> attribs = getAttributes(confObj.getAttributes());
 				//checkGotAttributes(attribs);
-				
+
 				//Generate attribute Handle:
 				HANDLE handle = new HANDLE();
 				handle.setValue(new INT_U16(new Integer
@@ -107,7 +107,7 @@ public abstract class MDSManager extends MDS {
 						handle);
 				//Set Attribute Handle to the list
 				attribs.put(Nomenclature.MDC_ATTR_ID_HANDLE, attr);
-				
+
 				//checkGotAttributes(attribs);
 				int classId = confObj.getObj_class().getValue().getValue();
 				switch (classId) {
@@ -149,18 +149,18 @@ public abstract class MDSManager extends MDS {
 					ASN1_Values.CONF_RESULT_UNSUPPORTED_CONFIG);
 		}
 	}
-	
+
 	@Override
 	public void MDS_Dynamic_Data_Update_Fixed(ScanReportInfoFixed info) {
 		try{
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
-			
+
 			Iterator<ObservationScanFixed> i= info.getObs_scan_fixed().iterator();
 			ObservationScanFixed obs;
 			while (i.hasNext()) {
 				obs=i.next();
-				
+
 				//Get Numeric from Handle_id
 				Numeric numeric = getNumeric(obs.getObj_handle());
 				AttrValMap avm = (AttrValMap)numeric.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
@@ -185,17 +185,17 @@ public abstract class MDSManager extends MDS {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void MDS_Dynamic_Data_Update_Var(ScanReportInfoVar info) {
 		try{
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
-			
+
 			Iterator<ObservationScan> i= info.getObs_scan_var().iterator();
 			ObservationScan obs;
 			MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
-			
+
 			while (i.hasNext()) {
 				obs=i.next();
 				//Get Numeric from Handle_id
@@ -203,8 +203,8 @@ public abstract class MDSManager extends MDS {
 				addAttributesToReport(mr,numeric);
 				if (numeric == null)
 					throw new Exception("Numeric class not found for handle: " + obs.getObj_handle().getValue().getValue());
-				
-				Iterator<AVA_Type> it = obs.getAttributes().getValue().iterator();	
+
+				Iterator<AVA_Type> it = obs.getAttributes().getValue().iterator();
 				while (it.hasNext()){
 					AVA_Type att = it.next();
 					Integer att_id = att.getAttribute_id().getValue().getValue();
@@ -216,18 +216,18 @@ public abstract class MDSManager extends MDS {
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	/* Next method add additional info to report to application layer. Please, feel 
+
+	/* Next method add additional info to report to application layer. Please, feel
 	 * free to make changes. */
 	private void addAttributesToReport (MeasureReporter mr, Metric measure) {
 		Attribute at;
-		
+
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
 		TYPE type = (TYPE)at.getAttributeType();
 		mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
-		
+
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
 		OID_Type unit_cod = (OID_Type)at.getAttributeType();
 		mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
@@ -255,12 +255,12 @@ public abstract class MDSManager extends MDS {
 			return (T)ft2;
 		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
 			/*
-			 * The absolute time data type specifies the time of day with a resolution of 1/100 
+			 * The absolute time data type specifies the time of day with a resolution of 1/100
 			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
-			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit 
-			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19 
-			 * in the century field and the hexadecimal value 0x96 in the year field. This format is 
-			 * easily converted to character- or integer-based representations. See AbsoluteTime 
+			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit
+			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19
+			 * in the century field and the hexadecimal value 0x96 in the year field. This format is
+			 * easily converted to character- or integer-based representations. See AbsoluteTime
 			 * structure for details.
 			 */
 			final String rawDate = ASN1_Tools.getHexString(data);
@@ -278,14 +278,14 @@ public abstract class MDSManager extends MDS {
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");
 	}
-	
+
 	//----------------------------------------PRIVATE-----------------------------------------------------------
 	private Hashtable<Integer,Attribute> getAttributes (AttributeList attrList) throws Exception {
 		Hashtable<Integer,Attribute> attribs = new Hashtable<Integer,Attribute>();
 		Iterator<AVA_Type> it = attrList.getValue().iterator();
 		AVA_Type ava;
 		while (it.hasNext()){
-			ava = it.next();					
+			ava = it.next();
 			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
 			Attribute attr = new Attribute(ava.getAttribute_id().getValue().getValue(),
 					ASN1_Tools.decodeData(ava.getAttribute_value(), attrClass, getDeviceConf().getEncondigRules()));
@@ -293,7 +293,7 @@ public abstract class MDSManager extends MDS {
 		}
 		return attribs;
 	}
-	
+
 	private void checkGotAttributes(Hashtable<Integer,Attribute> attribs){
 		Iterator<Integer> i = attribs.keySet().iterator();
 		while (i.hasNext()){
@@ -321,7 +321,7 @@ public abstract class MDSManager extends MDS {
 				System.out.println("sec-fraction: " + time.getSec_fractions().getValue());
 				System.out.println("ok.");
 				break;
-			case Nomenclature.MDC_ATTR_UNIT_CODE: 
+			case Nomenclature.MDC_ATTR_UNIT_CODE:
 				OID_Type oid = (OID_Type)attribs.get(new Integer(id)).getAttributeType();
 				System.out.println("oid: " + oid.getValue().getValue());
 				System.out.println("ok.");
@@ -341,7 +341,7 @@ public abstract class MDSManager extends MDS {
 					}
 				System.out.println("ok.");
 				break;
-			case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP: 
+			case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
 				AttrValMap avm = (AttrValMap)attribs.get(new Integer(id)).getAttributeType();
 				Iterator<AttrValMapEntry> iter = avm.getValue().iterator();
 				while (iter.hasNext()){
@@ -356,9 +356,9 @@ public abstract class MDSManager extends MDS {
 			}
 		}
 	}
-	
+
 	/**
-	 * Generate a response for configuration 
+	 * Generate a response for configuration
 	 * @param result Reponse configuration
 	 * @return
 	 */
@@ -370,16 +370,16 @@ public abstract class MDSManager extends MDS {
 		configRsp.setConfig_result(confResult);
 		return configRsp;
 	}
-	
+
 	private final class DataExtractor {
 		private int index;
 		private byte[] raw;
-		
+
 		public DataExtractor (byte[] raw_data){
 			raw = raw_data;
 			index = 0;
 		}
-		
+
 		public byte[] getData (int len){
 			if ((index + len)>raw.length)
 				return null;

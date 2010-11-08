@@ -1,19 +1,19 @@
 /*
  * Copyright 2006 Abdulla G. Abdurakhmanov (abdulla.abdurakhmanov@gmail.com).
- * 
+ *
  * Licensed under the LGPL, Version 2 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.gnu.org/copyleft/lgpl.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * With any your questions welcome to my e-mail 
+ *
+ * With any your questions welcome to my e-mail
  * or blog at http://abdulla-a.blogspot.com.
  */
 
@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream;
 
 public class BitArrayOutputStream extends ByteArrayOutputStream {
     int currentBit = 0;
-    
+
     public BitArrayOutputStream() {
         super(1024);
     }
@@ -31,11 +31,11 @@ public class BitArrayOutputStream extends ByteArrayOutputStream {
     public BitArrayOutputStream(int initialSize) {
         super(initialSize);
     }
-    
+
     public void align() {
         currentBit = 0;
     }
-    
+
     public synchronized void write(int b) {
         if(currentBit==0)
             super.write(b);
@@ -48,7 +48,7 @@ public class BitArrayOutputStream extends ByteArrayOutputStream {
         }
         //currentBit = 0;
     }
-    
+
     public synchronized void write(byte b[], int off, int len) {
         if(len == 0)
             return;
@@ -62,20 +62,20 @@ public class BitArrayOutputStream extends ByteArrayOutputStream {
                 if(i == off)
                     buf[count - 1] = nBt;
                 else {
-                    super.write(nBt);                    
+                    super.write(nBt);
                 }
                 lBt = (byte)(bufByte << (8 - currentBit));
             }
             super.write(lBt);
         }
-        //currentBit = 0;    
+        //currentBit = 0;
     }
-    
+
     public void writeBit(boolean value) {
         writeBit (value ? 1:0);
     }
-    
-    public synchronized void writeBit(int bit) {    
+
+    public synchronized void writeBit(int bit) {
         if(currentBit < 8 && currentBit > 0) {
             if(bit!=0) {
                 buf[count - 1] |= (byte)(0x80 >> currentBit);
@@ -83,24 +83,24 @@ public class BitArrayOutputStream extends ByteArrayOutputStream {
         }
         else {
             super.write(bit == 0 ? 0:0x80);
-        }        
+        }
         currentBit++;
         if(currentBit>=8) {
             currentBit = 0;
         }
     }
 
-    public synchronized void writeBits(int bt, int count) {        
+    public synchronized void writeBits(int bt, int count) {
         for(int i=count-1;i>=0;i--) {
             writeBit ( (bt >> i) & 0x1);
         }
     }
-    
+
     public void reset() {
         currentBit = 0;
         super.reset();
-    }    
-    
+    }
+
     public int getTrailBitsCnt() {
         return currentBit;
     }

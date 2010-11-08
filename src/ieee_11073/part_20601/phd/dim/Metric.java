@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -28,26 +28,26 @@ import java.util.Hashtable;
 import ieee_11073.part_10101.Nomenclature;
 
 	/**
-	 * The metric class is the base class for all objects representing measurements, status, 
-	 * and context data. The metric class is not instantiated; therefore, it is never part of 
-	 * the agent configuration. As a base class, it defines all attributes, methods, events, 
+	 * The metric class is the base class for all objects representing measurements, status,
+	 * and context data. The metric class is not instantiated; therefore, it is never part of
+	 * the agent configuration. As a base class, it defines all attributes, methods, events,
 	 * and services that are common for all objects representing measurements.
 	 */
 
 public abstract class Metric extends DIM {
-	
+
 	private static int[] mandatoryIds = {Nomenclature.MDC_ATTR_ID_HANDLE,
 										Nomenclature.MDC_ATTR_ID_TYPE,
 										Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL};
-	
+
 	public Metric(Hashtable<Integer,Attribute> attributes) throws InvalidAttributeException {
 		super(attributes);
 	}
-	
+
 	public int getNomenclatureCode (){
 		return Nomenclature.MDC_MOC_VMO_METRIC;
 	}
-	
+
 	@Override
 	protected void checkAttributes(
 			Hashtable<Integer, Attribute> attributes)

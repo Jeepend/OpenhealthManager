@@ -6,7 +6,7 @@ email: jcaden@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -44,15 +44,15 @@ import es.libresoft.openhealth.utils.ASN1_Values;
 
 public final class MOperating extends Operating {
 
-	// Next interface is used to process the received PrstApdu depending of 
+	// Next interface is used to process the received PrstApdu depending of
 	// the device configuration is 20601 or external
-	
+
 	private interface ProcessHandler {
 		public void processPrstApdu(PrstApdu prst);
 	};
-	
+
 	private ProcessHandler process;
-	
+
 	public MOperating(StateHandler handler) {
 		super(handler);
 		int data_proto_id = state_handler.getMDS().getDeviceConf().getDataProtoId();
@@ -66,7 +66,7 @@ public final class MOperating extends Operating {
 		}else{
 			//TODO: Add here support for data-proto-id-external...
 			System.err.println("Data_Proto_id: " + data_proto_id +" is not supported");
-		}	
+		}
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public final class MOperating extends Operating {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAarqSelected() || apdu.isAareSelected() || apdu.isRlreSelected()){
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
-			state_handler.changeState(new MUnassociated(state_handler));			
+			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAbrtSelected()){
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
@@ -100,28 +100,28 @@ public final class MOperating extends Operating {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
 	}
-	
+
 	//----------------------------------PRIVATE--------------------------------------------------------
-	
+
 	private void process_20601_PrstApdu(PrstApdu prst){
 		try {
 			/*
-			 * The DataApdu and the related structures in A.10 shall use encoding rules 
+			 * The DataApdu and the related structures in A.10 shall use encoding rules
 			 * as negotiated during the association procedure as described in 8.7.3.1.
 			 */
-			processDataApdu(ASN1_Tools.decodeData(prst.getValue(), 
-					DataApdu.class, 
+			processDataApdu(ASN1_Tools.decodeData(prst.getValue(),
+					DataApdu.class,
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules()));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Error getting DataApdu encoded with " + 
-					this.state_handler.getMDS().getDeviceConf().getEncondigRules() + 
+			System.err.println("Error getting DataApdu encoded with " +
+					this.state_handler.getMDS().getDeviceConf().getEncondigRules() +
 					". The connection will be released.");
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
-			state_handler.changeState(new MDisassociating(state_handler));			
+			state_handler.changeState(new MDisassociating(state_handler));
 		}
 	}
-	
+
 	private void processDataApdu(DataApdu data) {
 		MessageChoiceType msg = data.getMessage();
 		//Process the message received
@@ -168,18 +168,18 @@ public final class MOperating extends Operating {
 			System.out.println(">> Rorj");
 		}
 	}
-	
+
 	private void roiv_cmip_event_report(EventReportArgumentSimple event, MessageChoiceType msg){
 		//(A.10.3 EVENT REPORT service)
 		if (event.getObj_handle().getValue().getValue() == 0){
-			//obj-handle is 0 to represent the MDS 
+			//obj-handle is 0 to represent the MDS
 			process_MDS_Object_Event(event, msg);
 		}else{
 			//TODO: handle representing a scanner or PM-store object.
 			System.err.println("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in Operating state. Ignore.");
 		}
 	}
-	
+
 	private void process_MDS_Object_Event(EventReportArgumentSimple event, MessageChoiceType msg){
 		switch (event.getEvent_type().getValue().getValue().intValue()){
 			case Nomenclature.MDC_NOTI_CONFIG:
@@ -192,7 +192,7 @@ public final class MOperating extends Operating {
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_FIXED:
 				mdc_noti_scan_report_fixed(event.getEvent_info());
 				break;
-			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR: 
+			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR:
 				//TODO:
 				System.out.println("MDC_NOTI_SCAN_REPORT_MP_VAR");
 				break;
@@ -200,32 +200,32 @@ public final class MOperating extends Operating {
 				//TODO:
 				System.out.println("MDC_NOTI_SCAN_REPORT_MP_FIXED");
 				break;
-		}		
+		}
 	}
-	
+
 	private void mdc_noti_scan_report_fixed (byte[] einfo){
 		try {
-			ScanReportInfoFixed srif = ASN1_Tools.decodeData(einfo, 
-					ScanReportInfoFixed.class, 
+			ScanReportInfoFixed srif = ASN1_Tools.decodeData(einfo,
+					ScanReportInfoFixed.class,
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Fixed(srif);
 		} catch (Exception e) {
 			System.out.println("Error decoding mdc_noti_scan_report_fixed");
 			e.printStackTrace();
 		}
-			
+
 	}
-	
+
 	private void mdc_noti_scan_report_var(byte[] einfo) {
 		try {
-			ScanReportInfoVar sriv = ASN1_Tools.decodeData(einfo, 
-					ScanReportInfoVar.class, 
+			ScanReportInfoVar sriv = ASN1_Tools.decodeData(einfo,
+					ScanReportInfoVar.class,
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Var(sriv);
 		} catch (Exception e) {
 			System.out.println("Error decoding mdc_noti_scan_report_var");
 			e.printStackTrace();
 		}
-		
+
 	}
 }

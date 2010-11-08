@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -27,38 +27,38 @@ public interface PeriCfgScanner_Events {
 
 	/**
 	 * This event style reports summary data about any objects and attributes that the scanner
-	 * monitors. The event is triggered whenever data values change and the variable message 
+	 * monitors. The event is triggered whenever data values change and the variable message
 	 * format (type/length/value) is used when reporting data that changed.
 	 */
 	public void Buf_Scan_Report_Var ();
-	
+
 	/**
-	 * This event style is used whenever data values change and the fixed message format of 
+	 * This event style is used whenever data values change and the fixed message format of
 	 * each object is used to report data that changed.
 	 */
 	public void Buf_Scan_Report_Fixed ();
-	
+
 	/**
-	 * This style is used when the scanner object is used to send the data in its most compact 
+	 * This style is used when the scanner object is used to send the data in its most compact
 	 * format. The Handle-Attr-Val-Map attribute describes the objects and attributes that are
 	 * included and the format of the message.
 	 */
 	public void Buf_Scan_Report_Grouped ();
-	
+
 	/**
-	 * This is the same as Buf-Scan-Report-Var, but allows inclusion of data from multiple 
+	 * This is the same as Buf-Scan-Report-Var, but allows inclusion of data from multiple
 	 * persons.
 	 */
 	public void Buf_Scan_Report_MP_Var ();
-	
+
 	/**
-	 * This is the same as Buf-Scan-Report-Fixed, but allows inclusion of data from multiple 
+	 * This is the same as Buf-Scan-Report-Fixed, but allows inclusion of data from multiple
 	 * persons.
 	 */
 	public void Buf_Scan_Report_MP_Fixed ();
-	
+
 	/**
-	 * This is the same as Buf-Scan-Report-Grouped, but allows inclusion of data from multiple 
+	 * This is the same as Buf-Scan-Report-Grouped, but allows inclusion of data from multiple
 	 * persons.
 	 */
 	public void Buf_Scan_Report_MP_Grouped();

@@ -14,14 +14,14 @@ public class InputStreamTester {
 	 * @param args
 	 */
 	public static String file = "test.txt";
-	
+
 	public static void main(String[] args) {
 		/*
-		try {			
+		try {
 			HDPInputStream in1 = new HDPInputStream (
 					new FileInputStream (
 							new File (file)));
-			
+
 			int r;
 			for (int i = 0; i < 34; i++) {
 				r = in1.read();
@@ -30,11 +30,11 @@ public class InputStreamTester {
 				else
 					System.out.println("-");
 			}
-			
+
 			HDPInputStream in2 = new HDPInputStream (
 					new FileInputStream (
 							new File (file)));
-			
+
 			byte buff[] = new byte[33];
 			int offset = 0, len = buff.length;
 			while (true) {

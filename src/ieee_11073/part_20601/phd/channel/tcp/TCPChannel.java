@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -33,13 +33,13 @@ public class TCPChannel extends Channel {
 
 	private int id;
 	private Socket socket;
-	
+
 	public TCPChannel (Socket s) throws Exception{
 		super(s.getInputStream(),s.getOutputStream());
 		id = 0;
 		socket = s;
 	}
-	
+
 	@Override
 	public void releaseChannel() {
 		try {

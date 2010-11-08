@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ public abstract class DIM {
 
 	/*AttributeID,Attribute*/
 	protected Hashtable<Integer,Attribute> attributeList;
-	
+
 	public DIM () {}
-	
+
 	public DIM (Hashtable<Integer,Attribute> attributes) throws InvalidAttributeException {
 		if (attributes==null) {
 			throw new InvalidAttributeException("Not attributes has been declared in MDS class.");
@@ -43,11 +43,11 @@ public abstract class DIM {
 		checkAttributes(attributes);
 		addCheckedAttributes(attributes);
 	}
-	
+
 	public Attribute getAttribute(int attributeId){
 		return attributeList.get(new Integer(attributeId));
 	}
-	
+
 	public Attribute getAttribute(String friendlyName){
 		Iterator<Attribute> i =  attributeList.values().iterator();
 		Attribute attr;
@@ -58,18 +58,18 @@ public abstract class DIM {
 		}
 		return null;
 	}
-	
+
 	public void addAttribute(Attribute attr){
 		attributeList.put(new Integer(attr.getAttributeID()), attr);
 	}
-	
+
 	public abstract int getNomenclatureCode ();
-	
+
 	protected abstract void checkAttributes(Hashtable<Integer,Attribute> attributes) throws InvalidAttributeException;
-	
-	
+
+
 	//-------------------------------------------PRIVATE------------------------------------------------------
-	private void addCheckedAttributes(Hashtable<Integer,Attribute> attributes){ 
+	private void addCheckedAttributes(Hashtable<Integer,Attribute> attributes){
 		/* Add attributes to attribute list */
 		Iterator<Attribute> i = attributes.values().iterator();
 		while (i.hasNext()){

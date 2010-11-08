@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ import org.bn.metadata.constraints.IASN1ConstraintMetadata;
 import org.bn.types.BitString;
 
 public class MDERCoderUtils {
-    
+
 	/*
 	 * Sized Constraints must be used for all INTEGER and BIT STRING data types.
 	 * Short names for the supported constraint are defined as follows:
 	 */
 	enum RestrictedInteger{INT_U8,INT_I8,INT_U16,INT_I16,INT_U32,INT_I32};
 	enum RestrictedBitString{BITS_8, BITS_16,BITS_32};
-	
+
     public static DecodedObject<Integer> getTagValueForElement(ElementInfo info, int tagClass, int elemenType, int universalTag) {
         DecodedObject<Integer> result = new DecodedObject<Integer>();
         result.setSize(1);
@@ -59,7 +59,7 @@ public class MDERCoderUtils {
         if(info.hasPreparedInfo()) {
             ASN1ElementMetadata meta = info.getPreparedASN1ElementInfo();
             if(meta!=null && meta.hasTag()) {
-                result = getTagValue(tagClass,elemenType,universalTag, 
+                result = getTagValue(tagClass,elemenType,universalTag,
                     meta.getTag(),
                     meta.getTagClass()
                 );
@@ -74,7 +74,7 @@ public class MDERCoderUtils {
             if(info.getAnnotatedClass().isAnnotationPresent(ASN1Element.class)) {
                 elementInfo = info.getAnnotatedClass().getAnnotation(ASN1Element.class);
             }
-            
+
             if(elementInfo!=null) {
                 if(elementInfo.hasTag()) {
                     result = getTagValue(tagClass,elemenType,universalTag, elementInfo.tag(),elementInfo.tagClass());
@@ -83,11 +83,11 @@ public class MDERCoderUtils {
         }
         return result;
     }
-    
+
     public static DecodedObject<Integer> getTagValue(int tagClass, int elemenType, int universalTag, int userTag, int userTagClass) {
         DecodedObject<Integer> resultObj = new DecodedObject<Integer>();
         int result = tagClass | elemenType | universalTag;
-        
+
         tagClass = userTagClass;
         if (userTag < 31) {
             result = tagClass | elemenType | userTag;
@@ -105,7 +105,7 @@ public class MDERCoderUtils {
             {
                 result <<= 16;
                 result |= (((userTag & 0x3fff) >> 7) | 0x80) << 8;
-                result |= ((userTag & 0x3fff) & 0x7f);                
+                result |= ((userTag & 0x3fff) & 0x7f);
                 resultObj.setSize(3);
             }
             else
@@ -116,12 +116,12 @@ public class MDERCoderUtils {
                 result |= (((userTag & 0x3FFFF) >> 7) | 0x80) << 8;
                 result |= ((userTag & 0x3FFFF) & 0x3f);
                 resultObj.setSize(4);
-            }        
+            }
         }
         resultObj.setValue(result);
         return resultObj;
     }
-    
+
     public static RestrictedInteger getIntegerSubtype (long minValueRange, long maxValueRange) throws Exception{
     	if (minValueRange==0L && maxValueRange==255L) return RestrictedInteger.INT_U8;
     	else if (minValueRange==-128L && maxValueRange==127L) return RestrictedInteger.INT_I8;
@@ -131,9 +131,9 @@ public class MDERCoderUtils {
     	else if (minValueRange==-2147483648L && maxValueRange==2147483647L) return RestrictedInteger.INT_I32;
     	else throw new Exception("Invalid MDER INTEGER range.");
     }
-    
+
     public static boolean valueInRange (RestrictedInteger intType, long value) throws Exception{
-    	if (intType==MDERCoderUtils.RestrictedInteger.INT_U8) 
+    	if (intType==MDERCoderUtils.RestrictedInteger.INT_U8)
     		return (0L<=value && value<=255L);
     	else if (intType==MDERCoderUtils.RestrictedInteger.INT_I8)
     		return (-128L<=value && value<=127L);
@@ -147,34 +147,34 @@ public class MDERCoderUtils {
     		return (-2147483648L<=value && value<=2147483647L);
     	return false;
     }
-    
+
     public static int getIntegerSubtypeLength (RestrictedInteger intType) throws Exception{
     	if ((intType==MDERCoderUtils.RestrictedInteger.INT_U8)||(intType==MDERCoderUtils.RestrictedInteger.INT_I8))
         	return 1;
         else if ((intType==MDERCoderUtils.RestrictedInteger.INT_U16)||(intType==MDERCoderUtils.RestrictedInteger.INT_I16))
         	return 2;
         else if ((intType==MDERCoderUtils.RestrictedInteger.INT_U32)||(intType==MDERCoderUtils.RestrictedInteger.INT_I32))
-        	return 4; 
+        	return 4;
         else throw new Exception("Invalid MDER INTEGER subtype.");
     }
-    
+
     public static RestrictedBitString checkBitStringConstraints (ElementInfo elementInfo) throws Exception{
     	long size=0;
-    	
+
     	if(elementInfo.hasPreparedInfo()) {
-            if(elementInfo.getPreparedInfo().hasConstraint() 
+            if(elementInfo.getPreparedInfo().hasConstraint()
                 && elementInfo.getPreparedInfo().getConstraint() instanceof ASN1SizeConstraintMetadata) {
                 IASN1ConstraintMetadata constraint = elementInfo.getPreparedInfo().getConstraint();
                 size = ((ASN1SizeConstraintMetadata)constraint).getMax();
             }
         } else if(elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1SizeConstraint.class)) {
-        	ASN1SizeConstraint constraint = elementInfo.getAnnotatedClass().getAnnotation(ASN1SizeConstraint.class);            
+        	ASN1SizeConstraint constraint = elementInfo.getAnnotatedClass().getAnnotation(ASN1SizeConstraint.class);
             size = constraint.max();
         } else throw new Exception("Size Constraint for BIT STRING is required in MDER.");
-    	
+
     	return getRestrictedBitStringSubtype(size);
     }
-    
+
     private static RestrictedBitString getRestrictedBitStringSubtype (long size) throws Exception{
     	if (size==8)
     		return RestrictedBitString.BITS_8;
@@ -184,7 +184,7 @@ public class MDERCoderUtils {
     		return RestrictedBitString.BITS_32;
     	else throw new Exception("Invalid MDER BIT STRING size.");
     }
-    
+
     public static int getBitStringSubtypeLength (RestrictedBitString bsType) throws Exception{
     	if (bsType==RestrictedBitString.BITS_8)
     		return 1;
@@ -194,47 +194,47 @@ public class MDERCoderUtils {
     		return 4;
     	else throw new Exception("Invalid MDER BIT STRING size.");
     }
-    
+
     public static boolean isFixedOctetString (ElementInfo elementInfo) {
     	if(elementInfo.hasPreparedInfo())
-            return (elementInfo.getPreparedInfo().hasConstraint() 
+            return (elementInfo.getPreparedInfo().hasConstraint()
             		&& elementInfo.getPreparedInfo().getConstraint() instanceof ASN1SizeConstraintMetadata);
         else return (elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1SizeConstraint.class));
     }
-    
+
     public static long getLengthFixedOctetString (ElementInfo elementInfo) throws Exception {
     	long size=0L;
     	if(elementInfo.hasPreparedInfo()) {
-            if(elementInfo.getPreparedInfo().hasConstraint() 
+            if(elementInfo.getPreparedInfo().hasConstraint()
                 && elementInfo.getPreparedInfo().getConstraint() instanceof ASN1SizeConstraintMetadata) {
                 IASN1ConstraintMetadata constraint = elementInfo.getPreparedInfo().getConstraint();
                 size = ((ASN1SizeConstraintMetadata)constraint).getMax();
             }
         } else if(elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1SizeConstraint.class)) {
-        	ASN1SizeConstraint constraint = elementInfo.getAnnotatedClass().getAnnotation(ASN1SizeConstraint.class);            
+        	ASN1SizeConstraint constraint = elementInfo.getAnnotatedClass().getAnnotation(ASN1SizeConstraint.class);
             size = constraint.max();
         } else throw new Exception("Octet string is not constrained.");
     	return size;
     }
-    
+
     public static boolean isFloatType(ElementInfo elementInfo) {
-    	
+
     	if(elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Float.class))
     		/*
-        	The floating point type data type (FLOAT-Type) is defined to represent numeric values that are not integer 
-			in type. The FLOAT-Type is defined as a 32-bit value with 24-bit mantissa and 8-bit exponent. See E.7 for 
-			full definition of this data type. This data type is defined as follows: 
- 
-			FLOAT-Type ::= INT-U32 --32-bit float type; the integer type is a placeholder only 
+        	The floating point type data type (FLOAT-Type) is defined to represent numeric values that are not integer
+			in type. The FLOAT-Type is defined as a 32-bit value with 24-bit mantissa and 8-bit exponent. See E.7 for
+			full definition of this data type. This data type is defined as follows:
+
+			FLOAT-Type ::= INT-U32 --32-bit float type; the integer type is a placeholder only
         	 */
     		return true;
     	else if(elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1SFloat.class))
     		/*
-    		The short floating point type data type (SFLOAT-Type) is defined to represent numeric values that are not 
-    		integer in type and have limited resolution. The SFLOAT-Type is defined as a 16-bit value with 12-bit 
-    		mantissa and 4-bit exponent. See Annex E.7 for full definition of this data type. This data type is defined as 
-    		follows: 
-    		 
+    		The short floating point type data type (SFLOAT-Type) is defined to represent numeric values that are not
+    		integer in type and have limited resolution. The SFLOAT-Type is defined as a 16-bit value with 12-bit
+    		mantissa and 4-bit exponent. See Annex E.7 for full definition of this data type. This data type is defined as
+    		follows:
+
     		SFLOAT-Type ::= INTEGER (0..65535) --16-bit float type; the integer type is a placeholder only
     		*/
     		return true;

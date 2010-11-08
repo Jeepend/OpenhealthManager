@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth;
 
 public class DeviceConfig {
-	
+
 	private int data_proto_id;
 	private int phdid;
 	private String enc_rules;
@@ -33,9 +33,9 @@ public class DeviceConfig {
 	private int data_req_init_agent_count;
 	private int data_req_init_manager_count;
 	private byte[] data_req_mode_flags;
-	
+
 	public DeviceConfig(int proto_id, int phdid, String enc_rules, int p_version, int n_version,
-			int driac, int drimc, byte[] drmf) 
+			int driac, int drimc, byte[] drmf)
 	{
 		this.data_proto_id = proto_id;
 		this.phdid = phdid;
@@ -46,18 +46,18 @@ public class DeviceConfig {
 		this.data_req_init_manager_count = drimc;
 		this.data_req_mode_flags = drmf;
 	}
-	
+
 	public int getDataProtoId(){return this.data_proto_id;}
-	
+
 	public int getPhdId(){return this.phdid;}
-	
+
 	public String getEncondigRules(){return this.enc_rules;}
-	
+
 	public byte[] getEncondigRulesToArray(){
-		if (enc_rules.equalsIgnoreCase("PER"))	
+		if (enc_rules.equalsIgnoreCase("PER"))
 			return ManagerConfig.enc_per;
 		//else if (enc_rules.equalsIgnoreCase("XER"))
-		//	return ManagerConfig.enc_xer;	
+		//	return ManagerConfig.enc_xer;
 		/* Default MDER encoding */
 		return ManagerConfig.enc_mder;
 	}

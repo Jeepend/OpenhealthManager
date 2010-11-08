@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ public class SFloatType {
 	public static final int INFINITY_NEG = -2046;	// -1*((2^11)-2)
 	public static final int INFINITY_POS= 2046;		// (2^11)-2
 	public static final int RESERVED = -2047;		//-1*((2^11)-1)
-	
+
 	private short exponent; // 4 bit signed
 	private short magnitude; // 12 bit signed
-	  
+
 	public SFloatType (short exponent,short magnitude) throws Exception {
 		if (isMDNFSpecialValue(magnitude))
 			this.exponent = 0;
@@ -47,23 +47,23 @@ public class SFloatType {
 		}
 		this.magnitude = magnitude;
 	}
-	
+
 	public SFloatType (int rawSFloatType) throws Exception{
 		if (rawSFloatType>65535)
 			throw new Exception("Range is not valid");
 		short twoLSB = (short)(rawSFloatType & 0xFFFF);
 		convertShort2SFloatType(twoLSB);
 	}
-	
+
 	public SFloatType (short rawSFloatType) throws Exception{
 		convertShort2SFloatType(rawSFloatType);
 	}
-	
+
 	private void convertShort2SFloatType(short rawSFloatType) throws Exception{
 		short exponent = (short) (rawSFloatType >> 12);
-		
+
 		short magnitude = (short) (rawSFloatType & 0x0FFF);
-		
+
 		if ((magnitude & 0x0800)!=0) {
 			magnitude = (short) (magnitude - 4096);
 		}
@@ -75,29 +75,29 @@ public class SFloatType {
 		}
 		this.magnitude = magnitude;
 	}
-	
+
 	public short getExponent() {return this.exponent;}
-	
+
 	public short getMagnitude() {return this.magnitude;}
-	
+
 	public int intValue() {
 		int v =  getRawRepresentation();
 		v = (v & 0x0000FFFF); //Get only four less symbolic bytes
-		return v;		
+		return v;
 	}
-	
+
 	public long longValue() {
 		long v =  getRawRepresentation();
 		v = (v & 0x000000000000FFFFL); //Get only four less symbolic bytes
-		return v;		
+		return v;
 	}
-	
+
 	public double doubleValueRepresentation (){
 		if (isMDNFSpecialValue(this.magnitude))
 			return this.magnitude;
 		else return this.magnitude*(Math.pow(10, this.exponent));
 	}
-	
+
 	public String toString () {
 		switch (this.magnitude) {
 			case NaN: return "NaN";
@@ -108,7 +108,7 @@ public class SFloatType {
 			default: return this.magnitude + "*10^" + this.exponent;
 		}
 	}
-	
+
 	private boolean isMDNFSpecialValue(int magnitude){
 		switch (magnitude) {
 			case NaN: return true;
@@ -119,14 +119,14 @@ public class SFloatType {
 			default: return false;
 		}
 	}
-	
+
 	private void checkConstraints (int exponent,int magnitude) throws Exception{
 		if ((exponent > MAXEXP) || (exponent < MINEXP))
 			throw new Exception ("Exponent is not in valid Float-Type range");
 		if ((magnitude > MAXMAG) || (magnitude < MINMAG))
 			throw new Exception ("Magnitude is not in valid Float-Type range");
 	}
-	
+
 	public short getRawRepresentation(){
 		short raw = (short) (this.exponent << 12);
 		raw = (short) (raw | (magnitude & 0x0FFF));

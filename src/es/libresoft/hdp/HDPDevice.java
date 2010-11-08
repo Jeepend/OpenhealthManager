@@ -7,7 +7,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ public class HDPDevice{
 
 	private String btaddr;
 	private HDPSession session;
-	
+
 	public HDPDevice (String addr, HDPSession session)
 	{
 		btaddr = addr;
@@ -47,10 +47,10 @@ public class HDPDevice{
 
 	public boolean equals(Object o) {
 		HDPDevice dev;
-		
+
 		if (!(o instanceof HDPDevice))
 			return false;
-		
+
 		dev = (HDPDevice)o;
 		return btaddr.equalsIgnoreCase(dev.getBtAddress());
 	}
@@ -58,11 +58,11 @@ public class HDPDevice{
 	public HDPSession getHDPSession() {
 		return session;
 	}
-	
+
 	public String getBtAddress () {
 		return this.btaddr;
 	}
-	
+
 	public void close(){
 
 	}

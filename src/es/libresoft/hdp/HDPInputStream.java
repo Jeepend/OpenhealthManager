@@ -8,13 +8,13 @@ public class HDPInputStream extends InputStream{
 		private HDPSession session;
 		/*Data channel descriptor*/
 		private long dcd;
-		
+
 		protected byte buff[];
 		protected int coun;
 		protected int pos;
-		
+
 		private static final int L2CAP_DEFAULT_MTU = 672;
-				
+
 		public HDPInputStream(HDPSession session, long dc){
 			this.session = session;
 			this.dcd = dc;
@@ -22,7 +22,7 @@ public class HDPInputStream extends InputStream{
 			coun = 0;
 			pos = 0;
 		}
-	
+
 		@Override
 		public int read() throws IOException {
 			if (pos >= coun) {
@@ -35,9 +35,9 @@ public class HDPInputStream extends InputStream{
 				pos = 0;
 				//System.out.println("readed: " + coun + ", pos: " + pos);
 			}
-			
+
 			//System.out.println("coun: " + coun + ", pos: " + pos);
-			
+
 			return (int)buff[pos++] & 0xff;
 		}
 
@@ -52,26 +52,26 @@ public class HDPInputStream extends InputStream{
 				coun = r;
 				pos = 0;
 			}
-			
+
 			r = coun - pos;
 			if (r >= length) {
 				System.arraycopy(buff, pos, b, offset, length);
 				pos = pos + length;
 				return length;
-			}			
-			
+			}
+
 			System.arraycopy(buff, pos, b, offset, r);
 			pos = coun;
 			return r;
 		}
-		
+
 		@Override
 		public int available() throws IOException {
-			return coun - pos; 
+			return coun - pos;
 		}
 
 		@Override
 		public boolean markSupported() {
 			return false;
-		}		
+		}
 }

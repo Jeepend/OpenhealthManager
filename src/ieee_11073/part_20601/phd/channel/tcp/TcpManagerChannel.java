@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -35,14 +35,14 @@ public class TcpManagerChannel extends Thread {
 	private boolean finish = false;
 	private ServerSocket ss;
 	private TCPManagedAgents agents = new TCPManagedAgents();
-	
+
 	public void run() {
 		String status="";
 		try {
 			ss = new ServerSocket (9999);
 			System.out.println("Server attached on " + ss.getInetAddress() + ":" + ss.getLocalPort());
 			System.out.println("Waiting for clients...");
-			while(!this.finish){				
+			while(!this.finish){
 				Socket s = ss.accept();
 				TCPChannel chnl = new TCPChannel (s);
 				Agent a = new Agent();

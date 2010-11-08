@@ -13,14 +13,14 @@ public class HDPOutputStream extends OutputStream {
 			this.session = session;
 			this.dcd = dc;
 		}
-	
+
 		@Override
 		public void write(int oneByte) throws IOException {
 			byte b[] = new byte[1];
 	        b[0] = (byte)oneByte;
 			session.write(dcd, b, 0, 1);
 		}
-		
+
 		@Override
 		public void write(byte[] b, int offset, int count) throws IOException {
 			session.write(dcd, b, offset, count);

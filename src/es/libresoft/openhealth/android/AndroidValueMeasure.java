@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -33,32 +33,32 @@ public class AndroidValueMeasure implements Parcelable {
 	//internal value representation by exponent and mantissa (float is not needed to be pass from ipc call)
 	private int value_exp;
 	private int value_mag;
-	
-	public static final Parcelable.Creator<AndroidValueMeasure> CREATOR = 
+
+	public static final Parcelable.Creator<AndroidValueMeasure> CREATOR =
 			new Parcelable.Creator<AndroidValueMeasure>() {
 	    public AndroidValueMeasure createFromParcel(Parcel in) {
 	        return new AndroidValueMeasure(in);
 	    }
-	
+
 	    public AndroidValueMeasure[] newArray(int size) {
 	        return new AndroidValueMeasure[size];
 	    }
 	};
-	
+
 	private AndroidValueMeasure (Parcel in){
     	measure_type = in.readInt();
     	value_exp = in.readInt();
     	value_mag = in.readInt();
     }
-	
+
 	public AndroidValueMeasure (int mType, int exp, int mag){
 		measure_type = mType;
 		value_exp = exp;
 		value_mag = mag;
 	}
-	
+
 	public int getMeasureType(){return measure_type;}
-	
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -74,7 +74,7 @@ public class AndroidValueMeasure implements Parcelable {
 	public FloatType getFloatType () throws Exception{
 		return new FloatType(value_exp,value_mag);
 	}
-	
+
 	public String toString(){
 		return value_mag + "*10^" + value_exp;
 	}

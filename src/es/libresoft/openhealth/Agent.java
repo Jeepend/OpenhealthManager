@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ public final class Agent extends Device{
 	private ManagerStateController stc;
 	private MDS mdsObj;
 	private String system_id;
-	
+
 	public final IMDS_Handler mdsHandler = new IMDS_Handler(){
 		@Override
 		public synchronized MDS getMDS() {
@@ -57,8 +57,8 @@ public final class Agent extends Device{
 			return null;
 		}
 	};
-	
-	
+
+
 	public Agent() {
 		super();
 		stc = new ManagerStateController (mdsHandler);
@@ -72,13 +72,13 @@ public final class Agent extends Device{
 	}
 
 	public String getSystem_id(){return system_id;}
-	
+
 	@Override
 	public void freeResources() {
 		super.freeResources();
 		stc.freeResources();
 	}
-	
+
 	public void sendEvent(Event event){
 		stc.processEvent(event);
 	}

@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -43,21 +43,21 @@ import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public final class WaitingForConfig extends Configuring {
 
-	private TimerTask timerTask; 
-	
+	private TimerTask timerTask;
+
 	private Semaphore abortMutex = new Semaphore(1); //Control concurrent access to the boolean variable "evaluateTimeout"
 	boolean evaluateTimeout = true;
-	
+
 	public WaitingForConfig (StateHandler handler) {
 		super(handler);
 		resetTimerTask();
 	}
-	
+
 	@Override
 	public synchronized String getStateName() {
 		return "WaitingForConfig";
 	}
-	
+
 	@Override
 	public synchronized void process(ApduType apdu) {
 		if (apdu.isPrstSelected()){
@@ -70,7 +70,7 @@ public final class WaitingForConfig extends Configuring {
 		}else if(apdu.isAarqSelected() || apdu.isAareSelected() || apdu.isRlreSelected()){
 			timerTask.cancel();
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
-			state_handler.changeState(new MUnassociated(state_handler));			
+			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAbrtSelected()){
 			timerTask.cancel();
 			state_handler.changeState(new MUnassociated(state_handler));
@@ -96,14 +96,14 @@ public final class WaitingForConfig extends Configuring {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
 	}
-	
+
 //----------------------------------PRIVATE--------------------------------------------------------
 	private void resetTimerTask () {
 		if (timerTask!=null)
 			timerTask.cancel();
 		timerTask = new TimerTask()
 	    {
-			public void run() 
+			public void run()
 	        {
 				System.out.println("Timeout task running");
 				try {
@@ -119,33 +119,33 @@ public final class WaitingForConfig extends Configuring {
 					//This situation appears when main project cancel this task when it is processing
 					//an incoming report apdu response arrived from agent near to the timeout slot.
 					;
-				} 
+				}
 	        }
 	    };
 	    state_handler.getTimer().purge();
 	    state_handler.getTimer().schedule(timerTask,TimeOuts.TO_CONFIG);
 	}
 
-	
+
 	private void process_PrstApdu(PrstApdu prst){
 		try {
 			/*
-			 * The DataApdu and the related structures in A.10 shall use encoding rules 
+			 * The DataApdu and the related structures in A.10 shall use encoding rules
 			 * as negotiated during the association procedure as described in 8.7.3.1.
 			 */
-			processDataApdu(ASN1_Tools.decodeData(prst.getValue(), 
-					DataApdu.class, 
+			processDataApdu(ASN1_Tools.decodeData(prst.getValue(),
+					DataApdu.class,
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules()));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Error getting DataApdu encoded with " + 
-					this.state_handler.getMDS().getDeviceConf().getEncondigRules() + 
+			System.err.println("Error getting DataApdu encoded with " +
+					this.state_handler.getMDS().getDeviceConf().getEncondigRules() +
 					". The connection will be released.");
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
-			state_handler.changeState(new MDisassociating(state_handler));			
+			state_handler.changeState(new MDisassociating(state_handler));
 		}
 	}
-	
+
 	private void processDataApdu(DataApdu data) {
 		MessageChoiceType msg = data.getMessage();
 		//Process the message received
@@ -201,7 +201,7 @@ public final class WaitingForConfig extends Configuring {
 			//(A.10.3 EVENT REPORT service)
 			EventReportArgumentSimple event = data.getMessage().getRoiv_cmip_confirmed_event_report();
 			if (event.getObj_handle().getValue().getValue() == 0){
-				//obj-handle is 0 to represent the MDS 
+				//obj-handle is 0 to represent the MDS
 				process_MDS_Object_Event(data);
 			}else{
 				//TODO: handle representing a scanner or PM-store object.
@@ -213,7 +213,7 @@ public final class WaitingForConfig extends Configuring {
 			System.err.println("TODO: Send Response Error");
 		}
 	}
-	
+
 	private void process_MDS_Object_Event(DataApdu data) throws Exception{
 		MessageChoiceType msg = data.getMessage();
 		EventReportArgumentSimple event = msg.getRoiv_cmip_confirmed_event_report();
@@ -229,7 +229,7 @@ public final class WaitingForConfig extends Configuring {
 				//TODO:
 				System.err.println("Warning: Received MDC_NOTI_SCAN_REPORT_FIXED");
 				break;
-			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR: 
+			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR:
 				//TODO:
 				System.err.println("Warning: Received MDC_NOTI_SCAN_REPORT_MP_VAR");
 				break;
@@ -240,7 +240,7 @@ public final class WaitingForConfig extends Configuring {
 		}
 
 	}
-	
+
 	private void receivedConfigurationFromAgent (DataApdu data){
 		try {
 			abortMutex.acquire();

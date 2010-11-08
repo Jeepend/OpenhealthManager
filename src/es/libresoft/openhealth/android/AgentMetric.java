@@ -10,13 +10,13 @@ public class AgentMetric implements Parcelable {
 
 	public ArrayList<Parcelable> attributes = new ArrayList<Parcelable>();
 	public ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
-	
-	public static final Parcelable.Creator<AgentMetric> CREATOR = 
+
+	public static final Parcelable.Creator<AgentMetric> CREATOR =
 			new Parcelable.Creator<AgentMetric>() {
 	    public AgentMetric createFromParcel(Parcel in) {
 	        return new AgentMetric(in);
 	    }
-	
+
 	    public AgentMetric[] newArray(int size) {
 	        return new AgentMetric[size];
 	    }
@@ -34,7 +34,7 @@ public class AgentMetric implements Parcelable {
 	}
 
 	public AgentMetric(){}
-	
+
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeList(attributes);
@@ -44,19 +44,19 @@ public class AgentMetric implements Parcelable {
 	public void addMeasure(Parcelable obj) {
 		measures.add(obj);
 	}
-	
+
 	public void addAttribute(Parcelable obj) {
 		attributes.add(obj);
 	}
-	
+
 	public List getAttributes(){
 		return attributes;
 	}
-	
+
 	public List getMeasures(){
 		return measures;
 	}
-	
+
 	public void clearMeasures() {
 		measures.clear();
 	}

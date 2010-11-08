@@ -4,7 +4,7 @@ email: scarot@libresoft.es
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
-ISO/IEEE 11073-20601. Manager application is designed to work in 
+ISO/IEEE 11073-20601. Manager application is designed to work in
 DalvikVM over android platform.
 
 This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ interface IAgentRegister {
      * Call back to its clients when some event arrives on the agent identified by system_id.
      */
     void registerAgentCallback(String system_id, IAgentCallbackService mc);
-    
+
     /**
      * Remove a previously registered callback interface.
      */

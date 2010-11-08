@@ -1,19 +1,19 @@
 /*
  * Copyright 2006 Abdulla G. Abdurakhmanov (abdulla.abdurakhmanov@gmail.com).
- * 
+ *
  * Licensed under the LGPL, Version 2 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.gnu.org/copyleft/lgpl.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * With any your questions welcome to my e-mail 
+ *
+ * With any your questions welcome to my e-mail
  * or blog at http://abdulla-a.blogspot.com.
  */
 package org.bn.coders;
@@ -43,7 +43,7 @@ import org.bn.utils.ReverseByteArrayOutputStream;
 import org.bn.types.*;
 
 public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
-    
+
     public void encode(T object, OutputStream stream) throws Exception {
         ElementInfo elemInfo = new ElementInfo();
         elemInfo.setAnnotatedClass(object.getClass());
@@ -56,18 +56,18 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
             elemInfo.setASN1ElementInfoForClass(object.getClass());
             sizeOfEncodedBytes = encodeClassType(object, stream, elemInfo);
         }
-        
+
         if( sizeOfEncodedBytes == 0) {
            throw new IllegalArgumentException("Unable to find any supported annotation for class type: " + object.getClass().toString());
         };
-        
+
     }
 
     public int encodeClassType(Object object, OutputStream stream, ElementInfo elementInfo) throws Exception {
         int resultSize = 0;
         if(elementInfo.hasPreparedInfo()) {
             resultSize+=elementInfo.getPreparedInfo().getTypeMetadata().encode(this,object, stream, elementInfo);
-        }        
+        }
         else
         if( object instanceof IASN1PreparedElement) {
             resultSize+=encodePreparedElement(object, stream, elementInfo);
@@ -75,8 +75,8 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1SequenceOf.class) ) {
             resultSize+=encodeSequenceOf(object, stream, elementInfo);
-        }        
-        else        
+        }
+        else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Sequence.class) ) {
             resultSize+=encodeSequence(object, stream, elementInfo);
         }
@@ -87,13 +87,13 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1BoxedType.class) ) {
             resultSize+=encodeBoxedType(object, stream, elementInfo);
-        }        
+        }
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Enum.class) ) {
             resultSize+=encodeEnum(object, stream, elementInfo);
         }
         else
-        if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Boolean.class) ) {            
+        if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Boolean.class) ) {
             resultSize+=encodeBoolean(object, stream, elementInfo);
         }
         else
@@ -103,11 +103,11 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Integer.class) ) {
             resultSize+=encodeInteger(object, stream, elementInfo);
-        }        
+        }
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Real.class) ) {
             resultSize+=encodeReal(object, stream, elementInfo);
-        }        
+        }
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1OctetString.class) ) {
             resultSize+=encodeOctetString(object, stream, elementInfo);
@@ -126,7 +126,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         }
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Null.class) ) {
-            resultSize+=encodeNull(object, stream, elementInfo);        
+            resultSize+=encodeNull(object, stream, elementInfo);
         }
         else
         if( elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1Element.class) ) {
@@ -136,7 +136,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
             resultSize+=encodeJavaElement(object, stream, elementInfo);
         return resultSize;
     }
-    
+
     protected int encodeJavaElement(Object object, OutputStream stream, ElementInfo info ) throws Exception {
         if(object.getClass().equals(String.class)) {
             return encodeString(object,stream,info);
@@ -156,7 +156,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         else
         if(object.getClass().equals(Boolean.class)) {
             return encodeBoolean(object,stream,info);
-        }        
+        }
         else
         if(object.getClass().isArray()) {
             return encodeOctetString(object,stream,info);
@@ -171,21 +171,21 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         ASN1ElementMetadata elementDataSave = null;
         if(elementInfo.hasPreparedASN1ElementInfo()) {
             elementDataSave = elementInfo.getPreparedASN1ElementInfo();
-        }        
+        }
         elementInfo.setPreparedInfo(preparedInstance.getPreparedData());
         //elementInfo.setPreparedASN1ElementInfo(preparedInstance.getPreparedData().getASN1ElementInfo());
         if(elementDataSave!=null)
             elementInfo.setPreparedASN1ElementInfo(elementDataSave);
         IASN1PreparedElementData preparedInstanceData = preparedInstance.getPreparedData();
         ASN1Metadata metaData = preparedInstanceData.getTypeMetadata();
-        return metaData.encode(this, object, stream, elementInfo);        
+        return metaData.encode(this, object, stream, elementInfo);
     }
-     
+
     public Object invokeGetterMethodForField(Field field, Object object, ElementInfo elementInfo) throws Exception {
         if(elementInfo!=null && elementInfo.hasPreparedInfo()) {
             return elementInfo.getPreparedInfo().invokeGetterMethod(object, (java.lang.Object[])null);
         }
-        else {    
+        else {
             Method method = CoderUtils.findGetterMethodForField(field,object.getClass());
             return method.invoke(object, (java.lang.Object[])null);
         }
@@ -200,7 +200,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
             return (Boolean)method.invoke(object, (java.lang.Object[])null);
         }
     }
-        
+
     public int encodeSequence(Object object, OutputStream stream, ElementInfo elementInfo) throws Exception {
         int resultSize = 0;
 
@@ -221,7 +221,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         }
         else
             info.setASN1ElementInfoForClass(field);
-        
+
         if(field.isSynthetic())
             return resultSize;
         if(CoderUtils.isNullField(field, info)) {
@@ -229,7 +229,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         }
         else {
             Object invokeObjResult = invokeGetterMethodForField(field,object, info);
-            
+
             if(invokeObjResult!=null) {
                 resultSize += encodeClassType(invokeObjResult, stream, info);
             }
@@ -238,7 +238,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         }
         return resultSize;
     }
-    
+
     protected boolean isSelectedChoiceItem(Field field, Object object, ElementInfo info) throws Exception {
         if(invokeSelectedMethodForField(field,object,info)) {
             return true;
@@ -246,14 +246,14 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         else
             return false;
     }
-    
+
     protected ElementInfo getChoiceSelectedElement(Object object, ElementInfo elementInfo) throws Exception {
-        ElementInfo info = null;                
-        
+        ElementInfo info = null;
+
         Field[] fields = elementInfo.getFields(object.getClass());
 
         int fieldIdx = 0;
-        for ( Field field : fields ) {            
+        for ( Field field : fields ) {
             if(!field.isSynthetic()) {
                 info = new ElementInfo();
                 info.setAnnotatedClass(field);
@@ -262,7 +262,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
                 }
                 else
                     info.setASN1ElementInfoForClass(field);
-            
+
                 if(isSelectedChoiceItem(field,object,info)) {
                     break;
                 }
@@ -274,7 +274,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         }
         if(info==null) {
             throw new  IllegalArgumentException ("The choice '" + object.toString() + "' does not have a selected item!");
-        }        
+        }
         return info;
     }
 
@@ -285,13 +285,13 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         resultSize+=encodeClassType(invokeObjResult, stream, info);
         return resultSize;
     }
-    
-        
+
+
     public int encodeEnum(Object object, OutputStream stream, ElementInfo elementInfo) throws Exception  {
         int resultSize = 0;
         Field field = object.getClass().getDeclaredField("value");
         Object result = invokeGetterMethodForField( field, object, null);
-       
+
         Class enumClass = null;
         for(Class cls : object.getClass().getDeclaredClasses()) {
             if(cls.isEnum()) {
@@ -306,20 +306,20 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
                 enumClass = cls;
                 break;
             }
-        }        
+        }
         resultSize+=encodeEnumItem(result, enumClass, stream, elementInfo);
         return resultSize;
     }
-    
+
     public int encodeElement(Object object, OutputStream stream, ElementInfo elementInfo) throws Exception  {
         elementInfo.setAnnotatedClass(object.getClass());
         return encodeClassType(object,stream,elementInfo);
     }
-    
+
     public int encodeBoxedType(Object object, OutputStream stream, ElementInfo elementInfo) throws Exception  {
         Field field = object.getClass().getDeclaredField("value");
         elementInfo.setAnnotatedClass(field);
-        
+
         if(elementInfo.getASN1ElementInfo()==null) {
             elementInfo.setASN1ElementInfoForClass(field);
         }
@@ -334,7 +334,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
 	        			fieldInfo.isImplicitTag(),
 	        			fieldInfo.tagClass(),
 	        			fieldInfo.tag(),
-	        			elementInfo.getASN1ElementInfo().hasDefaultValue()        				
+	        			elementInfo.getASN1ElementInfo().hasDefaultValue()
 	        		);
 	        		elementInfo.setPreparedASN1ElementInfo(elData);
         		};
@@ -344,7 +344,7 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
             return encodeNull(object,stream,elementInfo);
         }
         else {
-            
+
             return encodeClassType(invokeGetterMethodForField(field,object,elementInfo), stream, elementInfo);
         }
     }
