@@ -52,7 +52,7 @@ public class ManagerShell {
 		System.out.println("Starting CmdManager.");
 		try {
 			/* uncomment next line to get HDP support for agents */
-			HDPManagerChannel chanHDP = new HDPManagerChannel();
+			// HDPManagerChannel chanHDP = new HDPManagerChannel();
 			/* uncomment next line to get TCP support for agents */
 			TcpManagerChannel channelTCP = new TcpManagerChannel();
 			//Set the event manager handler to get internal events from the manager thread
@@ -66,7 +66,7 @@ public class ManagerShell {
 			System.out.println("Push any key to exit");
 			System.in.read();
 
-			chanHDP.finish();
+			//chanHDP.finish();
 			channelTCP.finish();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
