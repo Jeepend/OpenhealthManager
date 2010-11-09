@@ -26,7 +26,7 @@ package es.libresoft.openhealth.android;
 
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.SystemModel;
-import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
+//import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 
@@ -73,7 +73,7 @@ public class DrDroid extends Service {
 	public static final String droidEvent = "es.libresoft.openhealth.android.DRDROID_SERVICE";
 
 	private TcpManagerChannel channelTCP;
-	private HDPManagerChannel chanHDP;
+	//private HDPManagerChannel chanHDP;
 
 	@Override
 	public void onCreate() {
@@ -90,7 +90,7 @@ public class DrDroid extends Service {
 	public void onStart(Intent intent, int startId) {
 		try {
 			channelTCP.start();
-			chanHDP = new HDPManagerChannel();
+			//chanHDP = new HDPManagerChannel();
 			System.out.println("Service started");
 			super.onStart(intent, startId);
 		} catch (Exception e) {
@@ -115,7 +115,7 @@ public class DrDroid extends Service {
 	public void onDestroy() {
 		System.out.println("Service stopped");
 		channelTCP.finish();
-		chanHDP.finish();
+		//chanHDP.finish();
 		Iterator<Agent> iterator = agentsId.values().iterator();
 		Agent agent;
 		//Send abort signal to all agents
