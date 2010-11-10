@@ -65,6 +65,7 @@ import java.util.Iterator;
 
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
+import org.bn.annotations.ASN1OctetString;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
@@ -74,6 +75,7 @@ import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
+import es.libresoft.openhealth.utils.OctetStringASN1;
 
 public abstract class MDSManager extends MDS {
 
@@ -302,6 +304,10 @@ public abstract class MDSManager extends MDS {
 		while (it.hasNext()){
 			ava = it.next();
 			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
+			
+			if (attrClass == ASN1OctetString.class)
+				attrClass = OctetStringASN1.class;
+
 			Attribute attr = new Attribute(ava.getAttribute_id().getValue().getValue(),
 					ASN1_Tools.decodeData(ava.getAttribute_value(), attrClass, getDeviceConf().getEncondigRules()));
 			attribs.put(new Integer(ava.getAttribute_id().getValue().getValue()), attr);
