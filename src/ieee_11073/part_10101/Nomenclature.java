@@ -166,7 +166,12 @@ public interface Nomenclature {
 	/*************************************************************************************************
 	* From Medical supervisory control and data acquisition (MDC_PART_SCADA)
 	**************************************************************************************************/
-	public static final int MDC_PULS_OXIM_PULS_RATE 			=	18458;	/*                               */
+	public static final int MDC_PULS_OXIM_PULS_RATE				=	18458;	/*                               */
+	public static final int MDC_PULS_RATE_NON_INV				=	18474;	/*                               */
+	public static final int MDC_PRESS_BD_NONINV					=	18948;	/*                               */
+	public static final int MDC_PRESS_BD_NONINV_SYS				=	18949;	/*                               */
+	public static final int MDC_PRESS_BD_NONINV_DIA				=	18950;	/*                               */
+	public static final int MDC_PRESS_BD_NONINV_MEAN			=	18951;	/*                               */
 	public static final int MDC_SAT_O2_QUAL 					= 	19248;	/*                               */
 	public static final int MDC_TEMP_BODY						=	19292;	/*                               */
 	public static final int MDC_PULS_OXIM_PERF_REL 				= 	19376;	/*                               */
@@ -195,6 +200,8 @@ public interface Nomenclature {
 	public static final int MDC_DIM_HR							=	2240;	/* h          	                 */
 	public static final int MDC_DIM_DAY							=	2272;	/* d              	             */
 	public static final int MDC_DIM_BEAT_PER_MIN				=	2720; 	/* bpm 737						 */
+	public static final int MDC_DIM_KILO_PASCAL					=	3843;	/* kPa                           */
+	public static final int MDC_DIM_MMHG						=	3843;	/* mmHg                          */
 	public static final int MDC_DIM_DEGC						=	6048;	/* ºC                 	         */
 
 	/*************************************************************************************************
