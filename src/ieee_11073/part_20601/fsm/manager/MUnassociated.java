@@ -262,8 +262,8 @@ public final class MUnassociated extends Unassociated {
 					DeviceSpecializationFactory.getOxymeter10404(
 							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
 			*/
-		}else if ((700 <= id) && (id <= 799)){
-			System.out.println("Blood Pressure is not yet supported");
+		}else if ((700 <= id) && (id <= 799)){ // Blood Pressure
+			processExtendedConfiguration(phd);
 		}else if ((800 <= id) && (id <= 899)){ //Thermometer
 			processExtendedConfiguration(phd);
 			/*
