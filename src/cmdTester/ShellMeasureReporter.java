@@ -1,41 +1,38 @@
 package cmdTester;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
 
 import es.libresoft.openhealth.events.MeasureReporter;
 
 public class ShellMeasureReporter implements MeasureReporter {
 
-	private final ArrayList<Object> measures = new ArrayList<Object>();
+	//private final ArrayList<ShellMeasure> measures = new ArrayList<ShellMeasure>();
+	//private final ArrayList<Object> attributes = new ArrayList<Object>();
+	AgentMetric metric = new AgentMetric();
 
 	@Override
 	public void addMeasure(int mType, Object data) {
-		measures.add(data);
+		metric.addMeasure(new ShellMeasure(mType, data));
 	}
 
 	@Override
 	public void clearMeasures() {
-		measures.clear();
+		metric.clearMeasures();
 	}
 
 	@Override
-	public List getMeasures() {
-		return measures;
+	public List<Object> getMeasures() {
+		return metric.getMeasures();
 	}
 
 	@Override
 	public void set_attribute(int type, int value) {
-		// TODO Auto-generated method stub
-
+		metric.addAttribute(new ShellAttribute(type, value));
 	}
 
 	@Override
-	public <T> List<T> getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Object> getAttributes() {
+		return metric.getAttributes();
 	}
 
 }
