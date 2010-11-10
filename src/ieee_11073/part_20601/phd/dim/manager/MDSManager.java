@@ -34,6 +34,7 @@ import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
+import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.ConfigObject;
 import ieee_11073.part_20601.asn1.ConfigReport;
@@ -57,6 +58,7 @@ import ieee_11073.part_20601.phd.dim.Numeric;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -275,6 +277,19 @@ public abstract class MDSManager extends MDS {
 			Date d = sdf.parse(source);
 			System.out.println("date: " + d);
 			return (T)d;
+		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC:
+			System.out.println("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
+			BasicNuObsValueCmp cmp_val = decoder.decode(input, BasicNuObsValueCmp.class);
+			Iterator<BasicNuObsValue> it = cmp_val.getValue().iterator();
+			ArrayList<SFloatType> measures = new ArrayList<SFloatType>();
+
+			while (it.hasNext()) {
+				BasicNuObsValue value = it.next();
+				SFloatType ms = new SFloatType(value.getValue().getValue());
+				System.out.println("Measure: " + ms.doubleValueRepresentation());
+				measures.add(ms);
+			}
+			return (T)measures;
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");
 	}
