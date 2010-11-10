@@ -33,13 +33,24 @@ public class ManagerShell {
 
 		@Override
 		public void receivedMeasure(String systemId, MeasureReporter mr) {
-			List measures = mr.getMeasures();
-			Iterator i = measures.iterator();
-			if (measures.isEmpty()) return;
+			List<Object> measures = mr.getMeasures();
+			Iterator<Object> ims = measures.iterator();
 
-			System.out.println("Measures received from: " + systemId);
-			while (i.hasNext()) {
-				System.out.println("" + i.next());
+			List<Object> attributes = mr.getAttributes();
+			Iterator<Object> iat = attributes.iterator();
+
+			if (!measures.isEmpty()) {
+				System.out.println("Measures received from: " + systemId);
+				while (ims.hasNext()) {
+					System.out.println("" + ims.next());
+				}
+			}
+
+			if (!attributes.isEmpty()) {
+				System.out.println("Attributes received from: " + systemId);
+				while (iat.hasNext()) {
+					System.out.println("" + iat.next());
+				}
 			}
 		}
 
