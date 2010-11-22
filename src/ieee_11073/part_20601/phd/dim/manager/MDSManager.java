@@ -301,15 +301,20 @@ public abstract class MDSManager extends MDS {
 		Hashtable<Integer,Attribute> attribs = new Hashtable<Integer,Attribute>();
 		Iterator<AVA_Type> it = attrList.getValue().iterator();
 		AVA_Type ava;
+		Object type;
+
 		while (it.hasNext()){
 			ava = it.next();
 			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
 			
-			if (attrClass == ASN1OctetString.class)
-				attrClass = OctetStringASN1.class;
+			Object OctetStringASN1;
+			if (attrClass == ASN1OctetString.class) {
+				OctetStringASN1 ostring = ASN1_Tools.decodeData(ava.getAttribute_value(), OctetStringASN1.class, getDeviceConf().getEncondigRules());
+				type = ostring.getValue();
+			} else
+				type = ASN1_Tools.decodeData(ava.getAttribute_value(), attrClass, getDeviceConf().getEncondigRules());
 
-			Attribute attr = new Attribute(ava.getAttribute_id().getValue().getValue(),
-					ASN1_Tools.decodeData(ava.getAttribute_value(), attrClass, getDeviceConf().getEncondigRules()));
+			Attribute attr = new Attribute(ava.getAttribute_id().getValue().getValue(), type);
 			attribs.put(new Integer(ava.getAttribute_id().getValue().getValue()), attr);
 		}
 		return attribs;
