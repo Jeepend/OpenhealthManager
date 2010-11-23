@@ -37,8 +37,27 @@ import ieee_11073.part_10101.Nomenclature;
 
 public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Service {
 
+	private static int[] mandatoryIds = {Nomenclature.MDC_ATTR_ID_HANDLE,
+										Nomenclature.MDC_ATTR_PM_STORE_CAPAB,
+										Nomenclature.MDC_ATTR_METRIC_STORE_SAMPLE_ALG,
+										Nomenclature.MDC_ATTR_OP_STAT,
+										Nomenclature.MDC_ATTR_NUM_SEG,
+										Nomenclature.MDC_ATTR_CLEAR_TIMEOUT
+										};
+
 	public PM_Store(Hashtable<Integer,Attribute> attributeList) throws InvalidAttributeException {
 		super(attributeList);
+	}
+
+	@Override
+	protected void checkAttributes(
+			Hashtable<Integer, Attribute> attributes)
+			throws InvalidAttributeException {
+		/* Check mandatory attributes of the PM_Store object */
+		for (int i=0; i<mandatoryIds.length; i++){
+			if (!attributes.containsKey(mandatoryIds[i]))
+				throw new InvalidAttributeException("Attribute id " + mandatoryIds[i] + " is not assigned in PM_Store Object.");
+		}
 	}
 
 	public int getNomenclatureCode (){

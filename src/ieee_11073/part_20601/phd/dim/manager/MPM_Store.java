@@ -34,15 +34,6 @@ public class MPM_Store extends PM_Store {
 	public MPM_Store(Hashtable<Integer, Attribute> attributeList)
 			throws InvalidAttributeException {
 		super(attributeList);
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	protected void checkAttributes(
-			Hashtable<Integer, Attribute> attributes)
-			throws InvalidAttributeException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

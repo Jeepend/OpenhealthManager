@@ -136,6 +136,11 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		return pm_stores.get(handle.getValue().getValue());
 	}
 
+	public void addPM_Store (PM_Store pmstore){
+		HANDLE handle = (HANDLE)pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		pm_stores.put(handle.getValue().getValue(), pmstore);
+	}
+
 	/* MDS Object methods */
 
 	/**

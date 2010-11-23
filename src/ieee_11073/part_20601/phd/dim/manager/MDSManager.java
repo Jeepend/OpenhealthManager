@@ -127,7 +127,8 @@ public abstract class MDSManager extends MDS {
 				case Nomenclature.MDC_MOC_VMO_METRIC_ENUM: // Enumeration Class
 					throw new Exception("Unsoportedd Enumeration Class");
 				case Nomenclature.MDC_MOC_VMO_PMSTORE: // PM-Store Class
-					throw new Exception("Unsoportedd PM-Store Class");
+					addPM_Store(new MPM_Store(attribs));
+					break;
 				case Nomenclature.MDC_MOC_PM_SEGMENT: // PM-Segment Class
 					throw new Exception("Unsoportedd PM-Segment Class");
 				case Nomenclature.MDC_MOC_SCAN: // Scan Class
