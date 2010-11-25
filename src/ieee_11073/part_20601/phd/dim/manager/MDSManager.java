@@ -30,6 +30,7 @@ package ieee_11073.part_20601.phd.dim.manager;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AVA_Type;
 import ieee_11073.part_20601.asn1.AbsoluteTime;
+import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.AttributeList;
@@ -72,6 +73,7 @@ import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
@@ -415,5 +417,12 @@ public abstract class MDSManager extends MDS {
 				data[i]=raw[index++];
 			return data;
 		}
+	}
+
+	public void GET () {
+		ApduType apdu = MessageFactory.PrstRoivCmpGet(this);
+
+		getStateHandler().send(apdu);
+		// TODO: set timer
 	}
 }

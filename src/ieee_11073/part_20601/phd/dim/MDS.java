@@ -35,6 +35,8 @@ import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.SystemModel;
+import ieee_11073.part_20601.fsm.StateHandler;
+
 import java.util.Hashtable;
 
 import es.libresoft.openhealth.DeviceConfig;
@@ -59,6 +61,9 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	private Hashtable<Integer,RT_SA> rt_sas;
 	private Hashtable<Integer,Enumeration> enumerations;
 	private Hashtable<Integer,PM_Store> pm_stores;
+
+	private int invokeId = 0;
+	private StateHandler stateHandler;
 
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
@@ -139,6 +144,18 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	public void addPM_Store (PM_Store pmstore){
 		HANDLE handle = (HANDLE)pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 		pm_stores.put(handle.getValue().getValue(), pmstore);
+	}
+
+	public int getNextInvokeId() {
+		return invokeId++;
+	}
+
+	public void setStateHandler(StateHandler sh) {
+		stateHandler = sh;
+	}
+
+	public StateHandler getStateHandler() {
+		return stateHandler;
 	}
 
 	/* MDS Object methods */

@@ -63,12 +63,6 @@ public class DS_Extended extends MDSManager {
 	}
 
 	@Override
-	public void GET() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void MDS_Dynamic_Data_Update_MP_Fixed(ScanReportInfoMPFixed info) {
 		// TODO Auto-generated method stub
 

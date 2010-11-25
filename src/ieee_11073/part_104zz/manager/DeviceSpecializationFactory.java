@@ -35,6 +35,7 @@ import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TypeVer;
 import ieee_11073.part_20601.asn1.TypeVerList;
+import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 
@@ -44,8 +45,10 @@ import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
  */
 public class DeviceSpecializationFactory {
 
-	public static DS_Extended getExtendedMDS(byte[] system_id, ConfigId devConfig_id) {
-		return new DS_Extended(system_id, devConfig_id);
+	public static DS_Extended getExtendedMDS(byte[] system_id, ConfigId devConfig_id, StateHandler sh) {
+		DS_Extended ds = new DS_Extended(system_id, devConfig_id);
+		ds.setStateHandler(sh);
+		return ds;
 	}
 
 	public static DS_10408 getThermometer10408 (byte[] system_id, ConfigId devConfig_id){

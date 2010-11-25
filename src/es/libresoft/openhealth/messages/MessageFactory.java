@@ -28,6 +28,7 @@ import ieee_11073.part_20601.asn1.Abort_reason;
 import ieee_11073.part_20601.asn1.AbrtApdu;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AssociateResult;
+import ieee_11073.part_20601.asn1.AttributeIdList;
 import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.DataApdu;
@@ -39,6 +40,7 @@ import ieee_11073.part_20601.asn1.EncodingRules;
 import ieee_11073.part_20601.asn1.ErrorResult;
 import ieee_11073.part_20601.asn1.EventReportResultSimple;
 import ieee_11073.part_20601.asn1.FunctionalUnits;
+import ieee_11073.part_20601.asn1.GetArgumentSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.INT_U32;
@@ -55,6 +57,7 @@ import ieee_11073.part_20601.asn1.RlreApdu;
 import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SystemType;
+import ieee_11073.part_20601.phd.dim.MDS;
 
 import java.io.ByteArrayOutputStream;
 
@@ -502,5 +505,39 @@ public class MessageFactory {
 		roer.setError_value(rev);
 		msg.selectRoer(roer);
 		return msg;
+	}
+
+	public static final ApduType PrstRoivCmpGet(MDS mds) {
+		ApduType at = new ApduType();
+		PrstApdu pr = new PrstApdu();
+		DataApdu data = new DataApdu();
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		GetArgumentSimple gat = new GetArgumentSimple();
+		HANDLE handle = new HANDLE();
+
+		handle.setValue(new INT_U16(0));
+		gat.setObj_handle(handle); // Handle for MDS
+		AttributeIdList att = new AttributeIdList();
+		att.initValue();
+
+		gat.setAttribute_id_list(att);
+		msg.selectRoiv_cmip_get(gat);
+
+		data.setInvoke_id(new InvokeIDType(mds.getNextInvokeId()));
+		data.setMessage(msg);
+
+		ByteArrayOutputStream output= new ByteArrayOutputStream();
+		IEncoder<DataApdu> encoderDataApdu;
+		try {
+			encoderDataApdu = CoderFactory.getInstance().newEncoder(mds.getDeviceConf().getEncondigRules());
+			encoderDataApdu.encode(data, output);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		pr.setValue(output.toByteArray());
+		at.selectPrst(pr);
+		return at;
 	}
 }

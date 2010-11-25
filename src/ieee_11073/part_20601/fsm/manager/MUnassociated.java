@@ -240,7 +240,7 @@ public final class MUnassociated extends Unassociated {
 
 	private void processExtendedConfiguration(PhdAssociationInformation phd) {
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
-		DS_Extended extMDS = DeviceSpecializationFactory.getExtendedMDS(phd.getSystem_id(),phd.getDev_config_id());
+		DS_Extended extMDS = DeviceSpecializationFactory.getExtendedMDS(phd.getSystem_id(),phd.getDev_config_id(), state_handler);
 		//Set device config
 		extMDS.setDeviceConfig(dev_conf);
 		//Set MDS Object
@@ -248,6 +248,8 @@ public final class MUnassociated extends Unassociated {
 		//Send AareApdu Accepted unknown config and transit to configuring state
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(dev_conf));
 		state_handler.changeState(new WaitingForConfig(state_handler));
+
+		extMDS.GET();
 	}
 
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
