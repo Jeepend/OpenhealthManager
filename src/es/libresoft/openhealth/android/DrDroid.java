@@ -154,6 +154,9 @@ public class DrDroid extends Service {
         } else if (IAgentActionService.class.getName().equals(arg0.getAction())){
         	//Use agent events
         	return aActionServiceStub;
+        } else if (IPM_StoreActionService.class.getName().equals(arg0.getAction())) {
+			//Use pm_store events
+			return pmActionServiceStub;
         } else return null;
 	}
 
@@ -206,6 +209,36 @@ public class DrDroid extends Service {
 		}
     };
 
+    /************************************************************
+	 * PM_Store Action service implemented in the same class
+	 ************************************************************/
+    /**
+     * The IPM_StoreActionService is defined through IDL
+     */
+    private final IPM_StoreActionService.Stub pmActionServiceStub = new IPM_StoreActionService.Stub() {
+
+		@Override
+		public void getStorage(String systemId, PM_Store[] pmStoreList)
+				throws RemoteException {
+			Agent agt = agentsId.get(systemId);
+			int[] handlers;
+			int maxsize;
+
+			if (agt == null || pmStoreList == null)
+				return;
+
+			handlers = agt.getPM_StoresHandlers();
+
+			if (handlers.length == 0)
+				return;
+
+			maxsize = (handlers.length < pmStoreList.length) ? handlers.length :
+																pmStoreList.length;
+			for (int i = 0; i < maxsize; i++) {
+				pmStoreList[i] = new PM_Store(handlers[i], systemId);
+			}
+		}
+    };
 
     /************************************************************
 	 * Action service implemented in the same class

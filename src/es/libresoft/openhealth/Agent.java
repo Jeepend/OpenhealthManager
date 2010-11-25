@@ -23,6 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.utils.DIM_Tools;
@@ -95,5 +98,25 @@ public final class Agent extends Device{
 	@Override
 	public int hashCode() {
 		return system_id.hashCode();
+	}
+
+	public int[] getPM_StoresHandlers () {
+		Set<Integer> intSet = mdsObj.getPM_StoresHandlers();
+		Iterator<Integer> i = intSet.iterator();
+		int pm_handlers[];
+
+		if (intSet.size() == 0)
+			return new int[0];
+		else
+			pm_handlers = new int[intSet.size()];
+
+		Integer handler;
+		int j = 0;
+		while (i.hasNext()) {
+			handler = i.next();
+			pm_handlers[j++] = handler.intValue();
+		}
+
+		return pm_handlers;
 	}
 }

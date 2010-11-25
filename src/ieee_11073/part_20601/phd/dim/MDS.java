@@ -38,6 +38,8 @@ import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.fsm.StateHandler;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 import es.libresoft.openhealth.DeviceConfig;
 
@@ -156,6 +158,10 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 
 	public StateHandler getStateHandler() {
 		return stateHandler;
+	}
+
+	public Set<Integer> getPM_StoresHandlers() {
+		return pm_stores.keySet();
 	}
 
 	/* MDS Object methods */
