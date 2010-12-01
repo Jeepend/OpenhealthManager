@@ -218,7 +218,7 @@ public class DrDroid extends Service {
     private final IPM_StoreActionService.Stub pmActionServiceStub = new IPM_StoreActionService.Stub() {
 
 		@Override
-		public void getStorage(String systemId, PM_Store[] pmStoreList)
+		public void getStorage(String systemId, List<PM_Store> pmStoreList)
 				throws RemoteException {
 			Agent agt = agentsId.get(systemId);
 			int[] handlers;
@@ -232,10 +232,8 @@ public class DrDroid extends Service {
 			if (handlers.length == 0)
 				return;
 
-			maxsize = (handlers.length < pmStoreList.length) ? handlers.length :
-																pmStoreList.length;
-			for (int i = 0; i < maxsize; i++) {
-				pmStoreList[i] = new PM_Store(handlers[i], systemId);
+			for (int i = 0; i < handlers.length; i++) {
+				pmStoreList.add(new PM_Store(handlers[i], systemId));
 			}
 		}
     };

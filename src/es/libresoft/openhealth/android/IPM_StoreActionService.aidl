@@ -27,5 +27,5 @@ package es.libresoft.openhealth.android;
 import es.libresoft.openhealth.android.PM_Store;
 
 interface IPM_StoreActionService {
-    void getStorage(String system_id, out PM_Store[] pm_storeList);
+    void getStorage(String system_id, out List<PM_Store> pm_storeList);
 }
