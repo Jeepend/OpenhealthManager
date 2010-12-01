@@ -148,7 +148,7 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		pm_stores.put(handle.getValue().getValue(), pmstore);
 	}
 
-	public int getNextInvokeId() {
+	public synchronized int getNextInvokeId() {
 		return invokeId++;
 	}
 
