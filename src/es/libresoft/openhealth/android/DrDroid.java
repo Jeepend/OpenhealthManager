@@ -236,6 +236,11 @@ public class DrDroid extends Service {
 				pmStoreList.add(new PM_Store(handlers[i], systemId));
 			}
 		}
+
+		@Override
+		public void getPM_Store(PM_Store pmstore) throws RemoteException {
+			System.out.println("TODO: PM_Store get request");
+		}
     };
 
     /************************************************************
