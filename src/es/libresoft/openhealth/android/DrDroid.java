@@ -222,7 +222,6 @@ public class DrDroid extends Service {
 				throws RemoteException {
 			Agent agt = agentsId.get(systemId);
 			int[] handlers;
-			int maxsize;
 
 			if (agt == null || pmStoreList == null)
 				return;
