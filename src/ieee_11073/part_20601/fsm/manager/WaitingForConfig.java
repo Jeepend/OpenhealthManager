@@ -31,9 +31,8 @@ import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Configuring;
 import ieee_11073.part_20601.fsm.StateHandler;
-import ieee_11073.part_20601.phd.dim.TimeOuts;
+import ieee_11073.part_20601.phd.dim.TimeOut;
 
-import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import es.libresoft.openhealth.events.Event;
@@ -43,7 +42,7 @@ import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public final class WaitingForConfig extends Configuring {
 
-	private TimerTask timerTask;
+	private TimeOut timeOut;
 
 	private Semaphore abortMutex = new Semaphore(1); //Control concurrent access to the boolean variable "evaluateTimeout"
 	boolean evaluateTimeout = true;
@@ -64,15 +63,15 @@ public final class WaitingForConfig extends Configuring {
 			process_PrstApdu(apdu.getPrst());
 		}else if (apdu.isRlrqSelected()) {
 			//The manager has received a request to release the association
-			timerTask.cancel();
+			timeOut.cancel();
 			state_handler.send(MessageFactory.RlreApdu_NORMAL());
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAarqSelected() || apdu.isAareSelected() || apdu.isRlreSelected()){
-			timerTask.cancel();
+			timeOut.cancel();
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if(apdu.isAbrtSelected()){
-			timerTask.cancel();
+			timeOut.cancel();
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
 	}
@@ -80,7 +79,7 @@ public final class WaitingForConfig extends Configuring {
 	@Override
 	public synchronized void processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
-			timerTask.cancel();
+			timeOut.cancel();
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.IND_TIMEOUT) {
@@ -91,7 +90,7 @@ public final class WaitingForConfig extends Configuring {
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
 			state_handler.changeState(new MDisassociating(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT){
-			timerTask.cancel();
+			timeOut.cancel();
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
@@ -99,12 +98,10 @@ public final class WaitingForConfig extends Configuring {
 
 //----------------------------------PRIVATE--------------------------------------------------------
 	private void resetTimerTask () {
-		if (timerTask!=null)
-			timerTask.cancel();
-		timerTask = new TimerTask()
-	    {
-			public void run()
-	        {
+		if (timeOut != null)
+			timeOut.cancel();
+		timeOut = new TimeOut(TimeOut.TO_CONFIG) {
+			protected void expiredTimeout() {
 				System.out.println("Timeout task running");
 				try {
 					abortMutex.acquire();
@@ -120,10 +117,9 @@ public final class WaitingForConfig extends Configuring {
 					//an incoming report apdu response arrived from agent near to the timeout slot.
 					;
 				}
-	        }
-	    };
-	    state_handler.getTimer().purge();
-	    state_handler.getTimer().schedule(timerTask,TimeOuts.TO_CONFIG);
+			}
+		};
+		state_handler.addTimeout(timeOut);
 	}
 
 
@@ -253,8 +249,7 @@ public final class WaitingForConfig extends Configuring {
 				//a previous processed apdu from another state to the new state
 				checking.checkNotiConfig(data);
 				//Cancel timeout if it did not do itself yet
-				timerTask.cancel();
-				state_handler.getTimer().purge();
+				timeOut.cancel();
 			}else {
 				//Timeout has produced, ignore this apdu
 				abortMutex.release();

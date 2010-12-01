@@ -2,6 +2,8 @@
 Copyright (C) 2008-2009  Santiago Carot Nemesio
 email: scarot@libresoft.es
 
+Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
+
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
 ISO/IEEE 11073-20601. Manager application is designed to work in
@@ -38,6 +40,7 @@ import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
+import ieee_11073.part_20601.phd.dim.TimeOut;
 
 
 public class ManagerStateController implements StateController {
@@ -93,8 +96,9 @@ public class ManagerStateController implements StateController {
 		}
 
 		@Override
-		public Timer getTimer() {
-			return timer;
+		public void addTimeout(TimeOut to) {
+			timer.purge();
+			timer.schedule(to, to.getTimeout());
 		}
 
 	};

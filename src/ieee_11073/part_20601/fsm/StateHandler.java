@@ -2,6 +2,8 @@
 Copyright (C) 2008-2009  Santiago Carot Nemesio
 email: scarot@libresoft.es
 
+Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
+
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
 ISO/IEEE 11073-20601. Manager application is designed to work in
@@ -23,10 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.fsm;
 
-import java.util.Timer;
 import es.libresoft.openhealth.events.Event;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.phd.dim.MDS;
+import ieee_11073.part_20601.phd.dim.TimeOut;
 
 public interface StateHandler {
 	void changeState(State newState);
@@ -34,5 +36,5 @@ public interface StateHandler {
 	void sendEvent(Event event);
 	MDS getMDS();
 	void setMDS(MDS mds);
-	Timer getTimer();
+	void addTimeout(TimeOut to);
 }
