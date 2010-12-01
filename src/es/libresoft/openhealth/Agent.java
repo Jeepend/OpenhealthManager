@@ -30,10 +30,13 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.utils.DIM_Tools;
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.fsm.manager.ManagerStateController;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
+import ieee_11073.part_20601.phd.dim.PM_Store;
 
 public final class Agent extends Device{
 
@@ -118,5 +121,16 @@ public final class Agent extends Device{
 		}
 
 		return pm_handlers;
+	}
+
+	public PM_Store getPM_Store (int handle) {
+		HANDLE h = new HANDLE();
+		if (handle < 0 || handle > 65535L) {
+			System.err.println("Invalid HANDLER for PM_Store class");
+			return null;
+		}
+
+		h.setValue(new INT_U16(handle));
+		return mdsObj.getPM_Store(h);
 	}
 }

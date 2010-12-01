@@ -62,8 +62,7 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void GET() {
-		// TODO Auto-generated method stub
-
+		System.out.println("Create GET PM_Store Service");
 	}
 
 }

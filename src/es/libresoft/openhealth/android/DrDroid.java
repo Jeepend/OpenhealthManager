@@ -238,7 +238,15 @@ public class DrDroid extends Service {
 
 		@Override
 		public void getPM_Store(PM_Store pmstore) throws RemoteException {
-			System.out.println("TODO: PM_Store get request");
+			Agent agt = agentsId.get(pmstore.getPM_StoreAgentId());
+			ieee_11073.part_20601.phd.dim.PM_Store ipmstore;
+
+			ipmstore = agt.getPM_Store(pmstore.getPM_StoreHandler());
+			if (ipmstore == null) {
+				System.err.println("Invalid PM_Store " + pmstore.getPM_StoreHandler());
+				return;
+			}
+			ipmstore.GET();
 		}
     };
 
