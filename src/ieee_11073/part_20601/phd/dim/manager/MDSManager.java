@@ -42,6 +42,7 @@ import ieee_11073.part_20601.asn1.ConfigReport;
 import ieee_11073.part_20601.asn1.ConfigReportRsp;
 import ieee_11073.part_20601.asn1.ConfigResult;
 import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.INT_U32;
@@ -53,6 +54,7 @@ import ieee_11073.part_20601.asn1.ObservationScanFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.TYPE;
+import ieee_11073.part_20601.fsm.manager.MUnassociated;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -64,6 +66,7 @@ import ieee_11073.part_20601.phd.dim.TimeOut;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -332,8 +335,8 @@ public abstract class MDSManager extends MDS {
 		while (i.hasNext()){
 			int id = i.next();
 			attribs.get(id);
-			System.out.println("-----------------------");
-			System.out.println("Probando atributo: " + DIM_Tools.getAttributeName(id));
+			System.out.println(">>>>>>>>>>>>>>>");
+			System.out.println("Checking attribute: " + DIM_Tools.getAttributeName(id) + " " + id);
 			Attribute attr = attribs.get(id);
 			switch (id){
 			case Nomenclature.MDC_ATTR_ID_TYPE :
@@ -385,8 +388,10 @@ public abstract class MDSManager extends MDS {
 				}
 				System.out.println("ok.");
 				break;
-			default: break;
+			default:
+				break;
 			}
+			System.out.println("<<<<<<<<<<<<<<<");
 		}
 	}
 
@@ -434,14 +439,39 @@ public abstract class MDSManager extends MDS {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					// TODO Auto-generated method stub
 					System.out.println("Received response for get MDS");
+
+					if (!data.getMessage().isRors_cmip_getSelected()) {
+						//TODO: Unexpected response format
+						System.out.println("TODO: Unexpected response format");
+						return;
+					}
+
+					GetResultSimple grs = data.getMessage().getRors_cmip_get();
+
+					if (grs.getObj_handle().getValue().getValue() != 0) {
+						//TODO: Unexpected object handle, should be reserved value 0
+						System.out.println("TODO: Unexpected object handle, should be reserved value 0");
+						return;
+					}
+
+					try {
+						Hashtable<Integer, Attribute> attribs;
+						attribs = getAttributes(grs.getAttribute_list());
+						checkGotAttributes(attribs);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 
 				@Override
 				protected void expiredTimeout() {
-					// TODO Auto-generated method stub
 					System.out.println("Timeout waiting for MDS");
+
+					ApduType abort = MessageFactory.AbrtApdu_RESPONSE_TIMEOUT();
+					getStateHandler().send(abort);
+					getStateHandler().changeState(new MUnassociated(getStateHandler()));
 				}
 
 			};
