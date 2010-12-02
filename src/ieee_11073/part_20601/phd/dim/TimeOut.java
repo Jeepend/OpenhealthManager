@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import ieee_11073.part_20601.fsm.StateHandler;
+
 import java.util.TimerTask;
 
 	/**************************************************************************************************************
@@ -48,17 +50,24 @@ public abstract class TimeOut extends TimerTask {
 	public static final int SCANNER_TO_CS	=	3000;	/* 3sg						Confirm Set				8.9.5.5	  */
 
 	private int timeout;
+	private StateHandler stateHandler;
 
-	public TimeOut(int timeout) {
+	public TimeOut(int timeout, StateHandler stateHandler) {
 		this.timeout = timeout;
+		this.stateHandler = stateHandler;
 	}
 
 	public final void run() {
 			expiredTimeout();
+			stateHandler.removeTimeout(this);
 	}
 
 	public int getTimeout() {
 		return timeout;
+	}
+
+	public void start() {
+		stateHandler.addTimeout(this);
 	}
 
 	/**

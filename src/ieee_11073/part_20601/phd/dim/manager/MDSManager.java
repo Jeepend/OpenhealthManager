@@ -41,9 +41,11 @@ import ieee_11073.part_20601.asn1.ConfigObject;
 import ieee_11073.part_20601.asn1.ConfigReport;
 import ieee_11073.part_20601.asn1.ConfigReportRsp;
 import ieee_11073.part_20601.asn1.ConfigResult;
+import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.INT_U32;
+import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.ObservationScan;
@@ -52,10 +54,12 @@ import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.Metric;
 import ieee_11073.part_20601.phd.dim.Numeric;
+import ieee_11073.part_20601.phd.dim.TimeOut;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
@@ -422,7 +426,30 @@ public abstract class MDSManager extends MDS {
 	public void GET () {
 		ApduType apdu = MessageFactory.PrstRoivCmpGet(this);
 
-		getStateHandler().send(apdu);
-		// TODO: set timer
+		try{
+			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, this.getDeviceConf().getEncondigRules());
+			InvokeIDType invokeId = data.getInvoke_id();
+			getStateHandler().send(apdu);
+			DimTimeOut to = new DimTimeOut(TimeOut.MDS_TO_GET, invokeId.getValue(), getStateHandler()) {
+
+				@Override
+				public void procResponse(DataApdu data) {
+					// TODO Auto-generated method stub
+					System.out.println("Received response for get MDS");
+				}
+
+				@Override
+				protected void expiredTimeout() {
+					// TODO Auto-generated method stub
+					System.out.println("Timeout waiting for MDS");
+				}
+
+			};
+			to.start();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

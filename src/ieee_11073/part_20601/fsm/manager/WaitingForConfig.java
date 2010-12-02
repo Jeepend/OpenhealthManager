@@ -102,7 +102,7 @@ public final class WaitingForConfig extends Configuring {
 	private void resetTimerTask () {
 		if (timeOut != null)
 			timeOut.cancel();
-		timeOut = new TimeOut(TimeOut.TO_CONFIG) {
+		timeOut = new TimeOut(TimeOut.TO_CONFIG, state_handler) {
 			protected void expiredTimeout() {
 				System.out.println("Timeout task running");
 				try {
@@ -121,7 +121,7 @@ public final class WaitingForConfig extends Configuring {
 				}
 			}
 		};
-		state_handler.addTimeout(timeOut);
+		timeOut.start();
 	}
 
 

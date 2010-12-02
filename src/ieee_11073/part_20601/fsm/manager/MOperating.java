@@ -38,6 +38,7 @@ import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.phd.dim.PM_Store;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.ExternalEvent;
@@ -186,6 +187,12 @@ public final class MOperating extends Operating {
 			//TODO:
 			System.out.println(">> Rorj");
 		}
+
+		DimTimeOut to = state_handler.retireTimeout(data.getInvoke_id().getValue());
+		if (to != null)
+			to.procResponse(data);
+
+		//TODO search in the timeouts if is there one for this event
 	}
 
 	private void roiv_cmip_event_report(EventReportArgumentSimple event, MessageChoiceType msg){

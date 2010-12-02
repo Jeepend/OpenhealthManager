@@ -1,6 +1,5 @@
 /*
-Copyright (C) 2008-2009  Santiago Carot Nemesio
-email: scarot@libresoft.es
+Copyright (C) 2010 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 
@@ -23,21 +22,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-package ieee_11073.part_20601.fsm;
 
-import es.libresoft.openhealth.events.Event;
-import ieee_11073.part_20601.asn1.ApduType;
-import ieee_11073.part_20601.phd.dim.DimTimeOut;
-import ieee_11073.part_20601.phd.dim.MDS;
-import ieee_11073.part_20601.phd.dim.TimeOut;
+package ieee_11073.part_20601.phd.dim;
 
-public interface StateHandler {
-	void changeState(State newState);
-	void send(ApduType apdu);
-	void sendEvent(Event event);
-	MDS getMDS();
-	void setMDS(MDS mds);
-	void addTimeout(TimeOut to);
-	void removeTimeout(TimeOut to);
-	DimTimeOut retireTimeout(int invokeId);
+import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.fsm.StateHandler;
+
+public abstract class DimTimeOut extends TimeOut {
+
+	private int invokeId;
+
+	public DimTimeOut(int timeout, int invokeId, StateHandler stateHandler) {
+		super(timeout, stateHandler);
+
+		this.invokeId = invokeId;
+	}
+
+	public int getInvokeId() {
+		return invokeId;
+	}
+
+	/**
+	 * This Method will be called by the FSM when the response
+	 * is received in order to process the response
+	 * */
+	public abstract void procResponse(DataApdu data);
 }

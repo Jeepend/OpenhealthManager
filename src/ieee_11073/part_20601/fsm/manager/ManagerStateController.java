@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.fsm.manager;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.concurrent.Semaphore;
 
@@ -38,6 +39,7 @@ import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.fsm.StateController;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.phd.channel.InitializedException;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.TimeOut;
@@ -62,6 +64,8 @@ public class ManagerStateController implements StateController {
 
 	private boolean initialized = false;
 	private Timer timer;
+
+	private ArrayList<DimTimeOut> timeouts = new ArrayList<DimTimeOut>();
 
 	private StateHandler state_handler = new StateHandler(){
 
@@ -96,9 +100,35 @@ public class ManagerStateController implements StateController {
 		}
 
 		@Override
-		public void addTimeout(TimeOut to) {
+		public synchronized void addTimeout(TimeOut to) {
 			timer.purge();
 			timer.schedule(to, to.getTimeout());
+
+			if (to instanceof DimTimeOut) {
+				timeouts.add((DimTimeOut) to);
+			}
+		}
+
+		@Override
+		public synchronized void removeTimeout(TimeOut to) {
+			to.cancel();
+
+			if (to instanceof DimTimeOut) {
+				timeouts.remove(to);
+			}
+		}
+
+		@Override
+		public synchronized DimTimeOut retireTimeout(int invokeId) {
+			for (int i = 0; i < timeouts.size(); i++) {
+				DimTimeOut to = timeouts.get(i);
+				if (to.getInvokeId() == invokeId) {
+					to.cancel();
+					timeouts.remove(i);
+					return to;
+				}
+			}
+			return null;
 		}
 
 	};
