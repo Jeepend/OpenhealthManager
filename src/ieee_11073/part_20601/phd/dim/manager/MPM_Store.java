@@ -25,6 +25,9 @@ package ieee_11073.part_20601.phd.dim.manager;
 
 import java.util.Hashtable;
 
+import es.libresoft.openhealth.messages.MessageFactory;
+
+import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.PM_Store;
@@ -62,7 +65,8 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void GET() {
-		System.out.println("Create GET PM_Store Service");
+		ApduType apdu = MessageFactory.PrstRoivCmpGet(this);
+		getMDS().getStateHandler().send(apdu);
 	}
 
 }

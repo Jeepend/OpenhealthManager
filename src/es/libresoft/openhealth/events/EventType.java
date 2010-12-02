@@ -33,4 +33,8 @@ public interface EventType {
 	/* A Request from the application software interfacing with the state machine							*/
 	public static final int REQ_ASSOC_REL						= 	4;		/* Association release request	*/
 	public static final int REQ_ASSOC_ABORT						= 	5;		/* Association abort request	*/
+
+
+	/* Application defined events*/
+	public static final int REQ_GET_PM_STORE					=	500;
 }

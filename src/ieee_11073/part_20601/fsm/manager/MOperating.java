@@ -30,14 +30,17 @@ import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
+import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.phd.dim.PM_Store;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.ExternalEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -86,6 +89,9 @@ public final class MOperating extends Operating {
 
 	@Override
 	public synchronized boolean processEvent(Event event) {
+		if (event instanceof ExternalEvent)
+			return processExternalEvent((ExternalEvent)event);
+
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
@@ -100,10 +106,21 @@ public final class MOperating extends Operating {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else
 			return false;
+
 		return true;
 	}
 
 	//----------------------------------PRIVATE--------------------------------------------------------
+
+	private boolean processExternalEvent(ExternalEvent event) {
+		if (event.getTypeOfEvent() == EventType.REQ_GET_PM_STORE) {
+			PM_Store pm_store = this.state_handler.getMDS().getPM_Store((HANDLE) event.getData());
+			pm_store.GET();
+			return true;
+		}
+
+		return false;
+	}
 
 	private void process_20601_PrstApdu(PrstApdu prst){
 		try {

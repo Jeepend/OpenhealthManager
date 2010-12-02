@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.SystemModel;
 //import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
@@ -43,6 +45,7 @@ import android.os.RemoteException;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.ExternalEvent;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
@@ -239,14 +242,12 @@ public class DrDroid extends Service {
 		@Override
 		public void getPM_Store(PM_Store pmstore) throws RemoteException {
 			Agent agt = agentsId.get(pmstore.getPM_StoreAgentId());
-			ieee_11073.part_20601.phd.dim.PM_Store ipmstore;
+			HANDLE handler = new HANDLE();
+			handler.setValue(new INT_U16(new Integer(pmstore.getPM_StoreHandler())));
 
-			ipmstore = agt.getPM_Store(pmstore.getPM_StoreHandler());
-			if (ipmstore == null) {
-				System.err.println("Invalid PM_Store " + pmstore.getPM_StoreHandler());
-				return;
-			}
-			ipmstore.GET();
+			System.out.println("Send Event");
+			ExternalEvent eevent = new ExternalEvent(EventType.REQ_GET_PM_STORE, handler);
+			agt.sendEvent(eevent);
 		}
     };
 

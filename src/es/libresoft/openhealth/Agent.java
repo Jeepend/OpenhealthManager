@@ -122,15 +122,4 @@ public final class Agent extends Device{
 
 		return pm_handlers;
 	}
-
-	public PM_Store getPM_Store (int handle) {
-		HANDLE h = new HANDLE();
-		if (handle < 0 || handle > 65535L) {
-			System.err.println("Invalid HANDLER for PM_Store class");
-			return null;
-		}
-
-		h.setValue(new INT_U16(handle));
-		return mdsObj.getPM_Store(h);
-	}
 }
