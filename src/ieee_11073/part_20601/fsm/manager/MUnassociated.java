@@ -62,11 +62,14 @@ public final class MUnassociated extends Unassociated {
 	}
 
 	@Override
-	public synchronized void processEvent(Event event) {
+	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
-		}
+			return true;
+		} else
+			return false;
+
 		//else: Ignore
 		/*
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_REL){

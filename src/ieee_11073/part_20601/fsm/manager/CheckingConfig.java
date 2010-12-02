@@ -76,7 +76,7 @@ public final class CheckingConfig extends Configuring {
 	}
 
 	@Override
-	public synchronized void processEvent(Event event) {
+	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
@@ -89,7 +89,10 @@ public final class CheckingConfig extends Configuring {
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT){
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
-		}
+		} else
+			return false;
+
+		return true;
 	}
 
 	/**

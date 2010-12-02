@@ -48,7 +48,7 @@ public abstract class State {
 	 * Process an outer event
 	 * @param apdu
 	 */
-	public abstract void processEvent(Event event);
+	public abstract boolean processEvent(Event event);
 
 	public abstract String getStateName();
 }

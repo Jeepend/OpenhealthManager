@@ -40,8 +40,9 @@ public final class MAssociating extends Associating {
 	}
 
 	@Override
-	public synchronized void processEvent(Event event) {
+	public synchronized boolean processEvent(Event event) {
 		System.out.println("Associating process events");
+		return false;
 	}
 
 	//----------------------------------PRIVATE--------------------------------------------------------

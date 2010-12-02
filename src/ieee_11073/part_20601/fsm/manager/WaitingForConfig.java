@@ -77,7 +77,7 @@ public final class WaitingForConfig extends Configuring {
 	}
 
 	@Override
-	public synchronized void processEvent(Event event) {
+	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			timeOut.cancel();
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
@@ -93,7 +93,9 @@ public final class WaitingForConfig extends Configuring {
 			timeOut.cancel();
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
-		}
+		}else
+			return false;
+		return true;
 	}
 
 //----------------------------------PRIVATE--------------------------------------------------------

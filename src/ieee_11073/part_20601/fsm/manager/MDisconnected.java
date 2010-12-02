@@ -41,11 +41,14 @@ public final class MDisconnected extends Disconnected {
 	}
 
 	@Override
-	public synchronized void processEvent(Event event) {
+	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_CONN)
 			state_handler.changeState(new MUnassociated(state_handler));
-		else
+		else {
 			System.out.println("Warning: unexpected event (" + event.getTypeOfEvent() + ") arrived in disconnected state.");
+			return false;
+		}
+		return true;
 	}
 
 }
