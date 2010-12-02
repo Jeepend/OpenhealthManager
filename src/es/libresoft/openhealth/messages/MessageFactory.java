@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth.messages;
 
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AareApdu;
 import ieee_11073.part_20601.asn1.Abort_reason;
 import ieee_11073.part_20601.asn1.AbrtApdu;
@@ -57,7 +58,9 @@ import ieee_11073.part_20601.asn1.RlreApdu;
 import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SystemType;
+import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.MDS;
+import ieee_11073.part_20601.phd.dim.PM_Store;
 
 import java.io.ByteArrayOutputStream;
 
@@ -530,6 +533,40 @@ public class MessageFactory {
 		IEncoder<DataApdu> encoderDataApdu;
 		try {
 			encoderDataApdu = CoderFactory.getInstance().newEncoder(mds.getDeviceConf().getEncondigRules());
+			encoderDataApdu.encode(data, output);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		pr.setValue(output.toByteArray());
+		at.selectPrst(pr);
+		return at;
+	}
+
+	public static final ApduType PrstRoivCmpGet(PM_Store pmstore) {
+		ApduType at = new ApduType();
+		PrstApdu pr = new PrstApdu();
+		DataApdu data = new DataApdu();
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		GetArgumentSimple gat = new GetArgumentSimple();
+		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+
+		handle.setValue(new INT_U16(0));
+		gat.setObj_handle(handle);
+		AttributeIdList att = new AttributeIdList();
+		att.initValue();
+
+		gat.setAttribute_id_list(att);
+		msg.selectRoiv_cmip_get(gat);
+
+		data.setInvoke_id(new InvokeIDType(pmstore.getMDS().getNextInvokeId()));
+		data.setMessage(msg);
+
+		ByteArrayOutputStream output= new ByteArrayOutputStream();
+		IEncoder<DataApdu> encoderDataApdu;
+		try {
+			encoderDataApdu = CoderFactory.getInstance().newEncoder(pmstore.getMDS().getDeviceConf().getEncondigRules());
 			encoderDataApdu.encode(data, output);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
