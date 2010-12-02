@@ -28,6 +28,8 @@ import java.util.Iterator;
 
 public abstract class DIM {
 
+	private MDS mds;
+
 	/*AttributeID,Attribute*/
 	protected Hashtable<Integer,Attribute> attributeList;
 
@@ -67,6 +69,14 @@ public abstract class DIM {
 
 	protected abstract void checkAttributes(Hashtable<Integer,Attribute> attributes) throws InvalidAttributeException;
 
+
+	public void setMDS(MDS mds) {
+		this.mds = mds;
+	}
+
+	public MDS getMDS() {
+		return this.mds;
+	}
 
 	//-------------------------------------------PRIVATE------------------------------------------------------
 	private void addCheckedAttributes(Hashtable<Integer,Attribute> attributes){

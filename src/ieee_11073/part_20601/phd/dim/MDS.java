@@ -120,6 +120,7 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	public void addScanner (Scanner scanner){
 		HANDLE handle = (HANDLE)scanner.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 		scanners.put(handle.getValue().getValue(), scanner);
+		scanner.setMDS(this);
 	}
 
 	public Numeric getNumeric (HANDLE handle){
@@ -129,6 +130,7 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	public void addNumeric (Numeric numeric){
 		HANDLE handle = (HANDLE)numeric.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 		numerics.put(handle.getValue().getValue(), numeric);
+		numeric.setMDS(this);
 	}
 
 	public RT_SA getRT_SA (HANDLE handle){
@@ -146,6 +148,7 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	public void addPM_Store (PM_Store pmstore){
 		HANDLE handle = (HANDLE)pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 		pm_stores.put(handle.getValue().getValue(), pmstore);
+		pmstore.setMDS(this);
 	}
 
 	public synchronized int getNextInvokeId() {
