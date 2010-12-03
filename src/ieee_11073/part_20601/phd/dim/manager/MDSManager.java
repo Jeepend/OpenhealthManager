@@ -53,7 +53,10 @@ import ieee_11073.part_20601.asn1.ObservationScan;
 import ieee_11073.part_20601.asn1.ObservationScanFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
+import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
+import ieee_11073.part_20601.asn1.TypeVer;
+import ieee_11073.part_20601.asn1.TypeVerList;
 import ieee_11073.part_20601.fsm.manager.MUnassociated;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
@@ -335,7 +338,6 @@ public abstract class MDSManager extends MDS {
 		while (i.hasNext()){
 			int id = i.next();
 			attribs.get(id);
-			System.out.println(">>>>>>>>>>>>>>>");
 			System.out.println("Checking attribute: " + DIM_Tools.getAttributeName(id) + " " + id);
 			Attribute attr = attribs.get(id);
 			switch (id){
@@ -345,17 +347,18 @@ public abstract class MDSManager extends MDS {
 				System.out.println("code: " + t.getCode().getValue().getValue());
 				System.out.println("ok.");
 				break;
+			case Nomenclature.MDC_ATTR_TIME_ABS:
+				addAttribute(attr);
 			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS :
-				AbsoluteTime time = (AbsoluteTime) attribs.get(new Integer(id)).getAttributeType();
-				System.out.println("century: " + time.getCentury().getValue());
-				System.out.println("year: " + time.getYear().getValue());
-				System.out.println("month: " + time.getMonth().getValue());
-				System.out.println("day: "+ time.getDay().getValue());
-				System.out.println("hour: " + time.getHour().getValue());
-				System.out.println("minute: " + time.getMinute().getValue());
-				System.out.println("second: " + time.getSecond().getValue());
-				System.out.println("sec-fraction: " + time.getSec_fractions().getValue());
-				System.out.println("ok.");
+				AbsoluteTime time = (AbsoluteTime) attr.getAttributeType();
+				System.out.println("century: " + Integer.toHexString(time.getCentury().getValue()));
+				System.out.println("year: " + Integer.toHexString(time.getYear().getValue()));
+				System.out.println("month: " + Integer.toHexString(time.getMonth().getValue()));
+				System.out.println("day: "+ Integer.toHexString(time.getDay().getValue()));
+				System.out.println("hour: " + Integer.toHexString(time.getHour().getValue()));
+				System.out.println("minute: " + Integer.toHexString(time.getMinute().getValue()));
+				System.out.println("second: " + Integer.toHexString(time.getSecond().getValue()));
+				System.out.println("sec-fraction: " + Integer.toHexString(time.getSec_fractions().getValue()));
 				break;
 			case Nomenclature.MDC_ATTR_UNIT_CODE:
 				OID_Type oid = (OID_Type)attribs.get(new Integer(id)).getAttributeType();
@@ -387,11 +390,38 @@ public abstract class MDSManager extends MDS {
 					System.out.println("attrib-len: " + entry.getAttribute_len());
 				}
 				System.out.println("ok.");
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST:
+				TypeVerList sysTypes = (TypeVerList) attr.getAttributeType();
+				Iterator<TypeVer> it = sysTypes.getValue().iterator();
+				System.out.println("Spec. list values:");
+				while (it.hasNext()) {
+					System.out.println("\t" + it.next().getType().getValue().getValue());
+				}
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_DEV_CONFIG_ID:
+				ConfigId configId = (ConfigId) attr.getAttributeType();
+				System.out.println("Dev config id: " + configId.getValue());
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_SYS_ID:
+				byte[] octet = (byte[]) attr.getAttributeType();
+				String sysId = new String(octet);
+				System.out.println("Sys id: " + sysId);
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_ID_MODEL:
+				SystemModel systemModel = (SystemModel) attr.getAttributeType();
+				System.out.println("System manufactures: " + new String(systemModel.getManufacturer()));
+				System.out.println("System model number: " + new String(systemModel.getModel_number()));
+				addAttribute(attr);
 				break;
 			default:
+				System.out.println(">>>>>>>Id not implemented yet");
 				break;
 			}
-			System.out.println("<<<<<<<<<<<<<<<");
 		}
 	}
 
