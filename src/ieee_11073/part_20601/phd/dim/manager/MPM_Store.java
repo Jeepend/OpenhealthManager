@@ -26,11 +26,16 @@ package ieee_11073.part_20601.phd.dim.manager;
 import java.util.Hashtable;
 
 import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.PM_Store;
+import ieee_11073.part_20601.phd.dim.TimeOut;
 
 public class MPM_Store extends PM_Store {
 
@@ -65,8 +70,30 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void GET() {
-		ApduType apdu = MessageFactory.PrstRoivCmpGet(this);
-		getMDS().getStateHandler().send(apdu);
+		try {
+			ApduType apdu = MessageFactory.PrstRoivCmpGet(this);
+			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, getMDS().getDeviceConf().getEncondigRules());
+			InvokeIDType invokeId = data.getInvoke_id();
+			getMDS().getStateHandler().send(apdu);
+
+			DimTimeOut to = new DimTimeOut(TimeOut.PM_STORE_TO_GET, invokeId.getValue(), getMDS().getStateHandler()) {
+
+				@Override
+				public void procResponse(DataApdu data) {
+					System.out.println("___PROCESAR RESPUESTA TO GET_PMSOTRE");
+				}
+
+				@Override
+				protected void expiredTimeout() {
+					System.out.println("TIMEOUT ESPERANDO RESPUESTA TO GET_PMSOTRE");
+				}
+
+			};
+			to.start();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
