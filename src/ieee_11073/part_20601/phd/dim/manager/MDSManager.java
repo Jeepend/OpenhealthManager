@@ -47,10 +47,16 @@ import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.InvokeIDType;
+import ieee_11073.part_20601.asn1.MdsTimeCapState;
+import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.ObservationScan;
 import ieee_11073.part_20601.asn1.ObservationScanFixed;
+import ieee_11073.part_20601.asn1.ProdSpecEntry;
+import ieee_11073.part_20601.asn1.ProductionSpec;
+import ieee_11073.part_20601.asn1.RegCertData;
+import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.SystemModel;
@@ -416,6 +422,53 @@ public abstract class MDSManager extends MDS {
 				SystemModel systemModel = (SystemModel) attr.getAttributeType();
 				System.out.println("System manufactures: " + new String(systemModel.getManufacturer()));
 				System.out.println("System model number: " + new String(systemModel.getModel_number()));
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_ID_HANDLE:
+				HANDLE handle = (HANDLE) attr.getAttributeType();
+				System.out.println("Id handle: " + handle.getValue().getValue());
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_REG_CERT_DATA_LIST:
+				System.out.println("Reg cert. data list: ");
+				RegCertDataList regList = (RegCertDataList) attr.getAttributeType();
+				Iterator<RegCertData> regIt = regList.getValue().iterator();
+				while (regIt.hasNext()) {
+					RegCertData cert = regIt.next();
+					System.out.println("\t" + cert.getAuth_body_and_struc_type().getAuth_body().getValue() +
+								" " + cert.getAuth_body_and_struc_type().getAuth_body_struc_type().getValue());
+				}
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_MDS_TIME_INFO:
+				System.out.println("Mds time information:");
+				MdsTimeInfo timeInfo = (MdsTimeInfo) attr.getAttributeType();
+				byte[] capabilities = timeInfo.getMds_time_cap_state().getValue().getValue();
+				System.out.print("\t");
+				for (int i1 = 0; i1 < capabilities.length; i1++) {
+					String binary = Integer.toBinaryString(capabilities[i1]);
+					if (binary.length() > 8)
+						binary = binary.substring(binary.length() - 8, binary.length());
+					System.out.print(binary);
+				}
+				System.out.println();
+				System.out.println("\t" + timeInfo.getTime_sync_protocol().getValue().getValue().getValue());
+				System.out.println("\t" + timeInfo.getTime_sync_accuracy().getValue().getValue());
+				System.out.println("\t" + timeInfo.getTime_resolution_abs_time());
+				System.out.println("\t" + timeInfo.getTime_resolution_rel_time());
+				System.out.println("\t" + timeInfo.getTime_resolution_high_res_time().getValue());
+				addAttribute(attr);
+				break;
+			case Nomenclature.MDC_ATTR_ID_PROD_SPECN:
+				System.out.println("Production specification:");
+				ProductionSpec ps = (ProductionSpec) attr.getAttributeType();
+				Iterator<ProdSpecEntry> itps = ps.getValue().iterator();
+				while (itps.hasNext()) {
+					ProdSpecEntry pse = itps.next();
+					System.out.println("\tSpec type: " + pse.getSpec_type());
+					System.out.println("\tComponent id: " + pse.getComponent_id().getValue().getValue());
+					System.out.println("\tProd spec: " + new String(pse.getProd_spec()));
+				}
 				addAttribute(attr);
 				break;
 			default:
