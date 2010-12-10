@@ -201,7 +201,7 @@ public interface Nomenclature {
 	public static final int MDC_DIM_DAY							=	2272;	/* d              	             */
 	public static final int MDC_DIM_BEAT_PER_MIN				=	2720; 	/* bpm 737						 */
 	public static final int MDC_DIM_KILO_PASCAL					=	3843;	/* kPa                           */
-	public static final int MDC_DIM_MMHG						=	3843;	/* mmHg                          */
+	public static final int MDC_DIM_MMHG						=	3872;	/* mmHg                          */
 	public static final int MDC_DIM_DEGC						=	6048;	/* ºC                 	         */
 
 	/*************************************************************************************************
