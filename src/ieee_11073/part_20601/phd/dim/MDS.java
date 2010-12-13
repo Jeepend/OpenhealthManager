@@ -113,6 +113,29 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		return Nomenclature.MDC_MOC_VMS_MDS_SIMP;
 	}
 
+	public DIM getObject(HANDLE handle) {
+		DIM dim;
+		int key = handle.getValue().getValue();
+		dim = scanners.get(key);
+		if (dim != null)
+			return dim;
+
+		dim = numerics.get(key);
+		if (dim != null)
+			return dim;
+
+		dim = rt_sas.get(key);
+		if (dim != null)
+			return dim;
+
+		dim = enumerations.get(key);
+		if (dim != null)
+			return dim;
+
+		dim = pm_stores.get(key);
+		return dim;
+	}
+
 	public Scanner getScanner (HANDLE handle){
 		return scanners.get(handle.getValue().getValue());
 	}

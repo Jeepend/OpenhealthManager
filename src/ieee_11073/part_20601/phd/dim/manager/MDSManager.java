@@ -64,10 +64,10 @@ import ieee_11073.part_20601.asn1.TypeVer;
 import ieee_11073.part_20601.asn1.TypeVerList;
 import ieee_11073.part_20601.fsm.manager.MUnassociated;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.MDS;
-import ieee_11073.part_20601.phd.dim.Metric;
 import ieee_11073.part_20601.phd.dim.Numeric;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
@@ -183,13 +183,13 @@ public abstract class MDSManager extends MDS {
 			while (i.hasNext()) {
 				obs=i.next();
 
-				//Get Numeric from Handle_id
-				Numeric numeric = getNumeric(obs.getObj_handle());
-				AttrValMap avm = (AttrValMap)numeric.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
+				//Get DIM from Handle_id
+				DIM elem = getObject(obs.getObj_handle());
+				AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				DataExtractor de = new DataExtractor(obs.getObs_val_data());
 				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
-				addAttributesToReport(mr,numeric);
+				addAttributesToReport(mr,elem);
 				while (it.hasNext()){
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
@@ -243,7 +243,7 @@ public abstract class MDSManager extends MDS {
 
 	/* Next method add additional info to report to application layer. Please, feel
 	 * free to make changes. */
-	private void addAttributesToReport (MeasureReporter mr, Metric measure) {
+	private void addAttributesToReport (MeasureReporter mr, DIM measure) {
 		Attribute at;
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
@@ -251,8 +251,10 @@ public abstract class MDSManager extends MDS {
 		mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
-		OID_Type unit_cod = (OID_Type)at.getAttributeType();
-		mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
+		if (at != null) {
+			OID_Type unit_cod = (OID_Type)at.getAttributeType();
+			mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
+		}
 	}
 	/**
 	 * Get data defined in the Attribute-Value-Map of the object
