@@ -23,8 +23,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import ieee_11073.part_20601.asn1.AVA_Type;
+import ieee_11073.part_20601.asn1.AttributeList;
+
 import java.util.Hashtable;
 import java.util.Iterator;
+
+import org.bn.annotations.ASN1OctetString;
+
+import es.libresoft.openhealth.utils.ASN1_Tools;
+import es.libresoft.openhealth.utils.DIM_Tools;
+import es.libresoft.openhealth.utils.OctetStringASN1;
 
 public abstract class DIM {
 
@@ -85,5 +94,28 @@ public abstract class DIM {
 		while (i.hasNext()){
 			addAttribute(i.next());
 		}
+	}
+
+	protected Hashtable<Integer,Attribute> getAttributes (AttributeList attrList, String enc_rules) throws Exception {
+		Hashtable<Integer,Attribute> attribs = new Hashtable<Integer,Attribute>();
+		Iterator<AVA_Type> it = attrList.getValue().iterator();
+		AVA_Type ava;
+		Object type;
+
+		while (it.hasNext()){
+			ava = it.next();
+			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
+
+			Object OctetStringASN1;
+			if (attrClass == ASN1OctetString.class) {
+				OctetStringASN1 ostring = ASN1_Tools.decodeData(ava.getAttribute_value(), OctetStringASN1.class, enc_rules);
+				type = ostring.getValue();
+			} else
+				type = ASN1_Tools.decodeData(ava.getAttribute_value(), attrClass, enc_rules);
+
+			Attribute attr = new Attribute(ava.getAttribute_id().getValue().getValue(), type);
+			attribs.put(new Integer(ava.getAttribute_id().getValue().getValue()), attr);
+		}
+		return attribs;
 	}
 }

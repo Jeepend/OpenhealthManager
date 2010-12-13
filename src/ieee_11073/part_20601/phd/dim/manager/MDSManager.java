@@ -116,7 +116,7 @@ public abstract class MDSManager extends MDS {
 			while (i.hasNext()){
 				confObj = i.next();
 				//Get Attributes
-				Hashtable<Integer,Attribute> attribs = getAttributes(confObj.getAttributes());
+				Hashtable<Integer,Attribute> attribs = getAttributes(confObj.getAttributes(), getDeviceConf().getEncondigRules());
 				//checkGotAttributes(attribs);
 
 				//Generate attribute Handle:
@@ -317,29 +317,6 @@ public abstract class MDSManager extends MDS {
 	}
 
 	//----------------------------------------PRIVATE-----------------------------------------------------------
-	private Hashtable<Integer,Attribute> getAttributes (AttributeList attrList) throws Exception {
-		Hashtable<Integer,Attribute> attribs = new Hashtable<Integer,Attribute>();
-		Iterator<AVA_Type> it = attrList.getValue().iterator();
-		AVA_Type ava;
-		Object type;
-
-		while (it.hasNext()){
-			ava = it.next();
-			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
-			
-			Object OctetStringASN1;
-			if (attrClass == ASN1OctetString.class) {
-				OctetStringASN1 ostring = ASN1_Tools.decodeData(ava.getAttribute_value(), OctetStringASN1.class, getDeviceConf().getEncondigRules());
-				type = ostring.getValue();
-			} else
-				type = ASN1_Tools.decodeData(ava.getAttribute_value(), attrClass, getDeviceConf().getEncondigRules());
-
-			Attribute attr = new Attribute(ava.getAttribute_id().getValue().getValue(), type);
-			attribs.put(new Integer(ava.getAttribute_id().getValue().getValue()), attr);
-		}
-		return attribs;
-	}
-
 	private void checkGotAttributes(Hashtable<Integer,Attribute> attribs){
 		Iterator<Integer> i = attribs.keySet().iterator();
 		while (i.hasNext()){
@@ -541,7 +518,7 @@ public abstract class MDSManager extends MDS {
 
 					try {
 						Hashtable<Integer, Attribute> attribs;
-						attribs = getAttributes(grs.getAttribute_list());
+						attribs = getAttributes(grs.getAttribute_list(), getDeviceConf().getEncondigRules());
 						checkGotAttributes(attribs);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
