@@ -25,8 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.dim;
 
+import es.libresoft.openhealth.messages.MessageFactory;
+import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.fsm.manager.MUnassociated;
 
 public abstract class DimTimeOut extends TimeOut {
 
@@ -40,6 +43,14 @@ public abstract class DimTimeOut extends TimeOut {
 
 	public int getInvokeId() {
 		return invokeId;
+	}
+
+	protected void expiredTimeout() {
+		System.out.println("Timeout waiting for MDS");
+
+		ApduType abort = MessageFactory.AbrtApdu_RESPONSE_TIMEOUT();
+		stateHandler.send(abort);
+		stateHandler.changeState(new MUnassociated(stateHandler));
 	}
 
 	/**

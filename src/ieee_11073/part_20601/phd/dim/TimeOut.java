@@ -50,7 +50,7 @@ public abstract class TimeOut extends TimerTask {
 	public static final int SCANNER_TO_CS	=	3000;	/* 3sg						Confirm Set				8.9.5.5	  */
 
 	private int timeout;
-	private StateHandler stateHandler;
+	protected StateHandler stateHandler;
 
 	public TimeOut(int timeout, StateHandler stateHandler) {
 		this.timeout = timeout;

@@ -83,11 +83,6 @@ public class MPM_Store extends PM_Store {
 					System.out.println("___PROCESAR RESPUESTA TO GET_PMSOTRE");
 				}
 
-				@Override
-				protected void expiredTimeout() {
-					System.out.println("TIMEOUT ESPERANDO RESPUESTA TO GET_PMSOTRE");
-				}
-
 			};
 			to.start();
 

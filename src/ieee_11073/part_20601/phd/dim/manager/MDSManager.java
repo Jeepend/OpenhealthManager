@@ -547,16 +547,6 @@ public abstract class MDSManager extends MDS {
 						e.printStackTrace();
 					}
 				}
-
-				@Override
-				protected void expiredTimeout() {
-					System.out.println("Timeout waiting for MDS");
-
-					ApduType abort = MessageFactory.AbrtApdu_RESPONSE_TIMEOUT();
-					getStateHandler().send(abort);
-					getStateHandler().changeState(new MUnassociated(getStateHandler()));
-				}
-
 			};
 			to.start();
 
