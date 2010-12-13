@@ -564,7 +564,6 @@ public class MessageFactory {
 		GetArgumentSimple gat = new GetArgumentSimple();
 		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 
-		handle.setValue(new INT_U16(0));
 		gat.setObj_handle(handle);
 		AttributeIdList att = new AttributeIdList();
 		att.initValue();
