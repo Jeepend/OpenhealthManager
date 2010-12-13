@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_20601.phd.dim.manager;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
@@ -107,7 +108,13 @@ public class MPM_Store extends PM_Store {
 					try {
 						Hashtable<Integer, Attribute> attribs;
 						attribs = getAttributes(grs.getAttribute_list(), getMDS().getDeviceConf().getEncondigRules());
-						System.out.println("Got attributes :)");
+						Iterator<Integer> i = attribs.keySet().iterator();
+						while (i.hasNext()) {
+							Attribute attr = attribs.get(i.next());
+							if (getAttribute(attr.getAttributeID()) != null) {
+								addAttribute(attr);
+							}
+						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

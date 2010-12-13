@@ -105,6 +105,9 @@ public abstract class DIM {
 		while (it.hasNext()){
 			ava = it.next();
 			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
+			if (attrClass == null) {
+				System.out.println("Error: Can't get Attribute " + ava.getAttribute_id().getValue().getValue());
+			}
 
 			Object OctetStringASN1;
 			if (attrClass == ASN1OctetString.class) {
