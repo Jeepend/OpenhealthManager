@@ -97,7 +97,7 @@ public final class MOperating extends Operating {
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.IND_TIMEOUT) {
-			state_handler.send(MessageFactory.AbrtApdu_CONFIGURATION_TIMEOUT());
+			state_handler.send(MessageFactory.AbrtApdu(event.getReason()));
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_REL){
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());

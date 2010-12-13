@@ -230,23 +230,35 @@ public class MessageFactory {
 	}
 
 	/* Abort APDUs */
+	public static final ApduType AbrtApdu(int reason) {
+		switch (reason) {
+		case ASN1_Values.ABRT_RE_BUFFER_OVERFLOW:
+			return AbrtApdu_UNDEFINED();
+		case ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT:
+			return AbrtApdu_RESPONSE_TIMEOUT();
+		case ASN1_Values.ABRT_RE_CONFIGURATION_TIMEOUT:
+			return AbrtApdu_CONFIGURATION_TIMEOUT();
+		default:
+			return AbrtApdu_UNDEFINED();
+		}
+	}
 	public static final ApduType AbrtApdu_UNDEFINED() {
-		return AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED);
+		return createAbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED);
 	}
 
 	public static final ApduType AbrtApdu_BUFFER_OVERFLOW() {
-		return AbrtApdu(ASN1_Values.ABRT_RE_BUFFER_OVERFLOW);
+		return createAbrtApdu(ASN1_Values.ABRT_RE_BUFFER_OVERFLOW);
 	}
 
 	public static final ApduType AbrtApdu_RESPONSE_TIMEOUT() {
-		return AbrtApdu(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
+		return createAbrtApdu(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
 	}
 
 	public static final ApduType AbrtApdu_CONFIGURATION_TIMEOUT() {
-		return AbrtApdu(ASN1_Values.ABRT_RE_CONFIGURATION_TIMEOUT);
+		return createAbrtApdu(ASN1_Values.ABRT_RE_CONFIGURATION_TIMEOUT);
 	}
 
-	private static final ApduType AbrtApdu(int reason){
+	private static final ApduType createAbrtApdu(int reason){
 		ApduType apdu = new ApduType();
 		AbrtApdu abrt = new AbrtApdu();
 		Abort_reason abrt_reason = new Abort_reason(ASN1_Values.ABRT_RE_UNDEFINED);

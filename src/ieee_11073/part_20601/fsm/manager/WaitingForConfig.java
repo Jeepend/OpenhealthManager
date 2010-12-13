@@ -39,6 +39,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
+import es.libresoft.openhealth.utils.ASN1_Values;
 
 public final class WaitingForConfig extends Configuring {
 
@@ -108,9 +109,11 @@ public final class WaitingForConfig extends Configuring {
 				try {
 					abortMutex.acquire();
 					if (evaluateTimeout) {
+						Event event = new Event(EventType.IND_TIMEOUT);
+						event.setReason(ASN1_Values.ABRT_RE_CONFIGURATION_TIMEOUT);
 						evaluateTimeout = false;
 						//Send timeout event to the eventQueue
-						state_handler.sendEvent(new Event(EventType.IND_TIMEOUT));
+						state_handler.sendEvent(event);
 					}
 					abortMutex.release();
 				} catch (InterruptedException e) {

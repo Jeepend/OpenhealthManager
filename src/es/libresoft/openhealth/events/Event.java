@@ -26,9 +26,18 @@ package es.libresoft.openhealth.events;
 public class Event {
 
 	private int type;
+	private int reason;
 
 	public Event (int eventType) {
 		type = eventType;
+	}
+
+	public void setReason(int reason) {
+		this.reason = reason;
+	}
+
+	public int getReason() {
+		return reason;
 	}
 
 	public int getTypeOfEvent() {return type;}

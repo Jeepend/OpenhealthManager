@@ -29,6 +29,10 @@ import ieee_11073.part_20601.fsm.StateHandler;
 
 import java.util.TimerTask;
 
+import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.utils.ASN1_Values;
+
 	/**************************************************************************************************************
 	 * 8.4.3 Timeout variables:
 	 * There are a few places in the personal health device protocol where timeouts are used. There are both retry
@@ -73,5 +77,9 @@ public abstract class TimeOut extends TimerTask {
 	/**
 	 * This method will be called when the timeout expires
 	 * */
-	protected abstract void expiredTimeout();
+	protected void expiredTimeout() {
+		Event event = new Event(EventType.IND_TIMEOUT);
+		event.setReason(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
+		stateHandler.sendEvent(event);
+	}
 }
