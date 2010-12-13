@@ -312,6 +312,15 @@ public abstract class MDSManager extends MDS {
 				measures.add(ms);
 			}
 			return (T)measures;
+		case Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE:
+			INT_U32 iu3 = decoder.decode(input, INT_U32.class);
+			FloatType ft3 = new FloatType(iu3.getValue());
+			System.out.println("Measure: " + ft3.doubleValueRepresentation());
+			return (T)ft3;
+		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_OID:
+			OID_Type oid = decoder.decode(input, OID_Type.class);
+			System.out.println("Measure oid_type: " + oid.getValue().getValue());
+			return (T)oid.getValue().getValue();
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");
 	}
