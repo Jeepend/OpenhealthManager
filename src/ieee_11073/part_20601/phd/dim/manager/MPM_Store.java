@@ -28,8 +28,11 @@ import java.util.Hashtable;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.GetResultSimple;
+import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
@@ -80,7 +83,35 @@ public class MPM_Store extends PM_Store {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					System.out.println("___PROCESAR RESPUESTA TO GET_PMSOTRE");
+					System.out.println("GET_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
+
+					if (!data.getMessage().isRors_cmip_getSelected()) {
+						System.out.println("TODO: Unexpected response format");
+						return;
+					}
+
+					GetResultSimple grs = data.getMessage().getRors_cmip_get();
+					HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+					if (handle == null) {
+						System.out.println("Error: Can't get HANDLE attribute in PM_STORE object");
+						return;
+					}
+
+					if (grs.getObj_handle().getValue().getValue().intValue() != handle.getValue().getValue().intValue()) {
+						//TODO: Unexpected object handle, should be reserved value 0
+						System.out.println("TODO: Unexpected object handle, should be reserved value " +
+																				handle.getValue().getValue().intValue());
+						return;
+					}
+
+					try {
+						Hashtable<Integer, Attribute> attribs;
+						attribs = getAttributes(grs.getAttribute_list(), getMDS().getDeviceConf().getEncondigRules());
+						System.out.println("Got attributes :)");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 
 			};
