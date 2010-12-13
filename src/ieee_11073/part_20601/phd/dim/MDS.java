@@ -141,6 +141,12 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		return enumerations.get(handle.getValue().getValue());
 	}
 
+	public void addEnumeration(Enumeration enumeration) {
+		HANDLE handle = (HANDLE)enumeration.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		enumerations.put(handle.getValue().getValue(), enumeration);
+		enumeration.setMDS(this);
+	}
+
 	public PM_Store getPM_Store (HANDLE handle){
 		return pm_stores.get(handle.getValue().getValue());
 	}
