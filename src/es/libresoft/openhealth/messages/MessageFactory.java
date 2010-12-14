@@ -524,13 +524,12 @@ public class MessageFactory {
 		return msg;
 	}
 
-	public static final ApduType PrstRoivCmpGet(MDS mds) {
+	public static final ApduType PrstRoivCmpGet(MDS mds, HANDLE handle) {
 		ApduType at = new ApduType();
 		PrstApdu pr = new PrstApdu();
 		DataApdu data = new DataApdu();
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		GetArgumentSimple gat = new GetArgumentSimple();
-		HANDLE handle = new HANDLE();
 
 		handle.setValue(new INT_U16(0));
 		gat.setObj_handle(handle); // Handle for MDS
@@ -547,39 +546,6 @@ public class MessageFactory {
 		IEncoder<DataApdu> encoderDataApdu;
 		try {
 			encoderDataApdu = CoderFactory.getInstance().newEncoder(mds.getDeviceConf().getEncondigRules());
-			encoderDataApdu.encode(data, output);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		pr.setValue(output.toByteArray());
-		at.selectPrst(pr);
-		return at;
-	}
-
-	public static final ApduType PrstRoivCmpGet(PM_Store pmstore) {
-		ApduType at = new ApduType();
-		PrstApdu pr = new PrstApdu();
-		DataApdu data = new DataApdu();
-		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
-		GetArgumentSimple gat = new GetArgumentSimple();
-		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
-
-		gat.setObj_handle(handle);
-		AttributeIdList att = new AttributeIdList();
-		att.initValue();
-
-		gat.setAttribute_id_list(att);
-		msg.selectRoiv_cmip_get(gat);
-
-		data.setInvoke_id(new InvokeIDType(pmstore.getMDS().getNextInvokeId()));
-		data.setMessage(msg);
-
-		ByteArrayOutputStream output= new ByteArrayOutputStream();
-		IEncoder<DataApdu> encoderDataApdu;
-		try {
-			encoderDataApdu = CoderFactory.getInstance().newEncoder(pmstore.getMDS().getDeviceConf().getEncondigRules());
 			encoderDataApdu.encode(data, output);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

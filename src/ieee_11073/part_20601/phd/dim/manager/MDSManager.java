@@ -494,7 +494,7 @@ public abstract class MDSManager extends MDS {
 	}
 
 	public void GET () {
-		ApduType apdu = MessageFactory.PrstRoivCmpGet(this);
+		ApduType apdu = MessageFactory.PrstRoivCmpGet(this, new HANDLE());
 
 		try{
 			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, this.getDeviceConf().getEncondigRules());
