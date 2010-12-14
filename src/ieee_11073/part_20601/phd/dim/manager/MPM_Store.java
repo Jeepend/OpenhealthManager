@@ -92,8 +92,8 @@ public class MPM_Store extends PM_Store {
 	public void GET() {
 		try {
 			HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
-			ApduType apdu = MessageFactory.PrstRoivCmpGet(getMDS(), handle);
-			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, getMDS().getDeviceConf().getEncondigRules());
+			DataApdu data = MessageFactory.PrstRoivCmpGet(getMDS(), handle);
+			ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf()); 
 			InvokeIDType invokeId = data.getInvoke_id();
 			getMDS().getStateHandler().send(apdu);
 

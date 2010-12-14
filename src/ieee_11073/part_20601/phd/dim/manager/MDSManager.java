@@ -494,10 +494,10 @@ public abstract class MDSManager extends MDS {
 	}
 
 	public void GET () {
-		ApduType apdu = MessageFactory.PrstRoivCmpGet(this, new HANDLE());
+		DataApdu data = MessageFactory.PrstRoivCmpGet(this, new HANDLE());
+		ApduType apdu = MessageFactory.composeApdu(data, getDeviceConf());
 
 		try{
-			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, this.getDeviceConf().getEncondigRules());
 			InvokeIDType invokeId = data.getInvoke_id();
 			getStateHandler().send(apdu);
 			DimTimeOut to = new DimTimeOut(TimeOut.MDS_TO_GET, invokeId.getValue(), getStateHandler()) {

@@ -524,9 +524,7 @@ public class MessageFactory {
 		return msg;
 	}
 
-	public static final ApduType PrstRoivCmpGet(MDS mds, HANDLE handle) {
-		ApduType at = new ApduType();
-		PrstApdu pr = new PrstApdu();
+	public static final DataApdu PrstRoivCmpGet(MDS mds, HANDLE handle) {
 		DataApdu data = new DataApdu();
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		GetArgumentSimple gat = new GetArgumentSimple();
@@ -542,19 +540,7 @@ public class MessageFactory {
 		data.setInvoke_id(new InvokeIDType(mds.getNextInvokeId()));
 		data.setMessage(msg);
 
-		ByteArrayOutputStream output= new ByteArrayOutputStream();
-		IEncoder<DataApdu> encoderDataApdu;
-		try {
-			encoderDataApdu = CoderFactory.getInstance().newEncoder(mds.getDeviceConf().getEncondigRules());
-			encoderDataApdu.encode(data, output);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		pr.setValue(output.toByteArray());
-		at.selectPrst(pr);
-		return at;
+		return data;
 	}
 
 	public static final ApduType PrstRoivCmipAction(PM_Store pmstore) {
