@@ -34,6 +34,7 @@ import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.AttributeList;
+import ieee_11073.part_20601.asn1.BITS_32;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
 import ieee_11073.part_20601.asn1.ConfigId;
@@ -321,6 +322,10 @@ public abstract class MDSManager extends MDS {
 			OID_Type oid = decoder.decode(input, OID_Type.class);
 			System.out.println("Measure oid_type: " + oid.getValue().getValue());
 			return (T)oid.getValue().getValue();
+		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
+			BITS_32 bits32 = decoder.decode(input, BITS_32.class);
+			System.out.println("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
+			return (T) bits32.getValue().getValue();
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");
 	}

@@ -288,8 +288,8 @@ public final class MUnassociated extends Unassociated {
 			System.out.println("Cardio/Strength is not yet supported");
 		}else if ((4200 <= id) && (id <= 4299)){
 			System.out.println("Cardio/Strength is not yet supported");
-		}else if ((7100 <= id) && (id <= 7199)){
-			System.out.println("Activity Hub is not yet supported");
+		}else if ((7100 <= id) && (id <= 7199)){ // Activity Hub
+			processExtendedConfiguration(phd);
 		}
 	}
 
