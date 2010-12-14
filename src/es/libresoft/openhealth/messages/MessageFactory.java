@@ -23,7 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth.messages;
 
-import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AareApdu;
 import ieee_11073.part_20601.asn1.Abort_reason;
 import ieee_11073.part_20601.asn1.AbrtApdu;
@@ -60,9 +59,7 @@ import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SystemType;
-import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.MDS;
-import ieee_11073.part_20601.phd.dim.PM_Store;
 
 import java.io.ByteArrayOutputStream;
 

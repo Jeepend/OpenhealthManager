@@ -33,7 +33,6 @@ import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
-import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.BITS_32;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
@@ -63,7 +62,6 @@ import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.asn1.TypeVer;
 import ieee_11073.part_20601.asn1.TypeVerList;
-import ieee_11073.part_20601.fsm.manager.MUnassociated;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
@@ -81,7 +79,6 @@ import java.util.Iterator;
 
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
-import org.bn.annotations.ASN1OctetString;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
@@ -92,7 +89,6 @@ import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
-import es.libresoft.openhealth.utils.OctetStringASN1;
 
 public abstract class MDSManager extends MDS {
 
