@@ -56,8 +56,24 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void Get_Segment_Info() {
-		// TODO Auto-generated method stub
+		try {
+			ApduType apdu = MessageFactory.PrstRoivCmipAction(this);
+			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, getMDS().getDeviceConf().getEncondigRules());
+			InvokeIDType invokeId = data.getInvoke_id();
+			getMDS().getStateHandler().send(apdu);
 
+			DimTimeOut to = new DimTimeOut(TimeOut.PM_STORE_TO_CA, invokeId.getValue(), getMDS().getStateHandler()) {
+
+				@Override
+				public void procResponse(DataApdu data) {
+					System.out.println("TODO: Process Segment info response");
+				}
+			};
+
+			to.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -84,7 +100,7 @@ public class MPM_Store extends PM_Store {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					System.out.println("GET_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
+					System.out.println("GOT_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
 
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						System.out.println("TODO: Unexpected response format");
@@ -99,7 +115,6 @@ public class MPM_Store extends PM_Store {
 					}
 
 					if (grs.getObj_handle().getValue().getValue().intValue() != handle.getValue().getValue().intValue()) {
-						//TODO: Unexpected object handle, should be reserved value 0
 						System.out.println("TODO: Unexpected object handle, should be reserved value " +
 																				handle.getValue().getValue().intValue());
 						return;
@@ -116,9 +131,10 @@ public class MPM_Store extends PM_Store {
 							}
 						}
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+
+					Get_Segment_Info();
 				}
 
 			};

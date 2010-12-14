@@ -27,6 +27,7 @@ import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AareApdu;
 import ieee_11073.part_20601.asn1.Abort_reason;
 import ieee_11073.part_20601.asn1.AbrtApdu;
+import ieee_11073.part_20601.asn1.ActionArgumentSimple;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AssociateResult;
 import ieee_11073.part_20601.asn1.AttributeIdList;
@@ -57,6 +58,7 @@ import ieee_11073.part_20601.asn1.ReleaseResponseReason;
 import ieee_11073.part_20601.asn1.RlreApdu;
 import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
+import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SystemType;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.MDS;
@@ -585,6 +587,51 @@ public class MessageFactory {
 		}
 
 		pr.setValue(output.toByteArray());
+		at.selectPrst(pr);
+		return at;
+	}
+
+	public static final ApduType PrstRoivCmipAction(PM_Store pmstore) {
+		ApduType at = new ApduType();
+		PrstApdu pr = new PrstApdu();
+		DataApdu data = new DataApdu();
+
+		ActionArgumentSimple aas = new ActionArgumentSimple();
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		msg.selectRoiv_cmip_confirmed_action(aas);
+
+		data.setInvoke_id(new InvokeIDType(pmstore.getMDS().getNextInvokeId()));
+		data.setMessage(msg);
+
+		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		OID_Type oid = new OID_Type();
+		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_ACT_SEG_GET_INFO)));
+
+		aas.setObj_handle(handle);
+		aas.setAction_type(oid);
+
+		SegmSelection ss = new SegmSelection();
+		ss.selectAll_segments(new INT_U16(new Integer(0)));
+
+		try {
+			ByteArrayOutputStream output1 = new ByteArrayOutputStream();
+			IEncoder<SegmSelection> encoderSegmSelection;
+
+			encoderSegmSelection = CoderFactory.getInstance().newEncoder(pmstore.getMDS().getDeviceConf().getEncondigRules());
+			encoderSegmSelection.encode(ss, output1);
+			aas.setAction_info_args(output1.toByteArray());
+
+			ByteArrayOutputStream output2 = new ByteArrayOutputStream();
+			IEncoder<DataApdu> encoderDataApdu;
+
+			encoderDataApdu = CoderFactory.getInstance().newEncoder(pmstore.getMDS().getDeviceConf().getEncondigRules());
+			encoderDataApdu.encode(data, output2);
+			pr.setValue(output2.toByteArray());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		at.selectPrst(pr);
 		return at;
 	}
