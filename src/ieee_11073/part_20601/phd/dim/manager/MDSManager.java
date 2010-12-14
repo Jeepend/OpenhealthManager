@@ -346,7 +346,6 @@ public abstract class MDSManager extends MDS {
 				System.out.println("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_TIME_ABS:
-				addAttribute(attr);
 			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS :
 				AbsoluteTime time = (AbsoluteTime) attr.getAttributeType();
 				System.out.println("century: " + Integer.toHexString(time.getCentury().getValue()));
@@ -388,7 +387,6 @@ public abstract class MDSManager extends MDS {
 					System.out.println("attrib-len: " + entry.getAttribute_len());
 				}
 				System.out.println("ok.");
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST:
 				TypeVerList sysTypes = (TypeVerList) attr.getAttributeType();
@@ -397,29 +395,24 @@ public abstract class MDSManager extends MDS {
 				while (it.hasNext()) {
 					System.out.println("\t" + it.next().getType().getValue().getValue());
 				}
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_DEV_CONFIG_ID:
 				ConfigId configId = (ConfigId) attr.getAttributeType();
 				System.out.println("Dev config id: " + configId.getValue());
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_SYS_ID:
 				byte[] octet = (byte[]) attr.getAttributeType();
 				String sysId = new String(octet);
 				System.out.println("Sys id: " + sysId);
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_ID_MODEL:
 				SystemModel systemModel = (SystemModel) attr.getAttributeType();
 				System.out.println("System manufactures: " + new String(systemModel.getManufacturer()));
 				System.out.println("System model number: " + new String(systemModel.getModel_number()));
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_ID_HANDLE:
 				HANDLE handle = (HANDLE) attr.getAttributeType();
 				System.out.println("Id handle: " + handle.getValue().getValue());
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_REG_CERT_DATA_LIST:
 				System.out.println("Reg cert. data list: ");
@@ -430,7 +423,6 @@ public abstract class MDSManager extends MDS {
 					System.out.println("\t" + cert.getAuth_body_and_struc_type().getAuth_body().getValue() +
 								" " + cert.getAuth_body_and_struc_type().getAuth_body_struc_type().getValue());
 				}
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_MDS_TIME_INFO:
 				System.out.println("Mds time information:");
@@ -449,7 +441,6 @@ public abstract class MDSManager extends MDS {
 				System.out.println("\t" + timeInfo.getTime_resolution_abs_time());
 				System.out.println("\t" + timeInfo.getTime_resolution_rel_time());
 				System.out.println("\t" + timeInfo.getTime_resolution_high_res_time().getValue());
-				addAttribute(attr);
 				break;
 			case Nomenclature.MDC_ATTR_ID_PROD_SPECN:
 				System.out.println("Production specification:");
@@ -461,7 +452,6 @@ public abstract class MDSManager extends MDS {
 					System.out.println("\tComponent id: " + pse.getComponent_id().getValue().getValue());
 					System.out.println("\tProd spec: " + new String(pse.getProd_spec()));
 				}
-				addAttribute(attr);
 				break;
 			default:
 				System.out.println(">>>>>>>Id not implemented yet");
@@ -534,6 +524,11 @@ public abstract class MDSManager extends MDS {
 						Hashtable<Integer, Attribute> attribs;
 						attribs = getAttributes(grs.getAttribute_list(), getDeviceConf().getEncondigRules());
 						checkGotAttributes(attribs);
+						Iterator<Integer> i = attribs.keySet().iterator();
+						while (i.hasNext()){
+							int id = i.next();
+							addAttribute(attribs.get(id));
+						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
