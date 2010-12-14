@@ -30,11 +30,14 @@ import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.ActionResultSimple;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.InvokeIDType;
+import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.SegmentInfoList;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -66,7 +69,28 @@ public class MPM_Store extends PM_Store {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					System.out.println("TODO: Process Segment info response");
+					System.out.println("Process Segment info response");
+
+					if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
+						System.out.println("Error: Unexpected response format");
+						return;
+					}
+
+					ActionResultSimple ars = data.getMessage().getRors_cmip_confirmed_action();
+					OID_Type oid = ars.getAction_type();
+					if (Nomenclature.MDC_ACT_SEG_GET_INFO != oid.getValue().getValue().intValue()) {
+						System.out.println("Error: Unexpected response format");
+						return;
+					}
+
+					try {
+						SegmentInfoList sil = ASN1_Tools.decodeData(ars.getAction_info_args(),
+													SegmentInfoList.class,
+													getMDS().getDeviceConf().getEncondigRules());
+						System.out.println("Got Segment Info List");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			};
 
