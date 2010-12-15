@@ -150,7 +150,8 @@ public abstract class MDSManager extends MDS {
 				case Nomenclature.MDC_MOC_SCAN_CFG: // CfgScanner Class
 					throw new Exception("Unsoportedd CfgScanner Class");
 				case Nomenclature.MDC_MOC_SCAN_CFG_EPI: // EpiCfgScanner Class
-					throw new Exception("Unsoportedd EpiCfgScanner Class");
+					addScanner(new MEpiCfgScanner(attribs));
+					break;
 				case Nomenclature.MDC_MOC_SCAN_CFG_PERI: // PeriCfgScanner Class
 					throw new Exception("Unsoportedd PeriCfgScanner Class");
 				}
