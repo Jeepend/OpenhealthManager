@@ -65,6 +65,7 @@ import ieee_11073.part_20601.asn1.TypeVerList;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
+import ieee_11073.part_20601.phd.dim.Enumeration;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.Numeric;
@@ -138,7 +139,7 @@ public abstract class MDSManager extends MDS {
 				case Nomenclature.MDC_MOC_VMO_METRIC_SA_RT: // RT-SA Class
 					throw new Exception("Unsoportedd RT-SA Class");
 				case Nomenclature.MDC_MOC_VMO_METRIC_ENUM: // Enumeration Class
-					addEnumeration(new MEnumeration(attribs));
+					addEnumeration(new Enumeration(attribs));
 					break;
 				case Nomenclature.MDC_MOC_VMO_PMSTORE: // PM-Store Class
 					addPM_Store(new MPM_Store(attribs));
