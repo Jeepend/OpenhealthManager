@@ -78,6 +78,7 @@ public abstract class TimeOut extends TimerTask {
 	 * This method will be called when the timeout expires
 	 * */
 	protected void expiredTimeout() {
+		System.err.println("Timeout expired.");
 		Event event = new Event(EventType.IND_TIMEOUT);
 		event.setReason(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
 		stateHandler.sendEvent(event);
