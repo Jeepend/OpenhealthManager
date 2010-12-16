@@ -528,8 +528,7 @@ public class MessageFactory {
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		GetArgumentSimple gat = new GetArgumentSimple();
 
-		handle.setValue(new INT_U16(0));
-		gat.setObj_handle(handle); // Handle for MDS
+		gat.setObj_handle(handle);
 		AttributeIdList att = new AttributeIdList();
 		att.initValue();
 

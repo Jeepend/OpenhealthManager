@@ -492,7 +492,9 @@ public abstract class MDSManager extends MDS {
 	}
 
 	public void GET () {
-		DataApdu data = MessageFactory.PrstRoivCmpGet(this, new HANDLE());
+		HANDLE handle = new HANDLE();
+		handle.setValue(new INT_U16(0));
+		DataApdu data = MessageFactory.PrstRoivCmpGet(this, handle);
 		ApduType apdu = MessageFactory.composeApdu(data, getDeviceConf());
 
 		try{
