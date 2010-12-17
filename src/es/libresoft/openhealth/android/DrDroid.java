@@ -160,6 +160,9 @@ public class DrDroid extends Service {
         } else if (IPM_StoreActionService.class.getName().equals(arg0.getAction())) {
 			//Use pm_store events
 			return pmActionServiceStub;
+		} else if (IScannerActionService.class.getName().equals(arg0.getAction())) {
+			//Use scanners events
+			return scannerServiceStub;
         } else return null;
 	}
 
@@ -250,6 +253,26 @@ public class DrDroid extends Service {
 			agt.sendEvent(eevent);
 		}
     };
+
+	/************************************************************
+	 * Scanner Action service implemented in adthe same class
+	 ************************************************************/
+	/**
+	 * The IPM_StoreActionService is defined through IDL
+	 */
+	private final IScannerActionService.Stub scannerServiceStub = new IScannerActionService.Stub() {
+
+		@Override
+		public void Set(Scanner scanner, boolean enable) throws RemoteException {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void getScanner(String systemId, List<Scanner> scannerList)
+				throws RemoteException {
+			// TODO Auto-generated method stub
+		}
+	};
 
     /************************************************************
 	 * Action service implemented in the same class
