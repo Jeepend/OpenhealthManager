@@ -27,6 +27,7 @@ package ieee_11073.part_20601.phd.dim;
 import java.util.Hashtable;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.InstNumber;
 
 	/**
 	 * An instance of the PM-segment class represents a persistently stored episode of measurement
@@ -35,6 +36,13 @@ import ieee_11073.part_10101.Nomenclature;
 	 * objects indirectly by methods and events of the PM-store object.
 	 */
 public class PM_Segment extends DIM {
+
+	private static int[] mandatoryIds = {Nomenclature.MDC_ATTR_ID_INSTNO,
+										Nomenclature.MDC_ATTR_PM_SEG_MAP,
+										Nomenclature.MDC_ATTR_OP_STAT,
+										//Nomenclature.MDC_ATTR_SEG_FIXED_DATA,
+										Nomenclature.MDC_ATTR_TRANSFER_TIMEOUT,
+										};
 
 	public PM_Segment(Hashtable<Integer,Attribute> attributeList) throws InvalidAttributeException {
 		super(attributeList);
@@ -45,9 +53,13 @@ public class PM_Segment extends DIM {
 	}
 
 	@Override
-	protected void checkAttributes(Hashtable<Integer, Attribute> attributes)
+	protected void checkAttributes(
+			Hashtable<Integer, Attribute> attributes)
 			throws InvalidAttributeException {
-		// TODO Auto-generated method stub
-
+		/* Check mandatory attributes of the PM_Segments object */
+		for (int i=0; i<mandatoryIds.length; i++){
+			if (!attributes.containsKey(mandatoryIds[i]))
+				throw new InvalidAttributeException("Attribute id " + mandatoryIds[i] + " is not assigned in PM_Store Object.");
+		}
 	}
 }

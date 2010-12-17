@@ -26,6 +26,7 @@ package ieee_11073.part_20601.phd.dim;
 import java.util.Hashtable;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.InstNumber;
 
 	/**
 	 * An instance of the PM-store class provides long-term storage capabilities for metric
@@ -45,8 +46,24 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 										Nomenclature.MDC_ATTR_CLEAR_TIMEOUT
 										};
 
+	private Hashtable<Integer,PM_Segment> segments;
+
 	public PM_Store(Hashtable<Integer,Attribute> attributeList) throws InvalidAttributeException {
 		super(attributeList);
+		segments = new Hashtable<Integer,PM_Segment>();
+	}
+
+	public void addPM_Segment(PM_Segment segment) {
+		Attribute attr = segment.getAttribute(Nomenclature.MDC_ATTR_ID_INSTNO);
+		if (attr == null)
+			return;
+
+		InstNumber in = (InstNumber) attr.getAttributeType();
+		segments.put(in.getValue(), segment);
+	}
+
+	public PM_Segment getPM_Segment(InstNumber in) {
+		return segments.get(in);
 	}
 
 	@Override

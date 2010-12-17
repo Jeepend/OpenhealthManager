@@ -32,11 +32,14 @@ import es.libresoft.openhealth.utils.ASN1_Tools;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ActionResultSimple;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.SegmentInfo;
 import ieee_11073.part_20601.asn1.SegmentInfoList;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
@@ -69,7 +72,6 @@ public class MPM_Store extends PM_Store {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					System.out.println("Process Segment info response");
 
 					if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
 						System.out.println("Error: Unexpected response format");
@@ -87,7 +89,20 @@ public class MPM_Store extends PM_Store {
 						SegmentInfoList sil = ASN1_Tools.decodeData(ars.getAction_info_args(),
 													SegmentInfoList.class,
 													getMDS().getDeviceConf().getEncondigRules());
-						System.out.println("Got Segment Info List");
+						Iterator<SegmentInfo> i = sil.getValue().iterator();
+						while (i.hasNext()) {
+							SegmentInfo si = i.next();
+							InstNumber in = si.getSeg_inst_no();
+							AttributeList al = si.getSeg_info();
+
+							Hashtable<Integer, Attribute> attribs;
+							attribs = getAttributes(al, getMDS().getDeviceConf().getEncondigRules());
+							MPM_Segment pm_segment = new MPM_Segment(attribs);
+							addPM_Segment(pm_segment);
+
+							System.out.println("Got PM_Segment " + in.getValue().intValue());
+						}
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
