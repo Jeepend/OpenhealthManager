@@ -30,7 +30,6 @@ import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
-import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
@@ -41,7 +40,8 @@ import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
-import es.libresoft.openhealth.events.ExternalEvent;
+import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.GetPmStoreEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -116,7 +116,8 @@ public final class MOperating extends Operating {
 	private boolean processExternalEvent(ExternalEvent event) {
 		switch (event.getTypeOfEvent()) {
 		case EventType.REQ_GET_PM_STORE:
-			PM_Store pm_store = this.state_handler.getMDS().getPM_Store((HANDLE) event.getData());
+			GetPmStoreEvent pmEvent = (GetPmStoreEvent) event;
+			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getHandle());
 			pm_store.GET();
 			return true;
 		case EventType.REQ_SET:

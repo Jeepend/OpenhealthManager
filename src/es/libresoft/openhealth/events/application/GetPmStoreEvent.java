@@ -1,7 +1,7 @@
 /*
 Copyright (C) 2010 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
-Author: Santiago Carot Nemesio <scarot@libresoft.es>
+Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -23,17 +23,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.events;
+package es.libresoft.openhealth.events.application;
 
-public class ExternalEvent extends Event {
-	private Object data;
-	
-	public ExternalEvent(int eventType, Object data) {
-		super (eventType);
-		this.data = data;
+import ieee_11073.part_20601.asn1.HANDLE;
+import es.libresoft.openhealth.events.EventType;
+
+public class GetPmStoreEvent extends ExternalEvent {
+
+	private HANDLE handle;
+
+	public GetPmStoreEvent(HANDLE handle) {
+		super(EventType.REQ_GET_PM_STORE);
+
+		this.handle = handle;
 	}
-	
-	public Object getData() {
-		return data;
+
+	public HANDLE getHandle() {
+		return handle;
 	}
 }

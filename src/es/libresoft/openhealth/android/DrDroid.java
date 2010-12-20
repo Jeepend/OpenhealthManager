@@ -46,11 +46,12 @@ import android.os.RemoteException;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
-import es.libresoft.openhealth.events.ExternalEvent;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.GetPmStoreEvent;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 
@@ -246,8 +247,8 @@ public class DrDroid extends Service {
 			handler.setValue(new INT_U16(new Integer(pmstore.getPM_StoreHandler())));
 
 			System.out.println("Send Event");
-			ExternalEvent eevent = new ExternalEvent(EventType.REQ_GET_PM_STORE, handler);
-			agt.sendEvent(eevent);
+			GetPmStoreEvent event = new GetPmStoreEvent(handler);
+			agt.sendEvent(event);
 		}
     };
 
@@ -275,7 +276,7 @@ public class DrDroid extends Service {
 				os.setValue(ASN1_Values.OP_STATE_DISABLED);
 
 			// TODO: Change external event to proper handle this type of event
-			ExternalEvent eevent = new ExternalEvent(EventType.REQ_SET, handle);
+			ExternalEvent eevent = new ExternalEvent(EventType.REQ_SET);
 			agt.sendEvent(eevent);
 		}
 
