@@ -42,6 +42,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmStoreEvent;
+import es.libresoft.openhealth.events.application.SetEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -121,7 +122,8 @@ public final class MOperating extends Operating {
 			pm_store.GET();
 			return true;
 		case EventType.REQ_SET:
-			System.out.println("Set event received");
+			SetEvent setEvent = (SetEvent) event;
+			System.out.println("Set event received handle: " + setEvent.getObjectHandle().getValue().getValue() + " attr: " + setEvent.getAttribute().getAttributeName());
 			return true;
 		}
 

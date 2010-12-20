@@ -32,6 +32,7 @@ import ieee_11073.part_20601.asn1.SystemModel;
 //import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,8 +51,8 @@ import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
-import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmStoreEvent;
+import es.libresoft.openhealth.events.application.SetEvent;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 
@@ -275,9 +276,14 @@ public class DrDroid extends Service {
 			else
 				os.setValue(ASN1_Values.OP_STATE_DISABLED);
 
-			// TODO: Change external event to proper handle this type of event
-			ExternalEvent eevent = new ExternalEvent(EventType.REQ_SET);
-			agt.sendEvent(eevent);
+			try {
+				Attribute attr = new Attribute(Nomenclature.MDC_ATTR_OP_STAT, os);
+				SetEvent event = new SetEvent(handle, attr);
+				agt.sendEvent(event);
+			} catch (InvalidAttributeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		@Override
