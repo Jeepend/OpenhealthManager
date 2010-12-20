@@ -37,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <action android:name="es.libresoft.openhealth.android.IAgentRegister" />
                 <action android:name="es.libresoft.openhealth.android.IAgentActionService" />
                 <action android:name="es.libresoft.openhealth.android.IPM_StoreActionService" />
+                <action android:name="es.libresoft.openhealth.android.IScannerActionService" />
                 <!-- This is an action code you can use to select the service
                      without explicitly supplying the implementation class. -->
                 <action android:name="es.libresoft.openhealth.android.DRDROID_SERVICE" />
