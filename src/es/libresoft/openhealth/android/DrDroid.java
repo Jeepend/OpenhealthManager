@@ -232,7 +232,7 @@ public class DrDroid extends Service {
 			if (agt == null || pmStoreList == null)
 				return;
 
-			i = agt.getScannerHandlers();
+			i = agt.getPM_StoresHandlers();
 			while(i.hasNext())
 				pmStoreList.add(new PM_Store(i.next(), systemId));
 		}
