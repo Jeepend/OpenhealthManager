@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_20601.phd.dim;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.InstNumber;
@@ -46,12 +47,30 @@ public class PM_Segment extends DIM {
 
 	public PM_Segment(Hashtable<Integer,Attribute> attributeList) throws InvalidAttributeException {
 		super(attributeList);
+		printValues();
 	}
 
 	public int getNomenclatureCode (){
 		return Nomenclature.MDC_MOC_PM_SEGMENT;
 	}
 
+	private void printValues() {
+		System.out.println("Printing attributes PM_SEGMENT");
+
+		Iterator<Integer> attrs = attributeList.keySet().iterator();
+		while (attrs.hasNext()) {
+			Integer attrId = attrs.next();
+			Attribute attr =  attributeList.get(attrId);
+			if (attr == null)
+				continue;
+
+			if (attr.getAttributeID() == Nomenclature.MDC_ATTR_PM_SEG_LABEL_STRING) {
+				byte[] octet = (byte[]) attr.getAttributeType();
+				String sysId = new String(octet);
+				System.out.println("Label String: " + sysId);
+			}
+		}
+	}
 	@Override
 	protected void checkAttributes(
 			Hashtable<Integer, Attribute> attributes)
