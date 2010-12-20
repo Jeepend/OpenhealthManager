@@ -28,9 +28,20 @@ package es.libresoft.openhealth.android;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public abstract class Scanner implements Parcelable {
+public class Scanner implements Parcelable {
 	private int handler;
 	private String systId;
+
+	public static final Parcelable.Creator<Scanner> CREATOR =
+		new Parcelable.Creator<Scanner>() {
+			public Scanner createFromParcel(Parcel in) {
+				return new Scanner(in);
+			}
+
+			public Scanner[] newArray(int size) {
+				return new Scanner[size];
+			}
+		};
 
 	protected Scanner (Parcel in) {
 		handler = in.readInt();
