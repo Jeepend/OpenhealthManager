@@ -104,6 +104,10 @@ public class MPM_Store extends PM_Store {
 							addPM_Segment(pm_segment);
 
 							System.out.println("Got PM_Segment " + in.getValue().intValue());
+
+							TrigSegmDataXferReq tsdxr = new TrigSegmDataXferReq();
+							tsdxr.setSeg_inst_no(in);
+							Trig_Segment_Data_Xfer(tsdxr);
 						}
 
 					} catch (Exception e) {
@@ -120,8 +124,20 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void Trig_Segment_Data_Xfer(TrigSegmDataXferReq tsdx) {
-		// TODO Auto-generated method stub
+		DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(this, tsdx);
+		ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
+		InvokeIDType invokeId = data.getInvoke_id();
+		getMDS().getStateHandler().send(apdu);
 
+		DimTimeOut to = new DimTimeOut(TimeOut.PM_STORE_TO_CA, invokeId.getValue(), getMDS().getStateHandler()) {
+
+			@Override
+			public void procResponse(DataApdu data) {
+				System.out.println("TODO: Process response Trig_Segment_Data_Xfer");
+			}
+		};
+
+		to.start();
 	}
 
 	@Override

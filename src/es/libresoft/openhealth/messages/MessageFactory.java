@@ -60,6 +60,7 @@ import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SystemType;
+import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 
@@ -581,5 +582,48 @@ public class MessageFactory {
 
 		at.selectPrst(pr);
 		return at;
+	}
+
+	private static final <T> ActionArgumentSimple genActionArgumentSimple(HANDLE handle, OID_Type oid, T obj, String e_rules) {
+		ActionArgumentSimple aas = new ActionArgumentSimple();
+		aas.setObj_handle(handle);
+		aas.setAction_type(oid);
+
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IEncoder<T> encoderSegmSelection;
+
+			encoderSegmSelection = CoderFactory.getInstance().newEncoder(e_rules);
+			encoderSegmSelection.encode(obj, output);
+			aas.setAction_info_args(output.toByteArray());
+
+			return aas;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static final DataApdu PrstRoivCmipConfirmedAction(PM_Store pmstore, TrigSegmDataXferReq tsdxr) {
+		DataApdu data = new DataApdu();
+
+		data.setInvoke_id(new InvokeIDType(pmstore.getMDS().getNextInvokeId()));
+
+		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		if (handle == null)
+			return null;
+
+		OID_Type oid = new OID_Type();
+		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_ACT_SEG_TRIG_XFER)));
+
+		ActionArgumentSimple aas = genActionArgumentSimple(handle, oid, tsdxr, pmstore.getMDS().getDeviceConf().getEncondigRules());
+		if (aas == null)
+			return null;
+
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		msg.selectRoiv_cmip_confirmed_action(aas);
+		data.setMessage(msg);
+
+		return data;
 	}
 }
