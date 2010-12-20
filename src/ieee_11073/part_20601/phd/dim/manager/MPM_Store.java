@@ -36,11 +36,14 @@ import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SegmentInfo;
 import ieee_11073.part_20601.asn1.SegmentInfoList;
+import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -55,15 +58,15 @@ public class MPM_Store extends PM_Store {
 	}
 
 	@Override
-	public void Clear_Segments() {
+	public void Clear_Segments(SegmSelection ss) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void Get_Segment_Info() {
+	public void Get_Segment_Info(SegmSelection ss) {
 		try {
-			ApduType apdu = MessageFactory.PrstRoivCmipAction(this);
+			ApduType apdu = MessageFactory.PrstRoivCmipAction(this, ss);
 			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, getMDS().getDeviceConf().getEncondigRules());
 			InvokeIDType invokeId = data.getInvoke_id();
 			getMDS().getStateHandler().send(apdu);
@@ -116,7 +119,7 @@ public class MPM_Store extends PM_Store {
 	}
 
 	@Override
-	public void Trig_Segment_Data_Xfer() {
+	public void Trig_Segment_Data_Xfer(TrigSegmDataXferReq tsdx) {
 		// TODO Auto-generated method stub
 
 	}
@@ -125,6 +128,12 @@ public class MPM_Store extends PM_Store {
 	public void Segment_Data_Event() {
 		// TODO Auto-generated method stub
 
+	}
+
+	private SegmSelection getAllSegments() {
+		SegmSelection ss = new SegmSelection();
+		ss.selectAll_segments(new INT_U16(new Integer(0)));
+		return ss;
 	}
 
 	@Override
@@ -174,7 +183,8 @@ public class MPM_Store extends PM_Store {
 						e.printStackTrace();
 					}
 
-					Get_Segment_Info();
+					SegmSelection ss = getAllSegments();
+					Get_Segment_Info(ss);
 				}
 
 			};

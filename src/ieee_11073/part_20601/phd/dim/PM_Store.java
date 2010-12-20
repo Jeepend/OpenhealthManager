@@ -27,6 +27,8 @@ import java.util.Hashtable;
 
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.InstNumber;
+import ieee_11073.part_20601.asn1.SegmSelection;
+import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 
 	/**
 	 * An instance of the PM-store class provides long-term storage capabilities for metric
@@ -100,7 +102,7 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 	 * PM-Store-Capab attribute. For specific applications, recommendations are defined in
 	 * corresponding device specializations, making use of the PM-store.
 	 */
-	public abstract void Clear_Segments ();
+	public abstract void Clear_Segments (SegmSelection ss);
 
 	/**
 	 * This method allows the manager to retrieve PM-segment attributes of one or more PM-segments,
@@ -109,7 +111,7 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 	 * Get-Segment-Info method allows the manager to retrieve the Instance-Number attributes of the
 	 * PM-segment object instances and their data contents.
 	 */
-	public abstract void Get_Segment_Info ();
+	public abstract void Get_Segment_Info (SegmSelection ss);
 
 	/**
 	 * This method allows the manager to start the transfer of the Fixed-Segment-Data attribute of a
@@ -119,5 +121,5 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 	 * set to enabled, the agent shall reply with a not-allowed-by-object error (roer) with a return
 	 * code of MDC_RET_CODE_OBJ_BUSY.
 	 */
-	public abstract void Trig_Segment_Data_Xfer ();
+	public abstract void Trig_Segment_Data_Xfer (TrigSegmDataXferReq tsdx);
 }

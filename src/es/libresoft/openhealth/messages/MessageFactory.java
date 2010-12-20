@@ -541,7 +541,7 @@ public class MessageFactory {
 		return data;
 	}
 
-	public static final ApduType PrstRoivCmipAction(PM_Store pmstore) {
+	public static final ApduType PrstRoivCmipAction(PM_Store pmstore, SegmSelection ss) {
 		ApduType at = new ApduType();
 		PrstApdu pr = new PrstApdu();
 		DataApdu data = new DataApdu();
@@ -559,9 +559,6 @@ public class MessageFactory {
 
 		aas.setObj_handle(handle);
 		aas.setAction_type(oid);
-
-		SegmSelection ss = new SegmSelection();
-		ss.selectAll_segments(new INT_U16(new Integer(0)));
 
 		try {
 			ByteArrayOutputStream output1 = new ByteArrayOutputStream();
