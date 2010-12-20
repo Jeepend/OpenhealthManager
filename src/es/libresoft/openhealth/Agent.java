@@ -103,24 +103,8 @@ public final class Agent extends Device{
 		return system_id.hashCode();
 	}
 
-	public int[] getPM_StoresHandlers () {
-		Set<Integer> intSet = mdsObj.getPM_StoresHandlers();
-		Iterator<Integer> i = intSet.iterator();
-		int pm_handlers[];
-
-		if (intSet.size() == 0)
-			return new int[0];
-		else
-			pm_handlers = new int[intSet.size()];
-
-		Integer handler;
-		int j = 0;
-		while (i.hasNext()) {
-			handler = i.next();
-			pm_handlers[j++] = handler.intValue();
-		}
-
-		return pm_handlers;
+	public Iterator<Integer> getPM_StoresHandlers() {
+		return mdsObj.getPM_StoresHandlers().iterator();
 	}
 
 	public Iterator<Integer> getScannerHandlers() {

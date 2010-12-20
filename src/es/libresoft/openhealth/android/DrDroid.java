@@ -227,19 +227,14 @@ public class DrDroid extends Service {
 		public void getStorage(String systemId, List<PM_Store> pmStoreList)
 				throws RemoteException {
 			Agent agt = agentsId.get(systemId);
-			int[] handlers;
+			Iterator<Integer> i;
 
 			if (agt == null || pmStoreList == null)
 				return;
 
-			handlers = agt.getPM_StoresHandlers();
-
-			if (handlers.length == 0)
-				return;
-
-			for (int i = 0; i < handlers.length; i++) {
-				pmStoreList.add(new PM_Store(handlers[i], systemId));
-			}
+			i = agt.getScannerHandlers();
+			while(i.hasNext())
+				pmStoreList.add(new PM_Store(i.next(), systemId));
 		}
 
 		@Override
