@@ -27,6 +27,7 @@ package es.libresoft.openhealth.android;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.OperationalState;
 import ieee_11073.part_20601.asn1.SystemModel;
 //import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
@@ -50,6 +51,7 @@ import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 
 
@@ -259,8 +261,22 @@ public class DrDroid extends Service {
 
 		@Override
 		public void Set(Scanner scanner, boolean enable) throws RemoteException {
-			// TODO Auto-generated method stub
-			System.out.println("TODO: implements Scanner set, value: " + enable);
+			Agent agt = agentsId.get(scanner.getSystemId());
+			HANDLE handle = new HANDLE();
+			INT_U16 value = new INT_U16();
+			value.setValue(scanner.getHandler());
+			handle.setValue(value);
+
+			OperationalState os = new OperationalState();
+
+			if (enable)
+				os.setValue(ASN1_Values.OP_STATE_ENABLED);
+			else
+				os.setValue(ASN1_Values.OP_STATE_DISABLED);
+
+			// TODO: Change external event to proper handle this type of event
+			ExternalEvent eevent = new ExternalEvent(EventType.REQ_SET, handle);
+			agt.sendEvent(eevent);
 		}
 
 		@Override

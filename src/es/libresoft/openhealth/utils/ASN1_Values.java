@@ -122,4 +122,9 @@ public interface ASN1_Values {
 	public static final int CONF_RESULT_UNSUPPORTED_CONFIG			= 1;
 	public static final int CONF_RESULT_STANDARD_CONFIG_UNKNOWN		= 2;
 
+	/*Operational state*/
+	public static final int OP_STATE_DISABLED						=0;
+	public static final int OP_STATE_ENABLED						=1;
+	public static final int OP_STATE_NOT_AVAILABLE					=2;
+
 }

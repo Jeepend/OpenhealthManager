@@ -114,9 +114,13 @@ public final class MOperating extends Operating {
 	//----------------------------------PRIVATE--------------------------------------------------------
 
 	private boolean processExternalEvent(ExternalEvent event) {
-		if (event.getTypeOfEvent() == EventType.REQ_GET_PM_STORE) {
+		switch (event.getTypeOfEvent()) {
+		case EventType.REQ_GET_PM_STORE:
 			PM_Store pm_store = this.state_handler.getMDS().getPM_Store((HANDLE) event.getData());
 			pm_store.GET();
+			return true;
+		case EventType.REQ_SET:
+			System.out.println("Set event received");
 			return true;
 		}
 
