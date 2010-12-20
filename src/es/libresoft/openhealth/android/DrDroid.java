@@ -255,7 +255,7 @@ public class DrDroid extends Service {
     };
 
 	/************************************************************
-	 * Scanner Action service implemented in adthe same class
+	 * Scanner Action service implemented in the same class
 	 ************************************************************/
 	/**
 	 * The IPM_StoreActionService is defined through IDL
@@ -265,12 +265,21 @@ public class DrDroid extends Service {
 		@Override
 		public void Set(Scanner scanner, boolean enable) throws RemoteException {
 			// TODO Auto-generated method stub
+			System.out.println("TODO: implements Scanner set, value: " + enable);
 		}
 
 		@Override
 		public void getScanner(String systemId, List<Scanner> scannerList)
 				throws RemoteException {
-			// TODO Auto-generated method stub
+			Agent agt = agentsId.get(systemId);
+			Iterator<Integer> i;
+
+			if (agt == null || scannerList == null)
+				return;
+
+			i = agt.getScannerHandlers();
+			while(i.hasNext())
+				scannerList.add(new Scanner(i.next(), systemId));
 		}
 	};
 

@@ -122,4 +122,8 @@ public final class Agent extends Device{
 
 		return pm_handlers;
 	}
+
+	public Iterator<Integer> getScannerHandlers() {
+		return mdsObj.getScannerHandlers().iterator();
+	}
 }
