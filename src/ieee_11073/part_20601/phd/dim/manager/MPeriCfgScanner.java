@@ -82,9 +82,9 @@ public class MPeriCfgScanner extends PeriCfgScanner {
 	}
 
 	@Override
-	public void SET() {
+	public void SET(Attribute attr) {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: Implement set service for epicfg scanner: " + attr.getAttributeName());
 	}
 
 }

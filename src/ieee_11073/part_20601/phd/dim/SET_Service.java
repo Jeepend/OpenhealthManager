@@ -28,5 +28,5 @@ public interface SET_Service {
 	/**
 	 * Support for SET operation
 	 */
-	public void SET ();
+	public void SET (Attribute attr);
 }
