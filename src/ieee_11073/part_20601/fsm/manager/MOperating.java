@@ -36,8 +36,10 @@ import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
+import ieee_11073.part_20601.phd.dim.SET_Service;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
@@ -123,7 +125,14 @@ public final class MOperating extends Operating {
 			return true;
 		case EventType.REQ_SET:
 			SetEvent setEvent = (SetEvent) event;
-			System.out.println("Set event received handle: " + setEvent.getObjectHandle().getValue().getValue() + " attr: " + setEvent.getAttribute().getAttributeName());
+			DIM obj = state_handler.getMDS().getObject(setEvent.getObjectHandle());
+			try {
+				SET_Service serv = (SET_Service) obj;
+				serv.SET(setEvent.getAttribute());
+			} catch (ClassCastException e) {
+				System.err.println("Set cannot be done in object: " + setEvent.getObjectHandle().getValue().getValue() +
+							" it does not implement a SET service");
+			}
 			return true;
 		}
 
