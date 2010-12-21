@@ -44,6 +44,8 @@ import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SegmentInfo;
 import ieee_11073.part_20601.asn1.SegmentInfoList;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
+import ieee_11073.part_20601.asn1.TrigSegmDataXferRsp;
+import ieee_11073.part_20601.asn1.TrigSegmXferRsp;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -133,7 +135,34 @@ public class MPM_Store extends PM_Store {
 
 			@Override
 			public void procResponse(DataApdu data) {
-				System.out.println("TODO: Process response Trig_Segment_Data_Xfer");
+
+				if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
+					System.err.println("Error: Unexpected response format");
+					return;
+				}
+
+				ActionResultSimple ars = data.getMessage().getRors_cmip_confirmed_action();
+				OID_Type oid = ars.getAction_type();
+				if (Nomenclature.MDC_ACT_SEG_TRIG_XFER != oid.getValue().getValue().intValue()) {
+					System.err.println("Error: Unexpected response format");
+					return;
+				}
+
+				try {
+					TrigSegmDataXferRsp rsp = ASN1_Tools.decodeData(ars.getAction_info_args(),
+													TrigSegmDataXferRsp.class,
+													getMDS().getDeviceConf().getEncondigRules());
+					InstNumber in = rsp.getSeg_inst_no();
+					TrigSegmXferRsp tsxr = rsp.getTrig_segm_xfer_rsp();
+					int result = tsxr.getValue().intValue();
+					if (result == 0)
+						return;
+
+					System.err.println("InstNumber " + in.getValue().intValue() + " error " + result);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		};
 
