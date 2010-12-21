@@ -542,48 +542,6 @@ public class MessageFactory {
 		return data;
 	}
 
-	public static final ApduType PrstRoivCmipAction(PM_Store pmstore, SegmSelection ss) {
-		ApduType at = new ApduType();
-		PrstApdu pr = new PrstApdu();
-		DataApdu data = new DataApdu();
-
-		ActionArgumentSimple aas = new ActionArgumentSimple();
-		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
-		msg.selectRoiv_cmip_confirmed_action(aas);
-
-		data.setInvoke_id(new InvokeIDType(pmstore.getMDS().getNextInvokeId()));
-		data.setMessage(msg);
-
-		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
-		OID_Type oid = new OID_Type();
-		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_ACT_SEG_GET_INFO)));
-
-		aas.setObj_handle(handle);
-		aas.setAction_type(oid);
-
-		try {
-			ByteArrayOutputStream output1 = new ByteArrayOutputStream();
-			IEncoder<SegmSelection> encoderSegmSelection;
-
-			encoderSegmSelection = CoderFactory.getInstance().newEncoder(pmstore.getMDS().getDeviceConf().getEncondigRules());
-			encoderSegmSelection.encode(ss, output1);
-			aas.setAction_info_args(output1.toByteArray());
-
-			ByteArrayOutputStream output2 = new ByteArrayOutputStream();
-			IEncoder<DataApdu> encoderDataApdu;
-
-			encoderDataApdu = CoderFactory.getInstance().newEncoder(pmstore.getMDS().getDeviceConf().getEncondigRules());
-			encoderDataApdu.encode(data, output2);
-			pr.setValue(output2.toByteArray());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		at.selectPrst(pr);
-		return at;
-	}
-
 	private static final <T> ActionArgumentSimple genActionArgumentSimple(HANDLE handle, OID_Type oid, T obj, String e_rules) {
 		ActionArgumentSimple aas = new ActionArgumentSimple();
 		aas.setObj_handle(handle);
@@ -602,6 +560,29 @@ public class MessageFactory {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static final DataApdu PrstRoivCmipAction(PM_Store pmstore, SegmSelection ss) {
+		DataApdu data = new DataApdu();
+
+		data.setInvoke_id(new InvokeIDType(pmstore.getMDS().getNextInvokeId()));
+
+		HANDLE handle = (HANDLE) pmstore.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		if (handle == null)
+			return null;
+
+		OID_Type oid = new OID_Type();
+		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_ACT_SEG_GET_INFO)));
+
+		ActionArgumentSimple aas = genActionArgumentSimple(handle, oid, ss, pmstore.getMDS().getDeviceConf().getEncondigRules());
+		if (aas == null)
+			return null;
+
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		msg.selectRoiv_cmip_confirmed_action(aas);
+		data.setMessage(msg);
+
+		return data;
 	}
 
 	public static final DataApdu PrstRoivCmipConfirmedAction(PM_Store pmstore, TrigSegmDataXferReq tsdxr) {

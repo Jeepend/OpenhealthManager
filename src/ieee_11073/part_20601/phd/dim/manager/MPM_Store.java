@@ -68,8 +68,8 @@ public class MPM_Store extends PM_Store {
 	@Override
 	public void Get_Segment_Info(SegmSelection ss) {
 		try {
-			ApduType apdu = MessageFactory.PrstRoivCmipAction(this, ss);
-			DataApdu data = ASN1_Tools.decodeData(apdu.getPrst().getValue(), DataApdu.class, getMDS().getDeviceConf().getEncondigRules());
+			DataApdu data = MessageFactory.PrstRoivCmipAction(this, ss);
+			ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
 			InvokeIDType invokeId = data.getInvoke_id();
 			getMDS().getStateHandler().send(apdu);
 
