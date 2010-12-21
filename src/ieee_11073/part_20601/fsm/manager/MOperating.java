@@ -31,8 +31,10 @@ import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.asn1.PrstApdu;
+import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
+import ieee_11073.part_20601.asn1.SegmentDataEvent;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
@@ -211,14 +213,39 @@ public final class MOperating extends Operating {
 		//TODO search in the timeouts if is there one for this event
 	}
 
+	private void processSegmentDataEvent(EventReportArgumentSimple event) {
+		PM_Store pmstore = this.state_handler.getMDS().getPM_Store(event.getObj_handle());
+		if (pmstore == null)
+			return;
+
+		RelativeTime rt = event.getEvent_time();
+		System.out.println("Relative Time: " + rt.getValue().getValue().intValue());
+
+		try {
+			SegmentDataEvent sde = ASN1_Tools.decodeData(event.getEvent_info(),
+									SegmentDataEvent.class,
+									this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+			pmstore.Segment_Data_Event(sde);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private void roiv_cmip_event_report(EventReportArgumentSimple event, MessageChoiceType msg){
 		//(A.10.3 EVENT REPORT service)
-		if (event.getObj_handle().getValue().getValue() == 0){
+		if (event.getObj_handle().getValue().getValue().intValue() == 0){
 			//obj-handle is 0 to represent the MDS
 			process_MDS_Object_Event(event, msg);
-		}else{
-			//TODO: handle representing a scanner or PM-store object.
-			System.err.println("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in Operating state. Ignore.");
+		} else {
+			switch (event.getEvent_type().getValue().getValue().intValue()) {
+			case Nomenclature.MDC_NOTI_SEGMENT_DATA:
+				processSegmentDataEvent(event);
+				break;
+			default:
+				//TODO: handle representing a scanner or PM-store object.
+				System.err.println("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in Operating state. Ignore.");
+			}
 		}
 	}
 

@@ -41,6 +41,7 @@ import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.SegmSelection;
+import ieee_11073.part_20601.asn1.SegmentDataEvent;
 import ieee_11073.part_20601.asn1.SegmentInfo;
 import ieee_11073.part_20601.asn1.SegmentInfoList;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
@@ -169,12 +170,6 @@ public class MPM_Store extends PM_Store {
 		to.start();
 	}
 
-	@Override
-	public void Segment_Data_Event() {
-		// TODO Auto-generated method stub
-
-	}
-
 	private SegmSelection getAllSegments() {
 		SegmSelection ss = new SegmSelection();
 		ss.selectAll_segments(new INT_U16(new Integer(0)));
@@ -238,6 +233,11 @@ public class MPM_Store extends PM_Store {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void Segment_Data_Event(SegmentDataEvent sde) {
+		System.out.println("TODO: Process EventData");
 	}
 
 }
