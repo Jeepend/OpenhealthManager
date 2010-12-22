@@ -54,37 +54,37 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 	@Override
 	public void Unbuf_Scan_Report_Fixed() {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_Grouped() {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: implement Unbuf_Scan_Report_Grouped");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Fixed() {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Grouped() {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Var() {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_Var() {
 		// TODO Auto-generated method stub
-
+		System.out.println("TODO: implement Unbuf_Scan_Report_Var");
 	}
 
 	@Override

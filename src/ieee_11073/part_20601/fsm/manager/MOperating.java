@@ -39,8 +39,10 @@ import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.phd.dim.DIM;
+import ieee_11073.part_20601.phd.dim.EpiCfgScanner;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
+import ieee_11073.part_20601.phd.dim.PeriCfgScanner;
 import ieee_11073.part_20601.phd.dim.SET_Service;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
@@ -232,6 +234,62 @@ public final class MOperating extends Operating {
 		}
 	}
 
+	private void processBufScannerEvent(EventReportArgumentSimple event) {
+		try {
+			PeriCfgScanner scanner = (PeriCfgScanner) state_handler.getMDS().getScanner(event.getObj_handle());
+			switch (event.getEvent_type().getValue().getValue()) {
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_VAR:
+				scanner.Buf_Scan_Report_Var();
+				break;
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_FIXED:
+				scanner.Buf_Scan_Report_Fixed();
+				break;
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_GROUPED:
+				scanner.Buf_Scan_Report_Grouped();
+				break;
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_VAR:
+				scanner.Buf_Scan_Report_MP_Var();
+				break;
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_FIXED:
+				scanner.Buf_Scan_Report_MP_Fixed();
+				break;
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_GROUPED:
+				scanner.Buf_Scan_Report_MP_Grouped();
+				break;
+			}
+		} catch(ClassCastException e) {
+			System.err.println("Only Periodic Scanners can receive Buffered scanner events");
+		}
+	}
+
+	private void processUnbufScannerEvent(EventReportArgumentSimple event) {
+		try {
+			EpiCfgScanner scanner = (EpiCfgScanner) state_handler.getMDS().getScanner(event.getObj_handle());
+			switch (event.getEvent_type().getValue().getValue()) {
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_VAR:
+				scanner.Unbuf_Scan_Report_Var();
+				break;
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_FIXED:
+				scanner.Unbuf_Scan_Report_Fixed();
+				break;
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_GROUPED:
+				scanner.Unbuf_Scan_Report_Grouped();
+				break;
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_VAR:
+				scanner.Unbuf_Scan_Report_MP_Var();
+				break;
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_FIXED:
+				scanner.Unbuf_Scan_Report_MP_Fixed();
+				break;
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_GROUPED:
+				scanner.Unbuf_Scan_Report_MP_Grouped();
+				break;
+			}
+		} catch(ClassCastException e) {
+			System.err.println("Only Episodic Scanner can receive ");
+		}
+	}
+
 	private void roiv_cmip_event_report(EventReportArgumentSimple event, MessageChoiceType msg){
 		//(A.10.3 EVENT REPORT service)
 		if (event.getObj_handle().getValue().getValue().intValue() == 0){
@@ -241,6 +299,22 @@ public final class MOperating extends Operating {
 			switch (event.getEvent_type().getValue().getValue().intValue()) {
 			case Nomenclature.MDC_NOTI_SEGMENT_DATA:
 				processSegmentDataEvent(event);
+				break;
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_VAR:
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_FIXED:
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_GROUPED:
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_VAR:
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_FIXED:
+			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_GROUPED:
+				processUnbufScannerEvent(event);
+				break;
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_VAR:
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_FIXED:
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_GROUPED:
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_VAR:
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_FIXED:
+			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_GROUPED:
+				processBufScannerEvent(event);
 				break;
 			default:
 				//TODO: handle representing a scanner or PM-store object.
