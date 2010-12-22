@@ -127,4 +127,9 @@ public interface ASN1_Values {
 	public static final int OP_STATE_ENABLED						=1;
 	public static final int OP_STATE_NOT_AVAILABLE					=2;
 
+	/*Modify operator*/
+	public static final int MOD_OP_REPLACE							= 0;
+	public static final int MOD_OP_ADD_VALUES						= 1;
+	public static final int MOD_OP_REMOVE_VALUES					= 2;
+	public static final int MOD_OP_SET_TO_DEFAULT					= 3;
 }

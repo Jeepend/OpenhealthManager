@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.messages;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.AVA_Type;
 import ieee_11073.part_20601.asn1.AareApdu;
 import ieee_11073.part_20601.asn1.Abort_reason;
 import ieee_11073.part_20601.asn1.AbrtApdu;
@@ -32,6 +33,7 @@ import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AssociateResult;
 import ieee_11073.part_20601.asn1.AttributeIdList;
 import ieee_11073.part_20601.asn1.AttributeList;
+import ieee_11073.part_20601.asn1.AttributeModEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.DataProto;
@@ -47,6 +49,8 @@ import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.InvokeIDType;
+import ieee_11073.part_20601.asn1.ModificationList;
+import ieee_11073.part_20601.asn1.ModifyOperator;
 import ieee_11073.part_20601.asn1.NomenclatureVersion;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.PhdAssociationInformation;
@@ -59,12 +63,18 @@ import ieee_11073.part_20601.asn1.RlreApdu;
 import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SegmSelection;
+import ieee_11073.part_20601.asn1.SetArgumentSimple;
 import ieee_11073.part_20601.asn1.SystemType;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
+import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.bn.CoderFactory;
 import org.bn.IEncoder;
@@ -605,6 +615,55 @@ public class MessageFactory {
 		msg.selectRoiv_cmip_confirmed_action(aas);
 		data.setMessage(msg);
 
+		return data;
+	}
+
+	public static final AVA_Type AVAType(Attribute attr, String erules) {
+		AVA_Type ava = new AVA_Type();
+		OID_Type oid = new OID_Type();
+
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IEncoder<Object> encoder = CoderFactory.getInstance().newEncoder(erules);
+
+			oid.setValue(new INT_U16(attr.getAttributeID()));
+			ava.setAttribute_id(oid);
+
+			encoder.encode(attr.getAttributeType(), output);
+			ava.setAttribute_value(output.toByteArray());
+			return ava;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static final DataApdu PrstRoivCmipSet(DIM obj, Map<Attribute, Integer> attrs) {
+		DataApdu data = new DataApdu();
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		SetArgumentSimple setArgument = new SetArgumentSimple();
+		HANDLE handle = (HANDLE) obj.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		ArrayList<AttributeModEntry> modList = new ArrayList<AttributeModEntry>();
+		Iterator<Map.Entry<Attribute, Integer>> itAttr = attrs.entrySet().iterator();
+
+		while (itAttr.hasNext()) {
+			AttributeModEntry entry = new AttributeModEntry();
+			Map.Entry<Attribute, Integer> mapEntry = itAttr.next();
+			Attribute attr = mapEntry.getKey();
+			AVA_Type ava = AVAType(attr, obj.getMDS().getDeviceConf().getEncondigRules());
+			ModifyOperator mod = new ModifyOperator(mapEntry.getValue());
+
+			entry.setAttribute(ava);
+			entry.setModify_operator(mod);
+			modList.add(entry);
+		}
+
+		setArgument.setObj_handle(handle);
+		setArgument.setModification_list(new ModificationList(modList));
+
+		msg.selectRoiv_cmip_set(setArgument);
+		data.setInvoke_id(new InvokeIDType(obj.getMDS().getNextInvokeId()));
+		data.setMessage(msg);
 		return data;
 	}
 }
