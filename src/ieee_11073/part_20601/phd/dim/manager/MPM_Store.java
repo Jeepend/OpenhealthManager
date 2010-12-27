@@ -23,15 +23,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim.manager;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
+import es.libresoft.openhealth.utils.DIM_Tools;
+import es.libresoft.openhealth.utils.RawDataExtractor;
 
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ActionResultSimple;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.AttrValMap;
+import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.GetResultSimple;
@@ -40,16 +45,23 @@ import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.PmSegmentEntryMap;
+import ieee_11073.part_20601.asn1.SegmDataEventDescr;
+import ieee_11073.part_20601.asn1.SegmEntryElem;
+import ieee_11073.part_20601.asn1.SegmEntryElemList;
+import ieee_11073.part_20601.asn1.SegmEvtStatus;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
 import ieee_11073.part_20601.asn1.SegmentInfo;
 import ieee_11073.part_20601.asn1.SegmentInfoList;
+import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferRsp;
 import ieee_11073.part_20601.asn1.TrigSegmXferRsp;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
+import ieee_11073.part_20601.phd.dim.Numeric;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
@@ -237,7 +249,80 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void Segment_Data_Event(SegmentDataEvent sde) {
-		System.out.println("TODO: Process EventData");
+		SegmDataEventDescr sded = sde.getSegm_data_event_descr();
+
+		System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
+
+		MPM_Segment pmseg = (MPM_Segment) getPM_Segment(sded.getSegm_instance());
+		if (pmseg == null) {
+			System.err.println("Error: Can't get PM_Segment " + sded.getSegm_instance().getValue());
+			return;
+		}
+
+		Attribute attr = pmseg.getAttribute(Nomenclature.MDC_ATTR_PM_SEG_MAP);
+		if (attr == null) {
+			System.err.println("Error: Attribute " +
+						DIM_Tools.getAttributeName(Nomenclature.MDC_ATTR_PM_SEG_MAP) + " not defined");
+			return;
+		}
+
+		System.out.println("Index of the first entry in this event: " + sded.getSegm_evt_entry_index().getValue().intValue());
+		System.out.println("Count of entries in this event: " + sded.getSegm_evt_entry_count().getValue().intValue());
+
+		try {
+			SegmEvtStatus ses = sded.getSegm_evt_status();
+			String bitstring = ASN1_Tools.getHexString(ses.getValue().getValue());
+			System.out.println("Segment event status: " + bitstring);
+
+			PmSegmentEntryMap psem = (PmSegmentEntryMap) attr.getAttributeType();
+			bitstring = ASN1_Tools.getHexString(psem.getSegm_entry_header().getValue().getValue());
+			System.out.println("Segment Header bits: " + bitstring);
+
+			RawDataExtractor rde = new RawDataExtractor(sde.getSegm_data_event_entries());
+			SegmEntryElemList seel = psem.getSegm_entry_elem_list();
+			Iterator<SegmEntryElem> i = seel.getValue().iterator();
+			while (i.hasNext()) {
+				SegmEntryElem see = i.next();
+				OID_Type oid = see.getClass_id();
+				TYPE type = see.getMetric_type();
+				HANDLE handle = see.getHandle();
+				AttrValMap avm = see.getAttr_val_map();
+
+				if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
+					System.err.println("Error: No metric object received.");
+					return;
+				}
+
+				Numeric num = getMDS().getNumeric(handle);
+				if (num == null) {
+					System.err.println("Error: Invalid numeric received.");
+					return;
+				}
+
+				System.out.println("LETS GO!!!");
+				System.out.println("oid: " + oid.getValue().getValue().intValue());
+				System.out.println("handle: " + handle.getValue().getValue().intValue());
+				System.out.println("type code: " + type.getCode().getValue().getValue().intValue());
+				System.out.println("type partition: " + type.getPartition().getValue().intValue());
+				System.out.println("RawData: " + ASN1_Tools.getHexString(sde.getSegm_data_event_entries()));
+
+				Iterator<AttrValMapEntry> ii = avm.getValue().iterator();
+				while (ii.hasNext()) {
+					AttrValMapEntry avme = ii.next();
+					int attrId = avme.getAttribute_id().getValue().getValue().intValue();
+					int len = avme.getAttribute_len().intValue();
+					try {
+						System.out.println("Trying decode attrid " + attrId + ", length " + len);
+						RawDataExtractor.decodeRawData(attrId, rde.getData(len), getMDS().getDeviceConf().getEncondigRules());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.println("______");
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
