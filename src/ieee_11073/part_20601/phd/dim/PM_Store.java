@@ -65,7 +65,7 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 	}
 
 	public PM_Segment getPM_Segment(InstNumber in) {
-		return segments.get(in);
+		return segments.get(in.getValue());
 	}
 
 	@Override
