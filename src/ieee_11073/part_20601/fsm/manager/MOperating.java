@@ -167,12 +167,10 @@ public final class MOperating extends Operating {
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
 			//TODO:
-			System.out.println(">> ******Roiv_cmip_event_report");
-			roiv_cmip_event_report(msg.getRoiv_cmip_event_report(), msg);
-			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
+			System.out.println(">> Roiv_cmip_event_report");
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
-			roiv_cmip_event_report(msg.getRoiv_cmip_confirmed_event_report(), msg);
-			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
+			System.out.println(">> Roiv_cmip_confirmed_event_report");
+			roiv_cmip_confirmed_event_report(data);
 		}else if (msg.isRoiv_cmip_getSelected()) {
 			//TODO:
 			System.out.println(">> Roiv_cmip_get");
@@ -290,11 +288,13 @@ public final class MOperating extends Operating {
 		}
 	}
 
-	private void roiv_cmip_event_report(EventReportArgumentSimple event, MessageChoiceType msg){
+	private void roiv_cmip_confirmed_event_report(DataApdu data) { //EventReportArgumentSimple event, MessageChoiceType msg){
+		EventReportArgumentSimple event = data.getMessage().getRoiv_cmip_confirmed_event_report();
 		//(A.10.3 EVENT REPORT service)
 		if (event.getObj_handle().getValue().getValue().intValue() == 0){
 			//obj-handle is 0 to represent the MDS
-			process_MDS_Object_Event(event, msg);
+			process_MDS_Object_Event(event);
+			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 		} else {
 			switch (event.getEvent_type().getValue().getValue().intValue()) {
 			case Nomenclature.MDC_NOTI_SEGMENT_DATA:
@@ -323,7 +323,7 @@ public final class MOperating extends Operating {
 		}
 	}
 
-	private void process_MDS_Object_Event(EventReportArgumentSimple event, MessageChoiceType msg){
+	private void process_MDS_Object_Event(EventReportArgumentSimple event){
 		switch (event.getEvent_type().getValue().getValue().intValue()){
 			case Nomenclature.MDC_NOTI_CONFIG:
 				//TODO:
