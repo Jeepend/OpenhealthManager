@@ -90,6 +90,7 @@ import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
+import es.libresoft.openhealth.utils.RawDataExtractor;
 
 public abstract class MDSManager extends MDS {
 
@@ -186,7 +187,7 @@ public abstract class MDSManager extends MDS {
 				DIM elem = getObject(obs.getObj_handle());
 				AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
-				DataExtractor de = new DataExtractor(obs.getObs_val_data());
+				RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
 				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
 				addAttributesToReport(mr,elem);
 				while (it.hasNext()){
@@ -194,7 +195,7 @@ public abstract class MDSManager extends MDS {
 					int attrId = attr.getAttribute_id().getValue().getValue();
 					int length = attr.getAttribute_len();
 					try {
-						mr.addMeasure(attrId, decodeRawData(attrId,de.getData(length)));
+						mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,de.getData(length), this.getDeviceConf().getEncondigRules()));
 					}catch(Exception e){
 						System.err.println("Error: Can not get attribute " + attrId);
 						e.printStackTrace();
@@ -230,7 +231,7 @@ public abstract class MDSManager extends MDS {
 					AVA_Type att = it.next();
 					Integer att_id = att.getAttribute_id().getValue().getValue();
 					byte[] att_value = att.getAttribute_value();
-					mr.addMeasure(att_id, decodeRawData(att_id,att_value));
+					mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id,att_value, this.getDeviceConf().getEncondigRules()));
 				}
 				InternalEventReporter.receivedMeasure(system_id, mr);
 			}
@@ -254,78 +255,6 @@ public abstract class MDSManager extends MDS {
 			OID_Type unit_cod = (OID_Type)at.getAttributeType();
 			mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
 		}
-	}
-	/**
-	 * Get data defined in the Attribute-Value-Map of the object
-	 * @param <T>
-	 * @param data
-	 * @return
-	 */
-	public <T> T decodeRawData(int attrId, byte[] data) throws Exception {
-		ByteArrayInputStream input = new ByteArrayInputStream(data);
-		//Decode AttrValMap using accorded enc_rules
-		IDecoder decoder = CoderFactory.getInstance().newDecoder(this.getDeviceConf().getEncondigRules());
-		switch (attrId){
-		case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
-			INT_U16 iu = decoder.decode(input, INT_U16.class);
-			SFloatType ft = new SFloatType(iu.getValue());
-			System.out.println("Measure: " + ft.doubleValueRepresentation());
-			return (T)ft;
-		case Nomenclature.MDC_ATTR_NU_VAL_OBS_SIMP:
-			INT_U32 iu2 = decoder.decode(input, INT_U32.class);
-			FloatType ft2 = new FloatType(iu2.getValue());
-			System.out.println("Measure: " + ft2.doubleValueRepresentation());
-			return (T)ft2;
-		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
-			/*
-			 * The absolute time data type specifies the time of day with a resolution of 1/100
-			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
-			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit
-			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19
-			 * in the century field and the hexadecimal value 0x96 in the year field. This format is
-			 * easily converted to character- or integer-based representations. See AbsoluteTime
-			 * structure for details.
-			 */
-			final String rawDate = ASN1_Tools.getHexString(data);
-			final String source = rawDate.substring(0, 4) + "/" + /*century + year(first 2Bytes)*/
-					rawDate.substring(4, 6) + "/" +   /* month next 2B*/
-					rawDate.substring(6, 8) + " " +   /* day next 2B */
-					rawDate.substring(8, 10) + ":" +  /* hour next 2B */
-					rawDate.substring(10, 12) + ":" + /* minute next 2B */
-					rawDate.substring(12, 14) + ":" + /* second next 2B */
-					rawDate.substring(14); /* frac-sec last 2B */
-			SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
-			Date d = sdf.parse(source);
-			System.out.println("date: " + d);
-			return (T)d;
-		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC:
-			System.out.println("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
-			BasicNuObsValueCmp cmp_val = decoder.decode(input, BasicNuObsValueCmp.class);
-			Iterator<BasicNuObsValue> it = cmp_val.getValue().iterator();
-			ArrayList<SFloatType> measures = new ArrayList<SFloatType>();
-
-			while (it.hasNext()) {
-				BasicNuObsValue value = it.next();
-				SFloatType ms = new SFloatType(value.getValue().getValue());
-				System.out.println("Measure: " + ms.doubleValueRepresentation());
-				measures.add(ms);
-			}
-			return (T)measures;
-		case Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE:
-			INT_U32 iu3 = decoder.decode(input, INT_U32.class);
-			FloatType ft3 = new FloatType(iu3.getValue());
-			System.out.println("Measure: " + ft3.doubleValueRepresentation());
-			return (T)ft3;
-		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_OID:
-			OID_Type oid = decoder.decode(input, OID_Type.class);
-			System.out.println("Measure oid_type: " + oid.getValue().getValue());
-			return (T)oid.getValue().getValue();
-		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
-			BITS_32 bits32 = decoder.decode(input, BITS_32.class);
-			System.out.println("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
-			return (T) bits32.getValue().getValue();
-		}
-		throw new Exception ("Attribute " + attrId + " unknown.");
 	}
 
 	//----------------------------------------PRIVATE-----------------------------------------------------------
@@ -470,25 +399,6 @@ public abstract class MDSManager extends MDS {
 		configRsp.setConfig_report_id(confId);
 		configRsp.setConfig_result(confResult);
 		return configRsp;
-	}
-
-	private final class DataExtractor {
-		private int index;
-		private byte[] raw;
-
-		public DataExtractor (byte[] raw_data){
-			raw = raw_data;
-			index = 0;
-		}
-
-		public byte[] getData (int len){
-			if ((index + len)>raw.length)
-				return null;
-			byte[] data = new byte[len];
-			for (int i = 0; i<len; i++)
-				data[i]=raw[index++];
-			return data;
-		}
 	}
 
 	public void GET () {
