@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
+import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 import es.libresoft.openhealth.utils.RawDataExtractor;
 
@@ -265,9 +266,10 @@ public class MPM_Store extends PM_Store {
 			return;
 		}
 
-		System.out.println("Index of the first entry in this event: " + sded.getSegm_evt_entry_index().getValue().intValue());
+		int first = sded.getSegm_evt_entry_index().getValue().intValue();
 		int count = sded.getSegm_evt_entry_count().getValue().intValue();
 		System.out.println("Count of entries in this event: " + count);
+		System.out.println("Index of the first entry in this event: " + first);
 
 		try {
 			SegmEvtStatus ses = sded.getSegm_evt_status();
@@ -275,10 +277,31 @@ public class MPM_Store extends PM_Store {
 			System.out.println("Segment event status: " + bitstring);
 
 			PmSegmentEntryMap psem = (PmSegmentEntryMap) attr.getAttributeType();
-			bitstring = ASN1_Tools.getHexString(psem.getSegm_entry_header().getValue().getValue());
 
-			System.out.println("Segment Header bits: " + bitstring);
+			int bytes = 0x000000FF & psem.getSegm_entry_header().getValue().getValue()[0];
+			bytes = (bytes << 8) | psem.getSegm_entry_header().getValue().getValue()[1];
+			boolean hasEntries = (bytes != 0);
+			int attrId = 0;
+			int len = 0;
 
+			if (hasEntries) {
+				if ((bytes & ASN1_Values.SEG_ELEM_HDR_ABSOLUTE_TIME) != 0) {
+					attrId = Nomenclature.MDC_ATTR_TIME_ABS;
+					len = 8; /* AbsoluteTime */
+				} else if ((bytes & ASN1_Values.SEG_ELEM_HDR_RELATIVE_TIME) != 0) {
+					attrId = Nomenclature.MDC_ATTR_TIME_REL;
+					len = 4; /* INT-U32 */
+				} else if ((bytes & ASN1_Values.SEG_ELEM_HDR_HIRES_RELATIVE_TIME) != 0) {
+					attrId = Nomenclature.MDC_ATTR_TIME_REL_HI_RES;
+					len = 8; /* HighResRelativeTime */
+				} else {
+					System.err.println("Bad entry value: " + bytes);
+				}
+			}
+
+			System.out.println("hasEntries: " + hasEntries + ", lenght: " + len);
+
+			String eRules = getMDS().getDeviceConf().getEncondigRules();
 			RawDataExtractor rde = new RawDataExtractor(sde.getSegm_data_event_entries());
 			int j = 0;
 
@@ -286,11 +309,15 @@ public class MPM_Store extends PM_Store {
 			while (rde.hasMoreData() && (j < count)) {
 				SegmEntryElemList seel = psem.getSegm_entry_elem_list();
 				Iterator<SegmEntryElem> i = seel.getValue().iterator();
-				try {
-					RawDataExtractor.decodeRawData(Nomenclature.MDC_ATTR_TIME_STAMP_ABS, rde.getData(8), getMDS().getDeviceConf().getEncondigRules());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+
+				if (hasEntries) {
+					try {
+						/* Get Entry */
+						RawDataExtractor.decodeRawData(attrId, rde.getData(len), eRules);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 
 				while (i.hasNext()) {
@@ -298,7 +325,6 @@ public class MPM_Store extends PM_Store {
 					OID_Type oid = see.getClass_id();
 					TYPE type = see.getMetric_type();
 					HANDLE handle = see.getHandle();
-					//AttrValMap avm = see.getAttr_val_map();
 
 					if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
 						System.err.println("Error: No metric object received.");
@@ -316,10 +342,10 @@ public class MPM_Store extends PM_Store {
 					System.out.println("__________________________________________");
 					while (ii.hasNext()) {
 						AttrValMapEntry avme = ii.next();
-						int attrId = avme.getAttribute_id().getValue().getValue().intValue();
-						int len = avme.getAttribute_len().intValue();
+						int id = avme.getAttribute_id().getValue().getValue().intValue();
+						int length = avme.getAttribute_len().intValue();
 						try {
-							RawDataExtractor.decodeRawData(attrId, rde.getData(len), getMDS().getDeviceConf().getEncondigRules());
+							RawDataExtractor.decodeRawData(id, rde.getData(length), eRules);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

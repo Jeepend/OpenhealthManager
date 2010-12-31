@@ -88,8 +88,9 @@ public class RawDataExtractor {
 			FloatType ft2 = new FloatType(iu2.getValue());
 			System.out.println("Measure: " + ft2.doubleValueRepresentation());
 			return (T)ft2;
+		case Nomenclature.MDC_ATTR_TIME_ABS:
 		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
-			System.out.println("MDC_ATTR_TIME_STAMP_ABS");
+			System.out.println("AbsoluteTime");
 			/*
 			 * The absolute time data type specifies the time of day with a resolution of 1/100
 			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).

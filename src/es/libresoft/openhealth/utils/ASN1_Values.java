@@ -132,4 +132,9 @@ public interface ASN1_Values {
 	public static final int MOD_OP_ADD_VALUES						= 1;
 	public static final int MOD_OP_REMOVE_VALUES					= 2;
 	public static final int MOD_OP_SET_TO_DEFAULT					= 3;
+
+	/*SegmEntryHeader*/
+	public static final int SEG_ELEM_HDR_ABSOLUTE_TIME				= 0x8000;
+	public static final int SEG_ELEM_HDR_RELATIVE_TIME				= 0x4000;
+	public static final int SEG_ELEM_HDR_HIRES_RELATIVE_TIME		= 0x1000;
 }
