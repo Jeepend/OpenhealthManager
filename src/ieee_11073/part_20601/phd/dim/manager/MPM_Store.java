@@ -59,6 +59,7 @@ import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferRsp;
 import ieee_11073.part_20601.asn1.TrigSegmXferRsp;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.Numeric;
@@ -117,7 +118,6 @@ public class MPM_Store extends PM_Store {
 							attribs = getAttributes(al, getMDS().getDeviceConf().getEncondigRules());
 							MPM_Segment pm_segment = new MPM_Segment(attribs);
 							addPM_Segment(pm_segment);
-
 							System.out.println("Got PM_Segment " + in.getValue().intValue());
 
 							TrigSegmDataXferReq tsdxr = new TrigSegmDataXferReq();
@@ -250,7 +250,6 @@ public class MPM_Store extends PM_Store {
 	@Override
 	public void Segment_Data_Event(SegmentDataEvent sde) {
 		SegmDataEventDescr sded = sde.getSegm_data_event_descr();
-
 		System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
 
 		MPM_Segment pmseg = (MPM_Segment) getPM_Segment(sded.getSegm_instance());
@@ -267,7 +266,8 @@ public class MPM_Store extends PM_Store {
 		}
 
 		System.out.println("Index of the first entry in this event: " + sded.getSegm_evt_entry_index().getValue().intValue());
-		System.out.println("Count of entries in this event: " + sded.getSegm_evt_entry_count().getValue().intValue());
+		int count = sded.getSegm_evt_entry_count().getValue().intValue();
+		System.out.println("Count of entries in this event: " + count);
 
 		try {
 			SegmEvtStatus ses = sded.getSegm_evt_status();
@@ -276,53 +276,58 @@ public class MPM_Store extends PM_Store {
 
 			PmSegmentEntryMap psem = (PmSegmentEntryMap) attr.getAttributeType();
 			bitstring = ASN1_Tools.getHexString(psem.getSegm_entry_header().getValue().getValue());
+
 			System.out.println("Segment Header bits: " + bitstring);
 
 			RawDataExtractor rde = new RawDataExtractor(sde.getSegm_data_event_entries());
-			SegmEntryElemList seel = psem.getSegm_entry_elem_list();
-			Iterator<SegmEntryElem> i = seel.getValue().iterator();
-			while (i.hasNext()) {
-				SegmEntryElem see = i.next();
-				OID_Type oid = see.getClass_id();
-				TYPE type = see.getMetric_type();
-				HANDLE handle = see.getHandle();
-				AttrValMap avm = see.getAttr_val_map();
+			int j = 0;
 
-				if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
-					System.err.println("Error: No metric object received.");
-					return;
+			/* Get data raw data */
+			while (rde.hasMoreData() && (j < count)) {
+				SegmEntryElemList seel = psem.getSegm_entry_elem_list();
+				Iterator<SegmEntryElem> i = seel.getValue().iterator();
+				try {
+					RawDataExtractor.decodeRawData(Nomenclature.MDC_ATTR_TIME_STAMP_ABS, rde.getData(8), getMDS().getDeviceConf().getEncondigRules());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 
-				Numeric num = getMDS().getNumeric(handle);
-				if (num == null) {
-					System.err.println("Error: Invalid numeric received.");
-					return;
-				}
+				while (i.hasNext()) {
+					SegmEntryElem see = i.next();
+					OID_Type oid = see.getClass_id();
+					TYPE type = see.getMetric_type();
+					HANDLE handle = see.getHandle();
+					//AttrValMap avm = see.getAttr_val_map();
 
-				System.out.println("LETS GO!!!");
-				System.out.println("oid: " + oid.getValue().getValue().intValue());
-				System.out.println("handle: " + handle.getValue().getValue().intValue());
-				System.out.println("type code: " + type.getCode().getValue().getValue().intValue());
-				System.out.println("type partition: " + type.getPartition().getValue().intValue());
-				System.out.println("RawData: " + ASN1_Tools.getHexString(sde.getSegm_data_event_entries()));
+					if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
+						System.err.println("Error: No metric object received.");
+						return;
+					}
 
-				Iterator<AttrValMapEntry> ii = avm.getValue().iterator();
-				while (ii.hasNext()) {
-					AttrValMapEntry avme = ii.next();
-					int attrId = avme.getAttribute_id().getValue().getValue().intValue();
-					int len = avme.getAttribute_len().intValue();
-					try {
-						System.out.println("Trying decode attrid " + attrId + ", length " + len);
-						RawDataExtractor.decodeRawData(attrId, rde.getData(len), getMDS().getDeviceConf().getEncondigRules());
-					} catch (Exception e) {
-						e.printStackTrace();
+					Numeric num = getMDS().getNumeric(handle);
+					if (num == null) {
+						System.err.println("Error: Invalid numeric received.");
+						return;
+					}
+
+					AttrValMap avmnum = (AttrValMap) num.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
+					Iterator<AttrValMapEntry> ii = avmnum.getValue().iterator();
+					System.out.println("__________________________________________");
+					while (ii.hasNext()) {
+						AttrValMapEntry avme = ii.next();
+						int attrId = avme.getAttribute_id().getValue().getValue().intValue();
+						int len = avme.getAttribute_len().intValue();
+						try {
+							RawDataExtractor.decodeRawData(attrId, rde.getData(len), getMDS().getDeviceConf().getEncondigRules());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
-				System.out.println("______");
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	}
-
 }
