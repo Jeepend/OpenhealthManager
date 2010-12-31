@@ -63,6 +63,14 @@ public class RawDataExtractor {
 		return data;
 	}
 
+	public boolean hasMoreData() {
+		return index < raw.length;
+	}
+
+	public int availableData() {
+		return raw.length - index;
+	}
+
 	public static <T> T decodeRawData(int attrId, byte[] data, String eRules) throws Exception {
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
 		//Decode AttrValMap using accorded enc_rules
