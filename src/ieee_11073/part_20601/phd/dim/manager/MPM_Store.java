@@ -324,6 +324,10 @@ public class MPM_Store extends PM_Store {
 					TYPE type = see.getMetric_type();
 					HANDLE handle = see.getHandle();
 
+					if (type.getCode().getValue().getValue().intValue() == Nomenclature.MDC_CONC_GLU_CAPILLARY_WHOLEBLOOD)
+						System.out.println("*Glucose Capillary Whole Blood*");
+
+					/* We can check also type.Nompartition to see if it is set to 2 for metric */
 					if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
 						System.err.println("Error: No metric object received.");
 						return;
@@ -333,6 +337,23 @@ public class MPM_Store extends PM_Store {
 					if (num == null) {
 						System.err.println("Error: Invalid numeric received.");
 						return;
+					}
+
+					OID_Type unitCode = (OID_Type) num.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE).getAttributeType();
+					if (unitCode == null) {
+						System.err.println("Can't get unit code");
+					} else {
+						switch (unitCode.getValue().getValue().intValue()) {
+							case Nomenclature.MDC_DIM_MILLI_G_PER_DL:
+								System.out.println("Units: mg/dl");
+								break;
+							case Nomenclature.MDC_DIM_MILLI_MOLE_PER_L:
+								System.out.println("Units: mmol/L");
+								break;
+							default:
+								System.err.println("Unknown unit code for the measure " +
+															unitCode.getValue().getValue().intValue());
+						}
 					}
 
 					AttrValMap avmnum = (AttrValMap) num.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
