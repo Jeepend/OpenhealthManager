@@ -305,7 +305,7 @@ public class MPM_Store extends PM_Store {
 			RawDataExtractor rde = new RawDataExtractor(sde.getSegm_data_event_entries());
 			int j = 0;
 
-			/* Get data raw data */
+			/* Get raw data */
 			while (rde.hasMoreData() && (j < count)) {
 				SegmEntryElemList seel = psem.getSegm_entry_elem_list();
 				Iterator<SegmEntryElem> i = seel.getValue().iterator();
