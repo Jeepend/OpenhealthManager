@@ -177,31 +177,44 @@ public interface Nomenclature {
 	public static final int MDC_PULS_OXIM_PERF_REL 				= 	19376;	/*                               */
 	public static final int MDC_PULS_OXIM_PLETH 				= 	19380;	/*                               */
 	public static final int MDC_PULS_OXIM_SAT_O2 				= 	19384;	/*                               */
+	public static final int MDC_MODALITY_FAST 					= 	19508;	/*                               */
 	public static final int MDC_PULS_OXIM_PULS_CHAR 			= 	19512;	/*                               */
+	public static final int MDC_MODALITY_SLOW 					= 	19512;	/*                               */
+	public static final int MDC_MODALITY_SPOT 					= 	19516;	/*                               */
 	public static final int MDC_PULS_OXIM_DEV_STATUS 			= 	19532;	/*                               */
+	public static final int MDC_CONC_GLU_GEN					=	28948;	/*                               */
+	public static final int MDC_CONC_GLU_CAPILLARY_WHOLEBLOOD	=	29112;	/*                               */
+	public static final int MDC_CONC_GLU_CAPILLARY_PLASMA		=	29116;	/*                               */
+	public static final int MDC_CONC_GLU_VENOUS_WHOLEBLOOD		=	29120;	/*                               */
+	public static final int MDC_CONC_GLU_VENOUS_PLASMA			=	29124;	/*                               */
+	public static final int MDC_CONC_GLU_ARTERIAL_WHOLEBLOOD	=	29128;	/*                               */
+	public static final int MDC_CONC_GLU_ARTERIAL_PLASMA		=	29132;	/*                               */
+	public static final int MDC_CONC_GLU_CONTROL				=	29136;	/*                               */
+	public static final int MDC_CONC_GLU_ISF					=	29140;	/*                               */
+	public static final int MDC_CONC_HBA1C						=	29148;	/*                               */
 	public static final int MDC_TRIG 							= 	53250;	/*                               */
 	public static final int MDC_TRIG_BEAT 						= 	53251;	/*                               */
 	public static final int MDC_TRIG_BEAT_MAX_INRUSH 			= 	53259;	/*                               */
 	public static final int MDC_MASS_BODY_ACTUAL 				=	57664;	/*                               */
-	/* Partition: SCADA/Other                                                        						 */
 	public static final int MDC_BODY_FAT						=	57676;	/*                               */
 	public static final int MDC_METRIC_NOS 						= 	61439;	/*                               */
-
-	public static final int MDC_MODALITY_FAST 					= 	19508;	/*                               */
-	public static final int MDC_MODALITY_SLOW 					= 	19512;	/*                               */
-	public static final int MDC_MODALITY_SPOT 					= 	19516;	/*                               */
 
 	/*************************************************************************************************
 	* From Dimensions (MDC_PART_DIM)
 	**************************************************************************************************/
 	public static final int MDC_DIM_PERCENT						=	544;	/* %                          	 */
+	public static final int MDC_DIM_MILLI_L						=	1618;	/* mL							 */
+	public static final int MDC_DIM_X_G							=	1728;	/* g							 */
 	public static final int MDC_DIM_KILO_G						=	1731;	/* kg 	                         */
+	public static final int MDC_DIM_MILLI_G						=	1746; 	/* mg							 */
+	public static final int MDC_DIM_MILLI_G_PER_DL				=	2130;	/* mg dL-1						 */
 	public static final int MDC_DIM_MIN							=	2208;	/* min    	                     */
 	public static final int MDC_DIM_HR							=	2240;	/* h          	                 */
 	public static final int MDC_DIM_DAY							=	2272;	/* d              	             */
 	public static final int MDC_DIM_BEAT_PER_MIN				=	2720; 	/* bpm 737						 */
 	public static final int MDC_DIM_KILO_PASCAL					=	3843;	/* kPa                           */
 	public static final int MDC_DIM_MMHG						=	3872;	/* mmHg                          */
+	public static final int MDC_DIM_MILLI_MOLE_PER_L			=	4722;	/* mmol L-1						 */
 	public static final int MDC_DIM_DEGC						=	6048;	/* ºC                 	         */
 
 	/*************************************************************************************************
@@ -235,4 +248,43 @@ public interface Nomenclature {
 	public static final int MDC_RET_CODE_STORE_OFFLN 			=	2001;	/* Storage such as disk is offline             */
 
 
+	/*********************************************************************************
+	* From Personal Health Device Disease Management (MDC_PART_PHD_DM)
+	**********************************************************************************/
+	public static final int MDC_GLU_METER_DEV_STATUS			=	29144;	/*                               */
+	public static final int MDC_CTXT_GLU_EXERCISE				=	29152;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB					=	29156;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_BREAKFAST			=	29160;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_LUNCH				=	29164;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_DINNER			=	29168;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_SNACK				=	29172;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_DRINK				=	29176;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_SUPPER			=	29180;	/*                               */
+	public static final int MDC_CTXT_GLU_CARB_BRUNCH			=	29184;	/*                               */
+	public static final int MDC_CTXT_MEDICATION					=	29188;	/*                               */
+	public static final int MDC_CTXT_MEDICATION_RAPIDACTING		=	29192;	/*                               */
+	public static final int MDC_CTXT_MEDICATION_SHORTACTING		=	29196;	/*                               */
+	public static final int MDC_CTXT_MEDICATION_INTERMEDIATEACTING	=	29200;	/*                           */
+	public static final int MDC_CTXT_MEDICATION_LONGACTING		=	29204;	/*                               */
+	public static final int MDC_CTXT_MEDICATION_PREMIX			=	29208;	/*                               */
+	public static final int MDC_CTXT_GLU_HEALTH					=	29212;	/*                               */
+	public static final int MDC_CTXT_GLU_HEALTH_MINOR			=	29216;	/*                               */
+	public static final int MDC_CTXT_GLU_HEALTH_MAJOR			=	29220;	/*                               */
+	public static final int MDC_CTXT_GLU_HEALTH_MENSES			=	29224;	/*                               */
+	public static final int MDC_CTXT_GLU_HEALTH_STRESS			=	29228;	/*                               */
+	public static final int MDC_CTXT_GLU_HEALTH_NONE			=	29232;	/*                               */
+	public static final int MDC_CTXT_GLU_SAMPLELOCATION			=	29236;	/*                               */
+	public static final int MDC_CTXT_GLU_SAMPLELOCATION_FINGER	=	29240;	/*                               */
+	public static final int MDC_CTXT_GLU_SAMPLELOCATION_AST		=	29244;	/*                               */
+	public static final int MDC_CTXT_GLU_SAMPLELOCATION_EARLOBE =	29248;	/*                               */
+	public static final int MDC_CTXT_GLU_SAMPLELOCATION_CTRLSOLUTION =	29252;	/*                           */
+	public static final int MDC_CTXT_GLU_MEAL					=	29256;	/*                               */
+	public static final int MDC_CTXT_GLU_MEAL_PREPRANDIAL		=	29260;	/*                               */
+	public static final int MDC_CTXT_GLU_MEAL_POSTPRANDIAL		=	29264;	/*                               */
+	public static final int MDC_CTXT_GLU_MEAL_FASTING			=	29268;	/*                               */
+	public static final int MDC_CTXT_GLU_MEAL_CASUAL			=	29272;	/*                               */
+	public static final int MDC_CTXT_GLU_TESTER					=	29276;	/*                               */
+	public static final int MDC_CTXT_GLU_TESTER_SELF			=	29280;	/*                               */
+	public static final int MDC_CTXT_GLU_TESTER_HCP				=	29284;	/*                               */
+	public static final int MDC_CTXT_GLU_TESTER_LAB				=	29288;	/*                               */
 }
