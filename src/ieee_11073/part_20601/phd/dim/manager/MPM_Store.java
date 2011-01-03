@@ -251,7 +251,7 @@ public class MPM_Store extends PM_Store {
 	@Override
 	public void Segment_Data_Event(SegmentDataEvent sde) {
 		SegmDataEventDescr sded = sde.getSegm_data_event_descr();
-		System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
+		//System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
 
 		MPM_Segment pmseg = (MPM_Segment) getPM_Segment(sded.getSegm_instance());
 		if (pmseg == null) {
@@ -268,13 +268,13 @@ public class MPM_Store extends PM_Store {
 
 		int first = sded.getSegm_evt_entry_index().getValue().intValue();
 		int count = sded.getSegm_evt_entry_count().getValue().intValue();
-		System.out.println("Count of entries in this event: " + count);
-		System.out.println("Index of the first entry in this event: " + first);
+		//System.out.println("Count of entries in this event: " + count);
+		//System.out.println("Index of the first entry in this event: " + first);
 
 		try {
 			SegmEvtStatus ses = sded.getSegm_evt_status();
 			String bitstring = ASN1_Tools.getHexString(ses.getValue().getValue());
-			System.out.println("Segment event status: " + bitstring);
+			//System.out.println("Segment event status: " + bitstring);
 
 			PmSegmentEntryMap psem = (PmSegmentEntryMap) attr.getAttributeType();
 
@@ -298,8 +298,6 @@ public class MPM_Store extends PM_Store {
 					System.err.println("Bad entry value: " + bytes);
 				}
 			}
-
-			System.out.println("hasEntries: " + hasEntries + ", lenght: " + len);
 
 			String eRules = getMDS().getDeviceConf().getEncondigRules();
 			RawDataExtractor rde = new RawDataExtractor(sde.getSegm_data_event_entries());
@@ -339,7 +337,6 @@ public class MPM_Store extends PM_Store {
 
 					AttrValMap avmnum = (AttrValMap) num.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 					Iterator<AttrValMapEntry> ii = avmnum.getValue().iterator();
-					System.out.println("__________________________________________");
 					while (ii.hasNext()) {
 						AttrValMapEntry avme = ii.next();
 						int id = avme.getAttribute_id().getValue().getValue().intValue();
