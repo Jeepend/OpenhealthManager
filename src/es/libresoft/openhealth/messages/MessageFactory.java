@@ -42,6 +42,7 @@ import ieee_11073.part_20601.asn1.DataReqModeCapab;
 import ieee_11073.part_20601.asn1.DataReqModeFlags;
 import ieee_11073.part_20601.asn1.EncodingRules;
 import ieee_11073.part_20601.asn1.ErrorResult;
+import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.asn1.EventReportResultSimple;
 import ieee_11073.part_20601.asn1.FunctionalUnits;
 import ieee_11073.part_20601.asn1.GetArgumentSimple;
@@ -63,6 +64,7 @@ import ieee_11073.part_20601.asn1.RlreApdu;
 import ieee_11073.part_20601.asn1.RlrqApdu;
 import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SegmSelection;
+import ieee_11073.part_20601.asn1.SegmentDataResult;
 import ieee_11073.part_20601.asn1.SetArgumentSimple;
 import ieee_11073.part_20601.asn1.SystemType;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
@@ -665,5 +667,35 @@ public class MessageFactory {
 		data.setInvoke_id(new InvokeIDType(obj.getMDS().getNextInvokeId()));
 		data.setMessage(msg);
 		return data;
+	}
+
+	public static EventReportResultSimple genEventReportResultSimple(EventReportArgumentSimple eras, SegmentDataResult sdr, String e_rules) {
+		EventReportResultSimple errs = new EventReportResultSimple();
+		RelativeTime rt = new RelativeTime();
+		INT_U32 iu32 = new INT_U32();
+		OID_Type oid = new OID_Type();
+
+		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_NOTI_SEGMENT_DATA)));
+
+		errs.setObj_handle(eras.getObj_handle());
+		errs.setEvent_type(oid);
+		errs.setCurrentTime(rt);
+
+		iu32.setValue(new Long(0));
+		rt.setValue(iu32);
+
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IEncoder<SegmentDataResult> encoderSegmentDataResult;
+
+			encoderSegmentDataResult = CoderFactory.getInstance().newEncoder(e_rules);
+			encoderSegmentDataResult.encode(sdr, output);
+			errs.setEvent_reply_info(output.toByteArray());
+
+			return errs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

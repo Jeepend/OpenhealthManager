@@ -137,4 +137,11 @@ public interface ASN1_Values {
 	public static final int SEG_ELEM_HDR_ABSOLUTE_TIME				= 0x8000;
 	public static final int SEG_ELEM_HDR_RELATIVE_TIME				= 0x4000;
 	public static final int SEG_ELEM_HDR_HIRES_RELATIVE_TIME		= 0x1000;
+
+	/*SegmEvtStatus*/
+	public static final int SEVTSTA_FIRST_ENTRY						= 0;
+	public static final int SEVTSTA_LAST_ENTRY						= 1;
+	public static final int SEVTSTA_AGENT_ABORT						= 4;
+	public static final int SEVTSTA_MANAGER_CONFIRM					= 8;
+	public static final int SEVTSTA_MANAGER_ABORT					= 12;
 }
