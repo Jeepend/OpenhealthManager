@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_20601.phd.dim;
 
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
+import ieee_11073.part_20601.asn1.SegmentDataResult;
 
 public interface PM_Store_Events {
 		/**
@@ -36,5 +37,5 @@ public interface PM_Store_Events {
 		 * possible to reduce the number of messages required for the transfer of the segment.
 		 * Support for the event by the agent is mandatory if the agent supports PM-store objects.
 		 */
-		public void Segment_Data_Event (SegmentDataEvent sde);
+		public SegmentDataResult Segment_Data_Event (SegmentDataEvent sde);
 }

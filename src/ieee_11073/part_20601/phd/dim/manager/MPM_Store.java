@@ -53,6 +53,7 @@ import ieee_11073.part_20601.asn1.SegmEntryElemList;
 import ieee_11073.part_20601.asn1.SegmEvtStatus;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
+import ieee_11073.part_20601.asn1.SegmentDataResult;
 import ieee_11073.part_20601.asn1.SegmentInfo;
 import ieee_11073.part_20601.asn1.SegmentInfoList;
 import ieee_11073.part_20601.asn1.TYPE;
@@ -249,21 +250,23 @@ public class MPM_Store extends PM_Store {
 	}
 
 	@Override
-	public void Segment_Data_Event(SegmentDataEvent sde) {
+	public SegmentDataResult Segment_Data_Event(SegmentDataEvent sde) {
 		SegmDataEventDescr sded = sde.getSegm_data_event_descr();
 		//System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
 
 		MPM_Segment pmseg = (MPM_Segment) getPM_Segment(sded.getSegm_instance());
 		if (pmseg == null) {
 			System.err.println("Error: Can't get PM_Segment " + sded.getSegm_instance().getValue());
-			return;
+			/* TODO :Send error reply */
+			return null;
 		}
 
 		Attribute attr = pmseg.getAttribute(Nomenclature.MDC_ATTR_PM_SEG_MAP);
 		if (attr == null) {
 			System.err.println("Error: Attribute " +
 						DIM_Tools.getAttributeName(Nomenclature.MDC_ATTR_PM_SEG_MAP) + " not defined");
-			return;
+			/* TODO :Send error reply */
+			return null;
 		}
 
 		int first = sded.getSegm_evt_entry_index().getValue().intValue();
@@ -296,6 +299,8 @@ public class MPM_Store extends PM_Store {
 					len = 8; /* HighResRelativeTime */
 				} else {
 					System.err.println("Bad entry value: " + bytes);
+					/* TODO :Send error reply */
+					return null;
 				}
 			}
 
@@ -325,13 +330,15 @@ public class MPM_Store extends PM_Store {
 					/* We can check also type.Nompartition to see if it is set to 2 for metric */
 					if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
 						System.err.println("Error: No metric object received.");
-						return;
+						/* TODO :Send error reply */
+						return null;
 					}
 
 					Numeric num = getMDS().getNumeric(handle);
 					if (num == null) {
 						System.err.println("Error: Invalid numeric received.");
-						return;
+						/* TODO :Send error reply */
+						return null;
 					}
 
 					OID_Type unitCode = (OID_Type) num.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE).getAttributeType();
@@ -361,7 +368,9 @@ public class MPM_Store extends PM_Store {
 					}
 				}
 			}
+
 			/* TODO: Send reply */
+			return null;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -369,5 +378,6 @@ public class MPM_Store extends PM_Store {
 		}
 
 		/* TODO :Send error reply */
+		return null;
 	}
 }
