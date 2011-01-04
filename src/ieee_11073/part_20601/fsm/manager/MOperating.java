@@ -30,11 +30,14 @@ import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
+import ieee_11073.part_20601.asn1.EventReportResultSimple;
+import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
+import ieee_11073.part_20601.asn1.SegmentDataResult;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
@@ -213,7 +216,7 @@ public final class MOperating extends Operating {
 		//TODO search in the timeouts if is there one for this event
 	}
 
-	private void processSegmentDataEvent(EventReportArgumentSimple event) {
+	private void processSegmentDataEvent(InvokeIDType id, EventReportArgumentSimple event) {
 		PM_Store pmstore = this.state_handler.getMDS().getPM_Store(event.getObj_handle());
 		if (pmstore == null)
 			return;
@@ -225,7 +228,17 @@ public final class MOperating extends Operating {
 			SegmentDataEvent sde = ASN1_Tools.decodeData(event.getEvent_info(),
 									SegmentDataEvent.class,
 									this.state_handler.getMDS().getDeviceConf().getEncondigRules());
-			pmstore.Segment_Data_Event(sde);
+			SegmentDataResult sdr = pmstore.Segment_Data_Event(sde);
+
+			EventReportResultSimple errs = MessageFactory.genEventReportResultSimple(event, sdr,
+											state_handler.getMDS().getDeviceConf().getEncondigRules());
+			DataApdu data= new DataApdu();
+			MessageChoiceType mct = new MessageChoiceType();
+			mct.selectRors_cmip_confirmed_event_report(errs);
+			data.setInvoke_id(id);
+			data.setMessage(mct);
+
+			state_handler.send(MessageFactory.composeApdu(data, state_handler.getMDS().getDeviceConf()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -298,7 +311,7 @@ public final class MOperating extends Operating {
 		} else {
 			switch (event.getEvent_type().getValue().getValue().intValue()) {
 			case Nomenclature.MDC_NOTI_SEGMENT_DATA:
-				processSegmentDataEvent(event);
+				processSegmentDataEvent(data.getInvoke_id(), event);
 				break;
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_VAR:
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_FIXED:

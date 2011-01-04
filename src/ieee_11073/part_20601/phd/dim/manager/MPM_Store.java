@@ -27,6 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.bn.types.BitString;
+
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -249,9 +251,34 @@ public class MPM_Store extends PM_Store {
 		}
 	}
 
+	private SegmentDataResult createSegmentDataResult(byte[] val, SegmentDataEvent sde) {
+		SegmentDataResult sdr = new SegmentDataResult();
+		SegmDataEventDescr sded = new SegmDataEventDescr();
+		SegmEvtStatus ses = new SegmEvtStatus();
+		BitString bs = new BitString();
+
+		sded.setSegm_instance(sde.getSegm_data_event_descr().getSegm_instance());
+		sded.setSegm_evt_entry_index(sde.getSegm_data_event_descr().getSegm_evt_entry_index());
+		sded.setSegm_evt_entry_count(sde.getSegm_data_event_descr().getSegm_evt_entry_count());
+
+		bs.setValue(val);
+		ses.setValue(bs);
+		sded.setSegm_evt_status(ses);
+		sdr.setSegm_data_event_descr(sded);
+
+		return sdr;
+	}
+
 	@Override
 	public SegmentDataResult Segment_Data_Event(SegmentDataEvent sde) {
 		SegmDataEventDescr sded = sde.getSegm_data_event_descr();
+		byte[] status = new byte[2];
+		byte mask = 0;
+
+		mask |= ASN1_Values.SEVTSTA_FIRST_ENTRY | ASN1_Values.SEVTSTA_LAST_ENTRY;
+		status[0] = (byte) (mask | sde.getSegm_data_event_descr().getSegm_evt_status().getValue().getValue()[0]);
+		status[1] = 0;
+
 		//System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
 
 		MPM_Segment pmseg = (MPM_Segment) getPM_Segment(sded.getSegm_instance());
@@ -265,8 +292,8 @@ public class MPM_Store extends PM_Store {
 		if (attr == null) {
 			System.err.println("Error: Attribute " +
 						DIM_Tools.getAttributeName(Nomenclature.MDC_ATTR_PM_SEG_MAP) + " not defined");
-			/* TODO :Send error reply */
-			return null;
+			status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
+			return createSegmentDataResult(status, sde);
 		}
 
 		int first = sded.getSegm_evt_entry_index().getValue().intValue();
@@ -299,8 +326,8 @@ public class MPM_Store extends PM_Store {
 					len = 8; /* HighResRelativeTime */
 				} else {
 					System.err.println("Bad entry value: " + bytes);
-					/* TODO :Send error reply */
-					return null;
+					status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
+					return createSegmentDataResult(status, sde);
 				}
 			}
 
@@ -330,15 +357,15 @@ public class MPM_Store extends PM_Store {
 					/* We can check also type.Nompartition to see if it is set to 2 for metric */
 					if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
 						System.err.println("Error: No metric object received.");
-						/* TODO :Send error reply */
-						return null;
+						status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
+						return createSegmentDataResult(status, sde);
 					}
 
 					Numeric num = getMDS().getNumeric(handle);
 					if (num == null) {
 						System.err.println("Error: Invalid numeric received.");
-						/* TODO :Send error reply */
-						return null;
+						status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
+						return createSegmentDataResult(status, sde);
 					}
 
 					OID_Type unitCode = (OID_Type) num.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE).getAttributeType();
@@ -369,15 +396,12 @@ public class MPM_Store extends PM_Store {
 				}
 			}
 
-			/* TODO: Send reply */
-			return null;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_CONFIRM;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		/* TODO :Send error reply */
-		return null;
+		return createSegmentDataResult(status, sde);
 	}
 }
