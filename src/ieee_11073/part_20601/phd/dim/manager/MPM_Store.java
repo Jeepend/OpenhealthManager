@@ -307,15 +307,10 @@ public class MPM_Store extends PM_Store {
 			while (rde.hasMoreData() && (j < count)) {
 				SegmEntryElemList seel = psem.getSegm_entry_elem_list();
 				Iterator<SegmEntryElem> i = seel.getValue().iterator();
+				j++;
 
 				if (hasEntries) {
-					try {
-						/* Get Entry */
 						RawDataExtractor.decodeRawData(attrId, rde.getData(len), eRules);
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 				}
 
 				while (i.hasNext()) {
@@ -362,16 +357,17 @@ public class MPM_Store extends PM_Store {
 						AttrValMapEntry avme = ii.next();
 						int id = avme.getAttribute_id().getValue().getValue().intValue();
 						int length = avme.getAttribute_len().intValue();
-						try {
-							RawDataExtractor.decodeRawData(id, rde.getData(length), eRules);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						RawDataExtractor.decodeRawData(id, rde.getData(length), eRules);
 					}
 				}
 			}
+			/* TODO: Send reply */
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		/* TODO :Send error reply */
 	}
 }
