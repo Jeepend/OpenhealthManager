@@ -320,6 +320,7 @@ public final class MOperating extends Operating {
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_FIXED:
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_GROUPED:
 				processUnbufScannerEvent(event);
+				this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 				break;
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_VAR:
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_FIXED:
@@ -328,6 +329,7 @@ public final class MOperating extends Operating {
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_FIXED:
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_GROUPED:
 				processBufScannerEvent(event);
+				this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 				break;
 			default:
 				//TODO: handle representing a scanner or PM-store object.
