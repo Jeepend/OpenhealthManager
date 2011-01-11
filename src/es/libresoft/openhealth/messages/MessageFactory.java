@@ -338,7 +338,7 @@ public class MessageFactory {
 			System.out.println("(>> Roiv_cmip_event_report) FAIL: Manager Shall not confirm cmip_event report");
 			//return rors_cmip_event_repor(da);
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
-			return rors_cmip_confirmed_event_repor(da);
+			return rors_cmip_confirmed_event_report(da);
 		}else if (msg.isRoiv_cmip_getSelected()) {
 			//TODO:
 			System.out.println(">> Roiv_cmip_get");
@@ -401,7 +401,7 @@ public class MessageFactory {
 		return msg;
 	}
 	*/
-	private static final DataApdu.MessageChoiceType rors_cmip_confirmed_event_repor (DataApdu da){
+	private static final DataApdu.MessageChoiceType rors_cmip_confirmed_event_report (DataApdu da){
 		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
 		EventReportResultSimple errs = new EventReportResultSimple();
 
