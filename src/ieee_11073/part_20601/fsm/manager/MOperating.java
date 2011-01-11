@@ -297,7 +297,7 @@ public final class MOperating extends Operating {
 				break;
 			}
 		} catch(ClassCastException e) {
-			System.err.println("Only Episodic Scanner can receive ");
+			System.err.println("Only Episodic Scanner can receive UnBuffered scanner events");
 		}
 	}
 
