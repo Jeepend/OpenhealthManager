@@ -90,14 +90,13 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 
 	@Override
 	public void SET(Attribute attr) {
-		// TODO Auto-generated method stub
-		System.out.println("TODO: Implement set service for epicfg scanner: "+ attr.getAttributeName());
 		HashMap<Attribute, Integer> attrs = new HashMap<Attribute, Integer>();
 
 		attrs.put(attr, ASN1_Values.MOD_OP_REPLACE);
 		DataApdu data = MessageFactory.PrstRoivCmipSet(this, attrs);
 		ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
 		getMDS().getStateHandler().send(apdu);
+		addAttribute(attr);
 	}
 
 }
