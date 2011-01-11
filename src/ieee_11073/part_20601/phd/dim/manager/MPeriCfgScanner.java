@@ -25,6 +25,7 @@ package ieee_11073.part_20601.phd.dim.manager;
 
 import java.util.Hashtable;
 
+import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.PeriCfgScanner;
@@ -46,37 +47,37 @@ public class MPeriCfgScanner extends PeriCfgScanner {
 	}
 
 	@Override
-	public void Buf_Scan_Report_Fixed() {
+	public void Buf_Scan_Report_Fixed(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_Fixed");
 	}
 
 	@Override
-	public void Buf_Scan_Report_Grouped() {
+	public void Buf_Scan_Report_Grouped(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_Grouped");
 	}
 
 	@Override
-	public void Buf_Scan_Report_MP_Fixed() {
+	public void Buf_Scan_Report_MP_Fixed(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
-	public void Buf_Scan_Report_MP_Grouped() {
+	public void Buf_Scan_Report_MP_Grouped(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
-	public void Buf_Scan_Report_MP_Var() {
+	public void Buf_Scan_Report_MP_Var(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_MP_Var");
 	}
 
 	@Override
-	public void Buf_Scan_Report_Var() {
+	public void Buf_Scan_Report_Var(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_Var");
 	}

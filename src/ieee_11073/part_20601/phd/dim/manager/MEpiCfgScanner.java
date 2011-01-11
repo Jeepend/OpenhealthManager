@@ -31,6 +31,7 @@ import es.libresoft.openhealth.utils.ASN1_Values;
 
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.EpiCfgScanner;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -52,37 +53,37 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 	}
 
 	@Override
-	public void Unbuf_Scan_Report_Fixed() {
+	public void Unbuf_Scan_Report_Fixed(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
-	public void Unbuf_Scan_Report_Grouped() {
+	public void Unbuf_Scan_Report_Grouped(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Grouped");
 	}
 
 	@Override
-	public void Unbuf_Scan_Report_MP_Fixed() {
+	public void Unbuf_Scan_Report_MP_Fixed(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
-	public void Unbuf_Scan_Report_MP_Grouped() {
+	public void Unbuf_Scan_Report_MP_Grouped(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
-	public void Unbuf_Scan_Report_MP_Var() {
+	public void Unbuf_Scan_Report_MP_Var(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
-	public void Unbuf_Scan_Report_Var() {
+	public void Unbuf_Scan_Report_Var(EventReportArgumentSimple event) {
 		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Var");
 	}

@@ -250,22 +250,22 @@ public final class MOperating extends Operating {
 			PeriCfgScanner scanner = (PeriCfgScanner) state_handler.getMDS().getScanner(event.getObj_handle());
 			switch (event.getEvent_type().getValue().getValue()) {
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_VAR:
-				scanner.Buf_Scan_Report_Var();
+				scanner.Buf_Scan_Report_Var(event);
 				break;
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_FIXED:
-				scanner.Buf_Scan_Report_Fixed();
+				scanner.Buf_Scan_Report_Fixed(event);
 				break;
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_GROUPED:
-				scanner.Buf_Scan_Report_Grouped();
+				scanner.Buf_Scan_Report_Grouped(event);
 				break;
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_VAR:
-				scanner.Buf_Scan_Report_MP_Var();
+				scanner.Buf_Scan_Report_MP_Var(event);
 				break;
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_FIXED:
-				scanner.Buf_Scan_Report_MP_Fixed();
+				scanner.Buf_Scan_Report_MP_Fixed(event);
 				break;
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_GROUPED:
-				scanner.Buf_Scan_Report_MP_Grouped();
+				scanner.Buf_Scan_Report_MP_Grouped(event);
 				break;
 			}
 		} catch(ClassCastException e) {
@@ -278,22 +278,22 @@ public final class MOperating extends Operating {
 			EpiCfgScanner scanner = (EpiCfgScanner) state_handler.getMDS().getScanner(event.getObj_handle());
 			switch (event.getEvent_type().getValue().getValue()) {
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_VAR:
-				scanner.Unbuf_Scan_Report_Var();
+				scanner.Unbuf_Scan_Report_Var(event);
 				break;
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_FIXED:
-				scanner.Unbuf_Scan_Report_Fixed();
+				scanner.Unbuf_Scan_Report_Fixed(event);
 				break;
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_GROUPED:
-				scanner.Unbuf_Scan_Report_Grouped();
+				scanner.Unbuf_Scan_Report_Grouped(event);
 				break;
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_VAR:
-				scanner.Unbuf_Scan_Report_MP_Var();
+				scanner.Unbuf_Scan_Report_MP_Var(event);
 				break;
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_FIXED:
-				scanner.Unbuf_Scan_Report_MP_Fixed();
+				scanner.Unbuf_Scan_Report_MP_Fixed(event);
 				break;
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_GROUPED:
-				scanner.Unbuf_Scan_Report_MP_Grouped();
+				scanner.Unbuf_Scan_Report_MP_Grouped(event);
 				break;
 			}
 		} catch(ClassCastException e) {

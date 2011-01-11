@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
+
 public interface EpiCfgScanner_Events {
 
 		/**
@@ -30,36 +32,36 @@ public interface EpiCfgScanner_Events {
 		 * monitors. The event is triggered whenever data values change and the variable message
 		 * format (type/length/value) is used when reporting data that changed.
 		 */
-		public void Unbuf_Scan_Report_Var ();
+		public void Unbuf_Scan_Report_Var (EventReportArgumentSimple event);
 
 		/**
 		 * This event style is used whenever data values change and the fixed message format of
 		 * each object is used to report data that changed.
 		 */
-		public void Unbuf_Scan_Report_Fixed ();
+		public void Unbuf_Scan_Report_Fixed (EventReportArgumentSimple event);
 
 		/**
 		 * This style is used when the scanner object is used to send the data in its most compact
 		 * format. The Handle-Attr-Val-Map attribute describes the objects and attributes that are
 		 * included and the format of the message.
 		 */
-		public void Unbuf_Scan_Report_Grouped ();
+		public void Unbuf_Scan_Report_Grouped (EventReportArgumentSimple event);
 
 		/**
 		 * This is the same as Unbuf-Scan-Report-Var, but allows inclusion of data from multiple
 		 * persons.
 		 */
-		public void Unbuf_Scan_Report_MP_Var ();
+		public void Unbuf_Scan_Report_MP_Var (EventReportArgumentSimple event);
 
 		/**
 		 * This is the same as Unbuf-Scan-Report-Fixed, but allows inclusion of data from multiple
 		 * persons.
 		 */
-		public void Unbuf_Scan_Report_MP_Fixed ();
+		public void Unbuf_Scan_Report_MP_Fixed (EventReportArgumentSimple event);
 
 		/**
 		 * This is the same as Unbuf-Scan-Report-Grouped, but allows inclusion of data from multiple
 		 *  persons.
 		 */
-		public void Unbuf_Scan_Report_MP_Grouped();
+		public void Unbuf_Scan_Report_MP_Grouped (EventReportArgumentSimple event);
 }
