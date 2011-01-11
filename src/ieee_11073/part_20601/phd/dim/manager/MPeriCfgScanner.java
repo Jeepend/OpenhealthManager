@@ -23,8 +23,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim.manager;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
+import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Values;
+
+import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -84,8 +90,13 @@ public class MPeriCfgScanner extends PeriCfgScanner {
 
 	@Override
 	public void SET(Attribute attr) {
-		// TODO Auto-generated method stub
-		System.out.println("TODO: Implement set service for epicfg scanner: " + attr.getAttributeName());
+		HashMap<Attribute, Integer> attrs = new HashMap<Attribute, Integer>();
+
+		attrs.put(attr, ASN1_Values.MOD_OP_REPLACE);
+		DataApdu data = MessageFactory.PrstRoivCmipSet(this, attrs);
+		ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
+		getMDS().getStateHandler().send(apdu);
+		addAttribute(attr);
 	}
 
 }
