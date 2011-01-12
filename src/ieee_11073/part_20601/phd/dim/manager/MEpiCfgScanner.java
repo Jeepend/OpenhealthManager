@@ -25,14 +25,30 @@ package ieee_11073.part_20601.phd.dim.manager;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 
+import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporter;
+import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
+import es.libresoft.openhealth.utils.DIM_Tools;
+import es.libresoft.openhealth.utils.RawDataExtractor;
 
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.AttrValMap;
+import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
+import ieee_11073.part_20601.asn1.HandleAttrValMap;
+import ieee_11073.part_20601.asn1.HandleAttrValMapEntry;
+import ieee_11073.part_20601.asn1.ObservationScanGrouped;
+import ieee_11073.part_20601.asn1.ScanReportInfoGrouped;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.EpiCfgScanner;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 
@@ -60,8 +76,60 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 
 	@Override
 	public void Unbuf_Scan_Report_Grouped(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
-		System.out.println("TODO: implement Unbuf_Scan_Report_Grouped");
+		try {
+			ScanReportInfoGrouped srig = ASN1_Tools.decodeData(event.getEvent_info(),
+									ScanReportInfoGrouped.class,
+									getMDS().getDeviceConf().getEncondigRules());
+			System.out.println("Grouped scan report #" + srig.getScan_report_no());
+			// TODO: use the report number to detect missing packets
+
+			String system_id = DIM_Tools.byteArrayToString(
+					(byte[])getMDS().getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+
+			Iterator<ObservationScanGrouped> i= srig.getObs_scan_grouped().iterator();
+			Attribute ValMapAtt = getAttribute(Nomenclature.MDC_ATTR_SCAN_HANDLE_ATTR_VAL_MAP);
+			if (ValMapAtt == null) {
+				System.err.println("Warninig: received Grouped Scan Report but Scan-Handle-Attr-Val-Map is not found");
+				return;
+			}
+			HandleAttrValMap havm = (HandleAttrValMap) ValMapAtt.getAttributeType();
+
+			ObservationScanGrouped obs;
+			while (i.hasNext()) {
+				obs = i.next();
+
+				Iterator<HandleAttrValMapEntry> it = havm.getValue().iterator();
+				RawDataExtractor de = new RawDataExtractor(obs.getValue());
+
+				while (it.hasNext()){
+					HandleAttrValMapEntry hattr = it.next();
+					AttrValMap avm = hattr.getAttr_val_map();
+					DIM elem = getMDS().getObject(hattr.getObj_handle());
+					Iterator<AttrValMapEntry> vmit = avm.getValue().iterator();
+
+					MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
+					MeasureReporterUtils.addAttributesToReport(mr,elem);
+
+					while (vmit.hasNext()){
+						AttrValMapEntry vme = vmit.next();
+						int attrId = vme.getAttribute_id().getValue().getValue();
+						int length = vme.getAttribute_len();
+						try {
+							mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,
+									de.getData(length), getMDS().getDeviceConf().getEncondigRules()));
+						}catch(Exception e){
+							System.err.println("Error: Can not get attribute " + attrId);
+							e.printStackTrace();
+						}
+					}
+
+					InternalEventReporter.receivedMeasure(system_id, mr);
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
