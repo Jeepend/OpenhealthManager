@@ -86,6 +86,7 @@ import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -189,7 +190,7 @@ public abstract class MDSManager extends MDS {
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
 				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
-				addAttributesToReport(mr,elem);
+				MeasureReporterUtils.addAttributesToReport(mr,elem);
 				while (it.hasNext()){
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
@@ -222,7 +223,7 @@ public abstract class MDSManager extends MDS {
 				obs=i.next();
 				//Get Numeric from Handle_id
 				Numeric numeric = getNumeric(obs.getObj_handle());
-				addAttributesToReport(mr,numeric);
+				MeasureReporterUtils.addAttributesToReport(mr,numeric);
 				if (numeric == null)
 					throw new Exception("Numeric class not found for handle: " + obs.getObj_handle().getValue().getValue());
 
@@ -239,22 +240,6 @@ public abstract class MDSManager extends MDS {
 			e.printStackTrace();
 		}
 
-	}
-
-	/* Next method add additional info to report to application layer. Please, feel
-	 * free to make changes. */
-	private void addAttributesToReport (MeasureReporter mr, DIM measure) {
-		Attribute at;
-
-		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
-		TYPE type = (TYPE)at.getAttributeType();
-		mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
-
-		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
-		if (at != null) {
-			OID_Type unit_cod = (OID_Type)at.getAttributeType();
-			mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
-		}
 	}
 
 	//----------------------------------------PRIVATE-----------------------------------------------------------
