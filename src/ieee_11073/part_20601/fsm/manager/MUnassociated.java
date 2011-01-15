@@ -30,10 +30,13 @@ import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataProto;
 import ieee_11073.part_20601.asn1.DataProtoList;
 import ieee_11073.part_20601.asn1.DataReqModeCapab;
+import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.PhdAssociationInformation;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.fsm.Unassociated;
 import ieee_11073.part_20601.phd.dim.MDS;
+
+import java.util.Collection;
 import java.util.Iterator;
 
 import es.libresoft.openhealth.Device;
@@ -43,6 +46,9 @@ import es.libresoft.openhealth.ManagerConfig;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.storage.ConfigStorage;
+import es.libresoft.openhealth.storage.ConfigStorageFactory;
+import es.libresoft.openhealth.storage.StorageException;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
@@ -255,9 +261,22 @@ public final class MUnassociated extends Unassociated {
 		extMDS.GET();
 	}
 
+	private void processStoredConfiguration(Collection<GetResultSimple> data) {
+		System.out.println("TODO: Implement processStoredConfiguration");
+	}
+
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
 
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
+
+		try {
+			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
+			processStoredConfiguration(cs.recover(phd.getSystem_id(), dev_conf));
+			return;
+		} catch (StorageException e) {
+			System.out.println("Not stored configuration for device, requesting configuration");
+		}
+
 		int id = dev_conf.getPhdId();
 
 		if ((400 <= id) && (id <= 499)){

@@ -237,8 +237,11 @@ public final class CheckingConfig extends Configuring {
 	private void checkingConfig (DataApdu data, ConfigReportRsp response) throws Exception{
 		state_handler.send(composeResponse(data,response));
 		//Set next state
-		if (response.getConfig_result().getValue() == ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG)
+		if (response.getConfig_result().getValue() == ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG) {
 			state_handler.changeState(new MOperating(state_handler));
+			state_handler.getMDS().storeConfiguration();
+			System.out.println("Configuration agreed, going to operating state.");
+		}
 		else state_handler.changeState(new WaitingForConfig(state_handler));
 	}
 
@@ -271,5 +274,4 @@ public final class CheckingConfig extends Configuring {
 		confRsp.setMessage(msgRsp);
 		return MessageFactory.composeApdu (confRsp, state_handler.getMDS().getDeviceConf());
 	}
-
 }

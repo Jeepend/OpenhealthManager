@@ -53,6 +53,7 @@ import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.application.GetPmStoreEvent;
 import es.libresoft.openhealth.events.application.SetEvent;
+import es.libresoft.openhealth.storage.ConfigStorageFactory;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 
@@ -90,6 +91,8 @@ public class DrDroid extends Service {
 		InternalEventReporter.setDefaultEventManager(ieManager);
 		//Set target platform to android to report measures using IPC mechanism
 		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.ANDROID);
+
+		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage());
 		super.onCreate();
 	}
 

@@ -247,4 +247,8 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		}
 		return mandatoryAttributes;
 	}
+
+	public void storeConfiguration() {
+		System.out.println("TODO: store MDS and all metrics configurations");
+	}
 }
