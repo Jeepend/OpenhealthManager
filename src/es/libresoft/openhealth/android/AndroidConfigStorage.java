@@ -27,14 +27,32 @@ package es.libresoft.openhealth.android;
 
 import ieee_11073.part_20601.asn1.GetResultSimple;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+
+import org.bn.CoderFactory;
+import org.bn.IEncoder;
+
+import android.content.Context;
 
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.StorageException;
 import es.libresoft.openhealth.storage.StorageNotFoundException;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 
 public class AndroidConfigStorage implements ConfigStorage {
+
+	private Context context;
+	private static final String storage = "storage";
+
+	public AndroidConfigStorage(Context context) {
+		this.context = context;
+	}
 
 	@Override
 	public Collection<GetResultSimple> recover(byte[] sysId, DeviceConfig config) throws StorageNotFoundException {
@@ -45,8 +63,24 @@ public class AndroidConfigStorage implements ConfigStorage {
 
 	@Override
 	public void store(byte[] sysId, DeviceConfig config, GetResultSimple data) throws StorageException {
-		System.out.println("TODO: Implement storage for Android platform");
-		// TODO Auto-generated method stub
+		try {
+			IEncoder<GetResultSimple> encoder = CoderFactory.getInstance().newEncoder("MDER");
+
+			String sysid = ASN1_Tools.getHexString(sysId);
+			File base_dir = context.getDir(storage, Context.MODE_PRIVATE);
+			File dir_file = new File(base_dir.getAbsolutePath() + "/" + sysid + "/" + config.getPhdId());
+			dir_file.mkdirs();
+
+			File file = new File(dir_file.getAbsoluteFile(), data.getObj_handle().getValue().getValue() + ".conf");
+			file.createNewFile();
+
+			FileOutputStream fos = new FileOutputStream(file, false);
+			encoder.encode(data, fos);
+			fos.close();
+
+		} catch (Exception e) {
+			throw new StorageException(e);
+		}
 	}
 
 	@Override

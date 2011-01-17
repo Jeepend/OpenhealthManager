@@ -92,7 +92,7 @@ public class DrDroid extends Service {
 		//Set target platform to android to report measures using IPC mechanism
 		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.ANDROID);
 
-		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage());
+		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage(this.getApplicationContext()));
 		super.onCreate();
 	}
 
