@@ -424,6 +424,8 @@ public abstract class MDSManager extends MDS {
 							int id = i.next();
 							addAttribute(attribs.get(id));
 						}
+						/* Store received configuration */
+						storeConfiguration();
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
