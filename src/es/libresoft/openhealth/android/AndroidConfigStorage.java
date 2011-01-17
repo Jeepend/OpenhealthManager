@@ -48,4 +48,10 @@ public class AndroidConfigStorage implements ConfigStorage {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void delete(byte[] sysId, DeviceConfig config) {
+		System.out.println("TODO: Implement storage for Android platform");
+		// TODO Auto-generated method stub
+	}
+
 }

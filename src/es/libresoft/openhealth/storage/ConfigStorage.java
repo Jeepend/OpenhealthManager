@@ -56,4 +56,12 @@ public interface ConfigStorage {
 	 * @return A collection with all the DIM objects previously stored.
 	 */
 	public Collection<GetResultSimple> recover(byte[] sys_id, DeviceConfig config) throws StorageNotFoundException;
+
+	/**
+	 * Deletes all the configurations for the given device.
+	 *
+	 * @param sys_id The system id of the configuration that will be deleted
+	 * @param config The configuration that will be deleted for the given system id.
+	 */
+	public void delete(byte[] sys_id, DeviceConfig config);
 }
