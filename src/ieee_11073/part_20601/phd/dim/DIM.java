@@ -153,7 +153,7 @@ public abstract class DIM {
 				oid.setValue(new INT_U16(id));
 				ava.setAttribute_id(oid);
 
-				ava.setAttribute_value(ASN1_Tools.encodeData(attributeList.get(id), MDER_ENCODING));
+				ava.setAttribute_value(ASN1_Tools.encodeData(attributeList.get(id).getAttributeType(), MDER_ENCODING));
 				list.add(ava);
 			}
 
