@@ -160,6 +160,8 @@ public abstract class DIM {
 			data.setAttribute_list(new AttributeList(list));
 
 			cs.store(sys_id, config, data);
+		} catch (StorageException e) {
+			throw e;
 		} catch (Exception e) {
 			System.err.println("Configuration won't be stored for object " + handle.getValue().getValue());
 			throw new StorageException(e);

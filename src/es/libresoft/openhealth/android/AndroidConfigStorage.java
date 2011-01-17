@@ -31,6 +31,7 @@ import java.util.Collection;
 
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.storage.ConfigStorage;
+import es.libresoft.openhealth.storage.StorageException;
 import es.libresoft.openhealth.storage.StorageNotFoundException;
 
 public class AndroidConfigStorage implements ConfigStorage {
@@ -43,7 +44,7 @@ public class AndroidConfigStorage implements ConfigStorage {
 	}
 
 	@Override
-	public void store(byte[] sysId, DeviceConfig config, GetResultSimple data) {
+	public void store(byte[] sysId, DeviceConfig config, GetResultSimple data) throws StorageException {
 		System.out.println("TODO: Implement storage for Android platform");
 		// TODO Auto-generated method stub
 	}

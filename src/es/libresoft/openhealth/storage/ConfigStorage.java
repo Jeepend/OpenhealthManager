@@ -45,7 +45,7 @@ public interface ConfigStorage {
 	 * @param config The device configuration
 	 * @param data All DIM object attributes and its HANDLE
 	 */
-	public void store(byte[] sys_id, DeviceConfig config, GetResultSimple data);
+	public void store(byte[] sys_id, DeviceConfig config, GetResultSimple data) throws StorageException;
 
 	/**
 	 * Gets all the DIM objects previously stored using @ref store for the device
