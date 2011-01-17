@@ -23,19 +23,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AVA_Type;
 import ieee_11073.part_20601.asn1.AttributeList;
+import ieee_11073.part_20601.asn1.GetResultSimple;
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.OID_Type;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.bn.annotations.ASN1OctetString;
 
+import es.libresoft.openhealth.DeviceConfig;
+import es.libresoft.openhealth.storage.ConfigStorage;
+import es.libresoft.openhealth.storage.ConfigStorageFactory;
+import es.libresoft.openhealth.storage.StorageException;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.DIM_Tools;
 import es.libresoft.openhealth.utils.OctetStringASN1;
 
 public abstract class DIM {
+
+	private static final String MDER_ENCODING = "MDER";
 
 	private MDS mds;
 
@@ -120,5 +132,37 @@ public abstract class DIM {
 			attribs.put(new Integer(ava.getAttribute_id().getValue().getValue()), attr);
 		}
 		return attribs;
+	}
+
+	public void storeConfiguration(byte[] sys_id, DeviceConfig config) throws StorageException{
+		HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+
+		try {
+			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
+			GetResultSimple data = new GetResultSimple();
+
+			data.setObj_handle(handle);
+
+			ArrayList<AVA_Type> list = new ArrayList<AVA_Type>();
+			Iterator<Integer> it = attributeList.keySet().iterator();
+			while (it.hasNext()) {
+				Integer id = it.next();
+
+				AVA_Type ava = new AVA_Type();
+				OID_Type oid = new OID_Type();
+				oid.setValue(new INT_U16(id));
+				ava.setAttribute_id(oid);
+
+				ava.setAttribute_value(ASN1_Tools.encodeData(attributeList.get(id), MDER_ENCODING));
+				list.add(ava);
+			}
+
+			data.setAttribute_list(new AttributeList(list));
+
+			cs.store(sys_id, config, data);
+		} catch (Exception e) {
+			System.err.println("Configuration won't be stored for object " + handle.getValue().getValue());
+			throw new StorageException(e);
+		}
 	}
 }

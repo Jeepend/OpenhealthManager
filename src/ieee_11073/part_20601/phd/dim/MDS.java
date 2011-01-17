@@ -37,11 +37,15 @@ import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.fsm.StateHandler;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
 import es.libresoft.openhealth.DeviceConfig;
+import es.libresoft.openhealth.storage.ConfigStorage;
+import es.libresoft.openhealth.storage.ConfigStorageFactory;
+import es.libresoft.openhealth.storage.StorageException;
 
 	/**
 	 * Each personal health device agent is defined by an object-oriented model. The top-level object
@@ -248,7 +252,40 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		return mandatoryAttributes;
 	}
 
+	private <T> void storeList(byte[] sys_id, Iterator<T> it) throws StorageException {
+		while (it.hasNext()) {
+			DIM next;
+			try {
+				next = (DIM) it.next();
+			} catch (ClassCastException e) {
+				throw new StorageException(e);
+			}
+			next.storeConfiguration(sys_id, dev_conf);
+		}
+	}
+
 	public void storeConfiguration() {
-		System.out.println("TODO: store MDS and all metrics configurations");
+		try {
+			byte[] sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
+			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
+
+			try {
+				storeConfiguration(sys_id, dev_conf);
+
+				storeList(sys_id, scanners.values().iterator());
+				storeList(sys_id, numerics.values().iterator());
+				storeList(sys_id, rt_sas.values().iterator());
+				storeList(sys_id, enumerations.values().iterator());
+				storeList(sys_id, pm_stores.values().iterator());
+
+			} catch (StorageException e) {
+				System.err.println("Storage aborted, deleting all configurations");
+				cs.delete(sys_id, dev_conf);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("An error ocurred during configuration storage, storage aborted.");
+			return;
+		}
 	}
 }
