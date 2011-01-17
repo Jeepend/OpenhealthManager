@@ -27,10 +27,10 @@ import ieee_11073.part_104zz.manager.DS_Extended;
 import ieee_11073.part_104zz.manager.DeviceSpecializationFactory;
 import ieee_11073.part_20601.asn1.AarqApdu;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.ConfigObject;
 import ieee_11073.part_20601.asn1.DataProto;
 import ieee_11073.part_20601.asn1.DataProtoList;
 import ieee_11073.part_20601.asn1.DataReqModeCapab;
-import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.PhdAssociationInformation;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.fsm.Unassociated;
@@ -261,7 +261,7 @@ public final class MUnassociated extends Unassociated {
 		extMDS.GET();
 	}
 
-	private void processStoredConfiguration(Collection<GetResultSimple> data) {
+	private void processStoredConfiguration(Collection<ConfigObject> data) {
 		System.out.println("TODO: Implement processStoredConfiguration");
 	}
 

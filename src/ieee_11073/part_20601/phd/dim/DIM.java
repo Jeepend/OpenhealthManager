@@ -26,7 +26,7 @@ package ieee_11073.part_20601.phd.dim;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AVA_Type;
 import ieee_11073.part_20601.asn1.AttributeList;
-import ieee_11073.part_20601.asn1.GetResultSimple;
+import ieee_11073.part_20601.asn1.ConfigObject;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.OID_Type;
@@ -139,7 +139,7 @@ public abstract class DIM {
 
 		try {
 			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
-			GetResultSimple data = new GetResultSimple();
+			ConfigObject data = new ConfigObject();
 
 			data.setObj_handle(handle);
 
@@ -157,7 +157,11 @@ public abstract class DIM {
 				list.add(ava);
 			}
 
-			data.setAttribute_list(new AttributeList(list));
+			OID_Type obj_class = new OID_Type();
+			obj_class.setValue(new INT_U16(getNomenclatureCode()));
+			data.setObj_class(obj_class);
+
+			data.setAttributes(new AttributeList(list));
 
 			cs.store(sys_id, config, data);
 		} catch (StorageException e) {

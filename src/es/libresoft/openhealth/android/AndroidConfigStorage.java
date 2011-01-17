@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import ieee_11073.part_20601.asn1.GetResultSimple;
+import ieee_11073.part_20601.asn1.ConfigObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,16 +55,16 @@ public class AndroidConfigStorage implements ConfigStorage {
 	}
 
 	@Override
-	public Collection<GetResultSimple> recover(byte[] sysId, DeviceConfig config) throws StorageNotFoundException {
+	public Collection<ConfigObject> recover(byte[] sysId, DeviceConfig config) throws StorageNotFoundException {
 		System.out.println("TODO: Implement storage recovery for Android platform");
 		throw new StorageNotFoundException("This method is not yet implemented");
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void store(byte[] sysId, DeviceConfig config, GetResultSimple data) throws StorageException {
+	public void store(byte[] sysId, DeviceConfig config, ConfigObject data) throws StorageException {
 		try {
-			IEncoder<GetResultSimple> encoder = CoderFactory.getInstance().newEncoder("MDER");
+			IEncoder<ConfigObject> encoder = CoderFactory.getInstance().newEncoder("MDER");
 
 			String sysid = ASN1_Tools.getHexString(sysId);
 			File base_dir = context.getDir(storage, Context.MODE_PRIVATE);

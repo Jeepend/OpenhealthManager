@@ -27,7 +27,7 @@ package es.libresoft.openhealth.storage;
 
 import java.util.Collection;
 
-import ieee_11073.part_20601.asn1.GetResultSimple;
+import ieee_11073.part_20601.asn1.ConfigObject;
 import es.libresoft.openhealth.DeviceConfig;
 
 public interface ConfigStorage {
@@ -45,7 +45,7 @@ public interface ConfigStorage {
 	 * @param config The device configuration
 	 * @param data All DIM object attributes and its HANDLE
 	 */
-	public void store(byte[] sys_id, DeviceConfig config, GetResultSimple data) throws StorageException;
+	public void store(byte[] sys_id, DeviceConfig config, ConfigObject data) throws StorageException;
 
 	/**
 	 * Gets all the DIM objects previously stored using @ref store for the device
@@ -55,7 +55,7 @@ public interface ConfigStorage {
 	 * @param config The configuration of the device
 	 * @return A collection with all the DIM objects previously stored.
 	 */
-	public Collection<GetResultSimple> recover(byte[] sys_id, DeviceConfig config) throws StorageNotFoundException;
+	public Collection<ConfigObject> recover(byte[] sys_id, DeviceConfig config) throws StorageNotFoundException;
 
 	/**
 	 * Deletes all the configurations for the given device.
