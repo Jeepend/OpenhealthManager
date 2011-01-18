@@ -289,6 +289,8 @@ public final class MUnassociated extends Unassociated {
 		}
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED(dev_conf));
 		state_handler.changeState(new MOperating(state_handler));
+
+		mds.GET();
 	}
 
 	private void processStandardConfiguration(PhdAssociationInformation phd) {

@@ -162,6 +162,8 @@ public class MDSManager extends MDS {
 
 		try {
 			configureMDS(config.getConfig_obj_list().getValue());
+			/* Store current configuration */
+			storeConfiguration();
 			return generateConfigReportRsp(configId,
 					ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG);
 		} catch (Exception e) {
@@ -426,7 +428,8 @@ public class MDSManager extends MDS {
 						addCheckedAttributes(attribs);
 
 						/* Store received configuration */
-						storeConfiguration();
+						byte[] sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
+						storeConfiguration(sys_id, getDeviceConf());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -265,9 +265,12 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	}
 
 	public void storeConfiguration() {
+		ConfigStorage cs = null;
+		byte[] sys_id = null;
+
 		try {
-			byte[] sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
-			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
+			sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
+			cs = ConfigStorageFactory.getDefaultConfigStorage();
 
 			try {
 				storeConfiguration(sys_id, dev_conf);
@@ -285,7 +288,8 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("An error ocurred during configuration storage, storage aborted.");
-			return;
+			if (cs != null && sys_id != null)
+				cs.delete(sys_id, dev_conf);
 		}
 	}
 }
