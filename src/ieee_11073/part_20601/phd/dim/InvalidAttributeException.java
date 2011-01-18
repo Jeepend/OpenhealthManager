@@ -27,6 +27,10 @@ public class InvalidAttributeException extends Exception {
 
 	private static final long serialVersionUID = -523759282320966818L;
 
+	public InvalidAttributeException (Exception e) {
+		super(e);
+	}
+
 	public InvalidAttributeException (String msg){
 		super(msg);
 	}

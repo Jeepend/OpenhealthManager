@@ -70,6 +70,7 @@ import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.Numeric;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -97,61 +98,72 @@ public class MDSManager extends MDS {
 		super(attributeList);
 	}
 
+	public void configureMDS(Collection<ConfigObject> config) throws InvalidAttributeException {
+		Iterator<ConfigObject> i = config.iterator();
+		ConfigObject confObj;
+
+		while (i.hasNext()){
+			confObj = i.next();
+			Hashtable<Integer,Attribute> attribs;
+			//Get Attributes
+			try {
+				attribs = getAttributes(confObj.getAttributes(), getDeviceConf().getEncondigRules());
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new InvalidAttributeException(e);
+			}
+
+			//Generate attribute Handle:
+			HANDLE handle = new HANDLE();
+			handle.setValue(new INT_U16(new Integer
+					(confObj.getObj_handle().getValue().getValue())));
+			Attribute attr = new Attribute(Nomenclature.MDC_ATTR_ID_HANDLE,
+					handle);
+			//Set Attribute Handle to the list
+			attribs.put(Nomenclature.MDC_ATTR_ID_HANDLE, attr);
+
+			//checkGotAttributes(attribs);
+			int classId = confObj.getObj_class().getValue().getValue();
+			switch (classId) {
+			case Nomenclature.MDC_MOC_VMS_MDS_SIMP : // MDS Class
+				throw new UnsupportedOperationException("Unsoportedd MDS Class");
+			case Nomenclature.MDC_MOC_VMO_METRIC : // Metric Class
+				throw new UnsupportedOperationException("Unsoportedd Metric Class");
+			case Nomenclature.MDC_MOC_VMO_METRIC_NU : // Numeric Class
+				addNumeric(new Numeric(attribs));
+				break;
+			case Nomenclature.MDC_MOC_VMO_METRIC_SA_RT: // RT-SA Class
+				throw new UnsupportedOperationException("Unsoportedd RT-SA Class");
+			case Nomenclature.MDC_MOC_VMO_METRIC_ENUM: // Enumeration Class
+				addEnumeration(new Enumeration(attribs));
+				break;
+			case Nomenclature.MDC_MOC_VMO_PMSTORE: // PM-Store Class
+				addPM_Store(new MPM_Store(attribs));
+				break;
+			case Nomenclature.MDC_MOC_PM_SEGMENT: // PM-Segment Class
+				throw new UnsupportedOperationException("Unsoportedd PM-Segment Class");
+			case Nomenclature.MDC_MOC_SCAN: // Scan Class
+				throw new UnsupportedOperationException("Unsoportedd Scan Class");
+			case Nomenclature.MDC_MOC_SCAN_CFG: // CfgScanner Class
+				throw new UnsupportedOperationException("Unsoportedd CfgScanner Class");
+			case Nomenclature.MDC_MOC_SCAN_CFG_EPI: // EpiCfgScanner Class
+				addScanner(new MEpiCfgScanner(attribs));
+				break;
+			case Nomenclature.MDC_MOC_SCAN_CFG_PERI: // PeriCfgScanner Class
+				throw new UnsupportedOperationException("Unsoportedd PeriCfgScanner Class");
+			}
+		}
+	}
+
 	@Override
 	public ConfigReportRsp MDS_Configuration_Event(ConfigReport config) {
 		int configId = config.getConfig_report_id().getValue();
-		Iterator<ConfigObject> i = config.getConfig_obj_list().getValue().iterator();
-		ConfigObject confObj;
-		try{
-			while (i.hasNext()){
-				confObj = i.next();
-				//Get Attributes
-				Hashtable<Integer,Attribute> attribs = getAttributes(confObj.getAttributes(), getDeviceConf().getEncondigRules());
-				//checkGotAttributes(attribs);
 
-				//Generate attribute Handle:
-				HANDLE handle = new HANDLE();
-				handle.setValue(new INT_U16(new Integer
-						(confObj.getObj_handle().getValue().getValue())));
-				Attribute attr = new Attribute(Nomenclature.MDC_ATTR_ID_HANDLE,
-						handle);
-				//Set Attribute Handle to the list
-				attribs.put(Nomenclature.MDC_ATTR_ID_HANDLE, attr);
-
-				//checkGotAttributes(attribs);
-				int classId = confObj.getObj_class().getValue().getValue();
-				switch (classId) {
-				case Nomenclature.MDC_MOC_VMS_MDS_SIMP : // MDS Class
-					throw new Exception("Unsoportedd MDS Class");
-				case Nomenclature.MDC_MOC_VMO_METRIC : // Metric Class
-					throw new Exception("Unsoportedd Metric Class");
-				case Nomenclature.MDC_MOC_VMO_METRIC_NU : // Numeric Class
-					addNumeric(new Numeric(attribs));
-					break;
-				case Nomenclature.MDC_MOC_VMO_METRIC_SA_RT: // RT-SA Class
-					throw new Exception("Unsoportedd RT-SA Class");
-				case Nomenclature.MDC_MOC_VMO_METRIC_ENUM: // Enumeration Class
-					addEnumeration(new Enumeration(attribs));
-					break;
-				case Nomenclature.MDC_MOC_VMO_PMSTORE: // PM-Store Class
-					addPM_Store(new MPM_Store(attribs));
-					break;
-				case Nomenclature.MDC_MOC_PM_SEGMENT: // PM-Segment Class
-					throw new Exception("Unsoportedd PM-Segment Class");
-				case Nomenclature.MDC_MOC_SCAN: // Scan Class
-					throw new Exception("Unsoportedd Scan Class");
-				case Nomenclature.MDC_MOC_SCAN_CFG: // CfgScanner Class
-					throw new Exception("Unsoportedd CfgScanner Class");
-				case Nomenclature.MDC_MOC_SCAN_CFG_EPI: // EpiCfgScanner Class
-					addScanner(new MEpiCfgScanner(attribs));
-					break;
-				case Nomenclature.MDC_MOC_SCAN_CFG_PERI: // PeriCfgScanner Class
-					throw new Exception("Unsoportedd PeriCfgScanner Class");
-				}
-			}
+		try {
+			configureMDS(config.getConfig_obj_list().getValue());
 			return generateConfigReportRsp(configId,
 					ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			clearObjectsFromMds();
 			if ((ASN1_Values.CONF_ID_STANDARD_CONFIG_START <= configId) && (configId <= ASN1_Values.CONF_ID_STANDARD_CONFIG_END))
@@ -161,6 +173,7 @@ public class MDSManager extends MDS {
 			else return generateConfigReportRsp(configId,
 					ASN1_Values.CONF_RESULT_UNSUPPORTED_CONFIG);
 		}
+
 	}
 
 	@Override
