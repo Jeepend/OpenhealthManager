@@ -23,8 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.fsm.manager;
 
-import ieee_11073.part_104zz.manager.DS_Extended;
-import ieee_11073.part_104zz.manager.DeviceSpecializationFactory;
 import ieee_11073.part_20601.asn1.AarqApdu;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.ConfigObject;
@@ -34,7 +32,7 @@ import ieee_11073.part_20601.asn1.DataReqModeCapab;
 import ieee_11073.part_20601.asn1.PhdAssociationInformation;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.fsm.Unassociated;
-import ieee_11073.part_20601.phd.dim.MDS;
+import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -243,22 +241,23 @@ public final class MUnassociated extends Unassociated {
 			//processExtendedConfiguration(phd);
 		}else if ((ASN1_Values.CONF_ID_EXTENDED_CONFIG_START <= id) && (id <= ASN1_Values.CONF_ID_EXTENDED_CONFIG_END)){
 			//Extended configuration
-			processExtendedConfiguration(phd);
+			processUnknownConfiguration(phd);
 		}
 	}
 
-	private void processExtendedConfiguration(PhdAssociationInformation phd) {
+	private void processUnknownConfiguration(PhdAssociationInformation phd) {
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
-		DS_Extended extMDS = DeviceSpecializationFactory.getExtendedMDS(phd.getSystem_id(),phd.getDev_config_id(), state_handler);
+		MDSManager mds = new MDSManager(phd.getSystem_id(), phd.getDev_config_id());
+		mds.setStateHandler(state_handler);
 		//Set device config
-		extMDS.setDeviceConfig(dev_conf);
+		mds.setDeviceConfig(dev_conf);
 		//Set MDS Object
-		state_handler.setMDS(extMDS);
+		state_handler.setMDS(mds);
 		//Send AareApdu Accepted unknown config and transit to configuring state
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(dev_conf));
 		state_handler.changeState(new WaitingForConfig(state_handler));
 
-		extMDS.GET();
+		mds.GET();
 	}
 
 	private void processStoredConfiguration(Collection<ConfigObject> data) {
@@ -275,53 +274,7 @@ public final class MUnassociated extends Unassociated {
 			return;
 		} catch (StorageException e) {
 			System.out.println("Not stored configuration for device, requesting configuration");
+			processUnknownConfiguration(phd);
 		}
-
-		int id = dev_conf.getPhdId();
-
-		if ((400 <= id) && (id <= 499)){
-			processExtendedConfiguration(phd);
-			/*
-			acceptStandardAssociation(
-					DeviceSpecializationFactory.getOxymeter10404(
-							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
-			*/
-		}else if ((700 <= id) && (id <= 799)){ // Blood Pressure
-			processExtendedConfiguration(phd);
-		}else if ((800 <= id) && (id <= 899)){ //Thermometer
-			processExtendedConfiguration(phd);
-			/*
-			acceptStandardAssociation(
-					DeviceSpecializationFactory.getThermometer10408(
-							phd.getSystem_id(), phd.getDev_config_id()), dev_conf);
-			*/
-		}else if ((1500 <= id) && (id <= 1599)){
-			processExtendedConfiguration(phd);
-			/*
-			acceptStandardAssociation(
-					DeviceSpecializationFactory.getWeighingScale10415(phd.getSystem_id(), phd.getDev_config_id()),dev_conf);
-			*/
-		}else if ((1700 <= id) && (id <= 1799)){
-			System.out.println("Glucose is not yet supported");
-		}else if ((4100 <= id) && (id <= 4199)){
-			System.out.println("Cardio/Strength is not yet supported");
-		}else if ((4200 <= id) && (id <= 4299)){
-			System.out.println("Cardio/Strength is not yet supported");
-		}else if ((7100 <= id) && (id <= 7199)){ // Activity Hub
-			processExtendedConfiguration(phd);
-		}
-	}
-
-	private void acceptStandardAssociation (MDS mds, DeviceConfig dev_conf){
-		//Set device config
-		mds.setDeviceConfig(dev_conf);
-		//Set MDS Object
-		state_handler.setMDS(mds);
-
-
-		//Send AareApdu Accepted and transit to Operating
-		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED(
-				state_handler.getMDS().getDeviceConf()));
-		state_handler.changeState(new MOperating(state_handler));
 	}
 }

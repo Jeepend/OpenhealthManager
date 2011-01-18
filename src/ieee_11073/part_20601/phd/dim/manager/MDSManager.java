@@ -33,9 +33,7 @@ import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
-import ieee_11073.part_20601.asn1.BITS_32;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
-import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.ConfigObject;
 import ieee_11073.part_20601.asn1.ConfigReport;
@@ -45,7 +43,6 @@ import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
-import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
@@ -57,6 +54,8 @@ import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
 import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
+import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
+import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
@@ -71,29 +70,20 @@ import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.Numeric;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
-import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.bn.CoderFactory;
-import org.bn.IDecoder;
-
-import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.messages.MessageFactory;
-import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 import es.libresoft.openhealth.utils.RawDataExtractor;
 
-public abstract class MDSManager extends MDS {
+public class MDSManager extends MDS {
 
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
@@ -438,5 +428,29 @@ public abstract class MDSManager extends MDS {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void MDS_DATA_REQUEST() {
+		// TODO Auto-generated method stub
+		System.out.println("TODO: Implement MDS_DATA_REQUEST");
+	}
+
+	@Override
+	public void Set_Time() {
+		// TODO Auto-generated method stub
+		System.out.println("TODO: Implement Set_Time");
+	}
+
+	@Override
+	public void MDS_Dynamic_Data_Update_MP_Fixed(ScanReportInfoMPFixed info) {
+		// TODO Auto-generated method stub
+		System.out.println("TODO: Implement MDS_Dynamic_Data_Update_MP_Fixed");
+	}
+
+	@Override
+	public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info) {
+		// TODO Auto-generated method stub
+		System.out.println("TODO: Implement MDS_Dynamic_Data_Update_MP_Var");
 	}
 }
