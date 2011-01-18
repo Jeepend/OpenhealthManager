@@ -59,8 +59,8 @@ public class AndroidConfigStorage implements ConfigStorage {
 
 	@Override
 	public Collection<ConfigObject> recover(byte[] sysId, DeviceConfig config) throws StorageNotFoundException {
+		ArrayList<ConfigObject> knowconf = new ArrayList<ConfigObject>();
 		try {
-			ArrayList<ConfigObject> knowconf = new ArrayList<ConfigObject>();
 			String sysid;
 			sysid = ASN1_Tools.getHexString(sysId);
 			File base_dir = context.getDir(storage, Context.MODE_PRIVATE);
@@ -84,11 +84,14 @@ public class AndroidConfigStorage implements ConfigStorage {
 				is.close();
 			}
 
-			return knowconf;
-
 		} catch (Exception e) {
 			throw new StorageNotFoundException(e);
 		}
+
+		if (knowconf.size() == 0)
+			throw new StorageNotFoundException();
+
+		return knowconf;
 	}
 
 	@Override
