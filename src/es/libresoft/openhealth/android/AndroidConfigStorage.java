@@ -85,7 +85,6 @@ public class AndroidConfigStorage implements ConfigStorage {
 			return knowconf;
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new StorageNotFoundException(e);
 		}
 	}
