@@ -296,14 +296,17 @@ public final class MUnassociated extends Unassociated {
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
 
 		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
+		ConfigStorage cs = null;
 
 		try {
-			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
+			cs = ConfigStorageFactory.getDefaultConfigStorage();
 			processStoredConfiguration(phd, cs.recover(phd.getSystem_id(), dev_conf));
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Not stored configuration for device, requesting configuration");
+			if (cs != null)
+				cs.delete(phd.getSystem_id(), dev_conf);
 			processUnknownConfiguration(phd);
 		}
 	}
