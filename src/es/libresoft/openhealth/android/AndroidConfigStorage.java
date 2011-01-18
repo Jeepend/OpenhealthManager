@@ -28,13 +28,15 @@ package es.libresoft.openhealth.android;
 import ieee_11073.part_20601.asn1.ConfigObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FilenameFilter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.bn.CoderFactory;
+import org.bn.IDecoder;
 import org.bn.IEncoder;
 
 import android.content.Context;
@@ -56,9 +58,38 @@ public class AndroidConfigStorage implements ConfigStorage {
 
 	@Override
 	public Collection<ConfigObject> recover(byte[] sysId, DeviceConfig config) throws StorageNotFoundException {
-		System.out.println("TODO: Implement storage recovery for Android platform");
-		throw new StorageNotFoundException("This method is not yet implemented");
-		// TODO Auto-generated method stub
+		try {
+			ArrayList<ConfigObject> knowconf = new ArrayList<ConfigObject>();
+			String sysid;
+			sysid = ASN1_Tools.getHexString(sysId);
+			File base_dir = context.getDir(storage, Context.MODE_PRIVATE);
+			File dir_file = new File(base_dir.getAbsolutePath() + "/" + sysid + "/" + config.getPhdId());
+
+			File[] confs = dir_file.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String filename) {
+					return (filename.endsWith(".conf"));
+				}
+
+			});
+
+			if(confs == null)
+				throw new StorageNotFoundException();
+
+			System.out.println("0");
+			IDecoder decoder = CoderFactory.getInstance().newDecoder("MDER");
+			for (int i = 0; i < confs.length; i++) {
+				FileInputStream is = new FileInputStream(confs[i]);
+				knowconf.add(decoder.decode(is, ConfigObject.class));
+				is.close();
+			}
+
+			return knowconf;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new StorageNotFoundException(e);
+		}
 	}
 
 	@Override
