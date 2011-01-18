@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -111,10 +113,34 @@ public class AndroidConfigStorage implements ConfigStorage {
 		}
 	}
 
-	@Override
-	public void delete(byte[] sysId, DeviceConfig config) {
-		System.out.println("TODO: Implement storage for Android platform");
-		// TODO Auto-generated method stub
+	public static void delete(File file) throws IOException {
+		if (file.isDirectory()) {
+			if (file.list().length == 0)
+				file.delete();
+			else {
+				String files[] = file.list();
+				for (String temp : files) {
+					File fileDelete = new File(file, temp);
+					delete(fileDelete);
+				}
+
+				if (file.list().length == 0)
+					file.delete();
+			}
+		} else
+			file.delete();
 	}
 
+	@Override
+	public void delete(byte[] sysId, DeviceConfig config) {
+		try {
+			String sysid = ASN1_Tools.getHexString(sysId);
+			File base_dir = context.getDir(storage, Context.MODE_PRIVATE);
+			File dir_file = new File(base_dir.getAbsolutePath() + "/" + sysid + "/" + config.getPhdId());
+			delete(dir_file);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
