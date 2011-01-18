@@ -32,6 +32,7 @@ import ieee_11073.part_20601.asn1.DataReqModeCapab;
 import ieee_11073.part_20601.asn1.PhdAssociationInformation;
 import ieee_11073.part_20601.fsm.StateHandler;
 import ieee_11073.part_20601.fsm.Unassociated;
+import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 import java.util.Collection;
@@ -260,8 +261,34 @@ public final class MUnassociated extends Unassociated {
 		mds.GET();
 	}
 
-	private void processStoredConfiguration(Collection<ConfigObject> data) {
-		System.out.println("TODO: Implement processStoredConfiguration");
+	private void processStoredConfiguration(PhdAssociationInformation phd, Collection<ConfigObject> data) throws InvalidAttributeException {
+		DeviceConfig dev_conf = getDeviceConfiguration(phd, ASN1_Values.DATA_PROTO_ID_20601);
+		MDSManager mds = new MDSManager(phd.getSystem_id(), phd.getDev_config_id());
+		mds.setStateHandler(state_handler);
+		//Set device config
+		mds.setDeviceConfig(dev_conf);
+		//Set MDS Object
+		state_handler.setMDS(mds);
+		// TODO: Refactor this part in a MDS factory
+
+		try {
+			mds.configureMDS(data);
+		} catch (InvalidAttributeException e) {
+			e.printStackTrace();
+			System.err.println("Stored configuration can't be loaded, deleting the stored configuration");
+
+			try {
+				ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
+				cs.delete(phd.getSystem_id(), dev_conf);
+			} catch (StorageException e1) {
+				System.err.println("Error while the bad configuration was being deleted");
+				e1.printStackTrace();
+			}
+
+			throw e;
+		}
+		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED(dev_conf));
+		state_handler.changeState(new MOperating(state_handler));
 	}
 
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
@@ -270,9 +297,10 @@ public final class MUnassociated extends Unassociated {
 
 		try {
 			ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
-			processStoredConfiguration(cs.recover(phd.getSystem_id(), dev_conf));
+			processStoredConfiguration(phd, cs.recover(phd.getSystem_id(), dev_conf));
 			return;
-		} catch (StorageException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Not stored configuration for device, requesting configuration");
 			processUnknownConfiguration(phd);
 		}

@@ -126,7 +126,8 @@ public class MDSManager extends MDS {
 			int classId = confObj.getObj_class().getValue().getValue();
 			switch (classId) {
 			case Nomenclature.MDC_MOC_VMS_MDS_SIMP : // MDS Class
-				throw new UnsupportedOperationException("Unsoportedd MDS Class");
+				addCheckedAttributes(attribs);
+				break;
 			case Nomenclature.MDC_MOC_VMO_METRIC : // Metric Class
 				throw new UnsupportedOperationException("Unsoportedd Metric Class");
 			case Nomenclature.MDC_MOC_VMO_METRIC_NU : // Numeric Class
@@ -422,11 +423,8 @@ public class MDSManager extends MDS {
 						Hashtable<Integer, Attribute> attribs;
 						attribs = getAttributes(grs.getAttribute_list(), getDeviceConf().getEncondigRules());
 						checkGotAttributes(attribs);
-						Iterator<Integer> i = attribs.keySet().iterator();
-						while (i.hasNext()){
-							int id = i.next();
-							addAttribute(attribs.get(id));
-						}
+						addCheckedAttributes(attribs);
+
 						/* Store received configuration */
 						storeConfiguration();
 					} catch (Exception e) {

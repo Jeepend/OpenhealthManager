@@ -100,7 +100,7 @@ public abstract class DIM {
 	}
 
 	//-------------------------------------------PRIVATE------------------------------------------------------
-	private void addCheckedAttributes(Hashtable<Integer,Attribute> attributes){
+	protected void addCheckedAttributes(Hashtable<Integer,Attribute> attributes){
 		/* Add attributes to attribute list */
 		Iterator<Attribute> i = attributes.values().iterator();
 		while (i.hasNext()){
