@@ -75,7 +75,7 @@ public class AndroidConfigStorage implements ConfigStorage {
 			});
 
 			if(confs == null)
-				throw new StorageNotFoundException();
+				throw new StorageNotFoundException("Directory with the configuration does not exist");
 
 			IDecoder decoder = CoderFactory.getInstance().newDecoder("MDER");
 			for (int i = 0; i < confs.length; i++) {
@@ -89,7 +89,7 @@ public class AndroidConfigStorage implements ConfigStorage {
 		}
 
 		if (knowconf.size() == 0)
-			throw new StorageNotFoundException();
+			throw new StorageNotFoundException("Directory with the configuration does not exist");
 
 		return knowconf;
 	}
