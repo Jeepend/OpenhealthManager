@@ -116,12 +116,11 @@ public abstract class DIM {
 
 		while (it.hasNext()){
 			ava = it.next();
-			Class attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
+			Class<?> attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
 			if (attrClass == null) {
 				System.out.println("Error: Can't get Attribute " + ava.getAttribute_id().getValue().getValue());
 			}
 
-			Object OctetStringASN1;
 			if (attrClass == ASN1OctetString.class) {
 				OctetStringASN1 ostring = ASN1_Tools.decodeData(ava.getAttribute_value(), OctetStringASN1.class, enc_rules);
 				type = ostring.getValue();

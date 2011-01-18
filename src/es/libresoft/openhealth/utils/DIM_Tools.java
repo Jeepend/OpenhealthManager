@@ -172,7 +172,7 @@ public class DIM_Tools {
 		}
 	}
 
-	public static final Class getAttributeClass (int attrId){
+	public static final Class<?> getAttributeClass (int attrId){
 		switch (attrId){
 		case Nomenclature.MDC_ATTR_CONFIRM_MODE : return ConfirmMode.class;
 		case Nomenclature.MDC_ATTR_CONFIRM_TIMEOUT : return RelativeTime.class;
