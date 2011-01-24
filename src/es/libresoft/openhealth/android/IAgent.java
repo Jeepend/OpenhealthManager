@@ -38,4 +38,15 @@ public class IAgent implements Parcelable {
 		this.phdid = id;
 		this.systId = systId;
 	}
+
+	public boolean equals(Object o) {
+		if (!(o instanceof IAgent))
+			return false;
+
+		IAgent agent = (IAgent) o;
+		if (this.phdid != agent.phdid)
+			return false;
+
+		return this.systId.equalsIgnoreCase(agent.systId);
+	}
 }
