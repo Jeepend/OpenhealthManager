@@ -335,7 +335,7 @@ public class DrDroid extends Service {
 		}
     };
 
-    private AgentDevice getAgentDevice (Agent a) {
+    private IAgent getAgentDevice (Agent a) {
     	String manufacturer = "Unknown";
     	String model = "Unknown";
 		Attribute attr = a.mdsHandler.getMDS().getAttribute(Nomenclature.MDC_ATTR_ID_MODEL);
@@ -344,7 +344,7 @@ public class DrDroid extends Service {
 			manufacturer = DIM_Tools.byteArrayToString(sm.getManufacturer());
 			model = DIM_Tools.byteArrayToString(sm.getModel_number());
 		}
-		AgentDevice ad = new AgentDevice (a.mdsHandler.getMDS().getDeviceConf().getPhdId(),
+		IAgent ad = new IAgent (a.mdsHandler.getMDS().getDeviceConf().getPhdId(),
 				a.getSystem_id(),manufacturer, model);
 		return ad;
     }
