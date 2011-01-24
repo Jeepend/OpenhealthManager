@@ -106,7 +106,7 @@ public final class MUnassociated extends Unassociated {
 						/* Get PhdAssociationInformation data structure*/
 						PhdAssociationInformation phd = ASN1_Tools.decodeData(dp.getData_proto_info(),
 																			PhdAssociationInformation.class,
-																			Device.MDER_DEFUALT);
+																			Device.MDER_DEFAULT);
 						if (isValidPhdAssociationInformation(phd)){
 							processDeviceConnection(phd);
 						}else{
@@ -215,7 +215,7 @@ public final class MUnassociated extends Unassociated {
 		/* Check encoding rules */
 		int bytes = 0x000000FF & phd.getEncoding_rules().getValue().getValue()[0];
 		bytes = (bytes << 8) | phd.getEncoding_rules().getValue().getValue()[1];
-		String srules = Device.MDER_DEFUALT;
+		String srules = Device.MDER_DEFAULT;
 		if ((bytes & ASN1_Values.ENC_PER) == ASN1_Values.ENC_PER)
 			srules = "PER";
 		//else  if ((bytes & ASN1_Values.ENC_XER) == ASN1_Values.ENC_XER)

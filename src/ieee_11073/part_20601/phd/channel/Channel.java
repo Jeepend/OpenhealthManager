@@ -60,8 +60,8 @@ public abstract class Channel {
 		this.input = input;
 		this.output = output;
 		//Set default encoding rules to MDER
-		decoder = CoderFactory.getInstance().newDecoder(Device.MDER_DEFUALT);
-		encoder = CoderFactory.getInstance().newEncoder(Device.MDER_DEFUALT);
+		decoder = CoderFactory.getInstance().newDecoder(Device.MDER_DEFAULT);
+		encoder = CoderFactory.getInstance().newEncoder(Device.MDER_DEFAULT);
 	}
 
 	public synchronized void configureChannel (boolean primary, IFIFO<ApduType> inputQueue, ChannelEventHandler eventHandler) throws InitializedException {

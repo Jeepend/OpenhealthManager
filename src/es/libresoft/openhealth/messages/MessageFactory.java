@@ -124,7 +124,7 @@ public class MessageFactory {
 
 		try {
 			//MDER encoding rules shall always apply to the structures in A.8.
-			any = ASN1_Tools.encodeData(phd, Device.MDER_DEFUALT);
+			any = ASN1_Tools.encodeData(phd, Device.MDER_DEFAULT);
 		} catch (Exception e) { //Never Thrown
 			e.printStackTrace();
 		}

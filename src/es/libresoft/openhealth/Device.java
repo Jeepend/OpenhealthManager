@@ -32,7 +32,7 @@ import ieee_11073.part_20601.phd.channel.VirtualChannel;
 
 public abstract class Device {
 
-	public static final String MDER_DEFUALT = "MDER";
+	public static final String MDER_DEFAULT = "MDER";
 
 	private VirtualChannel vch;
 
