@@ -27,17 +27,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       android:versionCode="1"
       android:versionName="1.0.0">
     <application android:icon="@drawable/openhealth" android:label="@string/app_name">
-        <service android:enabled="true" android:name=".DrDroid" android:process=":remote" android:launchMode="singleTask"> 
+        <service android:enabled="true" android:name=".HealthService" android:process=":remote" android:launchMode="singleTask">
         <intent-filter>
                 <!-- These are the interfaces supported by the service, which
                      you can bind to. -->
-                <action android:name="es.libresoft.openhealth.android.IManagerCallbackService" />
-                <action android:name="es.libresoft.openhealth.android.IManagerRegister" />
-                <action android:name="es.libresoft.openhealth.android.IAgentCallbackService" />
-                <action android:name="es.libresoft.openhealth.android.IAgentRegister" />
-                <action android:name="es.libresoft.openhealth.android.IAgentActionService" />
-                <action android:name="es.libresoft.openhealth.android.IPM_StoreActionService" />
-                <action android:name="es.libresoft.openhealth.android.IScannerActionService" />
+                <action android:name="es.libresoft.openhealth.android.IManagerService" />
                 <!-- This is an action code you can use to select the service
                      without explicitly supplying the implementation class. -->
                 <action android:name="es.libresoft.openhealth.android.DRDROID_SERVICE" />
