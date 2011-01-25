@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <action android:name="es.libresoft.openhealth.android.IManagerService" />
                 <!-- This is an action code you can use to select the service
                      without explicitly supplying the implementation class. -->
-                <action android:name="es.libresoft.openhealth.android.DRDROID_SERVICE" />
+                <action android:name="es.libresoft.openhealth.android.OPENHEALTH_SERVICE" />
             </intent-filter>
         </service>
         
