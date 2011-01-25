@@ -34,14 +34,14 @@ public interface InternalEventManager {
 	 * @param value
 	 * @param date
 	 */
-	public void receivedMeasure(String system_id, MeasureReporter mr);
+	public void receivedMeasure(Agent agent, MeasureReporter mr);
 
 	/**
 	 * Agent event to indicate that the agents has changed is state
 	 * @param system_id
 	 * @param state
 	 */
-	public void agentChangeStatus(String system_id, String state);
+	public void agentChangeStatus(Agent agent, String state);
 
 	/**
 	 * Send a manager event to indicate that new agent has connected
@@ -52,5 +52,5 @@ public interface InternalEventManager {
 	 * Send a manager event to indicate a disconnection of some agent
 	 * @param system_id the system id of the agent
 	 */
-	public void agentDisconnected(String system_id);
+	public void agentDisconnected(Agent agent);
 }

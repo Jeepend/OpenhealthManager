@@ -38,7 +38,7 @@ import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 
-public final class Agent extends Device{
+public final class Agent extends Device {
 
 	private ManagerStateController stc;
 	private MDS mdsObj;

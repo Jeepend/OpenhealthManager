@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.concurrent.Semaphore;
 
+import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.utils.IFIFO;
@@ -72,10 +73,10 @@ public class ManagerStateController implements StateController {
 		@Override
 		public void changeState(State newState) {
 			//Send event using internal reporter service
-			InternalEventReporter.agentChangeStatus(system_id, newState.getStateName());
+			InternalEventReporter.agentChangeStatus((Agent) getMDS().getDevice(), newState.getStateName());
 			if (newState instanceof Disconnected)
 				//Send event to indicate disconnection
-				InternalEventReporter.agentDisconnected(system_id);
+				InternalEventReporter.agentDisconnected((Agent) getMDS().getDevice());
 			state = newState;
 		}
 

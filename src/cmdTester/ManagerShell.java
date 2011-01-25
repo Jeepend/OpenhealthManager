@@ -17,8 +17,8 @@ public class ManagerShell {
 	private static InternalEventManager ieManager = new InternalEventManager(){
 
 		@Override
-		public void agentChangeStatus(String systemId, String state) {
-			System.out.println("ID: " + systemId + " state: " + state);
+		public void agentChangeStatus(Agent agent, String state) {
+			System.out.println("ID: " + agent.getSystem_id() + " state: " + state);
 		}
 
 		@Override
@@ -27,12 +27,12 @@ public class ManagerShell {
 		}
 
 		@Override
-		public void agentDisconnected(String systemId) {
-			System.out.println("Agent " + systemId + " disconnected");
+		public void agentDisconnected(Agent agent) {
+			System.out.println("Agent " + agent.getSystem_id() + " disconnected");
 		}
 
 		@Override
-		public void receivedMeasure(String systemId, MeasureReporter mr) {
+		public void receivedMeasure(Agent agent, MeasureReporter mr) {
 			List<Object> measures = mr.getMeasures();
 			Iterator<Object> ims = measures.iterator();
 
@@ -40,14 +40,14 @@ public class ManagerShell {
 			Iterator<Object> iat = attributes.iterator();
 
 			if (!measures.isEmpty()) {
-				System.out.println("Measures received from: " + systemId);
+				System.out.println("Measures received from: " + agent.getSystem_id());
 				while (ims.hasNext()) {
 					System.out.println("" + ims.next());
 				}
 			}
 
 			if (!attributes.isEmpty()) {
-				System.out.println("Attributes received from: " + systemId);
+				System.out.println("Attributes received from: " + agent.getSystem_id());
 				while (iat.hasNext()) {
 					System.out.println("" + iat.next());
 				}

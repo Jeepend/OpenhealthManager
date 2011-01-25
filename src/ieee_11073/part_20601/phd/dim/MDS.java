@@ -42,6 +42,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
@@ -60,6 +61,7 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 						  Nomenclature.MDC_ATTR_SYS_ID,
 						  Nomenclature.MDC_ATTR_DEV_CONFIG_ID};
 
+	protected Device device;
 	private DeviceConfig dev_conf;
 
 	private Hashtable<Integer,Scanner> scanners;
@@ -91,6 +93,9 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		}else
 			return false;
 	}
+
+	public void setDevice(Device dev) { this.device = dev;}
+	public Device getDevice() { return this.device;}
 
 	public DeviceConfig getDeviceConf(){return this.dev_conf;}
 

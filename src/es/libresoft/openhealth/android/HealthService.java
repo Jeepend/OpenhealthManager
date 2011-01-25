@@ -56,7 +56,7 @@ public class HealthService extends Service {
 	private final InternalEventManager ieManager = new InternalEventManager() {
 
 		@Override
-		public void agentChangeStatus(String systemId, String state) {
+		public void agentChangeStatus(Agent agent, String state) {
 			System.out.println("TODO: agentChangeStatus");
 		}
 
@@ -66,12 +66,12 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void agentDisconnected(String systemId) {
+		public void agentDisconnected(Agent agent) {
 			System.out.println("TODO: agentDisconnected");
 		}
 
 		@Override
-		public void receivedMeasure(String systemId, MeasureReporter mr) {
+		public void receivedMeasure(Agent agent, MeasureReporter mr) {
 			System.out.println("TODO: receivedMeasure");
 		}
 	};

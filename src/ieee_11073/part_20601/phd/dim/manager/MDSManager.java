@@ -75,6 +75,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -208,7 +209,7 @@ public class MDSManager extends MDS {
 						e.printStackTrace();
 					}
 				}
-				InternalEventReporter.receivedMeasure(system_id, mr);
+				InternalEventReporter.receivedMeasure((Agent) device, mr);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -240,7 +241,7 @@ public class MDSManager extends MDS {
 					byte[] att_value = att.getAttribute_value();
 					mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id,att_value, this.getDeviceConf().getEncondigRules()));
 				}
-				InternalEventReporter.receivedMeasure(system_id, mr);
+				InternalEventReporter.receivedMeasure((Agent) device, mr);
 			}
 		}catch (Exception e){
 			e.printStackTrace();

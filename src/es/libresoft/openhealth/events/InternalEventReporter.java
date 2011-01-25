@@ -41,18 +41,18 @@ public class InternalEventReporter {
 			iEvent.agentConnected(agent);
 	}
 
-	public static void agentDisconnected(String system_id) {
+	public static void agentDisconnected(Agent agent) {
 		if (iEvent!=null)
-			iEvent.agentDisconnected(system_id);
+			iEvent.agentDisconnected(agent);
 	}
 
-	public static void agentChangeStatus(String system_id, String state) {
+	public static void agentChangeStatus(Agent agent, String state) {
 		if (iEvent!=null)
-			iEvent.agentChangeStatus(system_id, state);
+			iEvent.agentChangeStatus(agent, state);
 	}
 
-	public static void receivedMeasure(String system_id, MeasureReporter mr) {
+	public static void receivedMeasure(Agent agent, MeasureReporter mr) {
 		if (iEvent!=null)
-			iEvent.receivedMeasure(system_id, mr);
+			iEvent.receivedMeasure(agent, mr);
 	}
 }

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -123,7 +124,7 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 						}
 					}
 
-					InternalEventReporter.receivedMeasure(system_id, mr);
+					InternalEventReporter.receivedMeasure((Agent) getMDS().getDevice(), mr);
 				}
 			}
 		} catch (Exception e) {
