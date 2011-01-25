@@ -101,7 +101,7 @@ public class HealthService extends Service {
 
 	@Override
 	public void onDestroy() {
-		System.out.println("TODO: Stop Service");
+		channelTCP.finish();
 	}
 
 	/**
