@@ -26,8 +26,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
+
 import java.util.List;
 import java.util.Vector;
+
+import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.events.InternalEventManager;
+import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.MeasureReporter;
+import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
 import android.content.Intent;
@@ -38,6 +47,62 @@ public class HealthService extends Service {
 
 	/** Registered clients */
 	Vector<IManagerClientCallback> clients = new Vector<IManagerClientCallback>();
+
+	private TcpManagerChannel channelTCP;
+
+	/************************************************************
+	 * Internal events triggered from manager thread
+	 ************************************************************/
+	private final InternalEventManager ieManager = new InternalEventManager() {
+
+		@Override
+		public void agentChangeStatus(String systemId, String state) {
+			System.out.println("TODO: agentChangeStatus");
+		}
+
+		@Override
+		public void agentConnected(Agent agent) {
+			System.out.println("TODO: agentConnected");
+		}
+
+		@Override
+		public void agentDisconnected(String systemId) {
+			System.out.println("TODO: agentDisconnected");
+		}
+
+		@Override
+		public void receivedMeasure(String systemId, MeasureReporter mr) {
+			System.out.println("TODO: receivedMeasure");
+		}
+	};
+
+	@Override
+	public void onCreate() {
+		//Set the event manager handler to get internal events from the manager thread
+		InternalEventReporter.setDefaultEventManager(ieManager);
+		//Set target platform to android to report measures using IPC mechanism
+		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.ANDROID);
+		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage(this.getApplicationContext()));
+		System.out.println("Service created");
+		channelTCP = new TcpManagerChannel();
+		super.onCreate();
+	}
+
+	@Override
+	public void onStart(Intent intent, int startId) {
+		try {
+			channelTCP.start();
+			super.onStart(intent, startId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		System.out.println("TODO: Stop Service");
+	}
 
 	/**
 	 * The IManagerService is defined through IDL
