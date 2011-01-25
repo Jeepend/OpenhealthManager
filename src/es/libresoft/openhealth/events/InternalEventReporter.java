@@ -36,19 +36,9 @@ public class InternalEventReporter {
 		iEvent = handler;
 	}
 
-	public static void agentConnected(Agent agent) {
-		if (iEvent!=null)
-			iEvent.agentConnected(agent);
-	}
-
-	public static void agentDisconnected(Agent agent) {
-		if (iEvent!=null)
-			iEvent.agentDisconnected(agent);
-	}
-
 	public static void agentChangeStatus(Agent agent, String state) {
 		if (iEvent!=null)
-			iEvent.agentChangeStatus(agent, state);
+			iEvent.agentChangeState(agent, state);
 	}
 
 	public static void receivedMeasure(Agent agent, MeasureReporter mr) {

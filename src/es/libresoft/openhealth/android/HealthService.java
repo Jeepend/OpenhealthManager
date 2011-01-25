@@ -56,18 +56,8 @@ public class HealthService extends Service {
 	private final InternalEventManager ieManager = new InternalEventManager() {
 
 		@Override
-		public void agentChangeStatus(Agent agent, String state) {
+		public void agentChangeState(Agent agent, String state) {
 			System.out.println("TODO: agentChangeStatus");
-		}
-
-		@Override
-		public void agentConnected(Agent agent) {
-			System.out.println("TODO: agentConnected");
-		}
-
-		@Override
-		public void agentDisconnected(Agent agent) {
-			System.out.println("TODO: agentDisconnected");
 		}
 
 		@Override

@@ -74,9 +74,7 @@ public class ManagerStateController implements StateController {
 		public void changeState(State newState) {
 			//Send event using internal reporter service
 			InternalEventReporter.agentChangeStatus((Agent) getMDS().getDevice(), newState.getStateName());
-			if (newState instanceof Disconnected)
-				//Send event to indicate disconnection
-				InternalEventReporter.agentDisconnected((Agent) getMDS().getDevice());
+
 			state = newState;
 		}
 

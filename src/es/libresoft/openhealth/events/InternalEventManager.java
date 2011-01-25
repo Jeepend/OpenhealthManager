@@ -41,16 +41,5 @@ public interface InternalEventManager {
 	 * @param system_id
 	 * @param state
 	 */
-	public void agentChangeStatus(Agent agent, String state);
-
-	/**
-	 * Send a manager event to indicate that new agent has connected
-	 * @param agent The agent device connected
-	 */
-	public void agentConnected(Agent agent);
-	/**
-	 * Send a manager event to indicate a disconnection of some agent
-	 * @param system_id the system id of the agent
-	 */
-	public void agentDisconnected(Agent agent);
+	public void agentChangeState(Agent agent, String state);
 }

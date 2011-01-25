@@ -56,8 +56,7 @@ public final class Agent extends Device {
 				mdsObj = mds;
 				system_id = DIM_Tools.byteArrayToString(
 						(byte[])mds.getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
-				//Send event using internal event report service
-				InternalEventReporter.agentConnected(Agent.this);
+
 				return system_id;
 			}
 			return null;
