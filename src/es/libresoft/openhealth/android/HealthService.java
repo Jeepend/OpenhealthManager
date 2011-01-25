@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 import java.util.List;
+import java.util.Vector;
 
 import android.app.Service;
 import android.content.Intent;
@@ -34,6 +35,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 public class HealthService extends Service {
+
+	/** Registered clients */
+	Vector<IManagerClientCallback> clients = new Vector<IManagerClientCallback>();
 
 	/**
 	 * The IManagerService is defined through IDL
@@ -48,13 +52,13 @@ public class HealthService extends Service {
 		@Override
 		public void registerApplication(IManagerClientCallback mc)
 				throws RemoteException {
-			System.out.println("TODO implement 'registerApplication' method");
+			clients.add(mc);
 		}
 
 		@Override
 		public void unregisterApplication(IManagerClientCallback mc)
 				throws RemoteException {
-			System.out.println("TODO implement 'unregisterApplication' method");
+			clients.removeElement(mc);
 		}
 
 	};
