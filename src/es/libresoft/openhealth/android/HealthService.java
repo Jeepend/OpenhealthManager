@@ -49,6 +49,7 @@ public class HealthService extends Service {
 	Vector<IManagerClientCallback> clients = new Vector<IManagerClientCallback>();
 
 	private TcpManagerChannel channelTCP;
+	private boolean started = false;
 
 	/************************************************************
 	 * Internal events triggered from manager thread
@@ -82,10 +83,16 @@ public class HealthService extends Service {
 		channelTCP.start();
 	}
 
+	void shutdownTransportLayers() {
+		channelTCP.finish();
+	}
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if (startId == 1)
+		if (!started) {
 			initTransportLayers();
+			started = true;
+		}
 
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
@@ -94,7 +101,8 @@ public class HealthService extends Service {
 
 	@Override
 	public void onDestroy() {
-		channelTCP.finish();
+		shutdownTransportLayers();
+		started = false;
 	}
 
 	/**
