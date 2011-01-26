@@ -80,6 +80,9 @@ public class HealthService extends Service {
 
 	@Override
 	public void onStart(Intent intent, int startId) {
+		if (startId != 1)
+			return;
+
 		try {
 			channelTCP.start();
 			super.onStart(intent, startId);
