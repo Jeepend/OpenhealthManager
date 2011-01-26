@@ -72,9 +72,7 @@ public class ManagerStateController implements StateController {
 
 		@Override
 		public void changeState(State newState) {
-			//Send event using internal reporter service
 			InternalEventReporter.agentChangeStatus((Agent) getMDS().getDevice(), newState.getStateName());
-
 			state = newState;
 		}
 

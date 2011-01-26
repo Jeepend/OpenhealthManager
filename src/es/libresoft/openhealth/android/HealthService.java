@@ -57,12 +57,12 @@ public class HealthService extends Service {
 
 		@Override
 		public void agentChangeState(Agent agent, String state) {
-			System.out.println("TODO: agentChangeStatus");
+			System.out.println("TODO: agentChangeStatus to " + state);
 		}
 
 		@Override
 		public void receivedMeasure(Agent agent, MeasureReporter mr) {
-			System.out.println("TODO: receivedMeasure");
+			System.out.println("TODO: receivedMeasure....");
 		}
 	};
 

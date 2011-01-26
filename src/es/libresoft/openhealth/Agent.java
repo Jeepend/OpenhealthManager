@@ -37,6 +37,7 @@ import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.PM_Store;
+import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 public final class Agent extends Device {
 
@@ -52,8 +53,9 @@ public final class Agent extends Device {
 
 		@Override
 		public synchronized String setMDS(MDS mds) {
-			if ((mdsObj == null) && (mds!=null)) {
+			if (mds != null) {
 				mdsObj = mds;
+				mdsObj.setDevice(Agent.this);
 				system_id = DIM_Tools.byteArrayToString(
 						(byte[])mds.getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
 
@@ -66,6 +68,7 @@ public final class Agent extends Device {
 
 	public Agent() {
 		super();
+		mdsObj = new MDSManager(this);
 		stc = new ManagerStateController (mdsHandler);
 		stc.configureController(this.inputQueue, this.outputQueue, this.eventQueue);
 		try {

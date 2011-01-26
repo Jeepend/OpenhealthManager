@@ -73,6 +73,11 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	private int invokeId = 0;
 	private StateHandler stateHandler;
 
+	public MDS(Device device) {
+		this.device = device;
+		clearObjectsFromMds();
+	}
+
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
 	 */

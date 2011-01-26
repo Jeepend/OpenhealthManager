@@ -76,6 +76,7 @@ import java.util.Iterator;
 
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -90,6 +91,10 @@ public class MDSManager extends MDS {
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
 	 */
+	public MDSManager(Device device) {
+		super(device);
+	}
+
 	public MDSManager (byte[] system_id, ConfigId devConfig_id){
 		super(system_id,devConfig_id);
 	}
