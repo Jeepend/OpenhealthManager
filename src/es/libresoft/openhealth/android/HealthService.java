@@ -78,18 +78,18 @@ public class HealthService extends Service {
 		super.onCreate();
 	}
 
-	@Override
-	public void onStart(Intent intent, int startId) {
-		if (startId != 1)
-			return;
+	void initTransportLayers() {
+		channelTCP.start();
+	}
 
-		try {
-			channelTCP.start();
-			super.onStart(intent, startId);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if (startId == 1)
+			initTransportLayers();
+
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
+		return START_STICKY;
 	}
 
 	@Override
