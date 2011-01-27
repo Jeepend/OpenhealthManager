@@ -28,6 +28,7 @@ package es.libresoft.openhealth.android;
 
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -50,6 +51,7 @@ public class HealthService extends Service {
 
 	private TcpManagerChannel channelTCP;
 	private boolean started = false;
+	private Vector<Agent> agents = new Vector<Agent>();
 
 	/************************************************************
 	 * Internal events triggered from manager thread
@@ -68,12 +70,14 @@ public class HealthService extends Service {
 
 		@Override
 		public void agentPlugged(Agent agent) {
-			System.out.println("TODO: agentPlugged");
+			agents.add(agent);
+			System.out.println("TODO: notify agent plugged to the clients");
 		}
 
 		@Override
 		public void agentUnplugged(Agent agent) {
-			System.out.println("TODO: agentUnplugged");
+			agents.removeElement(agent);
+			System.out.println("TODO: notify agent unplugged to the clients");
 		}
 	};
 
@@ -123,6 +127,12 @@ public class HealthService extends Service {
 		@Override
 		public void agents(List<IAgent> agentList) throws RemoteException {
 			System.out.println("TODO implement 'agents' method");
+			if (agentList == null)
+				agentList= new ArrayList<IAgent>();
+
+			for(Agent agent: agents) {
+				agentList.add(new IAgent(agent.getAgentId()));
+			}
 		}
 
 		@Override
