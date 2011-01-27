@@ -71,13 +71,27 @@ public class HealthService extends Service {
 		@Override
 		public void agentPlugged(Agent agent) {
 			agents.add(agent);
-			System.out.println("TODO: notify agent plugged to the clients");
+			for (IManagerClientCallback c: clients) {
+				try {
+					c.agentPlugged(new IAgent(agent.getAgentId()));
+				} catch (RemoteException e) {
+					//TODO: Check if the client should be removed
+					e.printStackTrace();
+				}
+			}
 		}
 
 		@Override
 		public void agentUnplugged(Agent agent) {
 			agents.removeElement(agent);
-			System.out.println("TODO: notify agent unplugged to the clients");
+			for (IManagerClientCallback c: clients) {
+				try {
+					c.agentUnplugged(new IAgent(agent.getAgentId()));
+				} catch (RemoteException e) {
+					//TODO: Check if the client should be removed
+					e.printStackTrace();
+				}
+			}
 		}
 	};
 
