@@ -47,6 +47,7 @@ public abstract class Device {
 		outputQueue = new FIFO<ApduType>();
 		eventQueue = new FIFO<Event>();
 		vch = new VirtualChannel(inputQueue, outputQueue, eventQueue);
+		notifyDevicePlugged();
 	}
 
 	public void addChannel (Channel channel)
@@ -61,5 +62,10 @@ public abstract class Device {
 
 	public void freeResources (){
 		vch.freeChannels();
+		notifyDeviceUnplugged();
 	}
+
+	public abstract void notifyDevicePlugged();
+
+	public abstract void notifyDeviceUnplugged();
 }

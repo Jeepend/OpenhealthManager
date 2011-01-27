@@ -23,8 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth;
 
-import ieee_11073.part_20601.phd.channel.InitializedException;
-
 public final class Manager extends Device {
+
+	@Override
+	public void notifyDevicePlugged() {
+		System.out.println("TODO: manager notifyDevicePlugged not implemented");
+	}
+
+	@Override
+	public void notifyDeviceUnplugged() {
+		System.out.println("TODO: manager notifyDeviceUnplugged not implemented");
+	}
 
 }

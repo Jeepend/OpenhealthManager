@@ -44,6 +44,16 @@ public class ManagerShell {
 			}
 		}
 
+		@Override
+		public void agentPlugged(Agent agent) {
+			System.out.println("TODO: agentPlugged");
+		}
+
+		@Override
+		public void agentUnplugged(Agent agent) {
+			System.out.println("TODO: agentUnplugged");
+		}
+
 	};
 
 	/**

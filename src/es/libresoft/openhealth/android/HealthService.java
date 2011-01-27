@@ -65,6 +65,16 @@ public class HealthService extends Service {
 		public void receivedMeasure(Agent agent, MeasureReporter mr) {
 			System.out.println("TODO: receivedMeasure....");
 		}
+
+		@Override
+		public void agentPlugged(Agent agent) {
+			System.out.println("TODO: agentPlugged");
+		}
+
+		@Override
+		public void agentUnplugged(Agent agent) {
+			System.out.println("TODO: agentUnplugged");
+		}
 	};
 
 	@Override

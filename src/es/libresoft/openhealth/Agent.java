@@ -112,4 +112,14 @@ public final class Agent extends Device {
 	public Iterator<Integer> getScannerHandlers() {
 		return mdsObj.getScannerHandlers().iterator();
 	}
+
+	@Override
+	public void notifyDevicePlugged() {
+		InternalEventReporter.agentPlugged(this);
+	}
+
+	@Override
+	public void notifyDeviceUnplugged() {
+		InternalEventReporter.agentUnplugged(this);
+	}
 }

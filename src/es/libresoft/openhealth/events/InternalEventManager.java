@@ -42,4 +42,17 @@ public interface InternalEventManager {
 	 * @param state
 	 */
 	public void agentChangeState(Agent agent, String state);
+
+	/**
+	 * Event that indicates that a new agent is available
+	 *
+	 * @param agent The new agent
+	 * */
+	public void agentPlugged(Agent agent);
+
+	/**
+	 * Event that indicates that an agent is no longer available
+	 * @param agent The agent that is being destroyed
+	 */
+	public void agentUnplugged(Agent agent);
 }

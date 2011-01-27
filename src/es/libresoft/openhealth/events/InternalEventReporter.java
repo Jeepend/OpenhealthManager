@@ -36,6 +36,16 @@ public class InternalEventReporter {
 		iEvent = handler;
 	}
 
+	public static void agentPlugged(Agent agent) {
+		if (iEvent != null)
+			iEvent.agentPlugged(agent);
+	}
+
+	public static void agentUnplugged(Agent agent) {
+		if (iEvent != null)
+			iEvent.agentUnplugged(agent);
+	}
+
 	public static void agentChangeStatus(Agent agent, String state) {
 		if (iEvent!=null)
 			iEvent.agentChangeState(agent, state);
