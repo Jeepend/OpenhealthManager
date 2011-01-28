@@ -526,7 +526,7 @@ public class MDSManager extends MDS {
 
 		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.YEAR)/100) )));
 		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.YEAR)%100) )));
-		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MONTH) )));
+		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.MONTH)+1) )));
 		t.setDay(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD(( byte)c.get(Calendar.DAY_OF_MONTH) )));
 		t.setHour(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.HOUR_OF_DAY) )));
 		t.setMinute(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MINUTE) )));
@@ -541,7 +541,7 @@ public class MDSManager extends MDS {
 		//Check needed capabilities
 		Attribute attr = getAttribute(Nomenclature.MDC_ATTR_MDS_TIME_INFO);
 		if (attr == null) {
-			Logging.error("eventSetTime: Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
+			Logging.debug("Set_Time: Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
 			return;
 		}
 		MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
@@ -550,7 +550,7 @@ public class MDSManager extends MDS {
 		if (ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_capab_set_clock) != 1 ||
 			ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
 			) {
-			Logging.error("eventSetTime: Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
+			Logging.debug("Set_Time: Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
 			return;
 		}
 
@@ -566,7 +566,7 @@ public class MDSManager extends MDS {
 		timeInv.setAccuracy(accuracy);
 		DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(this, timeInv);
 		if (data == null) {
-			Logging.error("Error creating DataApdu for setTime, is null");
+			Logging.error("Set_Time: Error creating DataApdu for setTime, is null");
 			return;
 		}
 
@@ -579,7 +579,7 @@ public class MDSManager extends MDS {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					Logging.debug("Received response for setTime on MDS");
+					Logging.debug("Set_Time: Received response for setTime on MDS");
 					ExternalEvent<Boolean, Object> event = null;
 					try {
 						event = (ExternalEvent<Boolean, Object>) this.getEvent();
@@ -588,7 +588,7 @@ public class MDSManager extends MDS {
 
 					if (!data.getMessage().isRoiv_cmip_confirmed_actionSelected()) {
 						//TODO: Unexpected response format
-						Logging.debug("Unexpected response format");
+						Logging.debug("Set_Time: Unexpected response format");
 						if (event != null)
 							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
 							return;
