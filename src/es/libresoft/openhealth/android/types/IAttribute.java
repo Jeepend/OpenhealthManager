@@ -34,17 +34,17 @@ public class IAttribute implements Parcelable {
 
 	public static final Parcelable.Creator<IAttribute> CREATOR =
 			new Parcelable.Creator<IAttribute>() {
-	    public IAttribute createFromParcel(Parcel in) {
-	        return new IAttribute(in);
-	    }
+		public IAttribute createFromParcel(Parcel in) {
+			return new IAttribute(in);
+		}
 
-	    public IAttribute[] newArray(int size) {
-	        return new IAttribute[size];
-	    }
+		public IAttribute[] newArray(int size) {
+			return new IAttribute[size];
+		}
 	};
 
 	public IAttribute () {
-		
+
 	}
 
 	private IAttribute (Parcel in) {
