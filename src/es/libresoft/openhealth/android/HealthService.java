@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Vector;
 
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.android.types.IAttribute;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
@@ -173,10 +174,27 @@ public class HealthService extends Service {
 
 		@Override
 		public void connect(IAgent agent) throws RemoteException {
-			/* TODO: Send signal conection to transport layer */
+			// TODO Auto-generated method stub
 			System.out.println("TODO: Connect with the agent");
 		}
 
+		@Override
+		public void getAttribute(IAgent agent, int attrId, IAttribute attr)
+				throws RemoteException {
+			Agent a = null;
+
+			for(Agent aa : agents) {
+				if (agent.equals(aa)) {
+					a = aa;
+					break;
+				}
+			}
+
+			if (a == null) {
+				System.err.println("TODO: Return error");
+				return;
+			}
+		}
 	};
 
 	@Override
