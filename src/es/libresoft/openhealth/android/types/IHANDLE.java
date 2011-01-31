@@ -6,6 +6,14 @@ import android.os.Parcelable;
 public class IHANDLE implements Parcelable {
 	private int handle;
 
+	public int getHandle() {
+		return handle;
+	}
+
+	public void setHandle(int handle) {
+		this.handle = handle;
+	}
+
 	public static final Parcelable.Creator<IHANDLE> CREATOR =
 			new Parcelable.Creator<IHANDLE>() {
 	    public IHANDLE createFromParcel(Parcel in) {
@@ -16,6 +24,10 @@ public class IHANDLE implements Parcelable {
 	        return new IHANDLE[size];
 	    }
 	};
+
+	public IHANDLE () {
+		
+	}
 
 	private IHANDLE (Parcel in) {
 		handle = in.readInt();

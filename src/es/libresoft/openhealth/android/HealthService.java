@@ -27,12 +27,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android;
 
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
+import ieee_11073.part_20601.phd.dim.Attribute;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.android.types.IAttrFactory;
 import es.libresoft.openhealth.android.types.IAttribute;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
@@ -192,8 +194,12 @@ public class HealthService extends Service {
 
 			if (a == null) {
 				System.err.println("TODO: Return error");
+				attr  = null;
 				return;
 			}
+
+			Attribute at = a.mdsHandler.getMDS().getAttribute(attrId);
+			IAttrFactory.getParcelableAttribute(at.getAttributeType(), attr);
 		}
 	};
 
