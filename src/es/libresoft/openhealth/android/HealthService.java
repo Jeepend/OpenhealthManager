@@ -207,6 +207,8 @@ public class HealthService extends Service {
 	public IBinder onBind(Intent intent) {
 		if (IManagerService.class.getName().equals(intent.getAction()))
 			return managerServiceStub;
+		if (IAgentService.class.getName().equals(intent.getAction()))
+			return agentServiceStub;
 		return null;
 	}
 
