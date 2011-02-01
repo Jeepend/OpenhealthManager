@@ -32,9 +32,13 @@ public class ClientLocker {
 	private Semaphore sem;
 	private Object rspData;
 	private String errMsg;
+	private boolean processed;
 
 	public ClientLocker() {
 		sem = new Semaphore(0, true);
+		errMsg = null;
+		rspData = null;
+		processed = false;
 	}
 
 	public void lock() throws InterruptedException {
@@ -42,6 +46,24 @@ public class ClientLocker {
 	}
 
 	public void unlock(Object data, String error) {
+		this.rspData = data;
+		this.errMsg = error;
+		processed = true;
 		sem.release();
+	}
+
+	public boolean wasError() {
+		if (!processed)
+			return false;
+		else
+			return errMsg == null;
+	}
+
+	public Object getRspData() {
+		return rspData;
+	}
+
+	public String getErrMsg() {
+		return errMsg;
 	}
 }

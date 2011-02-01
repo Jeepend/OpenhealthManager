@@ -218,15 +218,22 @@ public class HealthService extends Service {
 
 			ClientLocker cl = new ClientLocker();
 			ExternalEvent ev = new ExternalEvent(EventType.REQ_MDS, cl);
-			//TODO: SEND_EVENT;
+
+			a.sendEvent(ev);
+
 			try {
 				cl.lock();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				return false;
 			}
-			//TODO:CheckResponse
-			return false;
+
+			if (cl.wasError()) {
+				System.err.println("Error happened getting MDS: " + cl.getErrMsg());
+				return false;
+			}
+
+			return true;
 		}
 	};
 
