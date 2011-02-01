@@ -208,7 +208,14 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public boolean updateMDS() throws RemoteException {
+		public boolean updateMDS(IAgent agent) throws RemoteException {
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				System.err.println("Invalid agent error");
+				return false;
+			}
+
 			ClientLocker cl = new ClientLocker();
 			ExternalEvent ev = new ExternalEvent(EventType.REQ_MDS, cl);
 			//TODO: SEND_EVENT;
