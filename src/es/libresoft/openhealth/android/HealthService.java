@@ -201,6 +201,12 @@ public class HealthService extends Service {
 			Attribute at = a.mdsHandler.getMDS().getAttribute(attrId);
 			IAttrFactory.getParcelableAttribute(at.getAttributeType(), attr);
 		}
+
+		@Override
+		public boolean updateMDS() throws RemoteException {
+			System.out.println("TODO: Implement this method");
+			return false;
+		}
 	};
 
 	@Override
