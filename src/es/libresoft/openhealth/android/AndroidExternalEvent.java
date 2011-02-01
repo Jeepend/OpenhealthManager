@@ -2,6 +2,7 @@
 Copyright (C) 2010 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Santiago Carot Nemesio <scarot@libresoft.es>
+Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
