@@ -453,7 +453,8 @@ public class MDSManager extends MDS {
 						e.printStackTrace();
 					}
 
-					event.processed(new Boolean(true), null);
+					if (event != null)
+						event.processed(new Boolean(true), null);
 				}
 
 				@Override
