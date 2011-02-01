@@ -141,6 +141,9 @@ public final class MOperating extends Operating {
 							" it does not implement a SET service");
 			}
 			return true;
+		case EventType.REQ_MDS:
+			state_handler.getMDS().GET(event);
+			return true;
 		}
 
 		return false;
