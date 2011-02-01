@@ -27,47 +27,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.events.application;
 
 import es.libresoft.openhealth.events.Event;
-import java.util.concurrent.Semaphore;
 
-public class ExternalEvent<ResponseType, ErrorType> extends Event<ResponseType, ErrorType> {
+public abstract class ExternalEvent<ResponseType, ErrorType, PrivDataType> extends Event {
 
-	private Semaphore sem;
-	private ResponseType rspData;
-	private ErrorType errMsg;
-	private boolean processed;
+	private PrivDataType data;
 
-	public ExternalEvent(int eventType) {
+	public ExternalEvent(int eventType, PrivDataType data) {
 		super (eventType);
-		sem = new Semaphore(0, true);
-		errMsg = null;
-		rspData = null;
-		processed = false;
+		this.data = data;
 	}
 
-	@Override
-	public void processed(ResponseType data, ErrorType err) {
-		this.rspData = data;
-		this.errMsg = err;
-		processed = true;
-		sem.release();
+	public PrivDataType getPrivData() {
+		return data;
 	}
 
-	public void proccessing() throws InterruptedException {
-		sem.acquire();
-	}
+	public abstract void processed(ResponseType data, ErrorType err);
 
-	public boolean wasError() {
-		if (!processed)
-			return false;
-		else
-			return errMsg != null;
-	}
+	public abstract void proccessing() throws InterruptedException;
 
-	public ResponseType getRspData() {
-		return rspData;
-	}
+	public abstract boolean wasError();
 
-	public ErrorType getErrMsg() {
-		return errMsg;
-	}
+	public abstract ResponseType getRspData();
+
+	public abstract ErrorType getErrMsg();
+
 }

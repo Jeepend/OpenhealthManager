@@ -215,7 +215,7 @@ public class HealthService extends Service {
 				return false;
 			}
 
-			ExternalEvent<Boolean, String> ev = new ExternalEvent<Boolean, String>(EventType.REQ_MDS);
+			AndroidExternalEvent<Boolean, String, Object> ev = new AndroidExternalEvent<Boolean, String, Object>(EventType.REQ_MDS, null);
 
 			a.sendEvent(ev);
 

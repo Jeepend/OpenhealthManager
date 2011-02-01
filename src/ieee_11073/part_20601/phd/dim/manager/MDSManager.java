@@ -414,9 +414,9 @@ public class MDSManager extends MDS {
 				@Override
 				public void procResponse(DataApdu data) {
 					System.out.println("Received response for get MDS");
-					ExternalEvent event = null;
+					ExternalEvent<Boolean, String, Object> event = null;
 					try {
-						event = (ExternalEvent) this.getEvent();
+						event = (ExternalEvent<Boolean, String, Object>) this.getEvent();
 					} catch (ClassCastException e) {
 
 					}

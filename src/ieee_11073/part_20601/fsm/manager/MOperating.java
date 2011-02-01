@@ -50,8 +50,8 @@ import ieee_11073.part_20601.phd.dim.SET_Service;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
-import es.libresoft.openhealth.events.application.GetPmStoreEvent;
-import es.libresoft.openhealth.events.application.SetEvent;
+import es.libresoft.openhealth.events.application.GetPmStoreEventData;
+import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -101,7 +101,7 @@ public final class MOperating extends Operating {
 	@Override
 	public synchronized boolean processEvent(Event event) {
 		if (event instanceof ExternalEvent)
-			return processExternalEvent((ExternalEvent)event);
+			return processExternalEvent((ExternalEvent) event);
 
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
@@ -126,18 +126,18 @@ public final class MOperating extends Operating {
 	private boolean processExternalEvent(ExternalEvent event) {
 		switch (event.getTypeOfEvent()) {
 		case EventType.REQ_GET_PM_STORE:
-			GetPmStoreEvent pmEvent = (GetPmStoreEvent) event;
-			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getHandle());
+			ExternalEvent<Integer, String, GetPmStoreEventData> pmEvent = (ExternalEvent<Integer, String, GetPmStoreEventData>) event;
+			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getPrivData().getHandle());
 			pm_store.GET(pmEvent);
 			return true;
 		case EventType.REQ_SET:
-			SetEvent setEvent = (SetEvent) event;
-			DIM obj = state_handler.getMDS().getObject(setEvent.getObjectHandle());
+			ExternalEvent<Integer, String, SetEventData> setEvent = (ExternalEvent<Integer, String, SetEventData>) event;
+			DIM obj = state_handler.getMDS().getObject(setEvent.getPrivData().getObjectHandle());
 			try {
 				SET_Service serv = (SET_Service) obj;
-				serv.SET(setEvent.getAttribute());
+				serv.SET(setEvent.getPrivData().getAttribute());
 			} catch (ClassCastException e) {
-				System.err.println("Set cannot be done in object: " + setEvent.getObjectHandle().getValue().getValue() +
+				System.err.println("Set cannot be done in object: " + setEvent.getPrivData().getObjectHandle().getValue().getValue() +
 							" it does not implement a SET service");
 			}
 			return true;

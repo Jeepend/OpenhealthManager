@@ -26,27 +26,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events.application;
 
-import es.libresoft.openhealth.events.EventType;
 import ieee_11073.part_20601.asn1.HANDLE;
-import ieee_11073.part_20601.phd.dim.Attribute;
 
-public class SetEvent extends ExternalEvent {
+public class GetPmStoreEventData{
 
-	Attribute attribute;
-	HANDLE handle;
+	private HANDLE handle;
 
-	public SetEvent(HANDLE handle, Attribute attr) {
-		super(EventType.REQ_SET);
-
-		attribute = attr;
+	public GetPmStoreEventData(HANDLE handle) {
 		this.handle = handle;
 	}
 
-	public Attribute getAttribute() {
-		return attribute;
-	}
-
-	public HANDLE getObjectHandle() {
+	public HANDLE getHandle() {
 		return handle;
 	}
 }
