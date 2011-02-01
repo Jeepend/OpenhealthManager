@@ -41,7 +41,6 @@ import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
-import es.libresoft.openhealth.events.application.ClientLocker;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
