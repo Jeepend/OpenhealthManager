@@ -82,6 +82,8 @@ import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.MeasureReporterUtils;
+import es.libresoft.openhealth.events.application.ClientLocker;
+import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
@@ -413,10 +415,20 @@ public class MDSManager extends MDS {
 				@Override
 				public void procResponse(DataApdu data) {
 					System.out.println("Received response for get MDS");
+					ClientLocker cl = null;
+
+					try {
+						ExternalEvent event = (ExternalEvent) this.getEvent();
+						cl = event.getLocker();
+					} catch (ClassCastException e) {
+
+					}
 
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						//TODO: Unexpected response format
 						System.out.println("TODO: Unexpected response format");
+						if (cl != null)
+							cl.unlock(new Boolean(false), "Unexpected response format");
 						return;
 					}
 
@@ -425,6 +437,8 @@ public class MDSManager extends MDS {
 					if (grs.getObj_handle().getValue().getValue() != 0) {
 						//TODO: Unexpected object handle, should be reserved value 0
 						System.out.println("TODO: Unexpected object handle, should be reserved value 0");
+						if (cl != null)
+							cl.unlock(new Boolean(false), "Unexpected object handle, should be reserved value 0");
 						return;
 					}
 
@@ -441,15 +455,25 @@ public class MDSManager extends MDS {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+
+					cl.unlock(new Boolean(true), null);
 				}
 
 				@Override
 				protected void expiredTimeout(){
 					super.expiredTimeout();
-					Event event = this.getEvent();
-					if (event != null) {
-						System.out.println("TODO: get from a user event, proccess it");
+					ExternalEvent event;
+					try {
+						event = (ExternalEvent) this.getEvent();
+					} catch (ClassCastException e) {
+						return;
 					}
+
+					if (event == null)
+						return;
+
+					ClientLocker cl = event.getLocker();
+					cl.unlock(new Boolean(false), "Timeout expired");
 				}
 			};
 			to.setEvent(event);
