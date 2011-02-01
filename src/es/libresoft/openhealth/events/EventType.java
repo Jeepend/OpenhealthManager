@@ -38,5 +38,5 @@ public interface EventType {
 	/* Application defined events*/
 	public static final int REQ_GET_PM_STORE					=	500;
 	public static final int REQ_SET								=	501;
-
+	public static final int REQ_MDS								=	502;
 }

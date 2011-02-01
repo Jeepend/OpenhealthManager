@@ -32,8 +32,8 @@ public class GetPmStoreEvent extends ExternalEvent {
 
 	private HANDLE handle;
 
-	public GetPmStoreEvent(HANDLE handle) {
-		super(EventType.REQ_GET_PM_STORE);
+	public GetPmStoreEvent(HANDLE handle, ClientLocker cl) {
+		super(EventType.REQ_GET_PM_STORE, cl);
 
 		this.handle = handle;
 	}

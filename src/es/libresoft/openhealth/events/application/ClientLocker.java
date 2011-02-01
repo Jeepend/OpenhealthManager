@@ -1,7 +1,7 @@
 /*
 Copyright (C) 2010 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
-Author: Santiago Carot Nemesio <scarot@libresoft.es>
+Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -25,18 +25,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events.application;
 
-import es.libresoft.openhealth.events.Event;
+import java.util.concurrent.Semaphore;
 
-public class ExternalEvent extends Event {
+public class ClientLocker {
 
-	private ClientLocker cl;
+	private Semaphore sem;
+	private Object rspData;
+	private String errMsg;
 
-	public ExternalEvent(int eventType, ClientLocker cl) {
-		super (eventType);
-		this.cl = cl;
+	public ClientLocker() {
+		sem = new Semaphore(0, true);
 	}
 
-	public ClientLocker getLocker() {
-		return cl;
+	public void lock() throws InterruptedException {
+		sem.acquire();
+	}
+
+	public void unlock(Object data, String error) {
+		sem.release();
 	}
 }

@@ -36,10 +36,13 @@ import java.util.Vector;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.android.types.IAttrFactory;
 import es.libresoft.openhealth.android.types.IAttribute;
+import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.events.application.ClientLocker;
+import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
@@ -204,7 +207,16 @@ public class HealthService extends Service {
 
 		@Override
 		public boolean updateMDS() throws RemoteException {
-			System.out.println("TODO: Implement this method");
+			ClientLocker cl = new ClientLocker();
+			ExternalEvent ev = new ExternalEvent(EventType.REQ_MDS, cl);
+			//TODO: SEND_EVENT;
+			try {
+				cl.lock();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				return false;
+			}
+			//TODO:CheckResponse
 			return false;
 		}
 	};
