@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android.types;
 
+import ieee_11073.part_20601.asn1.HANDLE;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -34,10 +35,6 @@ public class IHANDLE implements Parcelable {
 
 	public int getHandle() {
 		return handle;
-	}
-
-	public void setHandle(int handle) {
-		this.handle = handle;
 	}
 
 	public static final Parcelable.Creator<IHANDLE> CREATOR =
@@ -55,6 +52,10 @@ public class IHANDLE implements Parcelable {
 
 	}
 
+	public IHANDLE (HANDLE handle) {
+		this.handle = handle.getValue().getValue();
+	}
+
 	private IHANDLE (Parcel in) {
 		handle = in.readInt();
 	}
@@ -67,10 +68,6 @@ public class IHANDLE implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(handle);
-	}
-
-	public IHANDLE (int handle) {
-		this.handle = handle;
 	}
 
 	public boolean equals(Object o) {
