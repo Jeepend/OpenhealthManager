@@ -172,6 +172,14 @@ public class HealthService extends Service {
 
 	};
 
+	private Agent getAgent(IAgent agent) {
+		for(Agent a : agents) {
+			if (agent.equals(a))
+				return a;
+		}
+		return null;
+	}
+
 	/**
 	 * The IAgentService is defined through IDL
 	 */
@@ -186,17 +194,11 @@ public class HealthService extends Service {
 		@Override
 		public void getAttribute(IAgent agent, int attrId, IAttribute attr)
 				throws RemoteException {
-			Agent a = null;
 
-			for(Agent aa : agents) {
-				if (agent.equals(aa)) {
-					a = aa;
-					break;
-				}
-			}
+			Agent a = getAgent(agent);
 
 			if (a == null) {
-				System.err.println("TODO: Return error");
+				System.err.println("Invalid agent error");
 				attr  = null;
 				return;
 			}
