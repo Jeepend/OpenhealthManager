@@ -460,9 +460,9 @@ public class MDSManager extends MDS {
 				@Override
 				protected void expiredTimeout(){
 					super.expiredTimeout();
-					ExternalEvent event;
+					ExternalEvent<Boolean, String, Object> event;
 					try {
-						event = (ExternalEvent) this.getEvent();
+						event = (ExternalEvent<Boolean, String, Object>) this.getEvent();
 					} catch (ClassCastException e) {
 						return;
 					}
