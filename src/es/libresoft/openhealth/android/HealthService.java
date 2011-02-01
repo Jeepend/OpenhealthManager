@@ -216,8 +216,8 @@ public class HealthService extends Service {
 				return false;
 			}
 
-			ClientLocker cl = new ClientLocker();
-			ExternalEvent ev = new ExternalEvent(EventType.REQ_MDS, cl);
+			ClientLocker<Boolean, String> cl = new ClientLocker<Boolean, String>();
+			ExternalEvent<Boolean, String> ev = new ExternalEvent<Boolean, String>(EventType.REQ_MDS, cl);
 
 			a.sendEvent(ev);
 
@@ -233,7 +233,7 @@ public class HealthService extends Service {
 				return false;
 			}
 
-			return true;
+			return cl.getRspData();
 		}
 	};
 
