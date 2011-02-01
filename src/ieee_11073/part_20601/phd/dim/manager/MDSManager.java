@@ -77,6 +77,7 @@ import java.util.Iterator;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.Device;
+import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -398,7 +399,7 @@ public class MDSManager extends MDS {
 		return configRsp;
 	}
 
-	public void GET () {
+	public void GET (Event event) {
 		HANDLE handle = new HANDLE();
 		handle.setValue(new INT_U16(0));
 		DataApdu data = MessageFactory.PrstRoivCmpGet(this, handle);

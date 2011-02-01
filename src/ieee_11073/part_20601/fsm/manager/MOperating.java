@@ -128,7 +128,7 @@ public final class MOperating extends Operating {
 		case EventType.REQ_GET_PM_STORE:
 			GetPmStoreEvent pmEvent = (GetPmStoreEvent) event;
 			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getHandle());
-			pm_store.GET();
+			pm_store.GET(pmEvent);
 			return true;
 		case EventType.REQ_SET:
 			SetEvent setEvent = (SetEvent) event;

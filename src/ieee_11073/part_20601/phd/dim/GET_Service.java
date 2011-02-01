@@ -23,10 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import es.libresoft.openhealth.events.Event;
+
 public interface GET_Service {
 
 	/**
 	 * Support for GET operation
 	 */
-	public void GET ();
+	public void GET (Event event);
 }

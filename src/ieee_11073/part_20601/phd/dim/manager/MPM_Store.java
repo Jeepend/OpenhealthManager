@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import org.bn.types.BitString;
 
+import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -192,8 +193,7 @@ public class MPM_Store extends PM_Store {
 		return ss;
 	}
 
-	@Override
-	public void GET() {
+	public void GET(Event event) {
 		try {
 			HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 			DataApdu data = MessageFactory.PrstRoivCmpGet(getMDS(), handle);
