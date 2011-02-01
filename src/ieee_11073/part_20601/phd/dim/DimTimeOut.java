@@ -25,12 +25,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.dim;
 
+import es.libresoft.openhealth.events.Event;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.fsm.StateHandler;
 
 public abstract class DimTimeOut extends TimeOut {
 
 	private int invokeId;
+	private Event event = null;
 
 	public DimTimeOut(int timeout, int invokeId, StateHandler stateHandler) {
 		super(timeout, stateHandler);
@@ -40,6 +42,14 @@ public abstract class DimTimeOut extends TimeOut {
 
 	public int getInvokeId() {
 		return invokeId;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	public Event getEvent() {
+		return event;
 	}
 
 	/**

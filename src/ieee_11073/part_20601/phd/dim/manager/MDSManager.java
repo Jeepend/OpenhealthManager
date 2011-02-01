@@ -442,7 +442,17 @@ public class MDSManager extends MDS {
 						e.printStackTrace();
 					}
 				}
+
+				@Override
+				protected void expiredTimeout(){
+					super.expiredTimeout();
+					Event event = this.getEvent();
+					if (event != null) {
+						System.out.println("TODO: get from a user event, proccess it");
+					}
+				}
 			};
+			to.setEvent(event);
 			to.start();
 
 		} catch (Exception e) {
