@@ -27,16 +27,21 @@ package es.libresoft.openhealth.events.application;
 
 import es.libresoft.openhealth.events.Event;
 
-public class ExternalEvent extends Event {
+public class ExternalEvent<ResponseType, ErrorType> extends Event<ResponseType, ErrorType> {
 
-	private ClientLocker cl;
+	private ClientLocker<ResponseType, ErrorType> cl;
 
-	public ExternalEvent(int eventType, ClientLocker cl) {
+	public ExternalEvent(int eventType, ClientLocker<ResponseType, ErrorType> cl) {
 		super (eventType);
 		this.cl = cl;
 	}
 
-	public ClientLocker getLocker() {
+	public ClientLocker<ResponseType, ErrorType> getLocker() {
 		return cl;
+	}
+
+	@Override
+	public void processed(ResponseType data, ErrorType err) {
+		cl.unlock(data, err);
 	}
 }

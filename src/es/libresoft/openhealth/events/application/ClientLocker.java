@@ -27,11 +27,11 @@ package es.libresoft.openhealth.events.application;
 
 import java.util.concurrent.Semaphore;
 
-public class ClientLocker {
+public class ClientLocker<ResponseType, ErrorType> {
 
 	private Semaphore sem;
-	private Object rspData;
-	private String errMsg;
+	private ResponseType rspData;
+	private ErrorType errMsg;
 	private boolean processed;
 
 	public ClientLocker() {
@@ -45,7 +45,7 @@ public class ClientLocker {
 		sem.acquire();
 	}
 
-	public void unlock(Object data, String error) {
+	public void unlock(ResponseType data, ErrorType error) {
 		this.rspData = data;
 		this.errMsg = error;
 		processed = true;
@@ -59,11 +59,11 @@ public class ClientLocker {
 			return errMsg == null;
 	}
 
-	public Object getRspData() {
+	public ResponseType getRspData() {
 		return rspData;
 	}
 
-	public String getErrMsg() {
+	public ErrorType getErrMsg() {
 		return errMsg;
 	}
 }

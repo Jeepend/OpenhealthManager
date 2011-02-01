@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth.events;
 
-public class Event {
+public class Event<ResponseType, ErrorType> {
 
 	private int type;
 	private int reason;
@@ -41,5 +41,7 @@ public class Event {
 	}
 
 	public int getTypeOfEvent() {return type;}
+
+	public void processed(ResponseType data, ErrorType err) {};
 
 }
