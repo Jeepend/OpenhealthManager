@@ -415,11 +415,9 @@ public class MDSManager extends MDS {
 				@Override
 				public void procResponse(DataApdu data) {
 					System.out.println("Received response for get MDS");
-					ClientLocker cl = null;
-
+					ExternalEvent event = null;
 					try {
-						ExternalEvent event = (ExternalEvent) this.getEvent();
-						cl = event.getLocker();
+						event = (ExternalEvent) this.getEvent();
 					} catch (ClassCastException e) {
 
 					}
@@ -427,8 +425,8 @@ public class MDSManager extends MDS {
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						//TODO: Unexpected response format
 						System.out.println("TODO: Unexpected response format");
-						if (cl != null)
-							cl.unlock(new Boolean(false), "Unexpected response format");
+						if (event != null)
+							event.processed(new Boolean(false), "Unexpected response format");
 						return;
 					}
 
@@ -437,8 +435,8 @@ public class MDSManager extends MDS {
 					if (grs.getObj_handle().getValue().getValue() != 0) {
 						//TODO: Unexpected object handle, should be reserved value 0
 						System.out.println("TODO: Unexpected object handle, should be reserved value 0");
-						if (cl != null)
-							cl.unlock(new Boolean(false), "Unexpected object handle, should be reserved value 0");
+						if (event != null)
+							event.processed(new Boolean(false), "Unexpected object handle, should be reserved value 0");
 						return;
 					}
 
@@ -456,7 +454,7 @@ public class MDSManager extends MDS {
 						e.printStackTrace();
 					}
 
-					cl.unlock(new Boolean(true), null);
+					event.processed(new Boolean(true), null);
 				}
 
 				@Override
@@ -472,8 +470,7 @@ public class MDSManager extends MDS {
 					if (event == null)
 						return;
 
-					ClientLocker cl = event.getLocker();
-					cl.unlock(new Boolean(false), "Timeout expired");
+					event.processed(new Boolean(false), "Timeout expired");
 				}
 			};
 			to.setEvent(event);

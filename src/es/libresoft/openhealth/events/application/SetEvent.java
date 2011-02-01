@@ -35,7 +35,7 @@ public class SetEvent extends ExternalEvent {
 	HANDLE handle;
 
 	public SetEvent(HANDLE handle, Attribute attr) {
-		super(EventType.REQ_SET, null);
+		super(EventType.REQ_SET);
 
 		attribute = attr;
 		this.handle = handle;

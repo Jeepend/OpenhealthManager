@@ -216,24 +216,23 @@ public class HealthService extends Service {
 				return false;
 			}
 
-			ClientLocker<Boolean, String> cl = new ClientLocker<Boolean, String>();
-			ExternalEvent<Boolean, String> ev = new ExternalEvent<Boolean, String>(EventType.REQ_MDS, cl);
+			ExternalEvent<Boolean, String> ev = new ExternalEvent<Boolean, String>(EventType.REQ_MDS);
 
 			a.sendEvent(ev);
 
 			try {
-				cl.lock();
+				ev.proccessing();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				return false;
 			}
 
-			if (cl.wasError()) {
-				System.err.println("Error happened getting MDS: " + cl.getErrMsg());
+			if (ev.wasError()) {
+				System.err.println("Error happened getting MDS: " + ev.getErrMsg());
 				return false;
 			}
 
-			return cl.getRspData();
+			return ev.getRspData();
 		}
 	};
 
