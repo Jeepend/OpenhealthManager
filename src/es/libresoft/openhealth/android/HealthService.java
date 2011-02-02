@@ -176,7 +176,7 @@ public class HealthService extends Service {
 
 	private Agent getAgent(IAgent agent) {
 		for(Agent a : agents) {
-			if (agent.equals(a))
+			if (a.getAgentId() == agent.getId())
 				return a;
 		}
 		return null;

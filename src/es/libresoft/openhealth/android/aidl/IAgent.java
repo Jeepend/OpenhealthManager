@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android.aidl;
 
-import es.libresoft.openhealth.Agent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -72,12 +71,11 @@ public class IAgent implements Parcelable {
 			return this.id == agent.id;
 		}
 
-		if (o instanceof Agent) {
-			Agent agent = (Agent) o;
-			return this.id == agent.getAgentId();
-		}
-
 		return false;
+	}
+
+	public int getId() {
+		return id;
 	}
 }
 
