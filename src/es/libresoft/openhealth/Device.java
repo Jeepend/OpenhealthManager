@@ -32,6 +32,9 @@ import ieee_11073.part_20601.phd.channel.VirtualChannel;
 
 public abstract class Device {
 
+	private static int instance_id = 0;
+	private int id;
+
 	public static final String MDER_DEFAULT = "MDER";
 
 	private VirtualChannel vch;
@@ -47,6 +50,7 @@ public abstract class Device {
 		outputQueue = new FIFO<ApduType>();
 		eventQueue = new FIFO<Event>();
 		vch = new VirtualChannel(inputQueue, outputQueue, eventQueue);
+		id = instance_id++;
 		notifyDevicePlugged();
 	}
 
@@ -64,8 +68,36 @@ public abstract class Device {
 		vch.freeChannels();
 		notifyDeviceUnplugged();
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Device other = (Device) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	public int getId() {
+		return this.id;
+	}
 
 	public abstract void notifyDevicePlugged();
 
 	public abstract void notifyDeviceUnplugged();
+
+	
 }

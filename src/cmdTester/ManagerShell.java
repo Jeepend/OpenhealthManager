@@ -18,7 +18,7 @@ public class ManagerShell {
 
 		@Override
 		public void agentChangeState(Agent agent, String state) {
-			System.out.println("ID: " + agent.getAgentId() + " state: " + state);
+			System.out.println("ID: " + agent.getId() + " state: " + state);
 		}
 
 		@Override
@@ -30,14 +30,14 @@ public class ManagerShell {
 			Iterator<Object> iat = attributes.iterator();
 
 			if (!measures.isEmpty()) {
-				System.out.println("Measures received from: " + agent.getAgentId());
+				System.out.println("Measures received from: " + agent.getId());
 				while (ims.hasNext()) {
 					System.out.println("" + ims.next());
 				}
 			}
 
 			if (!attributes.isEmpty()) {
-				System.out.println("Attributes received from: " + agent.getAgentId());
+				System.out.println("Attributes received from: " + agent.getId());
 				while (iat.hasNext()) {
 					System.out.println("" + iat.next());
 				}

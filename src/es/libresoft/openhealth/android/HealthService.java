@@ -82,7 +82,7 @@ public class HealthService extends Service {
 			agents.add(agent);
 			for (IManagerClientCallback c: clients) {
 				try {
-					c.agentPlugged(new IAgent(agent.getAgentId()));
+					c.agentPlugged(new IAgent(agent.getId()));
 				} catch (RemoteException e) {
 					clients.remove(c);
 				}
@@ -94,7 +94,7 @@ public class HealthService extends Service {
 			agents.removeElement(agent);
 			for (IManagerClientCallback c: clients) {
 				try {
-					c.agentUnplugged(new IAgent(agent.getAgentId()));
+					c.agentUnplugged(new IAgent(agent.getId()));
 				} catch (RemoteException e) {
 					clients.remove(c);
 				}
@@ -151,7 +151,7 @@ public class HealthService extends Service {
 				agentList= new ArrayList<IAgent>();
 
 			for(Agent agent: agents) {
-				agentList.add(new IAgent(agent.getAgentId()));
+				agentList.add(new IAgent(agent.getId()));
 			}
 		}
 
@@ -175,7 +175,7 @@ public class HealthService extends Service {
 
 	private Agent getAgent(IAgent agent) {
 		for(Agent a : agents) {
-			if (a.getAgentId() == agent.getId())
+			if (a.getId() == agent.getId())
 				return a;
 		}
 		return null;
