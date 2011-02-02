@@ -24,8 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android.aidl.types;
+package es.libresoft.openhealth.android;
 
+import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import ieee_11073.part_20601.asn1.HANDLE;
 
 
