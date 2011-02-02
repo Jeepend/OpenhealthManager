@@ -44,8 +44,8 @@ public class TcpManagerChannel extends Thread {
 			System.out.println("Waiting for clients...");
 			while(!this.finish){
 				Socket s = ss.accept();
-				TCPChannel chnl = new TCPChannel (s);
 				Agent a = new Agent();
+				TCPChannel chnl = new TCPChannel (s, this, a);
 				a.addChannel(chnl);
 				agents.addAgent(a);
 			}
@@ -76,5 +76,9 @@ public class TcpManagerChannel extends Thread {
 		} catch (IOException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
+	}
+
+	public void disconnectAgent(Agent agent) {
+		agents.delAgent(agent);
 	}
 }

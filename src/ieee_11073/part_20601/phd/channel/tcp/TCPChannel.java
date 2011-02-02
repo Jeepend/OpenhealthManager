@@ -29,15 +29,21 @@ import ieee_11073.part_20601.phd.channel.Channel;
 import java.io.IOException;
 import java.net.Socket;
 
+import es.libresoft.openhealth.Agent;
+
 public class TCPChannel extends Channel {
 
 	private int id;
 	private Socket socket;
+	private TcpManagerChannel manager;
+	private Agent agent;
 
-	public TCPChannel (Socket s) throws Exception{
+	public TCPChannel (Socket s, TcpManagerChannel manager, Agent agent) throws Exception{
 		super(s.getInputStream(),s.getOutputStream());
 		id = 0;
 		socket = s;
+		this.manager = manager;
+		this.agent = agent;
 	}
 
 	@Override
@@ -47,6 +53,8 @@ public class TCPChannel extends Channel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		manager.disconnectAgent(agent);
 	}
 
 	@Override
