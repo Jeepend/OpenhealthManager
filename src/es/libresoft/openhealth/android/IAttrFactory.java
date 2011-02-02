@@ -33,10 +33,15 @@ import ieee_11073.part_20601.asn1.HANDLE;
 
 public class IAttrFactory {
 
+	private static IHANDLE HANDLE2parcelable(HANDLE handle) {
+		IHANDLE ihandle = new IHANDLE(handle.getValue().getValue());
+		return ihandle;
+	}
+
 	public static final void getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		if (asnAttr instanceof HANDLE) {
-			IHANDLE ihandle = new IHANDLE((HANDLE) asnAttr);
+			IHANDLE ihandle = HANDLE2parcelable((HANDLE) asnAttr);
 			attr.setAttr(ihandle);
 			return;
 		}

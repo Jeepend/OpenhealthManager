@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android.aidl.types;
 
-import ieee_11073.part_20601.asn1.HANDLE;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -52,8 +51,8 @@ public class IHANDLE implements Parcelable {
 
 	}
 
-	public IHANDLE (HANDLE handle) {
-		this.handle = handle.getValue().getValue();
+	public IHANDLE (int handle) {
+		this.handle = handle;
 	}
 
 	private IHANDLE (Parcel in) {
