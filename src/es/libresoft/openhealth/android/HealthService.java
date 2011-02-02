@@ -49,6 +49,7 @@ import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -83,8 +84,7 @@ public class HealthService extends Service {
 				try {
 					c.agentPlugged(new IAgent(agent.getAgentId()));
 				} catch (RemoteException e) {
-					//TODO: Check if the client should be removed
-					e.printStackTrace();
+					clients.remove(c);
 				}
 			}
 		}
@@ -96,8 +96,7 @@ public class HealthService extends Service {
 				try {
 					c.agentUnplugged(new IAgent(agent.getAgentId()));
 				} catch (RemoteException e) {
-					//TODO: Check if the client should be removed
-					e.printStackTrace();
+					clients.remove(c);
 				}
 			}
 		}
