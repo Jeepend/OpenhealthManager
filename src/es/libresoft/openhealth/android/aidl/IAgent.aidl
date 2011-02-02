@@ -24,13 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android;
-import es.libresoft.openhealth.android.IAgent;
-import es.libresoft.openhealth.android.types.IAttribute;
+package es.libresoft.openhealth.android.aidl;
 
-interface IAgentService {
-	void getAttribute(in IAgent agent, in int attrId, out IAttribute attr);
-	boolean updateMDS(in IAgent agent);
+// Declare the value measure so AIDL can find it and knows that it implements
+// the parcelable protocol.
 
-	void connect(in IAgent agent);
-}
+parcelable IAgent;

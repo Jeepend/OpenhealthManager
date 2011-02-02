@@ -24,57 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android.types;
+package es.libresoft.openhealth.android.aidl.types;
 
-import ieee_11073.part_20601.asn1.HANDLE;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class IHANDLE implements Parcelable {
-	private int handle;
-
-	public int getHandle() {
-		return handle;
-	}
-
-	public static final Parcelable.Creator<IHANDLE> CREATOR =
-			new Parcelable.Creator<IHANDLE>() {
-		public IHANDLE createFromParcel(Parcel in) {
-			return new IHANDLE(in);
-		}
-
-		public IHANDLE[] newArray(int size) {
-			return new IHANDLE[size];
-		}
-	};
-
-	public IHANDLE () {
-
-	}
-
-	public IHANDLE (HANDLE handle) {
-		this.handle = handle.getValue().getValue();
-	}
-
-	private IHANDLE (Parcel in) {
-		handle = in.readInt();
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(handle);
-	}
-
-	public boolean equals(Object o) {
-		if (!(o instanceof IHANDLE))
-			return false;
-
-		IHANDLE agent = (IHANDLE) o;
-		return this.handle == agent.handle;
-	}
-}
+parcelable IHANDLE;

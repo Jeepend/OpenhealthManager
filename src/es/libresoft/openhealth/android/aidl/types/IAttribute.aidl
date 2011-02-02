@@ -24,6 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android.types;
+package es.libresoft.openhealth.android.aidl.types;
 
 parcelable IAttribute;

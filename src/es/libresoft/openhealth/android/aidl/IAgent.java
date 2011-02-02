@@ -24,31 +24,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android.types;
+package es.libresoft.openhealth.android.aidl;
 
+import es.libresoft.openhealth.Agent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class IAttribute implements Parcelable {
-	private Parcelable attr;
+public class IAgent implements Parcelable {
+	private int id;
 
-	public static final Parcelable.Creator<IAttribute> CREATOR =
-			new Parcelable.Creator<IAttribute>() {
-		public IAttribute createFromParcel(Parcel in) {
-			return new IAttribute(in);
-		}
+	public static final Parcelable.Creator<IAgent> CREATOR =
+			new Parcelable.Creator<IAgent>() {
+	    public IAgent createFromParcel(Parcel in) {
+	        return new IAgent(in);
+	    }
 
-		public IAttribute[] newArray(int size) {
-			return new IAttribute[size];
-		}
+	    public IAgent[] newArray(int size) {
+	        return new IAgent[size];
+	    }
 	};
 
-	public IAttribute () {
-
+	private IAgent (Parcel in) {
+		readFromParcel(in);
 	}
 
-	private IAttribute (Parcel in) {
-		in.readParcelable(null);
+	public void readFromParcel(Parcel in) {
+		id = in.readInt();
 	}
 
 	@Override
@@ -58,28 +59,25 @@ public class IAttribute implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeParcelable(attr, 0);
+		dest.writeInt(id);
 	}
 
-	public void readFromParcel(Parcel in) {
-		java.lang.ClassLoader cl = (java.lang.ClassLoader)this.getClass().getClassLoader();
-		attr = in.readParcelable(cl);
-	}
-
-	public IAttribute (Parcelable attr) {
-		this.attr = attr;
+	public IAgent (int id) {
+		this.id = id;
 	}
 
 	public boolean equals(Object o) {
-		return attr.equals(o);
-	}
+		if (o instanceof IAgent) {
+			IAgent agent = (IAgent) o;
+			return this.id == agent.id;
+		}
 
-	public Parcelable getAttr() {
-		return attr;
-	}
+		if (o instanceof Agent) {
+			Agent agent = (Agent) o;
+			return this.id == agent.getAgentId();
+		}
 
-	public void setAttr(Parcelable attr) {
-		this.attr = attr;
+		return false;
 	}
-
 }
+

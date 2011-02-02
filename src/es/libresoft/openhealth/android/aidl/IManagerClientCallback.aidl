@@ -24,9 +24,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android;
+package es.libresoft.openhealth.android.aidl;
 
-// Declare the value measure so AIDL can find it and knows that it implements
-// the parcelable protocol.
+import es.libresoft.openhealth.android.aidl.IAgent;
 
-parcelable IAgent;
+oneway interface IManagerClientCallback {
+	/**
+	 * Called when agent is available for to connect with the manager.
+	 */
+	void agentPlugged(in IAgent agent);
+
+	/**
+	 * Called when agent releases the association with the manager.
+	 */
+	void agentUnplugged(in IAgent agent);
+}

@@ -2,7 +2,7 @@
 Copyright (C) 2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
-Author: Santiago Carot-Nemesio <scarot@libresoft.es>
+Author: Santiago Carot Nemesio <scarot@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -24,21 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android.types;
+package es.libresoft.openhealth.android.aidl;
 
-import ieee_11073.part_20601.asn1.HANDLE;
+import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
+import es.libresoft.openhealth.android.aidl.IAgent;
 
+oneway interface IManagerService {
 
-public class IAttrFactory {
+	void agents(out List<IAgent> agentList);
 
-	public static final void getParcelableAttribute (Object asnAttr, IAttribute attr) {
-
-		if (asnAttr instanceof HANDLE) {
-			IHANDLE ihandle = new IHANDLE((HANDLE) asnAttr);
-			attr.setAttr(ihandle);
-			return;
-		}
-
-		System.err.println("Unknown method provided. Can't create parcelable attribute.");
-	}
+	void registerApplication(IManagerClientCallback mc);
+	void unregisterApplication(IManagerClientCallback mc);
 }

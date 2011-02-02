@@ -34,8 +34,9 @@ import java.util.List;
 import java.util.Vector;
 
 import es.libresoft.openhealth.Agent;
-import es.libresoft.openhealth.android.types.IAttrFactory;
-import es.libresoft.openhealth.android.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.IAgent;
+import es.libresoft.openhealth.android.aidl.types.IAttrFactory;
+import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
