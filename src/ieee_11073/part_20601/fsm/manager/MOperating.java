@@ -98,38 +98,16 @@ public final class MOperating extends Operating {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean processEvent(Event event) {
-		if (event instanceof ExternalEvent)
-			return processExternalEvent((ExternalEvent) event);
-
-		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
-			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
-			state_handler.changeState(new MDisconnected(state_handler));
-		}else if (event.getTypeOfEvent() == EventType.IND_TIMEOUT) {
-			state_handler.send(MessageFactory.AbrtApdu(event.getReason()));
-			state_handler.changeState(new MUnassociated(state_handler));
-		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_REL){
-			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
-			state_handler.changeState(new MDisassociating(state_handler));
-		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT){
-			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
-			state_handler.changeState(new MUnassociated(state_handler));
-		}else
-			return false;
-
-		return true;
-	}
-
-	//----------------------------------PRIVATE--------------------------------------------------------
-
-	private boolean processExternalEvent(ExternalEvent event) {
 		switch (event.getTypeOfEvent()) {
 		case EventType.REQ_GET_PM_STORE:
 			ExternalEvent<Integer, String, GetPmStoreEventData> pmEvent = (ExternalEvent<Integer, String, GetPmStoreEventData>) event;
 			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getPrivData().getHandle());
 			pm_store.GET(pmEvent);
 			return true;
+
 		case EventType.REQ_SET:
 			ExternalEvent<Integer, String, SetEventData> setEvent = (ExternalEvent<Integer, String, SetEventData>) event;
 			DIM obj = state_handler.getMDS().getObject(setEvent.getPrivData().getObjectHandle());
@@ -141,13 +119,38 @@ public final class MOperating extends Operating {
 							" it does not implement a SET service");
 			}
 			return true;
+
 		case EventType.REQ_MDS:
 			state_handler.getMDS().GET(event);
 			return true;
+
+		case EventType.IND_TRANS_DESC:
+			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
+			state_handler.changeState(new MDisconnected(state_handler));
+			return true;
+
+		case EventType.IND_TIMEOUT:
+			state_handler.send(MessageFactory.AbrtApdu(event.getReason()));
+			state_handler.changeState(new MUnassociated(state_handler));
+			return true;
+
+		case EventType.REQ_ASSOC_REL:
+			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
+			state_handler.changeState(new MDisassociating(state_handler));
+			return true;
+
+		case EventType.REQ_ASSOC_ABORT:
+			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+			state_handler.changeState(new MUnassociated(state_handler));
+			return true;
+
+		default:
+			return false;
 		}
 
-		return false;
 	}
+
+	//----------------------------------PRIVATE--------------------------------------------------------
 
 	private void process_20601_PrstApdu(PrstApdu prst){
 		try {
