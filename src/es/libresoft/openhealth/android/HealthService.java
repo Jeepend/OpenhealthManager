@@ -273,11 +273,7 @@ public class HealthService extends Service {
 
 			if (a == null) {
 				err.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				try {
-					err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(ErrorCodes.UNKNOWN_AGENT));
-				} catch (ErrorException e) {
-					err.setErrMsg(HealthService.this.getString(R.string.UNKNOWN_AGENT));
-				}
+				setErrorMessage(err);
 				return false;
 			}
 
@@ -294,20 +290,12 @@ public class HealthService extends Service {
 
 			if (ev.wasError()) {
 				err.setErrCode(ev.getError());
-				try {
-					err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(ev.getError()));
-				} catch (ErrorException e) {
-					err.setErrMsg(HealthService.this.getString(R.string.UNEXPECTED_ERROR));
-				}
+				setErrorMessage(err);
 				return false;
 			}
 
 			err.setErrCode(ErrorCodes.NO_ERROR);
-			try {
-				err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(ErrorCodes.NO_ERROR));
-			} catch (ErrorException e) {
-				err.setErrMsg(HealthService.this.getString(R.string.NO_ERROR));
-			}
+			setErrorMessage(err);
 
 			return ev.getRspData();
 		}
@@ -320,6 +308,18 @@ public class HealthService extends Service {
 		if (IAgentService.class.getName().equals(intent.getAction()))
 			return agentServiceStub;
 		return null;
+	}
+
+	/**
+	 * Sets the error message with the string correct string for the error code already set
+	 * @param err The error which error message will be set
+	 */
+	private void setErrorMessage(IError err) {
+		try {
+			err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(err.getErrCode()));
+		} catch (ErrorException e) {
+			err.setErrMsg(HealthService.this.getString(R.string.UNEXPECTED_ERROR));
+		}
 	}
 
 }
