@@ -42,23 +42,39 @@ public class AndroidError implements ErrorString {
 	public String error2string(int errCode) {
 		switch (errCode) {
 		case ErrorCodes.NO_ERROR:
+			return context.getString(R.string.NO_ERROR);
 		case ErrorCodes.TIMEOUT_ASSOC:
+			return context.getString(R.string.TIMEOUT_ASSOC);
 		case ErrorCodes.TIMEOUT_CONFIG:
+			return context.getString(R.string.TIMEOUT_CONFIG);
 		case ErrorCodes.TIMEOUT_ASSOC_REL:
+			return context.getString(R.string.TIMEOUT_ASSOC_REL);
 		case ErrorCodes.TIMEOUT_MDS_CONF_ACION:
+			return context.getString(R.string.TIMEOUT_MDS_CONF_ACION);
 		case ErrorCodes.TIMEOUT_MDS_CONF_EV_REP:
+			return context.getString(R.string.TIMEOUT_MDS_CONF_EV_REP);
 		case ErrorCodes.TIMEOUT_MDS_GET:
+			return context.getString(R.string.TIMEOUT_MDS_GET);
 		case ErrorCodes.TIMEOUT_MDS_CONF_SET:
+			return context.getString(R.string.TIMEOUT_MDS_CONF_SET);
 		case ErrorCodes.TIMEOUT_MDS_SPECIAL:
+			return context.getString(R.string.TIMEOUT_MDS_SPECIAL);
 		case ErrorCodes.TIMEOUT_PM_CONF_ACION:
+			return context.getString(R.string.TIMEOUT_PM_CONF_ACION);
 		case ErrorCodes.TIMEOUT_PM_CONF_EV_REP:
+			return context.getString(R.string.TIMEOUT_PM_CONF_EV_REP);
 		case ErrorCodes.TIMEOUT_PM_GET:
+			return context.getString(R.string.TIMEOUT_PM_GET);
 		case ErrorCodes.TIMEOUT_PM_CONF_SET:
+			return context.getString(R.string.TIMEOUT_PM_CONF_SET);
 		case ErrorCodes.TIMEOUT_PM_SPECIAL:
+			return context.getString(R.string.TIMEOUT_PM_SPECIAL);
 		case ErrorCodes.TIMEOUT_SCN_CONF_SET:
+			return context.getString(R.string.TIMEOUT_SCN_CONF_SET);
 		case ErrorCodes.TIMEOUT_SCN_CONF_EV_REP:
-		case ErrorCodes.UNEXPECTED_ERROR:
+			return context.getString(R.string.TIMEOUT_SCN_CONF_EV_REP);
+		default:
+			return context.getString(R.string.UNEXPECTED_ERROR);
 		}
-		return "Unexpected Error Code";
 	}
 }
