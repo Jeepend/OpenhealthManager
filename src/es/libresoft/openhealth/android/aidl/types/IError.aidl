@@ -24,61 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android.aidl;
+package es.libresoft.openhealth.android.aidl.types;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+// Declare the value measure so AIDL can find it and knows that it implements
+// the parcelable protocol.
 
-public class IAgent implements Parcelable {
-	private int id;
-
-	public static final Parcelable.Creator<IAgent> CREATOR =
-			new Parcelable.Creator<IAgent>() {
-	    public IAgent createFromParcel(Parcel in) {
-	        return new IAgent(in);
-	    }
-
-	    public IAgent[] newArray(int size) {
-	        return new IAgent[size];
-	    }
-	};
-
-	private IAgent (Parcel in) {
-		readFromParcel(in);
-	}
-
-	public void readFromParcel(Parcel in) {
-		id = in.readInt();
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(id);
-	}
-
-	public IAgent () {
-	}
-
-	public IAgent (int id) {
-		this.id = id;
-	}
-
-	public boolean equals(Object o) {
-		if (o instanceof IAgent) {
-			IAgent agent = (IAgent) o;
-			return this.id == agent.id;
-		}
-
-		return false;
-	}
-
-	public int getId() {
-		return id;
-	}
-}
-
+parcelable IError;

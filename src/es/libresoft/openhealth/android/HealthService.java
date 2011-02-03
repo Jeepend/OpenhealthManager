@@ -35,6 +35,7 @@ import java.util.Vector;
 
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.android.aidl.IAgent;
+import es.libresoft.openhealth.android.aidl.types.IError;
 import es.libresoft.openhealth.android.aidl.IAgentService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
@@ -209,7 +210,7 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public boolean updateMDS(IAgent agent) throws RemoteException {
+		public boolean updateMDS(IAgent agent, IError err) throws RemoteException {
 			Agent a = getAgent(agent);
 
 			if (a == null) {
