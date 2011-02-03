@@ -70,4 +70,6 @@ public final class ErrorCodes {
 
 	/** Unexpected error*/
 	public static final int UNEXPECTED_ERROR		=	16;
+	/** Unknown agent error*/
+	public static final int UNKNOWN_AGENT			=	17;
 }

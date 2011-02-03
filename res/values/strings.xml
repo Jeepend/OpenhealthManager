@@ -36,4 +36,5 @@
 	<string name="TIMEOUT_SCN_CONF_EV_REP">Timeout in Scanner confirmed event report</string>
 
 	<string name="UNEXPECTED_ERROR">Unexpected error</string>
+	<string name="UNKNOWN_AGENT">Unknown agent error</string>
 </resources>

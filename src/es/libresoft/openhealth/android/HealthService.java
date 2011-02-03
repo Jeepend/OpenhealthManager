@@ -272,7 +272,12 @@ public class HealthService extends Service {
 			}
 
 			if (a == null) {
-				System.err.println("Invalid agent error");
+				err.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				try {
+					err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(ErrorCodes.UNKNOWN_AGENT));
+				} catch (ErrorException e) {
+					err.setErrMsg(HealthService.this.getString(R.string.UNKNOWN_AGENT));
+				}
 				return false;
 			}
 
