@@ -1,13 +1,5 @@
 package cmdTester;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import es.libresoft.hdp.HDPInputStream;
-
-
 public class InputStreamTester {
 
 	/**

@@ -28,7 +28,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.InstNumber;
 
 	/**
 	 * An instance of the PM-segment class represents a persistently stored episode of measurement

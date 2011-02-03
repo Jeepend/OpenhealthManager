@@ -27,19 +27,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth;
 
 import java.util.Iterator;
-import java.util.Set;
 
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
-import es.libresoft.openhealth.utils.DIM_Tools;
-import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.HANDLE;
-import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.fsm.manager.ManagerStateController;
 import ieee_11073.part_20601.phd.channel.InitializedException;
 import ieee_11073.part_20601.phd.dim.IMDS_Handler;
 import ieee_11073.part_20601.phd.dim.MDS;
-import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 
 public final class Agent extends Device {

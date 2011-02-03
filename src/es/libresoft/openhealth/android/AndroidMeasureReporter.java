@@ -24,11 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import android.os.Parcelable;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;

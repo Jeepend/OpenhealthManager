@@ -1,6 +1,5 @@
 package cmdTester;
 
-import ieee_11073.part_20601.phd.channel.bluetooth.HDPManagerChannel;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 
 import java.util.Iterator;

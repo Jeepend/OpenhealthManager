@@ -24,12 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.channel.tcp;
 
-import ieee_11073.part_20601.phd.channel.bluetooth.HDPConnection;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import es.libresoft.hdp.HDPDevice;
 import es.libresoft.openhealth.Agent;
 
 public class TCPManagedAgents {

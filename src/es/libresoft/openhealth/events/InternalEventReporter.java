@@ -24,8 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
-import java.util.List;
-
 import es.libresoft.openhealth.Agent;
 
 public class InternalEventReporter {

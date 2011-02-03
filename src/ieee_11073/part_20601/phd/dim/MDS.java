@@ -40,7 +40,6 @@ import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.fsm.StateHandler;
 
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
