@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.android.aidl;
 
 import es.libresoft.openhealth.android.aidl.IAgent;
+import es.libresoft.openhealth.android.aidl.types.IError;
 
 oneway interface IManagerClientCallback {
 	/**
@@ -38,4 +39,9 @@ oneway interface IManagerClientCallback {
 	 * Called when agent releases the association with the manager.
 	 */
 	void agentUnplugged(in IAgent agent);
+
+	/**
+	 * Notifies asynchronous error in the agent
+	 */
+	void error(in IAgent agent, in IError error);
 }
