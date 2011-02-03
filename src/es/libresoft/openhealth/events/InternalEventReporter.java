@@ -56,7 +56,7 @@ public class InternalEventReporter {
 			iEvent.receivedMeasure(agent, mr);
 	}
 
-	public static void error(int errorCode) {
-		iEvent.error(errorCode);
+	public static void error(Agent agent, int errorCode) {
+		iEvent.error(agent, errorCode);
 	}
 }

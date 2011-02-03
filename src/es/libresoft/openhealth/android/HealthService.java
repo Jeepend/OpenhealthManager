@@ -103,7 +103,7 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void error(int errorCode) {
+		public void error(Agent agent, int errorCode) {
 			System.err.println("Report error code: " + errorCode);
 		}
 	};

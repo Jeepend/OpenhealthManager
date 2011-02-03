@@ -55,7 +55,7 @@ public class ManagerShell {
 		}
 
 		@Override
-		public void error(int errorCode) {
+		public void error(Agent agent, int errorCode) {
 			System.out.println("TODO: error: " + errorCode);
 		}
 

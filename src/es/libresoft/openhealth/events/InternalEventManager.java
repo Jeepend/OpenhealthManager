@@ -58,5 +58,5 @@ public interface InternalEventManager {
 	 * Event that indicates that an asyncronous error has happen
 	 * @param errorCode The error numeric code
 	 */
-	public void error(int errorCode);
+	public void error(Agent agent, int errorCode);
 }
