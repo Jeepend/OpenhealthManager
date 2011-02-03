@@ -55,6 +55,12 @@ public final class CheckingConfig extends Configuring {
 	}
 
 	@Override
+	public int getStateCode() {
+		return CONNECTED_ASSOCIATED_CONFIGURING_CHECKING_CONFIG;
+	}
+
+
+	@Override
 	public synchronized String getStateName() {
 		return "CheckingConfig";
 	}

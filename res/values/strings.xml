@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources> 
 	<string name="app_name">OpenHealth</string>
+
+	<!-- State Section -->
+
+	<string name="DISCONNECTED">Disconnected</string>
+	<string name="CONNECTED_UNASSOCIATED">Unassociated</string>
+	<string name="CONNECTED_ASSOCIATING">Associating</string>
+	<string name="CONNECTED_ASSOCIATED_CONFIGURING_WAITING">Waiting for Configuration</string>
+	<string name="CONNECTED_ASSOCIATED_CONFIGURING_CHECKING_CONFIG">Checking Configuration</string>
+	<string name="CONNECTED_ASSOCIATED_OPERATING">Operating</string>
+	<string name="CONNECTED_DISASSOCIATING">Disassociating</string>
+
+	<!-- Error Section -->
+
 	<string name="NO_ERROR">No error</string>
 
 	<string name="TIMEOUT_ASSOC" >Timeout in association</string>

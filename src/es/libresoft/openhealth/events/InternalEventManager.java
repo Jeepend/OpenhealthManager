@@ -39,7 +39,7 @@ public interface InternalEventManager {
 	 * @param system_id
 	 * @param state
 	 */
-	public void agentChangeState(Agent agent, String state);
+	public void agentChangeState(Agent agent, int state);
 
 	/**
 	 * Event that indicates that a new agent is available

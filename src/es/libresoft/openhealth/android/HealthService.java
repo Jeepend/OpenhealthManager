@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 
@@ -70,8 +71,40 @@ public class HealthService extends Service {
 	private final InternalEventManager ieManager = new InternalEventManager() {
 
 		@Override
-		public void agentChangeState(Agent agent, String state) {
-			System.out.println("TODO: agentChangeStatus to " + state);
+		public void agentChangeState(Agent agent, int state) {
+			for (IManagerClientCallback c: clients) {
+				try {
+					String str = "";
+					switch (state) {
+					case State.DISCONNECTED:
+						str = getString(R.string.DISCONNECTED);
+						break;
+					case State.CONNECTED_UNASSOCIATED:
+						str = getString(R.string.CONNECTED_UNASSOCIATED);
+						break;
+					case State.CONNECTED_ASSOCIATING:
+						str = getString(R.string.CONNECTED_ASSOCIATING);
+						break;
+					case State.CONNECTED_ASSOCIATED_CONFIGURING_WAITING:
+						str = getString(R.string.CONNECTED_ASSOCIATED_CONFIGURING_WAITING);
+						break;
+					case State.CONNECTED_ASSOCIATED_CONFIGURING_CHECKING_CONFIG:
+						str = getString(R.string.CONNECTED_ASSOCIATED_CONFIGURING_CHECKING_CONFIG);
+						break;
+					case State.CONNECTED_ASSOCIATED_OPERATING:
+						str = getString(R.string.CONNECTED_ASSOCIATED_OPERATING);
+						break;
+					case State.CONNECTED_DISASSOCIATING:
+						str = getString(R.string.CONNECTED_DISASSOCIATING);
+						break;
+					default:
+						return;
+					}
+					c.agentChangeState(new IAgent(agent.getId()), str);
+				} catch (RemoteException e) {
+					clients.remove(c);
+				}
+			}
 		}
 
 		@Override

@@ -54,6 +54,11 @@ public final class WaitingForConfig extends Configuring {
 	}
 
 	@Override
+	public int getStateCode() {
+		return CONNECTED_ASSOCIATED_CONFIGURING_WAITING;
+	}
+
+	@Override
 	public synchronized String getStateName() {
 		return "WaitingForConfig";
 	}

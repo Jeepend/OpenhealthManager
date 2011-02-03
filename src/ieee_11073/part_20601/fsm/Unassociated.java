@@ -30,6 +30,11 @@ public abstract class Unassociated extends Connected {
 	}
 
 	@Override
+	public int getStateCode() {
+		return CONNECTED_UNASSOCIATED;
+	}
+
+	@Override
 	public synchronized String getStateName() {
 		return "Unassociated";
 	}

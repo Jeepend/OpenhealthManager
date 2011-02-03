@@ -46,7 +46,7 @@ public class InternalEventReporter {
 			iEvent.agentUnplugged(agent);
 	}
 
-	public static void agentChangeStatus(Agent agent, String state) {
+	public static void agentChangeStatus(Agent agent, int state) {
 		if (iEvent!=null)
 			iEvent.agentChangeState(agent, state);
 	}

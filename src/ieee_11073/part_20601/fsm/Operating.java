@@ -30,6 +30,11 @@ public abstract class Operating extends Associated {
 	}
 
 	@Override
+	public int getStateCode() {
+		return CONNECTED_ASSOCIATED_OPERATING;
+	}
+
+	@Override
 	public synchronized String getStateName() {
 		return "Operating";
 	}

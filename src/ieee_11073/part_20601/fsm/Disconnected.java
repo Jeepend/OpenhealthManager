@@ -30,6 +30,11 @@ public abstract class Disconnected extends State {
 	}
 
 	@Override
+	public int getStateCode() {
+		return DISCONNECTED;
+	}
+
+	@Override
 	public synchronized String getStateName() {
 		return "Disconected";
 	}

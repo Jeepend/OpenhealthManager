@@ -32,6 +32,12 @@ public abstract class Disassociating extends Connected {
 	}
 
 	@Override
+	public int getStateCode() {
+		return CONNECTED_DISASSOCIATING;
+	}
+
+
+	@Override
 	public synchronized String getStateName() {
 		return "Disassociating";
 	}

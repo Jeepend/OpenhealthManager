@@ -32,6 +32,16 @@ import ieee_11073.part_20601.asn1.ApduType;
 	 */
 public abstract class State {
 
+	public static final int DISCONNECTED										= 1;
+	public static final int CONNECTED_UNASSOCIATED								= 2;
+	public static final int CONNECTED_ASSOCIATING								= 3;
+	public static final int CONNECTED_ASSOCIATED_CONFIGURING_SENDIND_CONFIG		= 4;
+	public static final int CONNECTED_ASSOCIATED_CONFIGURING_WAITING_APPROVAL	= 5;
+	public static final int CONNECTED_ASSOCIATED_CONFIGURING_WAITING			= 6;
+	public static final int CONNECTED_ASSOCIATED_CONFIGURING_CHECKING_CONFIG	= 7;
+	public static final int CONNECTED_ASSOCIATED_OPERATING						= 8;
+	public static final int CONNECTED_DISASSOCIATING							= 9;
+
 	protected StateHandler state_handler;
 
 	public State (StateHandler handler) {
@@ -51,4 +61,6 @@ public abstract class State {
 	public abstract boolean processEvent(Event event);
 
 	public abstract String getStateName();
+
+	public abstract int getStateCode();
 }
