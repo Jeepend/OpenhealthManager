@@ -40,6 +40,7 @@ import es.libresoft.openhealth.android.aidl.IAgentService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
 import es.libresoft.openhealth.events.EventType;
@@ -233,6 +234,10 @@ public class HealthService extends Service {
 		public boolean updateMDS(IAgent agent, IError err) throws RemoteException {
 			Agent a = getAgent(agent);
 
+			if (err == null) {
+				err = new IError();
+			}
+
 			if (a == null) {
 				System.err.println("Invalid agent error");
 				return false;
@@ -250,13 +255,20 @@ public class HealthService extends Service {
 			}
 
 			if (ev.wasError()) {
+				err.setErrCode(ev.getError());
 				try {
-					System.err.println("Error happened getting MDS: " + ErrorFactory.getDefaultErrorGenerator().error2string(ev.getError()));
+					err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(ev.getError()));
 				} catch (ErrorException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					err.setErrMsg(HealthService.this.getString(R.string.UNEXPECTED_ERROR));
 				}
 				return false;
+			}
+
+			err.setErrCode(ErrorCodes.NO_ERROR);
+			try {
+				err.setErrMsg(ErrorFactory.getDefaultErrorGenerator().error2string(ErrorCodes.NO_ERROR));
+			} catch (ErrorException e) {
+				err.setErrMsg(HealthService.this.getString(R.string.NO_ERROR));
 			}
 
 			return ev.getRspData();
