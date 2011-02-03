@@ -55,4 +55,8 @@ public class InternalEventReporter {
 		if (iEvent!=null)
 			iEvent.receivedMeasure(agent, mr);
 	}
+
+	public static void error(int errorCode) {
+		iEvent.error(errorCode);
+	}
 }

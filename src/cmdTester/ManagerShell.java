@@ -54,6 +54,11 @@ public class ManagerShell {
 			System.out.println("TODO: agentUnplugged");
 		}
 
+		@Override
+		public void error(int errorCode) {
+			System.out.println("TODO: error: " + errorCode);
+		}
+
 	};
 
 	/**

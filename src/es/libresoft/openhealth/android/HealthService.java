@@ -101,6 +101,11 @@ public class HealthService extends Service {
 				}
 			}
 		}
+
+		@Override
+		public void error(int errorCode) {
+			System.err.println("Report error code: " + errorCode);
+		}
 	};
 
 	@Override

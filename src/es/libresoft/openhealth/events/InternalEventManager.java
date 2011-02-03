@@ -24,8 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
-import java.util.List;
-
 import es.libresoft.openhealth.Agent;
 
 public interface InternalEventManager {
@@ -55,4 +53,10 @@ public interface InternalEventManager {
 	 * @param agent The agent that is being destroyed
 	 */
 	public void agentUnplugged(Agent agent);
+
+	/**
+	 * Event that indicates that an asyncronous error has happen
+	 * @param errorCode The error numeric code
+	 */
+	public void error(int errorCode);
 }
