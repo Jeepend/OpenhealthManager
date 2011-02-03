@@ -1,14 +1,14 @@
-IEEE-11073-20601-ASN1 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+IEEE_11073_20601_ASN1 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 --
--- ASN.1 definitions from IEEE 20601 for VASC Project
+-- ASN.1 definitions from IEEE 20601 for OpenHealth
 -- ***************************************************
--- Kevin Arruda
--- May 12, 2008
--- LNI Inc.
+-- Santiago Carot Nemesio
+-- Jan 21, 2009
+-- Libresoft
 -- ***************************************************
 -- Notes :
 --
--- These defintions are taken directly from IEEE 11073-20601 Rev. d20 Appendix A.
+-- These defintions are taken directly from IEEE 11073-20601.
 -- The section numbers listed correspond directly to Appendix A of 20601.
 --
 -- ***************************************************
@@ -18,7 +18,7 @@ IEEE-11073-20601-ASN1 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 --
 -- Format: Date | Developer | Specification version changes were made against | Description of changes made. BE THOROUGH. | new document revision
 --
--- 1. 5/14/08 | Kevin Arruda | d20 | Created and formated initial revision. | d20.0
+-- 1. 21/01/2009 | Santiago Carot | d20 | Created and formated initial revision. | d20.0
 -- 2.
 -- 3.
 -- 4.
