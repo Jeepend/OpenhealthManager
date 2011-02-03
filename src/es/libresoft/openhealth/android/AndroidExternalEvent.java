@@ -26,28 +26,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import es.libresoft.openhealth.ErrorCodes;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 
 import java.util.concurrent.Semaphore;
 
-public class AndroidExternalEvent<ResponseType, ErrorType, PrivDataType> extends ExternalEvent<ResponseType, ErrorType, PrivDataType> {
+public class AndroidExternalEvent<ResponseType, PrivDataType> extends ExternalEvent<ResponseType, PrivDataType> {
 
 	private Semaphore sem;
 	private ResponseType rspData;
-	private ErrorType errMsg;
+	private int errror;
 	private boolean processed;
 
 	public AndroidExternalEvent(int eventType, PrivDataType data) {
 		super (eventType, data);
 		sem = new Semaphore(0, true);
-		errMsg = null;
+		errror = ErrorCodes.NO_ERROR;
 		rspData = null;
 		processed = false;
 	}
 
-	public void processed(ResponseType data, ErrorType err) {
+	public void processed(ResponseType data, int err) {
 		this.rspData = data;
-		this.errMsg = err;
+		this.errror = err;
 		processed = true;
 		sem.release();
 	}
@@ -60,14 +61,14 @@ public class AndroidExternalEvent<ResponseType, ErrorType, PrivDataType> extends
 		if (!processed)
 			return false;
 		else
-			return errMsg != null;
+			return errror != ErrorCodes.NO_ERROR;
 	}
 
 	public ResponseType getRspData() {
 		return rspData;
 	}
 
-	public ErrorType getErrMsg() {
-		return errMsg;
+	public int getError() {
+		return errror;
 	}
 }

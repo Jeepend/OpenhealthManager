@@ -103,13 +103,13 @@ public final class MOperating extends Operating {
 	public synchronized boolean processEvent(Event event) {
 		switch (event.getTypeOfEvent()) {
 		case EventType.REQ_GET_PM_STORE:
-			ExternalEvent<Integer, String, GetPmStoreEventData> pmEvent = (ExternalEvent<Integer, String, GetPmStoreEventData>) event;
+			ExternalEvent<Integer, GetPmStoreEventData> pmEvent = (ExternalEvent<Integer, GetPmStoreEventData>) event;
 			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getPrivData().getHandle());
 			pm_store.GET(pmEvent);
 			return true;
 
 		case EventType.REQ_SET:
-			ExternalEvent<Integer, String, SetEventData> setEvent = (ExternalEvent<Integer, String, SetEventData>) event;
+			ExternalEvent<Integer, SetEventData> setEvent = (ExternalEvent<Integer, SetEventData>) event;
 			DIM obj = state_handler.getMDS().getObject(setEvent.getPrivData().getObjectHandle());
 			try {
 				SET_Service serv = (SET_Service) obj;

@@ -28,7 +28,7 @@ package es.libresoft.openhealth.events.application;
 
 import es.libresoft.openhealth.events.Event;
 
-public abstract class ExternalEvent<ResponseType, ErrorType, PrivDataType> extends Event {
+public abstract class ExternalEvent<ResponseType, PrivDataType> extends Event {
 
 	private PrivDataType data;
 
@@ -41,7 +41,7 @@ public abstract class ExternalEvent<ResponseType, ErrorType, PrivDataType> exten
 		return data;
 	}
 
-	public abstract void processed(ResponseType data, ErrorType err);
+	public abstract void processed(ResponseType data, int err);
 
 	public abstract void proccessing() throws InterruptedException;
 
@@ -49,6 +49,6 @@ public abstract class ExternalEvent<ResponseType, ErrorType, PrivDataType> exten
 
 	public abstract ResponseType getRspData();
 
-	public abstract ErrorType getErrMsg();
+	public abstract int getError();
 
 }

@@ -77,6 +77,7 @@ import java.util.Iterator;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.Device;
+import es.libresoft.openhealth.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
@@ -414,18 +415,18 @@ public class MDSManager extends MDS {
 				@Override
 				public void procResponse(DataApdu data) {
 					System.out.println("Received response for get MDS");
-					ExternalEvent<Boolean, String, Object> event = null;
+					ExternalEvent<Boolean, Object> event = null;
 					try {
-						event = (ExternalEvent<Boolean, String, Object>) this.getEvent();
+						event = (ExternalEvent<Boolean, Object>) this.getEvent();
 					} catch (ClassCastException e) {
 
 					}
 
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						//TODO: Unexpected response format
-						System.out.println("TODO: Unexpected response format");
+						System.out.println("Unexpected response format");
 						if (event != null)
-							event.processed(new Boolean(false), "Unexpected response format");
+							event.processed(new Boolean(false), ErrorCodes.UNSPECTED_ERROR);
 						return;
 					}
 
@@ -433,9 +434,9 @@ public class MDSManager extends MDS {
 
 					if (grs.getObj_handle().getValue().getValue() != 0) {
 						//TODO: Unexpected object handle, should be reserved value 0
-						System.out.println("TODO: Unexpected object handle, should be reserved value 0");
+						System.out.println("Unexpected object handle, should be reserved value 0");
 						if (event != null)
-							event.processed(new Boolean(false), "Unexpected object handle, should be reserved value 0");
+							event.processed(new Boolean(false), ErrorCodes.UNSPECTED_ERROR);
 						return;
 					}
 
@@ -454,15 +455,15 @@ public class MDSManager extends MDS {
 					}
 
 					if (event != null)
-						event.processed(new Boolean(true), null);
+						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
 				}
 
 				@Override
 				protected void expiredTimeout(){
 					super.expiredTimeout();
-					ExternalEvent<Boolean, String, Object> event;
+					ExternalEvent<Boolean, Object> event;
 					try {
-						event = (ExternalEvent<Boolean, String, Object>) this.getEvent();
+						event = (ExternalEvent<Boolean, Object>) this.getEvent();
 					} catch (ClassCastException e) {
 						return;
 					}
@@ -470,7 +471,7 @@ public class MDSManager extends MDS {
 					if (event == null)
 						return;
 
-					event.processed(new Boolean(false), "Timeout expired");
+					event.processed(new Boolean(false), ErrorCodes.TIMEOUT_MDS_GET);
 				}
 			};
 			to.setEvent(event);

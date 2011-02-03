@@ -217,7 +217,7 @@ public class HealthService extends Service {
 				return false;
 			}
 
-			AndroidExternalEvent<Boolean, String, Object> ev = new AndroidExternalEvent<Boolean, String, Object>(EventType.REQ_MDS, null);
+			AndroidExternalEvent<Boolean, Object> ev = new AndroidExternalEvent<Boolean, Object>(EventType.REQ_MDS, null);
 
 			a.sendEvent(ev);
 
@@ -229,7 +229,7 @@ public class HealthService extends Service {
 			}
 
 			if (ev.wasError()) {
-				System.err.println("Error happened getting MDS: " + ev.getErrMsg());
+				System.err.println("Error happened getting MDS: " + ev.getError());
 				return false;
 			}
 
