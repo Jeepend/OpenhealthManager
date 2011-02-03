@@ -68,6 +68,6 @@ public final class ErrorCodes {
 	/** Timeout in Scanner confirmed event report */
 	public static final int TIMEOUT_SCN_CONF_EV_REP	=	15;
 
-	/** Unspected error*/
-	public static final int UNSPECTED_ERROR			=	16;
+	/** Unexpected error*/
+	public static final int UNEXPECTED_ERROR		=	16;
 }

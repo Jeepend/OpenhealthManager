@@ -426,7 +426,7 @@ public class MDSManager extends MDS {
 						//TODO: Unexpected response format
 						System.out.println("Unexpected response format");
 						if (event != null)
-							event.processed(new Boolean(false), ErrorCodes.UNSPECTED_ERROR);
+							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -436,7 +436,7 @@ public class MDSManager extends MDS {
 						//TODO: Unexpected object handle, should be reserved value 0
 						System.out.println("Unexpected object handle, should be reserved value 0");
 						if (event != null)
-							event.processed(new Boolean(false), ErrorCodes.UNSPECTED_ERROR);
+							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
