@@ -24,9 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth;
+package es.libresoft.openhealth.error;
 
-/** 
+/**
  * This class defines the used error codes.
  * */
 public final class ErrorCodes {

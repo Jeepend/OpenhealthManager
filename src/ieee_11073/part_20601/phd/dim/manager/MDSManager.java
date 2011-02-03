@@ -77,7 +77,7 @@ import java.util.Iterator;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.Device;
-import es.libresoft.openhealth.ErrorCodes;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;

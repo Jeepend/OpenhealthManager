@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
-import es.libresoft.openhealth.ErrorCodes;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 
 import java.util.concurrent.Semaphore;

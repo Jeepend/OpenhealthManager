@@ -40,6 +40,9 @@ import es.libresoft.openhealth.android.aidl.IAgentService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.error.ErrorException;
+import es.libresoft.openhealth.error.ErrorFactory;
+import es.libresoft.openhealth.error.ErrorString;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
@@ -110,6 +113,7 @@ public class HealthService extends Service {
 		//Set target platform to android to report measures using IPC mechanism
 		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.ANDROID);
 		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage(this.getApplicationContext()));
+		ErrorFactory.setDefaultErrorGenerator(new AndroidError(this.getApplicationContext()));
 		System.out.println("Service created");
 		channelTCP = new TcpManagerChannel();
 		super.onCreate();
@@ -230,7 +234,12 @@ public class HealthService extends Service {
 			}
 
 			if (ev.wasError()) {
-				System.err.println("Error happened getting MDS: " + ev.getError());
+				try {
+					System.err.println("Error happened getting MDS: " + ErrorFactory.getDefaultErrorGenerator().error2string(ev.getError()));
+				} catch (ErrorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return false;
 			}
 
