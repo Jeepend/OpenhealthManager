@@ -42,18 +42,15 @@ import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
-import es.libresoft.openhealth.error.ErrorString;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
-import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.os.RemoteException;
 
