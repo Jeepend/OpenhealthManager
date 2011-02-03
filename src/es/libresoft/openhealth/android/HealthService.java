@@ -104,7 +104,21 @@ public class HealthService extends Service {
 
 		@Override
 		public void error(Agent agent, int errorCode) {
-			System.err.println("Report error code: " + errorCode);
+			IAgent iagent = new IAgent(agent.getId());
+			IError error;
+			try {
+				error = new IError(errorCode, ErrorFactory.getDefaultErrorGenerator().error2string(errorCode));
+			} catch (ErrorException e) {
+				error = new IError(errorCode, HealthService.this.getString(R.string.UNEXPECTED_ERROR));
+			}
+
+			for (IManagerClientCallback c: clients) {
+				try {
+					c.error(iagent, error);
+				} catch (RemoteException e) {
+					clients.remove(c);
+				}
+			}
 		}
 	};
 
