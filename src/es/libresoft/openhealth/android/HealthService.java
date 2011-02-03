@@ -284,7 +284,8 @@ public class HealthService extends Service {
 			try {
 				ev.proccessing();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(err);
 				return false;
 			}
 
