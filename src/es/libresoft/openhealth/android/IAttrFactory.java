@@ -26,9 +26,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import android.os.Parcelable;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
+import es.libresoft.openhealth.android.aidl.types.INomPartition;
+import es.libresoft.openhealth.android.aidl.types.IOID_Type;
+import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.TYPE;
 
 
 public class IAttrFactory {
@@ -38,14 +43,27 @@ public class IAttrFactory {
 		return ihandle;
 	}
 
+	private static ITYPE TYPE2parcelable(TYPE type) {
+		INomPartition partition = new INomPartition(type.getPartition().getValue());
+		IOID_Type code = new IOID_Type(type.getCode().getValue().getValue());
+		ITYPE itype = new ITYPE(partition, code);
+		return itype;
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
+
+		Parcelable parcel = null;
 
 		if (attr == null)
 			return false;
 
-		if (asnAttr instanceof HANDLE) {
-			IHANDLE ihandle = HANDLE2parcelable((HANDLE) asnAttr);
-			attr.setAttr(ihandle);
+		if (asnAttr instanceof HANDLE)
+			parcel = HANDLE2parcelable((HANDLE) asnAttr);
+		else if (asnAttr instanceof TYPE)
+			parcel = TYPE2parcelable((TYPE) asnAttr);
+
+		if (parcel != null) {
+			attr.setAttr(parcel);
 			return true;
 		}
 
