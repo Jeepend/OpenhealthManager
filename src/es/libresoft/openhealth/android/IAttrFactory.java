@@ -31,8 +31,10 @@ import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
+import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
 
 
@@ -50,6 +52,10 @@ public class IAttrFactory {
 		return itype;
 	}
 
+	private static Parcelable SystemModel2parcelable(SystemModel model) {
+		return new ISystemModel(new String(model.getManufacturer()), new String(model.getModel_number()));
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -61,6 +67,8 @@ public class IAttrFactory {
 			parcel = HANDLE2parcelable((HANDLE) asnAttr);
 		else if (asnAttr instanceof TYPE)
 			parcel = TYPE2parcelable((TYPE) asnAttr);
+		else if (asnAttr instanceof SystemModel)
+			parcel = SystemModel2parcelable((SystemModel) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
@@ -70,4 +78,5 @@ public class IAttrFactory {
 		System.err.println("Unknown method provided. Can't create parcelable attribute.");
 		return false;
 	}
+
 }
