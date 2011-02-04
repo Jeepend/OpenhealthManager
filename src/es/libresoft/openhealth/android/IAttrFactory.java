@@ -26,8 +26,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import android.os.Parcelable;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
+import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
@@ -35,6 +40,8 @@ import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
+import ieee_11073.part_20601.asn1.AttrValMap;
+import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.SystemModel;
@@ -67,6 +74,16 @@ public class IAttrFactory {
 		return new IConfigId(confId.getValue());
 	}
 
+	private static Parcelable AttrValMap2parcelable(AttrValMap valMap) {
+		ArrayList<IAttrValMapEntry> values = new ArrayList<IAttrValMapEntry>();
+		Iterator<AttrValMapEntry> it = valMap.getValue().iterator();
+		while (it.hasNext()) {
+			AttrValMapEntry entry = it.next();
+			values.add(new IAttrValMapEntry(new IOID_Type(entry.getAttribute_id().getValue().getValue()), entry.getAttribute_len()));
+		}
+		return new IAttrValMap(values);
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -84,6 +101,8 @@ public class IAttrFactory {
 			parcel = OCTETSTRING2parcelable((byte []) asnAttr);
 		else if (asnAttr instanceof ConfigId)
 			parcel = ConfigId2parcelable((ConfigId) asnAttr);
+		else if (asnAttr instanceof AttrValMap)
+			parcel = AttrValMap2parcelable((AttrValMap) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
