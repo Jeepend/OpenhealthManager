@@ -30,6 +30,7 @@ import android.os.Parcelable;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
+import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
@@ -56,6 +57,10 @@ public class IAttrFactory {
 		return new ISystemModel(new String(model.getManufacturer()), new String(model.getModel_number()));
 	}
 
+	private static Parcelable OCTETSTRING2parcelable(byte[] octetString) {
+		return new IOCTETSTRING(octetString);
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -69,6 +74,8 @@ public class IAttrFactory {
 			parcel = TYPE2parcelable((TYPE) asnAttr);
 		else if (asnAttr instanceof SystemModel)
 			parcel = SystemModel2parcelable((SystemModel) asnAttr);
+		else if (asnAttr instanceof byte[])
+			parcel = OCTETSTRING2parcelable((byte []) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
