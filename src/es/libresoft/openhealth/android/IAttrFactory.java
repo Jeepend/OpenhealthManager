@@ -28,12 +28,14 @@ package es.libresoft.openhealth.android;
 
 import android.os.Parcelable;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.types.IConfigId;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
+import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
@@ -61,6 +63,10 @@ public class IAttrFactory {
 		return new IOCTETSTRING(octetString);
 	}
 
+	private static Parcelable ConfigId2parcelable(ConfigId confId) {
+		return new IConfigId(confId.getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -76,6 +82,8 @@ public class IAttrFactory {
 			parcel = SystemModel2parcelable((SystemModel) asnAttr);
 		else if (asnAttr instanceof byte[])
 			parcel = OCTETSTRING2parcelable((byte []) asnAttr);
+		else if (asnAttr instanceof ConfigId)
+			parcel = ConfigId2parcelable((ConfigId) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
