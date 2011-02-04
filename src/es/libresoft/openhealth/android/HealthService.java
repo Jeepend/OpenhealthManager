@@ -248,19 +248,25 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void getAttribute(IAgent agent, int attrId, IAttribute attr)
+		public void getAttribute(IAgent agent, int attrId, IAttribute attr, IError error)
 				throws RemoteException {
 
 			Agent a = getAgent(agent);
+			if (error == null || attr == null)
+				return;
 
 			if (a == null) {
-				System.err.println("Invalid agent error");
-				attr  = null;
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
 				return;
 			}
 
 			Attribute at = a.mdsHandler.getMDS().getAttribute(attrId);
-			IAttrFactory.getParcelableAttribute(at.getAttributeType(), attr);
+			if (at == null || !IAttrFactory.getParcelableAttribute(at.getAttributeType(), attr)) {
+				error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
+				setErrorMessage(error);
+				return;
+			}
 		}
 
 		@Override

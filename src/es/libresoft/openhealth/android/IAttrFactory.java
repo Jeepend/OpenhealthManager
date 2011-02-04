@@ -38,14 +38,18 @@ public class IAttrFactory {
 		return ihandle;
 	}
 
-	public static final void getParcelableAttribute (Object asnAttr, IAttribute attr) {
+	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
+
+		if (attr == null)
+			return false;
 
 		if (asnAttr instanceof HANDLE) {
 			IHANDLE ihandle = HANDLE2parcelable((HANDLE) asnAttr);
 			attr.setAttr(ihandle);
-			return;
+			return true;
 		}
 
 		System.err.println("Unknown method provided. Can't create parcelable attribute.");
+		return false;
 	}
 }

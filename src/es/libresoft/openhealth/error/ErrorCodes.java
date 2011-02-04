@@ -72,4 +72,6 @@ public final class ErrorCodes {
 	public static final int UNEXPECTED_ERROR		=	16;
 	/** Unknown agent error*/
 	public static final int UNKNOWN_AGENT			=	17;
+	/** Invalid attribute */
+	public static final int INVALID_ATTRIBUTE		=	18;
 }

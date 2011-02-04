@@ -61,4 +61,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	<string name="UNEXPECTED_ERROR">Unexpected error</string>
 	<string name="UNKNOWN_AGENT">Unknown agent error</string>
+	<string name="INVALID_ATTRIBUTE">Invalid attribute</string>
 </resources>
