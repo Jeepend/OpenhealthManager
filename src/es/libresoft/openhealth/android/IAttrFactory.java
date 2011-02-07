@@ -39,6 +39,7 @@ import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.IHighResRelativeTime;
+import es.libresoft.openhealth.android.aidl.types.IINT_U16;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeCapState;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeInfo;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
@@ -58,6 +59,7 @@ import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.HighResRelativeTime;
+import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
@@ -150,6 +152,10 @@ public class IAttrFactory {
 		return new IPowerStatus(new IBITSTRING(powerStatus.getValue().getValue(), powerStatus.getValue().getTrailBitsCnt()));
 	}
 
+	private static IINT_U16 INT_U162parcelable(INT_U16 intu16) {
+		return new IINT_U16(intu16.getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -183,6 +189,8 @@ public class IAttrFactory {
 			parcel = AbsoluteTimeAdjust2parcelable((AbsoluteTimeAdjust) asnAttr);
 		else if (asnAttr instanceof PowerStatus)
 			parcel = PowerStatus2parcelable((PowerStatus) asnAttr);
+		else if (asnAttr instanceof INT_U16)
+			parcel = INT_U162parcelable((INT_U16) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
