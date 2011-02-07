@@ -33,20 +33,25 @@ import android.os.Parcelable;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
+import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
+import es.libresoft.openhealth.android.aidl.types.IMdsTimeCapState;
+import es.libresoft.openhealth.android.aidl.types.IMdsTimeInfo;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
 import es.libresoft.openhealth.android.aidl.types.IProductionSpec;
 import es.libresoft.openhealth.android.aidl.types.IProductionSpecEntry;
+import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.SystemModel;
@@ -101,6 +106,14 @@ public class IAttrFactory {
 		return new IProductionSpec(values);
 	}
 
+	private static IMdsTimeInfo MdsTimeInfo2parcelable(MdsTimeInfo timeInfo) {
+		return new IMdsTimeInfo(new IMdsTimeCapState(new IBITSTRING(timeInfo.getMds_time_cap_state().getValue().getValue(), timeInfo.getMds_time_cap_state().getValue().getTrailBitsCnt())),
+				new IOID_Type(timeInfo.getTime_sync_protocol().getValue().getValue().getValue()),
+				new IRelativeTime(timeInfo.getTime_sync_accuracy().getValue().getValue()),
+				timeInfo.getTime_resolution_abs_time(), timeInfo.getTime_resolution_rel_time(),
+				timeInfo.getTime_resolution_high_res_time().getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -122,6 +135,8 @@ public class IAttrFactory {
 			parcel = AttrValMap2parcelable((AttrValMap) asnAttr);
 		else if (asnAttr instanceof ProductionSpec)
 			parcel = AttrProductionSpec2parcelable((ProductionSpec) asnAttr);
+		else if (asnAttr instanceof MdsTimeInfo)
+			parcel = MdsTimeInfo2parcelable((MdsTimeInfo) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
