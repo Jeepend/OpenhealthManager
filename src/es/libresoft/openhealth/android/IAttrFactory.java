@@ -30,13 +30,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.os.Parcelable;
+import es.libresoft.mdnf.FloatType;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTime;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTimeAdjust;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
 import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
+import es.libresoft.openhealth.android.aidl.types.IBatMeasure;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
+import es.libresoft.openhealth.android.aidl.types.IFLOAT_Type;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.IHighResRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.IINT_U16;
@@ -56,6 +59,7 @@ import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
+import ieee_11073.part_20601.asn1.BatMeasure;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.HighResRelativeTime;
@@ -156,6 +160,15 @@ public class IAttrFactory {
 		return new IINT_U16(intu16.getValue());
 	}
 
+	private static IBatMeasure BatMeasure2parcelable(BatMeasure batMeasure) {
+		try {
+			return new IBatMeasure(new IFLOAT_Type(new FloatType(batMeasure.getValue().getValue().getValue()).doubleValueRepresentation()),
+								new IOID_Type(batMeasure.getUnit_().getValue().getValue()));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -191,6 +204,8 @@ public class IAttrFactory {
 			parcel = PowerStatus2parcelable((PowerStatus) asnAttr);
 		else if (asnAttr instanceof INT_U16)
 			parcel = INT_U162parcelable((INT_U16) asnAttr);
+		else if (asnAttr instanceof BatMeasure)
+			parcel = BatMeasure2parcelable((BatMeasure) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
