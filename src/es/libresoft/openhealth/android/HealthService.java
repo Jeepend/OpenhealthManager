@@ -31,6 +31,7 @@ import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -246,6 +247,39 @@ public class HealthService extends Service {
 		public void connect(IAgent agent) throws RemoteException {
 			// TODO Auto-generated method stub
 			System.out.println("TODO: Connect with the agent");
+		}
+
+		@Override
+		public void getAttributes(IAgent agent, List<IAttribute> attrs, IError error) {
+
+			Agent a = getAgent(agent);
+
+			if (error == null || attrs == null)
+				return;
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			Hashtable<Integer, Attribute> attList = a.mdsHandler.getMDS().getAttributes();
+			for (Integer key: attList.keySet()) {
+				Attribute att = attList.get(key);
+				IAttribute iAtt = new IAttribute();
+				if (!IAttrFactory.getParcelableAttribute(att.getAttributeType(), iAtt)) {
+					error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
+					setErrorMessage(error);
+					return;
+				}
+				iAtt.setAttrId(key);
+				iAtt.setAttrIdStr(DIM_Tools.getAttributeName(key));
+
+				attrs.add(iAtt);
+			}
+
+			error.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(error);
 		}
 
 		@Override

@@ -84,6 +84,10 @@ public abstract class DIM {
 		return null;
 	}
 
+	public Hashtable<Integer,Attribute> getAttributes() {
+		return attributeList;
+	}
+
 	public void addAttribute(Attribute attr){
 		attributeList.put(new Integer(attr.getAttributeID()), attr);
 	}
