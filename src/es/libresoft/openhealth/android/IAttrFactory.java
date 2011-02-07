@@ -37,6 +37,7 @@ import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
 import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
+import es.libresoft.openhealth.android.aidl.types.IHighResRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeCapState;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeInfo;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
@@ -53,6 +54,7 @@ import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.HighResRelativeTime;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
@@ -132,6 +134,10 @@ public class IAttrFactory {
 		return new IRelativeTime(relTime.getValue().getValue());
 	}
 
+	private static IHighResRelativeTime HighResRelativeTime2parcelable(HighResRelativeTime relTime) {
+		return new IHighResRelativeTime(new IOCTETSTRING(relTime.getValue()));
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -159,6 +165,8 @@ public class IAttrFactory {
 			parcel = AbsoluteTime2parcelable((AbsoluteTime) asnAttr);
 		else if (asnAttr instanceof RelativeTime)
 			parcel = RelativeTime2parcelable((RelativeTime) asnAttr);
+		else if (asnAttr instanceof HighResRelativeTime)
+			parcel = HighResRelativeTime2parcelable((HighResRelativeTime) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
