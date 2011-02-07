@@ -50,6 +50,7 @@ import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
+import es.libresoft.openhealth.utils.DIM_Tools;
 
 import android.app.Service;
 import android.content.Intent;
@@ -267,6 +268,12 @@ public class HealthService extends Service {
 				setErrorMessage(error);
 				return;
 			}
+
+			attr.setAttrId(attrId);
+			attr.setAttrIdStr(DIM_Tools.getAttributeName(attrId));
+
+			error.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(error);
 		}
 
 		@Override
