@@ -96,19 +96,19 @@ public class IAttrFactory {
 		return itype;
 	}
 
-	private static Parcelable SystemModel2parcelable(SystemModel model) {
+	private static ISystemModel SystemModel2parcelable(SystemModel model) {
 		return new ISystemModel(new String(model.getManufacturer()), new String(model.getModel_number()));
 	}
 
-	private static Parcelable OCTETSTRING2parcelable(byte[] octetString) {
+	private static IOCTETSTRING OCTETSTRING2parcelable(byte[] octetString) {
 		return new IOCTETSTRING(octetString);
 	}
 
-	private static Parcelable ConfigId2parcelable(ConfigId confId) {
+	private static IConfigId ConfigId2parcelable(ConfigId confId) {
 		return new IConfigId(confId.getValue());
 	}
 
-	private static Parcelable AttrValMap2parcelable(AttrValMap valMap) {
+	private static IAttrValMap AttrValMap2parcelable(AttrValMap valMap) {
 		ArrayList<IAttrValMapEntry> values = new ArrayList<IAttrValMapEntry>();
 		Iterator<AttrValMapEntry> it = valMap.getValue().iterator();
 		while (it.hasNext()) {
@@ -118,7 +118,7 @@ public class IAttrFactory {
 		return new IAttrValMap(values);
 	}
 
-	private static Parcelable AttrProductionSpec2parcelable(ProductionSpec spec) {
+	private static IProductionSpec AttrProductionSpec2parcelable(ProductionSpec spec) {
 		ArrayList<IProductionSpecEntry> values = new ArrayList<IProductionSpecEntry>();
 		Iterator<ProdSpecEntry> it = spec.getValue().iterator();
 		while (it.hasNext()) {
