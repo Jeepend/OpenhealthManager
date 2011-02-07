@@ -31,6 +31,7 @@ import java.util.Iterator;
 
 import android.os.Parcelable;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTime;
+import es.libresoft.openhealth.android.aidl.types.IAbsoluteTimeAdjust;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
@@ -50,6 +51,7 @@ import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import ieee_11073.part_20601.asn1.AbsoluteTime;
+import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
@@ -138,6 +140,10 @@ public class IAttrFactory {
 		return new IHighResRelativeTime(new IOCTETSTRING(relTime.getValue()));
 	}
 
+	private static IAbsoluteTimeAdjust AbsoluteTimeAdjust2parcelable(AbsoluteTimeAdjust absTimeAdj) {
+		return new IAbsoluteTimeAdjust(new IOCTETSTRING(absTimeAdj.getValue()));
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -167,6 +173,8 @@ public class IAttrFactory {
 			parcel = RelativeTime2parcelable((RelativeTime) asnAttr);
 		else if (asnAttr instanceof HighResRelativeTime)
 			parcel = HighResRelativeTime2parcelable((HighResRelativeTime) asnAttr);
+		else if (asnAttr instanceof AbsoluteTimeAdjust)
+			parcel = AbsoluteTimeAdjust2parcelable((AbsoluteTimeAdjust) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
