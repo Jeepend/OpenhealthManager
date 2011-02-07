@@ -56,6 +56,7 @@ import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
+import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
 
@@ -127,6 +128,10 @@ public class IAttrFactory {
 							absTime.getSec_fractions().getValue());
 	}
 
+	private static IRelativeTime RelativeTime2parcelable(RelativeTime relTime) {
+		return new IRelativeTime(relTime.getValue().getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -152,6 +157,8 @@ public class IAttrFactory {
 			parcel = MdsTimeInfo2parcelable((MdsTimeInfo) asnAttr);
 		else if (asnAttr instanceof AbsoluteTime)
 			parcel = AbsoluteTime2parcelable((AbsoluteTime) asnAttr);
+		else if (asnAttr instanceof RelativeTime)
+			parcel = RelativeTime2parcelable((RelativeTime) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
