@@ -38,12 +38,17 @@ import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
+import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
+import es.libresoft.openhealth.android.aidl.types.IProductionSpec;
+import es.libresoft.openhealth.android.aidl.types.IProductionSpecEntry;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.ProdSpecEntry;
+import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
 
@@ -84,6 +89,18 @@ public class IAttrFactory {
 		return new IAttrValMap(values);
 	}
 
+	private static Parcelable AttrProductionSpec2parcelable(ProductionSpec spec) {
+		ArrayList<IProductionSpecEntry> values = new ArrayList<IProductionSpecEntry>();
+		Iterator<ProdSpecEntry> it = spec.getValue().iterator();
+		while (it.hasNext()) {
+			ProdSpecEntry entry = it.next();
+			values.add(new IProductionSpecEntry(entry.getSpec_type(),
+									new IPrivateOid(entry.getComponent_id().getValue().getValue()),
+									new IOCTETSTRING(entry.getProd_spec())));
+		}
+		return new IProductionSpec(values);
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -103,6 +120,8 @@ public class IAttrFactory {
 			parcel = ConfigId2parcelable((ConfigId) asnAttr);
 		else if (asnAttr instanceof AttrValMap)
 			parcel = AttrValMap2parcelable((AttrValMap) asnAttr);
+		else if (asnAttr instanceof ProductionSpec)
+			parcel = AttrProductionSpec2parcelable((ProductionSpec) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
