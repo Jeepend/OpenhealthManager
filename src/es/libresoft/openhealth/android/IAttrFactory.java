@@ -36,6 +36,7 @@ import es.libresoft.openhealth.android.aidl.types.IAbsoluteTimeAdjust;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
+import es.libresoft.openhealth.android.aidl.types.IAuthBodyAndStrucType;
 import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
 import es.libresoft.openhealth.android.aidl.types.IBatMeasure;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
@@ -52,6 +53,8 @@ import es.libresoft.openhealth.android.aidl.types.IPowerStatus;
 import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
 import es.libresoft.openhealth.android.aidl.types.IProductionSpec;
 import es.libresoft.openhealth.android.aidl.types.IProductionSpecEntry;
+import es.libresoft.openhealth.android.aidl.types.IRegCertData;
+import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
@@ -68,6 +71,8 @@ import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
+import ieee_11073.part_20601.asn1.RegCertData;
+import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
@@ -169,6 +174,18 @@ public class IAttrFactory {
 		}
 	}
 
+	private static IRegCertDataList RegCertDataList2parcelable(RegCertDataList asnAttr) {
+		ArrayList<IRegCertData> values = new ArrayList<IRegCertData>();
+		Iterator<RegCertData> it = asnAttr.getValue().iterator();
+		while (it.hasNext()) {
+			RegCertData entry = it.next();
+			values.add(new IRegCertData(new IAuthBodyAndStrucType(entry.getAuth_body_and_struc_type().getAuth_body().getValue(),
+											entry.getAuth_body_and_struc_type().getAuth_body_struc_type().getValue()),
+											null));
+		}
+		return new IRegCertDataList(values);
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -206,6 +223,8 @@ public class IAttrFactory {
 			parcel = INT_U162parcelable((INT_U16) asnAttr);
 		else if (asnAttr instanceof BatMeasure)
 			parcel = BatMeasure2parcelable((BatMeasure) asnAttr);
+		else if (asnAttr instanceof RegCertDataList)
+			parcel = RegCertDataList2parcelable((RegCertDataList) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
