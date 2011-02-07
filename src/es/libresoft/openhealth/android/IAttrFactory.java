@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.os.Parcelable;
+import es.libresoft.openhealth.android.aidl.types.IAbsoluteTime;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
@@ -47,6 +48,7 @@ import es.libresoft.openhealth.android.aidl.types.IProductionSpecEntry;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
+import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.ConfigId;
@@ -114,6 +116,17 @@ public class IAttrFactory {
 				timeInfo.getTime_resolution_high_res_time().getValue());
 	}
 
+	private static IAbsoluteTime AbsoluteTime2parcelable(AbsoluteTime absTime) {
+		return new IAbsoluteTime(absTime.getCentury().getValue(),
+							absTime.getYear().getValue(),
+							absTime.getMonth().getValue(),
+							absTime.getDay().getValue(),
+							absTime.getHour().getValue(),
+							absTime.getMinute().getValue(),
+							absTime.getSecond().getValue(),
+							absTime.getSec_fractions().getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -137,6 +150,8 @@ public class IAttrFactory {
 			parcel = AttrProductionSpec2parcelable((ProductionSpec) asnAttr);
 		else if (asnAttr instanceof MdsTimeInfo)
 			parcel = MdsTimeInfo2parcelable((MdsTimeInfo) asnAttr);
+		else if (asnAttr instanceof AbsoluteTime)
+			parcel = AbsoluteTime2parcelable((AbsoluteTime) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
