@@ -58,6 +58,8 @@ import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
+import es.libresoft.openhealth.android.aidl.types.ITypeVer;
+import es.libresoft.openhealth.android.aidl.types.ITypeVerList;
 import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
 import ieee_11073.part_20601.asn1.AttrValMap;
@@ -76,6 +78,8 @@ import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
+import ieee_11073.part_20601.asn1.TypeVer;
+import ieee_11073.part_20601.asn1.TypeVerList;
 
 
 public class IAttrFactory {
@@ -186,6 +190,16 @@ public class IAttrFactory {
 		return new IRegCertDataList(values);
 	}
 
+	private static ITypeVerList TypeVerList2parcelable(TypeVerList verList) {
+		ArrayList<ITypeVer> values = new ArrayList<ITypeVer>();
+		Iterator<TypeVer> it = verList.getValue().iterator();
+		while (it.hasNext()) {
+			TypeVer ver = it.next();
+			values.add(new ITypeVer(new IOID_Type(ver.getType().getValue().getValue()), ver.getVersion()));
+		}
+		return new ITypeVerList(values);
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -225,6 +239,8 @@ public class IAttrFactory {
 			parcel = BatMeasure2parcelable((BatMeasure) asnAttr);
 		else if (asnAttr instanceof RegCertDataList)
 			parcel = RegCertDataList2parcelable((RegCertDataList) asnAttr);
+		else if (asnAttr instanceof TypeVerList)
+			parcel = TypeVerList2parcelable((TypeVerList) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
