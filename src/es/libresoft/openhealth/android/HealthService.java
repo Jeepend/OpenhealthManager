@@ -30,7 +30,6 @@ import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -205,11 +204,10 @@ public class HealthService extends Service {
 		@Override
 		public void agents(List<IAgent> agentList) throws RemoteException {
 			if (agentList == null)
-				agentList= new ArrayList<IAgent>();
+				return;
 
-			for(Agent agent: agents) {
+			for(Agent agent: agents)
 				agentList.add(new IAgent(agent.getId()));
-			}
 		}
 
 		@Override
