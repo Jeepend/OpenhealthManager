@@ -24,60 +24,55 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android;
+package es.libresoft.openhealth.android.aidl.types.measures;
 
-import es.libresoft.mdnf.FloatType;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AndroidValueMeasure implements Parcelable {
-	private int measure_type;
-	//internal value representation by exponent and mantissa (float is not needed to be pass from ipc call)
-	private int value_exp;
-	private int value_mag;
+public class IMeasureAttribute implements Parcelable {
 
-	public static final Parcelable.Creator<AndroidValueMeasure> CREATOR =
-			new Parcelable.Creator<AndroidValueMeasure>() {
-	    public AndroidValueMeasure createFromParcel(Parcel in) {
-	        return new AndroidValueMeasure(in);
-	    }
+	private int type; /* Id type */
+	private int code; /* value */
 
-	    public AndroidValueMeasure[] newArray(int size) {
-	        return new AndroidValueMeasure[size];
-	    }
+	public static final Parcelable.Creator<IMeasureAttribute> CREATOR =
+			new Parcelable.Creator<IMeasureAttribute>() {
+		public IMeasureAttribute createFromParcel(Parcel in) {
+			return new IMeasureAttribute(in);
+		}
+
+		public IMeasureAttribute[] newArray(int size) {
+			return new IMeasureAttribute[size];
+		}
 	};
 
-	private AndroidValueMeasure (Parcel in){
-    	measure_type = in.readInt();
-    	value_exp = in.readInt();
-    	value_mag = in.readInt();
-    }
-
-	public AndroidValueMeasure (int mType, int exp, int mag){
-		measure_type = mType;
-		value_exp = exp;
-		value_mag = mag;
+	private IMeasureAttribute (Parcel in){
+		type = in.readInt();
+		code = in.readInt();
 	}
 
-	public int getMeasureType(){return measure_type;}
+	public IMeasureAttribute (int type, int code){
+		this.type = type;
+		this.code = code;
+	}
+
 
 	@Override
 	public int describeContents() {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(measure_type);
-		dest.writeInt(value_exp);
-		dest.writeInt(value_mag);
+		dest.writeInt(type);
+		dest.writeInt(code);
 	}
 
-	public FloatType getFloatType () throws Exception{
-		return new FloatType(value_exp,value_mag);
+	public int getAttrId () {
+		return this.type;
 	}
 
-	public String toString(){
-		return value_mag + "*10^" + value_exp;
+	public int getCode () {
+		return this.code;
 	}
 }

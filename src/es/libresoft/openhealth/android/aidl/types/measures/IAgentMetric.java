@@ -24,55 +24,66 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android;
+package es.libresoft.openhealth.android.aidl.types.measures;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AndroidAttribute implements Parcelable {
+public class IAgentMetric implements Parcelable {
 
-	private int type; /* Id type */
-	private int code; /* value */
+	public ArrayList<Parcelable> attributes = new ArrayList<Parcelable>();
+	public ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
 
-	public static final Parcelable.Creator<AndroidAttribute> CREATOR =
-			new Parcelable.Creator<AndroidAttribute>() {
-	    public AndroidAttribute createFromParcel(Parcel in) {
-	        return new AndroidAttribute(in);
-	    }
+	public static final Parcelable.Creator<IAgentMetric> CREATOR =
+			new Parcelable.Creator<IAgentMetric>() {
+		public IAgentMetric createFromParcel(Parcel in) {
+			return new IAgentMetric(in);
+		}
 
-	    public AndroidAttribute[] newArray(int size) {
-	        return new AndroidAttribute[size];
-	    }
+		public IAgentMetric[] newArray(int size) {
+			return new IAgentMetric[size];
+		}
 	};
 
-	private AndroidAttribute (Parcel in){
-		type = in.readInt();
-		code = in.readInt();
+	private IAgentMetric (Parcel in){
+		java.lang.ClassLoader cl = (java.lang.ClassLoader)this.getClass().getClassLoader();
+		in.readList(attributes, cl);
+		in.readList(measures, cl);
 	}
-
-	public AndroidAttribute (int type, int code){
-		this.type = type;
-		this.code = code;
-	}
-
-
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	public IAgentMetric(){}
+
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(type);
-		dest.writeInt(code);
+		dest.writeList(attributes);
+		dest.writeList(measures);
 	}
 
-	public int getAttrId () {
-		return this.type;
+	public void addMeasure(Parcelable obj) {
+		measures.add(obj);
 	}
 
-	public int getCode () {
-		return this.code;
+	public void addAttribute(Parcelable obj) {
+		attributes.add(obj);
+	}
+
+	public List<Parcelable> getAttributes(){
+		return attributes;
+	}
+
+	public List<Parcelable> getMeasures(){
+		return measures;
+	}
+
+	public void clearMeasures() {
+		measures.clear();
 	}
 }

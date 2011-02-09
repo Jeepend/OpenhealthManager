@@ -24,66 +24,60 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-package es.libresoft.openhealth.android;
+package es.libresoft.openhealth.android.aidl.types.measures;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import es.libresoft.mdnf.FloatType;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AgentMetric implements Parcelable {
+public class IValueMeasure implements Parcelable {
+	private int measure_type;
+	//internal value representation by exponent and mantissa (float is not needed to be pass from ipc call)
+	private int value_exp;
+	private int value_mag;
 
-	public ArrayList<Parcelable> attributes = new ArrayList<Parcelable>();
-	public ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
+	public static final Parcelable.Creator<IValueMeasure> CREATOR =
+			new Parcelable.Creator<IValueMeasure>() {
+		public IValueMeasure createFromParcel(Parcel in) {
+			return new IValueMeasure(in);
+		}
 
-	public static final Parcelable.Creator<AgentMetric> CREATOR =
-			new Parcelable.Creator<AgentMetric>() {
-	    public AgentMetric createFromParcel(Parcel in) {
-	        return new AgentMetric(in);
-	    }
-
-	    public AgentMetric[] newArray(int size) {
-	        return new AgentMetric[size];
-	    }
+		public IValueMeasure[] newArray(int size) {
+			return new IValueMeasure[size];
+		}
 	};
 
-	private AgentMetric (Parcel in){
-		java.lang.ClassLoader cl = (java.lang.ClassLoader)this.getClass().getClassLoader();
-		in.readList(attributes, cl);
-		in.readList(measures, cl);
+	private IValueMeasure (Parcel in){
+		measure_type = in.readInt();
+		value_exp = in.readInt();
+		value_mag = in.readInt();
 	}
+
+	public IValueMeasure (int mType, int exp, int mag){
+		measure_type = mType;
+		value_exp = exp;
+		value_mag = mag;
+	}
+
+	public int getMeasureType(){return measure_type;}
+
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public AgentMetric(){}
-
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeList(attributes);
-		dest.writeList(measures);
+		dest.writeInt(measure_type);
+		dest.writeInt(value_exp);
+		dest.writeInt(value_mag);
 	}
 
-	public void addMeasure(Parcelable obj) {
-		measures.add(obj);
+	public FloatType getFloatType () throws Exception{
+		return new FloatType(value_exp,value_mag);
 	}
 
-	public void addAttribute(Parcelable obj) {
-		attributes.add(obj);
-	}
-
-	public List getAttributes(){
-		return attributes;
-	}
-
-	public List getMeasures(){
-		return measures;
-	}
-
-	public void clearMeasures() {
-		measures.clear();
+	public String toString(){
+		return value_mag + "*10^" + value_exp;
 	}
 }

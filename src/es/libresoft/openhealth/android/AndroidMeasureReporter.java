@@ -31,25 +31,27 @@ import java.util.List;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.android.aidl.types.measures.IDateMeasure;
+import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
+import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
+import es.libresoft.openhealth.android.aidl.types.measures.IMeasureAttribute;
 import es.libresoft.openhealth.events.MeasureReporter;
 
 public class AndroidMeasureReporter implements MeasureReporter{
 
-	//private final ArrayList<Parcelable> attributes = new ArrayList<Parcelable>();
-	//private final ArrayList<Parcelable> measures = new ArrayList<Parcelable>();
-	AgentMetric metric = new AgentMetric();
+	IAgentMetric metric = new IAgentMetric();
 
 	@Override
 	public void addMeasure(int mType, Object data) {
 		if (data instanceof SFloatType){
 			SFloatType sf = (SFloatType)data;
-			metric.addMeasure(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
 		}else if (data instanceof FloatType){
 			FloatType sf = (FloatType)data;
-			metric.addMeasure(new AndroidValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;
-			metric.addMeasure(new AndroidDateMeasure(mType,timestamp.getTime()));
+			metric.addMeasure(new IDateMeasure(mType,timestamp.getTime()));
 		}else System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
 	}
 
@@ -69,10 +71,10 @@ public class AndroidMeasureReporter implements MeasureReporter{
 
 	@Override
 	public void set_attribute(int type, int value) {
-		metric.addAttribute(new AndroidAttribute(type, value));
+		metric.addAttribute(new IMeasureAttribute(type, value));
 	}
 
-	public AgentMetric getMetric() {
+	public IAgentMetric getMetric() {
 		return metric;
 	}
 
