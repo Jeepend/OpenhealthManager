@@ -45,10 +45,10 @@ public class AndroidMeasureReporter implements MeasureReporter{
 	public void addMeasure(int mType, Object data) {
 		if (data instanceof SFloatType){
 			SFloatType sf = (SFloatType)data;
-			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
 		}else if (data instanceof FloatType){
 			FloatType sf = (FloatType)data;
-			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude()));
+			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;
 			metric.addMeasure(new IDateMeasure(mType,timestamp.getTime()));
