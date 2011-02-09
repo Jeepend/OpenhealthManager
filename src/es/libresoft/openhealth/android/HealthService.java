@@ -41,6 +41,7 @@ import es.libresoft.openhealth.android.aidl.IAgentService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
@@ -110,7 +111,19 @@ public class HealthService extends Service {
 
 		@Override
 		public void receivedMeasure(Agent agent, MeasureReporter mr) {
-			System.out.println("TODO: receivedMeasure....");
+			if (!(mr instanceof AndroidMeasureReporter))
+				return;
+			AndroidMeasureReporter amr = (AndroidMeasureReporter) mr;
+			IAgentMetric metric = amr.getMetric();
+			IAgent iagent = new IAgent(agent.getId());
+
+			for (IManagerClientCallback c: clients) {
+				try {
+					c.agentNewMeassure(iagent, metric);
+				} catch (RemoteException e) {
+					clients.remove(c);
+				}
+			}
 		}
 
 		@Override
