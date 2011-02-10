@@ -177,6 +177,7 @@ public class HealthService extends Service {
 		//Set target platform to android to report measures using IPC mechanism
 		MeasureReporterFactory.setDefaultMeasureReporter(MeasureReporterFactory.ANDROID);
 		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage(this.getApplicationContext()));
+		AttributeUtils.setContext(getApplicationContext());
 		ErrorFactory.setDefaultErrorGenerator(new AndroidError(this.getApplicationContext()));
 		System.out.println("Service created");
 		channelTCP = new TcpManagerChannel();
