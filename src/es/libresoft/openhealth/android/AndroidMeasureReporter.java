@@ -26,12 +26,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+
+import android.os.Parcelable;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.android.aidl.types.measures.IDateMeasure;
+import es.libresoft.openhealth.android.aidl.types.measures.IMeasureArray;
 import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasureAttribute;
@@ -52,7 +57,30 @@ public class AndroidMeasureReporter implements MeasureReporter{
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;
 			metric.addMeasure(new IDateMeasure(mType,timestamp.getTime()));
-		}else System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
+		}else if (data instanceof List<?>) {
+			ArrayList<Parcelable> values = new ArrayList<Parcelable>();
+			List<?> list = (List<?>) data;
+			Iterator<?> it = list.iterator();
+			while (it.hasNext()) {
+				Object elem = (Object) it.next();
+				if (elem instanceof SFloatType){
+					SFloatType sf = (SFloatType)elem;
+					values.add(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
+				} else if (elem instanceof FloatType){
+					FloatType sf = (FloatType)elem;
+					values.add(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
+				} else if (elem instanceof Date){
+					Date timestamp = (Date)elem;
+					values.add(new IDateMeasure(mType,timestamp.getTime()));
+				} else {
+					System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
+				}
+			}
+			metric.addMeasure(new IMeasureArray(values));
+		} else
+			System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
+
+		System.err.println("Class: " + data.getClass());
 	}
 
 	@Override
