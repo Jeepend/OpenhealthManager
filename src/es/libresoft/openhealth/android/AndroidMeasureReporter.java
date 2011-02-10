@@ -31,11 +31,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import android.os.Parcelable;
-
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.android.aidl.types.measures.IDateMeasure;
+import es.libresoft.openhealth.android.aidl.types.measures.IMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasureArray;
 import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
@@ -58,7 +57,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 			Date timestamp = (Date)data;
 			metric.addMeasure(new IDateMeasure(mType,timestamp.getTime()));
 		}else if (data instanceof List<?>) {
-			ArrayList<Parcelable> values = new ArrayList<Parcelable>();
+			ArrayList<IMeasure> values = new ArrayList<IMeasure>();
 			List<?> list = (List<?>) data;
 			Iterator<?> it = list.iterator();
 			while (it.hasNext()) {
@@ -76,7 +75,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 					System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
 				}
 			}
-			metric.addMeasure(new IMeasureArray(values));
+			metric.addMeasure(new IMeasureArray(mType, values));
 		} else
 			System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
 
