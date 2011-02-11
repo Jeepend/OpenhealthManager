@@ -85,8 +85,65 @@ public class AttributeUtils {
 		case Nomenclature.MDC_DIM_DEGC:
 			return context.getString(R.string.MDC_DIM_DEGC);
 
+		case Nomenclature.MDC_PULS_OXIM_PULS_RATE:
+			return context.getString(R.string.MDC_PULS_OXIM_PULS_RATE);
+		case Nomenclature.MDC_PULS_RATE_NON_INV:
+			return context.getString(R.string.MDC_PULS_RATE_NON_INV);
+		case Nomenclature.MDC_PRESS_BD_NONINV:
+			return context.getString(R.string.MDC_PRESS_BD_NONINV);
+		case Nomenclature.MDC_PRESS_BD_NONINV_SYS:
+			return context.getString(R.string.MDC_PRESS_BD_NONINV_SYS);
+		case Nomenclature.MDC_PRESS_BD_NONINV_DIA:
+			return context.getString(R.string.MDC_PRESS_BD_NONINV_DIA);
+		case Nomenclature.MDC_PRESS_BD_NONINV_MEAN:
+			return context.getString(R.string.MDC_PRESS_BD_NONINV_MEAN);
+		case Nomenclature.MDC_SAT_O2_QUAL:
+			return context.getString(R.string.MDC_SAT_O2_QUAL);
 		case Nomenclature.MDC_TEMP_BODY:
 			return context.getString(R.string.MDC_TEMP_BODY);
+		case Nomenclature.MDC_PULS_OXIM_PERF_REL:
+			return context.getString(R.string.MDC_PULS_OXIM_PERF_REL);
+		case Nomenclature.MDC_PULS_OXIM_PLETH:
+			return context.getString(R.string.MDC_PULS_OXIM_PLETH);
+		case Nomenclature.MDC_PULS_OXIM_SAT_O2:
+			return context.getString(R.string.MDC_PULS_OXIM_SAT_O2);
+		case Nomenclature.MDC_PULS_OXIM_PULS_CHAR:
+			return context.getString(R.string.MDC_PULS_OXIM_PULS_CHAR);
+		case Nomenclature.MDC_PULS_OXIM_DEV_STATUS:
+			return context.getString(R.string.MDC_PULS_OXIM_DEV_STATUS);
+		case Nomenclature.MDC_CONC_GLU_GEN:
+			return context.getString(R.string.MDC_CONC_GLU_GEN);
+		case Nomenclature.MDC_CONC_GLU_CAPILLARY_WHOLEBLOOD:
+			return context.getString(R.string.MDC_CONC_GLU_CAPILLARY_WHOLEBLOOD);
+		case Nomenclature.MDC_CONC_GLU_CAPILLARY_PLASMA:
+			return context.getString(R.string.MDC_CONC_GLU_CAPILLARY_PLASMA);
+		case Nomenclature.MDC_CONC_GLU_VENOUS_WHOLEBLOOD:
+			return context.getString(R.string.MDC_CONC_GLU_VENOUS_WHOLEBLOOD);
+		case Nomenclature.MDC_CONC_GLU_VENOUS_PLASMA:
+			return context.getString(R.string.MDC_CONC_GLU_VENOUS_PLASMA);
+		case Nomenclature.MDC_CONC_GLU_ARTERIAL_WHOLEBLOOD:
+			return context.getString(R.string.MDC_CONC_GLU_ARTERIAL_WHOLEBLOOD);
+		case Nomenclature.MDC_CONC_GLU_ARTERIAL_PLASMA:
+			return context.getString(R.string.MDC_CONC_GLU_ARTERIAL_PLASMA);
+		case Nomenclature.MDC_CONC_GLU_CONTROL:
+			return context.getString(R.string.MDC_CONC_GLU_CONTROL);
+		case Nomenclature.MDC_CONC_GLU_ISF:
+			return context.getString(R.string.MDC_CONC_GLU_ISF);
+		case Nomenclature.MDC_CONC_HBA1C:
+			return context.getString(R.string.MDC_CONC_HBA1C);
+		case Nomenclature.MDC_TRIG:
+			return context.getString(R.string.MDC_TRIG);
+		case Nomenclature.MDC_TRIG_BEAT:
+			return context.getString(R.string.MDC_TRIG_BEAT);
+		case Nomenclature.MDC_TRIG_BEAT_MAX_INRUSH:
+			return context.getString(R.string.MDC_TRIG_BEAT_MAX_INRUSH);
+		case Nomenclature.MDC_MASS_BODY_ACTUAL:
+			return context.getString(R.string.MDC_MASS_BODY_ACTUAL);
+		case Nomenclature.MDC_BODY_FAT:
+			return context.getString(R.string.MDC_BODY_FAT);
+		case Nomenclature.MDC_METRIC_NOS:
+			return context.getString(R.string.MDC_METRIC_NOS);
+
 		}
 
 		return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue;
