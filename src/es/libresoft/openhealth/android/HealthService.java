@@ -74,7 +74,9 @@ public class HealthService extends Service {
 
 		@Override
 		public void agentChangeState(Agent agent, int state) {
-			for (IManagerClientCallback c: clients) {
+			IManagerClientCallback[] cliArray;
+			cliArray = clients.toArray(new IManagerClientCallback[0]);
+			for (IManagerClientCallback c: cliArray) {
 				try {
 					String str = "";
 					switch (state) {
@@ -104,7 +106,7 @@ public class HealthService extends Service {
 					}
 					c.agentChangeState(new IAgent(agent.getId()), str);
 				} catch (RemoteException e) {
-					clients.remove(c);
+					clients.removeElement(c);
 				}
 			}
 		}
@@ -117,11 +119,13 @@ public class HealthService extends Service {
 			IAgentMetric metric = amr.getMetric();
 			IAgent iagent = new IAgent(agent.getId());
 
-			for (IManagerClientCallback c: clients) {
+			IManagerClientCallback[] cliArray;
+			cliArray = clients.toArray(new IManagerClientCallback[0]);
+			for (IManagerClientCallback c: cliArray) {
 				try {
 					c.agentNewMeassure(iagent, metric);
 				} catch (RemoteException e) {
-					clients.remove(c);
+					clients.removeElement(c);
 				}
 			}
 		}
@@ -129,11 +133,13 @@ public class HealthService extends Service {
 		@Override
 		public void agentPlugged(Agent agent) {
 			agents.add(agent);
-			for (IManagerClientCallback c: clients) {
+			IManagerClientCallback[] cliArray;
+			cliArray = clients.toArray(new IManagerClientCallback[0]);
+			for (IManagerClientCallback c: cliArray) {
 				try {
 					c.agentPlugged(new IAgent(agent.getId()));
 				} catch (RemoteException e) {
-					clients.remove(c);
+					clients.removeElement(c);
 				}
 			}
 		}
@@ -141,11 +147,13 @@ public class HealthService extends Service {
 		@Override
 		public void agentUnplugged(Agent agent) {
 			agents.removeElement(agent);
-			for (IManagerClientCallback c: clients) {
+			IManagerClientCallback[] cliArray;
+			cliArray = clients.toArray(new IManagerClientCallback[0]);
+			for (IManagerClientCallback c: cliArray) {
 				try {
 					c.agentUnplugged(new IAgent(agent.getId()));
 				} catch (RemoteException e) {
-					clients.remove(c);
+					clients.removeElement(c);
 				}
 			}
 		}
@@ -160,11 +168,13 @@ public class HealthService extends Service {
 				error = new IError(errorCode, HealthService.this.getString(R.string.UNEXPECTED_ERROR));
 			}
 
-			for (IManagerClientCallback c: clients) {
+			IManagerClientCallback[] cliArray;
+			cliArray = clients.toArray(new IManagerClientCallback[0]);
+			for (IManagerClientCallback c: cliArray) {
 				try {
 					c.error(iagent, error);
 				} catch (RemoteException e) {
-					clients.remove(c);
+					clients.removeElement(c);
 				}
 			}
 		}
