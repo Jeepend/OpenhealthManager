@@ -45,41 +45,38 @@ public class AndroidMeasureReporter implements MeasureReporter{
 
 	IAgentMetric metric = new IAgentMetric();
 
-	@Override
-	public void addMeasure(int mType, Object data) {
+	private IMeasure getMeasure(int mType, Object data) {
 		if (data instanceof SFloatType){
 			SFloatType sf = (SFloatType)data;
-			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
+			return new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString());
 		}else if (data instanceof FloatType){
 			FloatType sf = (FloatType)data;
-			metric.addMeasure(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
+			return new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString());
 		}else if (data instanceof Date){
 			Date timestamp = (Date)data;
-			metric.addMeasure(new IDateMeasure(mType,timestamp.getTime()));
+			return new IDateMeasure(mType,timestamp.getTime());
 		}else if (data instanceof List<?>) {
 			ArrayList<IMeasure> values = new ArrayList<IMeasure>();
 			List<?> list = (List<?>) data;
 			Iterator<?> it = list.iterator();
 			while (it.hasNext()) {
-				Object elem = (Object) it.next();
-				if (elem instanceof SFloatType){
-					SFloatType sf = (SFloatType)elem;
-					values.add(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
-				} else if (elem instanceof FloatType){
-					FloatType sf = (FloatType)elem;
-					values.add(new IValueMeasure(mType,sf.getExponent(),sf.getMagnitude(), sf.doubleValueRepresentation(), sf.toString()));
-				} else if (elem instanceof Date){
-					Date timestamp = (Date)elem;
-					values.add(new IDateMeasure(mType,timestamp.getTime()));
-				} else {
-					System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
-				}
+				Object obj = it.next();
+				IMeasure m = getMeasure(mType, obj);
+				if (m != null)
+					values.add(m);
 			}
-			metric.addMeasure(new IMeasureArray(mType, values));
-		} else
-			System.err.println("The unknown date type " + mType + " won't be reported to the manager.");
+			return new IMeasureArray(mType, values);
+		}
 
-		System.err.println("Class: " + data.getClass());
+		System.err.println("The unknown data type " + mType + " won't be reported to the manager.");
+		return null;
+	}
+
+	@Override
+	public void addMeasure(int mType, Object data) {
+		IMeasure m = getMeasure(mType, data);
+		if (m != null)
+			metric.addMeasure(m);
 	}
 
 	@Override
