@@ -91,7 +91,6 @@ public class VirtualChannel {
 				eventQueue.add(new Event(EventType.IND_TRANS_CONN));
 			}
 		} catch (InitializedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

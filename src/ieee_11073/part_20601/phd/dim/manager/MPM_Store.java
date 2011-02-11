@@ -81,7 +81,6 @@ public class MPM_Store extends PM_Store {
 
 	@Override
 	public void Clear_Segments(SegmSelection ss) {
-		// TODO Auto-generated method stub
 
 	}
 

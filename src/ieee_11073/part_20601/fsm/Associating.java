@@ -38,7 +38,6 @@ public abstract class Associating extends Connected {
 
 	@Override
 	public synchronized String getStateName() {
-		// TODO Auto-generated method stub
 		return "Associating";
 	}
 

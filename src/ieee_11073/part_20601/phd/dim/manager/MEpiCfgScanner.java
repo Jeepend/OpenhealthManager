@@ -60,20 +60,17 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 	public MEpiCfgScanner(Hashtable<Integer, Attribute> attributeList)
 			throws InvalidAttributeException {
 		super(attributeList);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void checkAttributes(
 			Hashtable<Integer, Attribute> attributes)
 			throws InvalidAttributeException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_Fixed(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
@@ -130,32 +127,27 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Fixed(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Grouped(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Var(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_Var(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Unbuf_Scan_Report_Var");
 	}
 

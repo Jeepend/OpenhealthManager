@@ -450,7 +450,6 @@ public class MDSManager extends MDS {
 						byte[] sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
 						storeConfiguration(sys_id, getDeviceConf());
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -478,32 +477,27 @@ public class MDSManager extends MDS {
 			to.start();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void MDS_DATA_REQUEST() {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: Implement MDS_DATA_REQUEST");
 	}
 
 	@Override
 	public void Set_Time() {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: Implement Set_Time");
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Fixed(ScanReportInfoMPFixed info) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: Implement MDS_Dynamic_Data_Update_MP_Fixed");
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: Implement MDS_Dynamic_Data_Update_MP_Var");
 	}
 }

@@ -44,7 +44,6 @@ public class EpiCfgScanner extends Scanner implements Parcelable {
 
 	public EpiCfgScanner(int pmHandler, String systemId) {
 		super(pmHandler, systemId);
-		// TODO Auto-generated constructor stub
 	}
 
 	public EpiCfgScanner(Parcel in) {

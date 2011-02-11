@@ -313,7 +313,6 @@ public class MessageFactory {
 			encoderDataApdu = CoderFactory.getInstance().newEncoder(dev_conf.getEncondigRules());
 			encoderDataApdu.encode(da, output);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		pa.setValue(output.toByteArray());

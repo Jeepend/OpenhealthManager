@@ -142,7 +142,6 @@ public class AndroidConfigStorage implements ConfigStorage {
 			File dir_file = new File(base_dir.getAbsolutePath() + "/" + sysid + "/" + config.getPhdId());
 			delete(dir_file);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

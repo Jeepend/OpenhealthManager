@@ -43,50 +43,42 @@ public class MPeriCfgScanner extends PeriCfgScanner {
 	public MPeriCfgScanner(Hashtable<Integer, Attribute> attributeList)
 			throws InvalidAttributeException {
 		super(attributeList);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void checkAttributes(
 			Hashtable<Integer, Attribute> attributes)
 			throws InvalidAttributeException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void Buf_Scan_Report_Fixed(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_Fixed");
 	}
 
 	@Override
 	public void Buf_Scan_Report_Grouped(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_Grouped");
 	}
 
 	@Override
 	public void Buf_Scan_Report_MP_Fixed(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
 	public void Buf_Scan_Report_MP_Grouped(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
 	public void Buf_Scan_Report_MP_Var(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_MP_Var");
 	}
 
 	@Override
 	public void Buf_Scan_Report_Var(EventReportArgumentSimple event) {
-		// TODO Auto-generated method stub
 		System.out.println("TODO: implement Buf_Scan_Report_Var");
 	}
 

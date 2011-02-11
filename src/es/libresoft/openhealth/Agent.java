@@ -67,7 +67,6 @@ public final class Agent extends Device {
 		try {
 			stc.initFSMController();
 		} catch (InitializedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

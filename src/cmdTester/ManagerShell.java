@@ -110,7 +110,6 @@ public class ManagerShell {
 			//chanHDP.finish();
 			channelTCP.finish();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

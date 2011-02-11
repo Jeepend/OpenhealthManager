@@ -267,7 +267,6 @@ public class HealthService extends Service {
 
 		@Override
 		public void connect(IAgent agent) throws RemoteException {
-			// TODO Auto-generated method stub
 			System.out.println("TODO: Connect with the agent");
 		}
 

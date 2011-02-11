@@ -68,10 +68,8 @@ public class InputStreamTester {
 			for (int i = 0; i < 33; i++)
 				System.out.print((char)buff[i]);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		*/

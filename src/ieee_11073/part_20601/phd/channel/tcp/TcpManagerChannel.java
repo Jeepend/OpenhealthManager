@@ -70,7 +70,6 @@ public class TcpManagerChannel extends Thread {
 	}
 
 	public void finish() {
-		// TODO Auto-generated method stub
 		this.finish = true;
 		System.out.println("Closing manager service...");
 		try {

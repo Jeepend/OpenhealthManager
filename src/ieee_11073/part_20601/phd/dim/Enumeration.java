@@ -51,7 +51,6 @@ public class Enumeration extends Metric {
 	protected void checkAttributes(
 			Hashtable<Integer, Attribute> attributes)
 			throws InvalidAttributeException {
-		// TODO Auto-generated method stub
 
 	}
 }

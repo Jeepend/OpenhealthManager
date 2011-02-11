@@ -49,7 +49,6 @@ public class RT_SA extends Metric {
 	protected void checkAttributes(
 			Hashtable<Integer, Attribute> attributes)
 			throws InvalidAttributeException {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -246,7 +246,6 @@ public final class MOperating extends Operating {
 
 			state_handler.send(MessageFactory.composeApdu(data, state_handler.getMDS().getDeviceConf()));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

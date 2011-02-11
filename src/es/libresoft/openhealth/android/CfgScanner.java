@@ -44,7 +44,6 @@ public class CfgScanner extends Scanner implements Parcelable {
 
 	public CfgScanner(int pmHandler, String systemId) {
 		super(pmHandler, systemId);
-		// TODO Auto-generated constructor stub
 	}
 
 	public CfgScanner(Parcel in) {
