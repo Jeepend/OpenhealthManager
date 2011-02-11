@@ -56,8 +56,35 @@ public class AttributeUtils {
 			return "Error: Context not set, set context before use this method";
 
 		switch (attrValue) {
+		case Nomenclature.MDC_DIM_PERCENT:
+			return context.getString(R.string.MDC_DIM_PERCENT);
+		case Nomenclature.MDC_DIM_MILLI_L:
+			return context.getString(R.string.MDC_DIM_MILLI_L);
+		case Nomenclature.MDC_DIM_X_G:
+			return context.getString(R.string.MDC_DIM_X_G);
+		case Nomenclature.MDC_DIM_KILO_G:
+			return context.getString(R.string.MDC_DIM_KILO_G);
+		case Nomenclature.MDC_DIM_MILLI_G:
+			return context.getString(R.string.MDC_DIM_MILLI_G);
+		case Nomenclature.MDC_DIM_MILLI_G_PER_DL:
+			return context.getString(R.string.MDC_DIM_MILLI_G_PER_DL);
+		case Nomenclature.MDC_DIM_MIN:
+			return context.getString(R.string.MDC_DIM_MIN);
+		case Nomenclature.MDC_DIM_HR:
+			return context.getString(R.string.MDC_DIM_HR);
+		case Nomenclature.MDC_DIM_DAY:
+			return context.getString(R.string.MDC_DIM_DAY);
+		case Nomenclature.MDC_DIM_BEAT_PER_MIN:
+			return context.getString(R.string.MDC_DIM_BEAT_PER_MIN);
+		case Nomenclature.MDC_DIM_KILO_PASCAL:
+			return context.getString(R.string.MDC_DIM_KILO_PASCAL);
+		case Nomenclature.MDC_DIM_MMHG:
+			return context.getString(R.string.MDC_DIM_MMHG);
+		case Nomenclature.MDC_DIM_MILLI_MOLE_PER_L:
+			return context.getString(R.string.MDC_DIM_MILLI_MOLE_PER_L);
 		case Nomenclature.MDC_DIM_DEGC:
 			return context.getString(R.string.MDC_DIM_DEGC);
+
 		case Nomenclature.MDC_TEMP_BODY:
 			return context.getString(R.string.MDC_TEMP_BODY);
 		}

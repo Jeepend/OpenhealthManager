@@ -71,7 +71,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	<!-- Measure Attributes Values Section -->
 
+		<!-- Dimensions -->
+	<string name="MDC_DIM_PERCENT">%</string>
+	<string name="MDC_DIM_MILLI_L">mL</string>
+	<string name="MDC_DIM_X_G">g</string>
+	<string name="MDC_DIM_KILO_G">kg</string>
+	<string name="MDC_DIM_MILLI_G">mg</string>
+	<string name="MDC_DIM_MILLI_G_PER_DL">mg dL-1</string>
+	<string name="MDC_DIM_MIN">min</string>
+	<string name="MDC_DIM_HR">h</string>
+	<string name="MDC_DIM_DAY">d</string>
+	<string name="MDC_DIM_BEAT_PER_MIN">bpm 737</string>
+	<string name="MDC_DIM_KILO_PASCAL">kPa</string>
+	<string name="MDC_DIM_MMHG">mmHg</string>
+	<string name="MDC_DIM_MILLI_MOLE_PER_L">mmol L-1</string>
 	<string name="MDC_DIM_DEGC">ºC</string>
+
+		<!-- Medical supervisory control and data acquisition -->
 	<string name="MDC_TEMP_BODY">Body temperature</string>
 	<string name="UNKNOWN_VALUE">Unknown attribute value</string>
 
