@@ -45,6 +45,8 @@ import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
+import es.libresoft.openhealth.android.aidl.types.objects.IRT_SA;
+import es.libresoft.openhealth.android.aidl.types.objects.IScanner;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
@@ -400,6 +402,68 @@ public class HealthService extends Service {
 
 			for (Integer handle: a.mdsHandler.getMDS().getNumericHandlers())
 				nums.add(new INumeric(handle, agent));
+
+		}
+
+		@Override
+		public void getScanner(IAgent agent, List<IScanner> scanners, IError error)
+				throws RemoteException {
+
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (scanners == null) {
+				scanners = new ArrayList<IScanner>();
+			}
+
+			if (agent == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			for (Integer handle: a.mdsHandler.getMDS().getScannerHandlers())
+				scanners.add(new IScanner(handle, agent));
+
+		}
+
+		@Override
+		public void getRT_SA(IAgent agent, List<IRT_SA> rts, IError error)
+				throws RemoteException {
+
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (rts == null) {
+				rts = new ArrayList<IRT_SA>();
+			}
+
+			if (agent == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			for (Integer handle: a.mdsHandler.getMDS().getRT_SAHandlers())
+				rts.add(new IRT_SA(handle, agent));
 
 		}
 
