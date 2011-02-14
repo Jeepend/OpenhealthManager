@@ -42,6 +42,7 @@ import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
+import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
@@ -367,6 +368,14 @@ public class HealthService extends Service {
 			setErrorMessage(err);
 
 			return ev.getRspData();
+		}
+
+		@Override
+		public void getNumeric(IAgent agent, List<INumeric> nums, IError error)
+				throws RemoteException {
+
+			/* TODO: Implement getNumeric */
+
 		}
 	};
 
