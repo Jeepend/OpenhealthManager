@@ -65,6 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	<!-- Measure Attributes Types Section -->
 
+	<string name="MDC_ATTR_ID_HANDLE">Object handle</string>
 	<string name="MDC_ATTR_ID_TYPE">Attribute id type</string>
 	<string name="MDC_ATTR_UNIT_CODE">Unit code</string>
 	<string name="UNKNOWN_TYPE">Unknown attribute type</string>

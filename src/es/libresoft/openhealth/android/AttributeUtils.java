@@ -46,6 +46,8 @@ public class AttributeUtils {
 			return context.getString(R.string.MDC_ATTR_ID_TYPE);
 		case Nomenclature.MDC_ATTR_UNIT_CODE:
 			return context.getString(R.string.MDC_ATTR_UNIT_CODE);
+		case Nomenclature.MDC_ATTR_ID_HANDLE:
+			return context.getString(R.string.MDC_ATTR_ID_HANDLE);
 		}
 
 		return context.getString(R.string.UNKNOWN_TYPE) + " " + attrType;
@@ -147,6 +149,8 @@ public class AttributeUtils {
 			case Nomenclature.MDC_METRIC_NOS:
 				return context.getString(R.string.MDC_METRIC_NOS);
 			}
+		} else if (attrType == Nomenclature.MDC_ATTR_ID_HANDLE) {
+			return "" + attrValue;
 		}
 
 		return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for type: " + type2string(attrType);
