@@ -43,6 +43,7 @@ import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
+import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
@@ -400,6 +401,12 @@ public class HealthService extends Service {
 			for (Integer handle: a.mdsHandler.getMDS().getNumericHandlers())
 				nums.add(new INumeric(handle, agent));
 
+		}
+
+		@Override
+		public void getObjectAttrs(IAgent agent, IDIMClass obj,
+				List<IAttribute> attrs, IError error) throws RemoteException {
+			System.err.println("TODO: Implement getObjectAttr method");
 		}
 	};
 
