@@ -74,4 +74,6 @@ public final class ErrorCodes {
 	public static final int UNKNOWN_AGENT			=	17;
 	/** Invalid attribute */
 	public static final int INVALID_ATTRIBUTE		=	18;
+	/** Unknown object */
+	public static final int UNKNOWN_OBJECT			=	19;
 }

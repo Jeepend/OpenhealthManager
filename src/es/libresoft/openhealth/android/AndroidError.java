@@ -77,6 +77,8 @@ public class AndroidError implements ErrorString {
 			return context.getString(R.string.UNKNOWN_AGENT);
 		case ErrorCodes.INVALID_ATTRIBUTE:
 			return context.getString(R.string.INVALID_ATTRIBUTE);
+		case ErrorCodes.UNKNOWN_OBJECT:
+			return context.getString(R.string.UNKNOWN_OBJECT);
 		default:
 			return context.getString(R.string.UNEXPECTED_ERROR);
 		}
