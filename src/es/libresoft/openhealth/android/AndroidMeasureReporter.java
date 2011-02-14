@@ -95,7 +95,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 
 	@Override
 	public void set_attribute(int type, int value) {
-		metric.addAttribute(new IMeasureAttribute(type, value, AttributeUtils.type2string(type), AttributeUtils.value2string(value)));
+		metric.addAttribute(new IMeasureAttribute(type, value, AttributeUtils.type2string(type), AttributeUtils.value2string(type, value)));
 	}
 
 	public IAgentMetric getMetric() {
