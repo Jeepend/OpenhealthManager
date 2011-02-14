@@ -30,6 +30,7 @@ import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -374,7 +375,30 @@ public class HealthService extends Service {
 		public void getNumeric(IAgent agent, List<INumeric> nums, IError error)
 				throws RemoteException {
 
-			/* TODO: Implement getNumeric */
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (nums == null) {
+				nums = new ArrayList<INumeric>();
+			}
+
+			if (agent == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			for (Integer handle: a.mdsHandler.getMDS().getNumericHandlers())
+				nums.add(new INumeric(handle, agent));
 
 		}
 	};

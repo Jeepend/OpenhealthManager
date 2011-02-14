@@ -219,6 +219,10 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 		return scanners.keySet();
 	}
 
+	public Set<Integer> getNumericHandlers() {
+		return numerics.keySet();
+	}
+
 	/* MDS Object methods */
 
 	/**
