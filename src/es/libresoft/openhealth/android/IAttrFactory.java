@@ -70,6 +70,7 @@ import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.HighResRelativeTime;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
+import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
@@ -200,6 +201,10 @@ public class IAttrFactory {
 		return new ITypeVerList(values);
 	}
 
+	private static IOID_Type OID_Type2parcelable(OID_Type type) {
+		return new IOID_Type(type.getValue().getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -241,6 +246,8 @@ public class IAttrFactory {
 			parcel = RegCertDataList2parcelable((RegCertDataList) asnAttr);
 		else if (asnAttr instanceof TypeVerList)
 			parcel = TypeVerList2parcelable((TypeVerList) asnAttr);
+		else if (asnAttr instanceof OID_Type)
+			parcel = OID_Type2parcelable((OID_Type) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
