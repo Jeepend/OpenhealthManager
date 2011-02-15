@@ -31,6 +31,7 @@ import java.util.Iterator;
 
 import android.os.Parcelable;
 import es.libresoft.mdnf.FloatType;
+import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTime;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTimeAdjust;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
@@ -38,6 +39,7 @@ import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
 import es.libresoft.openhealth.android.aidl.types.IAuthBodyAndStrucType;
 import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
+import es.libresoft.openhealth.android.aidl.types.IBasicNuObsValue;
 import es.libresoft.openhealth.android.aidl.types.IBatMeasure;
 import es.libresoft.openhealth.android.aidl.types.IConfigId;
 import es.libresoft.openhealth.android.aidl.types.IFLOAT_Type;
@@ -56,6 +58,7 @@ import es.libresoft.openhealth.android.aidl.types.IProductionSpecEntry;
 import es.libresoft.openhealth.android.aidl.types.IRegCertData;
 import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
+import es.libresoft.openhealth.android.aidl.types.ISFloatType;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import es.libresoft.openhealth.android.aidl.types.ITypeVer;
@@ -64,6 +67,7 @@ import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
+import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BatMeasure;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.HANDLE;
@@ -205,6 +209,16 @@ public class IAttrFactory {
 		return new IOID_Type(type.getValue().getValue());
 	}
 
+	private static IBasicNuObsValue BasicNuObsValue2parcelable(BasicNuObsValue obsValue) {
+		SFloatType value;
+		try {
+			value = new SFloatType(obsValue.getValue().getValue());
+			return new IBasicNuObsValue(new ISFloatType(value.getExponent(), value.getMagnitude(), value.doubleValueRepresentation(), value.toString()));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -248,6 +262,8 @@ public class IAttrFactory {
 			parcel = TypeVerList2parcelable((TypeVerList) asnAttr);
 		else if (asnAttr instanceof OID_Type)
 			parcel = OID_Type2parcelable((OID_Type) asnAttr);
+		else if (asnAttr instanceof BasicNuObsValue)
+			parcel = BasicNuObsValue2parcelable((BasicNuObsValue) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
