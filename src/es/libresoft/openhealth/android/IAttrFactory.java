@@ -48,6 +48,7 @@ import es.libresoft.openhealth.android.aidl.types.IHighResRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.IINT_U16;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeCapState;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeInfo;
+import es.libresoft.openhealth.android.aidl.types.IMetricSpecSmall;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
@@ -74,6 +75,7 @@ import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.HighResRelativeTime;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
+import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
@@ -219,6 +221,10 @@ public class IAttrFactory {
 		}
 	}
 
+	private static IMetricSpecSmall MetricSpecSmall2parcelable(MetricSpecSmall metricSpec) {
+		return new IMetricSpecSmall(new IBITSTRING(metricSpec.getValue().getValue(), metricSpec.getValue().getTrailBitsCnt()));
+	}
+
 	public static final boolean getParcelableAttribute (Object asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -264,6 +270,8 @@ public class IAttrFactory {
 			parcel = OID_Type2parcelable((OID_Type) asnAttr);
 		else if (asnAttr instanceof BasicNuObsValue)
 			parcel = BasicNuObsValue2parcelable((BasicNuObsValue) asnAttr);
+		else if (asnAttr instanceof MetricSpecSmall)
+			parcel = MetricSpecSmall2parcelable((MetricSpecSmall) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
