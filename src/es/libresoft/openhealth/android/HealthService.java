@@ -47,6 +47,7 @@ import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
+import es.libresoft.openhealth.android.aidl.types.objects.IEnumeration;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.android.aidl.types.objects.IRT_SA;
 import es.libresoft.openhealth.android.aidl.types.objects.IScanner;
@@ -499,6 +500,37 @@ public class HealthService extends Service {
 
 			for (Integer handle: a.mdsHandler.getMDS().getRT_SAHandlers())
 				rts.add(new IRT_SA(handle, agent));
+
+		}
+
+		@Override
+		public void getEnumeration(IAgent agent, List<IEnumeration> enumeration, IError error)
+				throws RemoteException {
+
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (enumeration == null) {
+				enumeration = new ArrayList<IEnumeration>();
+			}
+
+			if (agent == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			for (Integer handle: a.mdsHandler.getMDS().getEnumerationHandlers())
+				enumeration.add(new IEnumeration(handle, agent));
 
 		}
 

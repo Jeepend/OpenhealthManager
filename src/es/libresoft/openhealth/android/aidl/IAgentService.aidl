@@ -33,6 +33,7 @@ import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.android.aidl.types.objects.IScanner;
 import es.libresoft.openhealth.android.aidl.types.objects.IRT_SA;
+import es.libresoft.openhealth.android.aidl.types.objects.IEnumeration;
 
 interface IAgentService {
 	void getAttributes(in IAgent agent, out List<IAttribute> attrs, out IError error);
@@ -43,6 +44,7 @@ interface IAgentService {
 	void getNumeric(in IAgent agent, out List<INumeric> nums, out IError error);
 	void getScanner(in IAgent agent, out List<IScanner> scanners, out IError error);
 	void getRT_SA(in IAgent agent, out List<IRT_SA> rts, out IError error);
+	void getEnumeration(in IAgent agent, out List<IEnumeration> nums, out IError error);
 
 	void getObjectAttrs(in IAgent agent, in IDIMClass obj, out List<IAttribute> attrs, out IError error);
 
