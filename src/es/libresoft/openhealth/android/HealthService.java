@@ -26,9 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DIM;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -265,6 +268,32 @@ public class HealthService extends Service {
 		return null;
 	}
 
+	private DIM getObject(Agent a, IDIMClass obj) {
+		HANDLE handle = new HANDLE();
+		handle.setValue(new INT_U16(obj.getHandle()));
+
+		return a.mdsHandler.getMDS().getObject(handle);
+	}
+
+	private void parcelAttributes(DIM object, List<IAttribute> attrs, IError error) {
+		Hashtable<Integer, Attribute> attList = object.getAttributes();
+		for (Integer key: attList.keySet()) {
+			Attribute att = attList.get(key);
+			IAttribute iAtt = new IAttribute();
+			if (!IAttrFactory.getParcelableAttribute(att.getAttributeType(), iAtt)) {
+				error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
+				setErrorMessage(error);
+				return;
+			}
+			iAtt.setAttrId(key);
+			iAtt.setAttrIdStr(DIM_Tools.getAttributeName(key));
+
+			attrs.add(iAtt);
+		}
+
+		error.setErrCode(ErrorCodes.NO_ERROR);
+		setErrorMessage(error);
+	}
 	/**
 	 * The IAgentService is defined through IDL
 	 */
@@ -289,23 +318,7 @@ public class HealthService extends Service {
 				return;
 			}
 
-			Hashtable<Integer, Attribute> attList = a.mdsHandler.getMDS().getAttributes();
-			for (Integer key: attList.keySet()) {
-				Attribute att = attList.get(key);
-				IAttribute iAtt = new IAttribute();
-				if (!IAttrFactory.getParcelableAttribute(att.getAttributeType(), iAtt)) {
-					error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
-					setErrorMessage(error);
-					return;
-				}
-				iAtt.setAttrId(key);
-				iAtt.setAttrIdStr(DIM_Tools.getAttributeName(key));
-
-				attrs.add(iAtt);
-			}
-
-			error.setErrCode(ErrorCodes.NO_ERROR);
-			setErrorMessage(error);
+			parcelAttributes(a.mdsHandler.getMDS(), attrs, error);
 		}
 
 		@Override
@@ -468,9 +481,45 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void getObjectAttrs(IAgent agent, IDIMClass obj,
-				List<IAttribute> attrs, IError error) throws RemoteException {
-			System.err.println("TODO: Implement getObjectAttr method");
+		public void getObjectAttrs(IAgent agent, IDIMClass obj, List<IAttribute> attrs, IError error)
+					throws RemoteException {
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (attrs  == null) {
+				attrs = new ArrayList<IAttribute>();
+			}
+
+			if (agent == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			if (obj == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_OBJECT);
+				setErrorMessage(error);
+				return;
+			}
+
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			DIM o = getObject(a, obj);
+
+			if (o == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_OBJECT);
+				setErrorMessage(error);
+				return;
+			}
+
+			parcelAttributes(o, attrs, error);
 		}
 	};
 
