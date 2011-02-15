@@ -98,4 +98,8 @@ public final class Agent extends Device {
 	public void notifyDeviceUnplugged() {
 		InternalEventReporter.agentUnplugged(this);
 	}
+
+	public String getStateName() {
+		return stc.getStateName();
+	}
 }

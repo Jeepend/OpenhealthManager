@@ -388,6 +388,28 @@ public class HealthService extends Service {
 		}
 
 		@Override
+		public void getState(IAgent agent, String[] state, IError error)
+		{
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (state == null) {
+				state = new String[1];
+			}
+
+			Agent a;
+			if (agent == null || (a = getAgent(agent)) == null)
+			{
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return;
+			}
+
+			state[0] = a.getStateName();
+		}
+
+		@Override
 		public void getNumeric(IAgent agent, List<INumeric> nums, IError error)
 				throws RemoteException {
 

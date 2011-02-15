@@ -180,7 +180,9 @@ public class ManagerStateController implements StateController {
 		eventQueue.add(event);
 	}
 
-
+	public String getStateName() {
+		return state.getStateName();
+	}
 
 
 	/**
