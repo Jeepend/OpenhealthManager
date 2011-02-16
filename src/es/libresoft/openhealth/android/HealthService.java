@@ -114,7 +114,7 @@ public class HealthService extends Service {
 					default:
 						return;
 					}
-					c.agentChangeState(new IAgent(agent.getId()), str);
+					c.agentChangeState(new IAgent(agent.getId(), agent.getTransportDesc()), str);
 				} catch (RemoteException e) {
 					clients.removeElement(c);
 				}
@@ -127,7 +127,7 @@ public class HealthService extends Service {
 				return;
 			AndroidMeasureReporter amr = (AndroidMeasureReporter) mr;
 			IAgentMetric metric = amr.getMetric();
-			IAgent iagent = new IAgent(agent.getId());
+			IAgent iagent = new IAgent(agent.getId(), agent.getTransportDesc());
 
 			IManagerClientCallback[] cliArray;
 			cliArray = clients.toArray(new IManagerClientCallback[0]);
@@ -147,7 +147,7 @@ public class HealthService extends Service {
 			cliArray = clients.toArray(new IManagerClientCallback[0]);
 			for (IManagerClientCallback c: cliArray) {
 				try {
-					c.agentPlugged(new IAgent(agent.getId()));
+					c.agentPlugged(new IAgent(agent.getId(), agent.getTransportDesc()));
 				} catch (RemoteException e) {
 					clients.removeElement(c);
 				}
@@ -161,7 +161,7 @@ public class HealthService extends Service {
 			cliArray = clients.toArray(new IManagerClientCallback[0]);
 			for (IManagerClientCallback c: cliArray) {
 				try {
-					c.agentUnplugged(new IAgent(agent.getId()));
+					c.agentUnplugged(new IAgent(agent.getId(), agent.getTransportDesc()));
 				} catch (RemoteException e) {
 					clients.removeElement(c);
 				}
@@ -170,7 +170,7 @@ public class HealthService extends Service {
 
 		@Override
 		public void error(Agent agent, int errorCode) {
-			IAgent iagent = new IAgent(agent.getId());
+			IAgent iagent = new IAgent(agent.getId(), agent.getTransportDesc());
 			IError error;
 			try {
 				error = new IError(errorCode, ErrorFactory.getDefaultErrorGenerator().error2string(errorCode));
@@ -241,7 +241,7 @@ public class HealthService extends Service {
 				return;
 
 			for(Agent agent: agents)
-				agentList.add(new IAgent(agent.getId()));
+				agentList.add(new IAgent(agent.getId(), agent.getTransportDesc()));
 		}
 
 		@Override
