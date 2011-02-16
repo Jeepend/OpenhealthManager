@@ -99,6 +99,10 @@ public final class Agent extends Device {
 		InternalEventReporter.agentUnplugged(this);
 	}
 
+	public int getStateCode() {
+		return stc.getStateCode();
+	}
+
 	public String getStateName() {
 		return stc.getStateName();
 	}

@@ -52,6 +52,7 @@ import es.libresoft.openhealth.android.aidl.types.objects.IPM_Store;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.android.aidl.types.objects.IRT_SA;
 import es.libresoft.openhealth.android.aidl.types.objects.IScanner;
+import es.libresoft.openhealth.android.aidl.IState;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
@@ -390,14 +391,14 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void getState(IAgent agent, String[] state, IError error)
+		public void getState(IAgent agent, IState state, IError error)
 		{
 			if (error == null) {
 				error = new IError();
 			}
 
 			if (state == null) {
-				state = new String[1];
+				state = new IState();
 			}
 
 			Agent a;
@@ -408,7 +409,8 @@ public class HealthService extends Service {
 				return;
 			}
 
-			state[0] = a.getStateName();
+			state.setStateCode(a.getStateCode());
+			state.setStateName(a.getStateName());
 		}
 
 		@Override
