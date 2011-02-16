@@ -42,8 +42,8 @@ public class ManagerShell {
 	private static InternalEventManager ieManager = new InternalEventManager(){
 
 		@Override
-		public void agentChangeState(Agent agent, int state) {
-			System.out.println("ID: " + agent.getId() + " state: " + state);
+		public void agentChangeState(Agent agent, int stateCode, String stateName) {
+			System.out.println("ID: " + agent.getId() + " stateCode: " + stateCode + " stateName: " + stateName);
 		}
 
 		@Override

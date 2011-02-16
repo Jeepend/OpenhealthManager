@@ -35,7 +35,6 @@ import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.utils.IFIFO;
 import es.libresoft.openhealth.utils.IUnlock;
 import ieee_11073.part_20601.asn1.ApduType;
-import ieee_11073.part_20601.fsm.Disconnected;
 import ieee_11073.part_20601.fsm.State;
 import ieee_11073.part_20601.fsm.StateController;
 import ieee_11073.part_20601.fsm.StateHandler;
@@ -71,7 +70,8 @@ public class ManagerStateController implements StateController {
 
 		@Override
 		public void changeState(State newState) {
-			InternalEventReporter.agentChangeStatus((Agent) getMDS().getDevice(), newState.getStateCode());
+			InternalEventReporter.agentChangeStatus(
+					(Agent) getMDS().getDevice(), newState.getStateCode(), newState.getStateName());
 			state = newState;
 		}
 
