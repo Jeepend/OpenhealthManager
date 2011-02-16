@@ -37,7 +37,6 @@ import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
-import es.libresoft.openhealth.utils.DIM_Tools;
 import es.libresoft.openhealth.utils.RawDataExtractor;
 
 import ieee_11073.part_10101.Nomenclature;
@@ -82,9 +81,6 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 									getMDS().getDeviceConf().getEncondigRules());
 			System.out.println("Grouped scan report #" + srig.getScan_report_no());
 			// TODO: use the report number to detect missing packets
-
-			String system_id = DIM_Tools.byteArrayToString(
-					(byte[])getMDS().getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
 
 			Iterator<ObservationScanGrouped> i= srig.getObs_scan_grouped().iterator();
 			Attribute ValMapAtt = getAttribute(Nomenclature.MDC_ATTR_SCAN_HANDLE_ATTR_VAL_MAP);
