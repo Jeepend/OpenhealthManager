@@ -112,7 +112,7 @@ public final class MOperating extends Operating {
 			return true;
 
 		case EventType.REQ_SET:
-			ExternalEvent<Integer, SetEventData> setEvent = (ExternalEvent<Integer, SetEventData>) event;
+			ExternalEvent<Boolean, SetEventData> setEvent = (ExternalEvent<Boolean, SetEventData>) event;
 			DIM obj = state_handler.getMDS().getObject(setEvent.getPrivData().getObjectHandle());
 			try {
 				SET_Service serv = (SET_Service) obj;
