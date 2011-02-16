@@ -27,6 +27,10 @@ package es.libresoft.openhealth;
 
 public final class Manager extends Device {
 
+	public Manager(String transportDescription) {
+		super(transportDescription);
+	}
+
 	@Override
 	public void notifyDevicePlugged() {
 		System.out.println("TODO: manager notifyDevicePlugged not implemented");

@@ -36,6 +36,7 @@ public abstract class Device {
 
 	private static int instance_id = 0;
 	private int id;
+	private String transporDesc;
 
 	public static final String MDER_DEFAULT = "MDER";
 
@@ -46,8 +47,9 @@ public abstract class Device {
 	protected IFIFO<Event> eventQueue;
 
 
-	public Device ()
+	public Device (String transportDescription)
 	{
+		transporDesc = transportDescription;
 		inputQueue = new FIFO<ApduType>();
 		outputQueue = new FIFO<ApduType>();
 		eventQueue = new FIFO<Event>();
@@ -101,5 +103,7 @@ public abstract class Device {
 
 	public abstract void notifyDeviceUnplugged();
 
-	
+	public String getTransportDesc() {
+		return transporDesc;
+	}
 }
