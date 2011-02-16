@@ -238,7 +238,7 @@ public class MPM_Store extends PM_Store {
 					}
 
 					if (grs.getObj_handle().getValue().getValue().intValue() != handle.getValue().getValue().intValue()) {
-						System.out.println("TODO: Unexpected object handle, should be reserved value " +
+						System.out.println("TODO: Unexpected object handle, should be value " +
 																				handle.getValue().getValue().intValue());
 						if (event != null)
 							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
