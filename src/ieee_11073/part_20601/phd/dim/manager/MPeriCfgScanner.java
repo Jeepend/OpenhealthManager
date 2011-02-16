@@ -28,6 +28,7 @@ package ieee_11073.part_20601.phd.dim.manager;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
@@ -83,7 +84,7 @@ public class MPeriCfgScanner extends PeriCfgScanner {
 	}
 
 	@Override
-	public void SET(Attribute attr) {
+	public void SET(Event event, Attribute attr) {
 		HashMap<Attribute, Integer> attrs = new HashMap<Attribute, Integer>();
 
 		attrs.put(attr, ASN1_Values.MOD_OP_REPLACE);

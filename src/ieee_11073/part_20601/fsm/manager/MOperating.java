@@ -116,7 +116,7 @@ public final class MOperating extends Operating {
 			DIM obj = state_handler.getMDS().getObject(setEvent.getPrivData().getObjectHandle());
 			try {
 				SET_Service serv = (SET_Service) obj;
-				serv.SET(setEvent.getPrivData().getAttribute());
+				serv.SET(setEvent, setEvent.getPrivData().getAttribute());
 			} catch (ClassCastException e) {
 				System.err.println("Set cannot be done in object: " + setEvent.getPrivData().getObjectHandle().getValue().getValue() +
 							" it does not implement a SET service");

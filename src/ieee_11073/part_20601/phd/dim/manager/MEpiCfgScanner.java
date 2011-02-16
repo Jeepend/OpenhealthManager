@@ -30,6 +30,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -148,7 +149,7 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 	}
 
 	@Override
-	public void SET(Attribute attr) {
+	public void SET(Event event, Attribute attr) {
 		HashMap<Attribute, Integer> attrs = new HashMap<Attribute, Integer>();
 
 		attrs.put(attr, ASN1_Values.MOD_OP_REPLACE);
@@ -157,5 +158,4 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 		getMDS().getStateHandler().send(apdu);
 		addAttribute(attr);
 	}
-
 }

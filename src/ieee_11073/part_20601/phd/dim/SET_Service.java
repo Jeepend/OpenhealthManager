@@ -25,10 +25,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import es.libresoft.openhealth.events.Event;
+
 public interface SET_Service {
 
 	/**
 	 * Support for SET operation
 	 */
-	public void SET (Attribute attr);
+	public void SET (Event event, Attribute attr);
 }
