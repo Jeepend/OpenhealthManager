@@ -131,6 +131,7 @@ public class MPM_Store extends PM_Store {
 							addPM_Segment(pm_segment);
 							System.out.println("Got PM_Segment " + in.getValue().intValue());
 
+							//TODO: Remove this petition from here, the data request should be done by a user petition
 							TrigSegmDataXferReq tsdxr = new TrigSegmDataXferReq();
 							tsdxr.setSeg_inst_no(in);
 							Trig_Segment_Data_Xfer(tsdxr);
