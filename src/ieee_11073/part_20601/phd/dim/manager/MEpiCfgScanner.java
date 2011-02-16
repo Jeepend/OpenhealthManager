@@ -30,11 +30,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.MeasureReporterUtils;
+import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -148,14 +151,22 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 		System.out.println("TODO: implement Unbuf_Scan_Report_Var");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void SET(Event event, Attribute attr) {
 		HashMap<Attribute, Integer> attrs = new HashMap<Attribute, Integer>();
+		ExternalEvent<Boolean, SetEventData> setEvent = null;
+		try {
+			setEvent = (ExternalEvent<Boolean, SetEventData>) event;
+		} catch (ClassCastException e) {
+
+		}
 
 		attrs.put(attr, ASN1_Values.MOD_OP_REPLACE);
 		DataApdu data = MessageFactory.PrstRoivCmipSet(this, attrs);
 		ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
 		getMDS().getStateHandler().send(apdu);
 		addAttribute(attr);
+		setEvent.processed(true, ErrorCodes.NO_ERROR);
 	}
 }
