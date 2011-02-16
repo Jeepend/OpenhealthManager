@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim;
 
+import java.util.Collection;
 import java.util.Hashtable;
 
 import ieee_11073.part_10101.Nomenclature;
@@ -68,6 +69,10 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 
 	public PM_Segment getPM_Segment(InstNumber in) {
 		return segments.get(in.getValue());
+	}
+
+	public Collection<PM_Segment> getSegments() {
+		return segments.values();
 	}
 
 	@Override

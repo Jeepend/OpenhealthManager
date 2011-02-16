@@ -25,12 +25,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim.manager;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bn.types.BitString;
 
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -69,6 +74,7 @@ import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.Numeric;
+import ieee_11073.part_20601.phd.dim.PM_Segment;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
@@ -203,12 +209,21 @@ public class MPM_Store extends PM_Store {
 
 			DimTimeOut to = new DimTimeOut(TimeOut.PM_STORE_TO_GET, invokeId.getValue(), getMDS().getStateHandler()) {
 
+				@SuppressWarnings("unchecked")
 				@Override
 				public void procResponse(DataApdu data) {
 					System.out.println("GOT_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
+					ExternalEvent<List<PM_Segment>, GetPmStoreEventData> event = null;
+					try {
+						event = (ExternalEvent<List<PM_Segment>, GetPmStoreEventData>) this.getEvent();
+					} catch (ClassCastException e) {
+
+					}
 
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						System.out.println("TODO: Unexpected response format");
+						if (event != null)
+							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -216,12 +231,16 @@ public class MPM_Store extends PM_Store {
 					HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 					if (handle == null) {
 						System.out.println("Error: Can't get HANDLE attribute in PM_STORE object");
+						if (event != null)
+							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
 					if (grs.getObj_handle().getValue().getValue().intValue() != handle.getValue().getValue().intValue()) {
 						System.out.println("TODO: Unexpected object handle, should be reserved value " +
 																				handle.getValue().getValue().intValue());
+						if (event != null)
+							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -241,6 +260,11 @@ public class MPM_Store extends PM_Store {
 
 					SegmSelection ss = getAllSegments();
 					Get_Segment_Info(ss);
+
+					if (event != null) {
+						List<PM_Segment> segList = new ArrayList<PM_Segment>(getSegments());
+						event.processed(segList, ErrorCodes.NO_ERROR);
+					}
 				}
 
 			};
