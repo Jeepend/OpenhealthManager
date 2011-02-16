@@ -65,4 +65,8 @@ public class HDPDevice{
 	public void close(){
 
 	}
+
+	public String toString() {
+		return btaddr;
+	}
 }

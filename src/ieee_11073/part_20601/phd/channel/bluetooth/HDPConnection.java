@@ -36,7 +36,7 @@ public class HDPConnection {
 
 	public HDPConnection (HDPDevice device) {
 		this.device = device;
-		this.agent = new Agent();
+		this.agent = new Agent(device.toString());
 	}
 
 	public HDPDevice getHDPDevice () {

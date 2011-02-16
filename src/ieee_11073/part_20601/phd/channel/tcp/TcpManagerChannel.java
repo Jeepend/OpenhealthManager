@@ -46,7 +46,7 @@ public class TcpManagerChannel extends Thread {
 			System.out.println("Waiting for clients...");
 			while(!this.finish){
 				Socket s = ss.accept();
-				Agent a = new Agent();
+				Agent a = new Agent(s.getRemoteSocketAddress().toString());
 				TCPChannel chnl = new TCPChannel (s, this, a);
 				a.addChannel(chnl);
 				agents.addAgent(a);

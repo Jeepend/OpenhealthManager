@@ -40,6 +40,7 @@ public final class Agent extends Device {
 
 	private ManagerStateController stc;
 	private MDS mdsObj;
+	private String transporDesc;
 
 	public final IMDS_Handler mdsHandler = new IMDS_Handler(){
 		@Override
@@ -58,8 +59,9 @@ public final class Agent extends Device {
 	};
 
 
-	public Agent() {
+	public Agent(String transportDescription) {
 		super();
+		this.transporDesc = transportDescription;
 		mdsObj = new MDSManager(this);
 		stc = new ManagerStateController (mdsHandler);
 		stc.configureController(this.inputQueue, this.outputQueue, this.eventQueue);
@@ -101,5 +103,9 @@ public final class Agent extends Device {
 
 	public String getStateName() {
 		return stc.getStateName();
+	}
+
+	public String getTransportDesc() {
+		return transporDesc;
 	}
 }
