@@ -37,8 +37,10 @@ import ieee_11073.part_20601.phd.dim.TimeOut;
 
 import java.util.concurrent.Semaphore;
 
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -84,6 +86,7 @@ public final class WaitingForConfig extends Configuring {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
@@ -97,6 +100,12 @@ public final class WaitingForConfig extends Configuring {
 			resetTimerTask();
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
 			state_handler.changeState(new MDisassociating(state_handler));
+			try {
+				ExternalEvent<Boolean, Object> eevent = (ExternalEvent<Boolean, Object> ) event;
+				eevent.processed(true, ErrorCodes.NO_ERROR);
+			} catch (ClassCastException e) {
+
+			}
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT){
 			timeOut.cancel();
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());

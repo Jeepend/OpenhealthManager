@@ -50,6 +50,7 @@ import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.PeriCfgScanner;
 import ieee_11073.part_20601.phd.dim.SET_Service;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
@@ -140,6 +141,12 @@ public final class MOperating extends Operating {
 		case EventType.REQ_ASSOC_REL:
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
 			state_handler.changeState(new MDisassociating(state_handler));
+			try {
+				ExternalEvent<Boolean, Object> eevent = (ExternalEvent<Boolean, Object> ) event;
+				eevent.processed(true, ErrorCodes.NO_ERROR);
+			} catch (ClassCastException e) {
+
+			}
 			return true;
 
 		case EventType.REQ_ASSOC_ABORT:

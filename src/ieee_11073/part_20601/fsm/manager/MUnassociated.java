@@ -44,8 +44,10 @@ import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.DeviceConfigCreator;
 import es.libresoft.openhealth.ManagerConfig;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
@@ -68,11 +70,18 @@ public final class MUnassociated extends Unassociated {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
+			try {
+				ExternalEvent<Boolean, Object> eevent = (ExternalEvent<Boolean, Object> ) event;
+				eevent.processed(true, ErrorCodes.NO_ERROR);
+			} catch (ClassCastException e) {
+
+			}
 			return true;
 		} else
 			return false;
