@@ -270,6 +270,7 @@ public class MPM_Store extends PM_Store {
 				}
 
 			};
+			to.setEvent(event);
 			to.start();
 
 		} catch (Exception e) {
