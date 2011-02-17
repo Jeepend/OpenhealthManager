@@ -282,8 +282,45 @@ public class HealthService extends Service {
 
 		@Override
 		public boolean disconnect(IAgent agent, IError error) throws RemoteException {
-			System.out.println("TODO: Send and association release");
-			return false;
+			Agent a = getAgent(agent);
+
+			if (error == null) {
+				error = new IError();
+			}
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return false;
+			}
+
+			AndroidExternalEvent<Boolean, Object> ev = new AndroidExternalEvent<Boolean, Object>(EventType.REQ_ASSOC_REL, null);
+
+			a.sendEvent(ev);
+
+			try {
+				ev.proccessing();
+			} catch (InterruptedException e) {
+				error.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(error);
+				return false;
+			}
+
+			if (ev.wasError()) {
+				error.setErrCode(ev.getError());
+				setErrorMessage(error);
+				return false;
+			}
+
+			if (ev.getRspData()) {
+				error.setErrCode(ErrorCodes.NO_ERROR);
+				setErrorMessage(error);
+				return true;
+			} else {
+				error.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(error);
+				return false;
+			}
 		}
 
 		@Override
