@@ -191,6 +191,8 @@ public class MPM_Store extends PM_Store {
 			}
 		};
 
+		//TODO: Add a timeout for data transfer (see 8.9.5.6 and MDC_ATTR_TRANSFER_TIMEOUT att from PMSegment)
+
 		to.start();
 	}
 
@@ -259,6 +261,7 @@ public class MPM_Store extends PM_Store {
 						e.printStackTrace();
 					}
 
+					//TODO: Remove Get_Setment_Info from here, should be done by a user petition
 					SegmSelection ss = getAllSegments();
 					Get_Segment_Info(ss);
 
