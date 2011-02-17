@@ -76,4 +76,6 @@ public final class ErrorCodes {
 	public static final int INVALID_ATTRIBUTE		=	18;
 	/** Unknown object */
 	public static final int UNKNOWN_OBJECT			=	19;
+	/** Invalid arguments */
+	public static final int INVALID_ARGUMENTS		=	20;
 }

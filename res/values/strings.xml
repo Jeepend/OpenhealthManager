@@ -64,6 +64,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="INVALID_ATTRIBUTE">Invalid attribute</string>
 	<string name="UNKNOWN_OBJECT">Unknown object</string>
 
+	<string name="INVALID_ARGUMENTS">Invalid arguments</string>
+
 	<!-- Measure Attributes Types Section -->
 
 	<string name="MDC_ATTR_ID_HANDLE">Object handle</string>
