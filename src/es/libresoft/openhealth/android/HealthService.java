@@ -32,7 +32,6 @@ import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -326,16 +325,9 @@ public class HealthService extends Service {
 		@Override
 		public void getAttributes(IAgent agent, List<IAttribute> attrs, IError error) {
 
-			Agent a = getAgent(agent);
-
-			if (error == null || attrs == null)
+			Agent a = checkParameters(agent, attrs, error);
+			if (a == null)
 				return;
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			parcelAttributes(a.mdsHandler.getMDS(), attrs, error);
 		}
@@ -344,15 +336,9 @@ public class HealthService extends Service {
 		public void getAttribute(IAgent agent, int attrId, IAttribute attr, IError error)
 				throws RemoteException {
 
-			Agent a = getAgent(agent);
-			if (error == null || attr == null)
+			Agent a = checkParameters(agent, attr, error);
+			if (a == null)
 				return;
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			Attribute at = a.mdsHandler.getMDS().getAttribute(attrId);
 			if (at == null || !IAttrFactory.getParcelableAttribute(at.getAttributeType(), attr)) {
@@ -409,21 +395,9 @@ public class HealthService extends Service {
 		@Override
 		public void getState(IAgent agent, IState state, IError error)
 		{
-			if (error == null) {
-				error = new IError();
-			}
-
-			if (state == null) {
-				state = new IState();
-			}
-
-			Agent a;
-			if (agent == null || (a = getAgent(agent)) == null)
-			{
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, state, error);
+			if (a == null)
 				return;
-			}
 
 			state.setStateCode(a.getStateCode());
 			state.setStateName(a.getStateName());
@@ -433,27 +407,9 @@ public class HealthService extends Service {
 		public void getNumeric(IAgent agent, List<INumeric> nums, IError error)
 				throws RemoteException {
 
-			if (error == null) {
-				error = new IError();
-			}
-
-			if (nums == null) {
-				nums = new ArrayList<INumeric>();
-			}
-
-			if (agent == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, nums, error);
+			if (a == null)
 				return;
-			}
-
-			Agent a = getAgent(agent);
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			for (Integer handle: a.mdsHandler.getMDS().getNumericHandlers())
 				nums.add(new INumeric(handle, agent));
@@ -464,27 +420,9 @@ public class HealthService extends Service {
 		public void getScanner(IAgent agent, List<IScanner> scanners, IError error)
 				throws RemoteException {
 
-			if (error == null) {
-				error = new IError();
-			}
-
-			if (scanners == null) {
-				scanners = new ArrayList<IScanner>();
-			}
-
-			if (agent == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, scanners, error);
+			if (a == null)
 				return;
-			}
-
-			Agent a = getAgent(agent);
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			for (Integer handle: a.mdsHandler.getMDS().getScannerHandlers())
 				scanners.add(new IScanner(handle, agent));
@@ -495,27 +433,9 @@ public class HealthService extends Service {
 		public void getRT_SA(IAgent agent, List<IRT_SA> rts, IError error)
 				throws RemoteException {
 
-			if (error == null) {
-				error = new IError();
-			}
-
-			if (rts == null) {
-				rts = new ArrayList<IRT_SA>();
-			}
-
-			if (agent == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, rts, error);
+			if (a == null)
 				return;
-			}
-
-			Agent a = getAgent(agent);
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			for (Integer handle: a.mdsHandler.getMDS().getRT_SAHandlers())
 				rts.add(new IRT_SA(handle, agent));
@@ -526,27 +446,9 @@ public class HealthService extends Service {
 		public void getEnumeration(IAgent agent, List<IEnumeration> enumeration, IError error)
 				throws RemoteException {
 
-			if (error == null) {
-				error = new IError();
-			}
-
-			if (enumeration == null) {
-				enumeration = new ArrayList<IEnumeration>();
-			}
-
-			if (agent == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, enumeration, error);
+			if (a == null)
 				return;
-			}
-
-			Agent a = getAgent(agent);
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			for (Integer handle: a.mdsHandler.getMDS().getEnumerationHandlers())
 				enumeration.add(new IEnumeration(handle, agent));
@@ -557,27 +459,9 @@ public class HealthService extends Service {
 		public void getPM_Store(IAgent agent, List<IPM_Store> pmStore, IError error)
 				throws RemoteException {
 
-			if (error == null) {
-				error = new IError();
-			}
-
-			if (pmStore == null) {
-				pmStore = new ArrayList<IPM_Store>();
-			}
-
-			if (agent == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, pmStore, error);
+			if (a == null)
 				return;
-			}
-
-			Agent a = getAgent(agent);
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
-				return;
-			}
 
 			for (Integer handle: a.mdsHandler.getMDS().getPM_StoresHandlers())
 				pmStore.add(new IPM_Store(handle, agent));
@@ -587,30 +471,13 @@ public class HealthService extends Service {
 		@Override
 		public void getObjectAttrs(IAgent agent, IDIMClass obj, List<IAttribute> attrs, IError error)
 					throws RemoteException {
-			if (error == null) {
-				error = new IError();
-			}
 
-			if (attrs  == null) {
-				attrs = new ArrayList<IAttribute>();
-			}
-
-			if (agent == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
-				setErrorMessage(error);
+			Agent a = checkParameters(agent, attrs, error);
+			if (a == null)
 				return;
-			}
 
 			if (obj == null) {
 				error.setErrCode(ErrorCodes.UNKNOWN_OBJECT);
-				setErrorMessage(error);
-				return;
-			}
-
-			Agent a = getAgent(agent);
-
-			if (a == null) {
-				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
 				setErrorMessage(error);
 				return;
 			}
@@ -624,6 +491,32 @@ public class HealthService extends Service {
 			}
 
 			parcelAttributes(o, attrs, error);
+		}
+
+		private <T> Agent checkParameters(IAgent agent, T ret, IError error) {
+			if (error == null)
+				return null;
+
+			if (ret == null) {
+				error.setErrCode(ErrorCodes.INVALID_ARGUMENTS);
+				setErrorMessage(error);
+				return null;
+			}
+
+			if (agent == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return null;
+			}
+
+			Agent a = getAgent(agent);
+
+			if (a == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+			}
+
+			return a;
 		}
 	};
 
