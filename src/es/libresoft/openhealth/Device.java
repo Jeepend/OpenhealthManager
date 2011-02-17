@@ -54,7 +54,7 @@ public abstract class Device {
 		outputQueue = new FIFO<ApduType>();
 		eventQueue = new FIFO<Event>();
 		vch = new VirtualChannel(inputQueue, outputQueue, eventQueue);
-		id = instance_id++;
+		id = getNewId();
 		notifyDevicePlugged();
 	}
 
@@ -105,5 +105,9 @@ public abstract class Device {
 
 	public String getTransportDesc() {
 		return transporDesc;
+	}
+
+	private static synchronized int getNewId() {
+		return instance_id++;
 	}
 }
