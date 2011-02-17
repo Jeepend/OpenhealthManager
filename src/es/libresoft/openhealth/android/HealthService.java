@@ -281,8 +281,9 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void disconnect(IAgent agent) throws RemoteException {
+		public boolean disconnect(IAgent agent, IError error) throws RemoteException {
 			System.out.println("TODO: Send and association release");
+			return false;
 		}
 
 		@Override
