@@ -106,7 +106,7 @@ public final class MOperating extends Operating {
 	public synchronized boolean processEvent(Event event) {
 		switch (event.getTypeOfEvent()) {
 		case EventType.REQ_GET_PM_STORE:
-			ExternalEvent<List<PM_Segment>, GetPmStoreEventData> pmEvent = (ExternalEvent<List<PM_Segment>, GetPmStoreEventData>) event;
+			ExternalEvent<Boolean, GetPmStoreEventData> pmEvent = (ExternalEvent<Boolean, GetPmStoreEventData>) event;
 			PM_Store pm_store = this.state_handler.getMDS().getPM_Store(pmEvent.getPrivData().getHandle());
 			pm_store.GET(pmEvent);
 			return true;

@@ -214,9 +214,9 @@ public class MPM_Store extends PM_Store {
 				@Override
 				public void procResponse(DataApdu data) {
 					System.out.println("GOT_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
-					ExternalEvent<List<PM_Segment>, GetPmStoreEventData> event = null;
+					ExternalEvent<Boolean, GetPmStoreEventData> event = null;
 					try {
-						event = (ExternalEvent<List<PM_Segment>, GetPmStoreEventData>) this.getEvent();
+						event = (ExternalEvent<Boolean, GetPmStoreEventData>) this.getEvent();
 					} catch (ClassCastException e) {
 
 					}
@@ -224,7 +224,7 @@ public class MPM_Store extends PM_Store {
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						System.out.println("TODO: Unexpected response format");
 						if (event != null)
-							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
+							event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -233,7 +233,7 @@ public class MPM_Store extends PM_Store {
 					if (handle == null) {
 						System.out.println("Error: Can't get HANDLE attribute in PM_STORE object");
 						if (event != null)
-							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
+							event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -241,7 +241,7 @@ public class MPM_Store extends PM_Store {
 						System.out.println("TODO: Unexpected object handle, should be value " +
 																				handle.getValue().getValue().intValue());
 						if (event != null)
-							event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
+							event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -262,10 +262,8 @@ public class MPM_Store extends PM_Store {
 					SegmSelection ss = getAllSegments();
 					Get_Segment_Info(ss);
 
-					if (event != null) {
-						List<PM_Segment> segList = new ArrayList<PM_Segment>(getSegments());
-						event.processed(segList, ErrorCodes.NO_ERROR);
-					}
+					if (event != null)
+						event.processed(true, ErrorCodes.NO_ERROR);
 				}
 
 			};
