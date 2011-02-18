@@ -55,6 +55,7 @@ import es.libresoft.openhealth.android.aidl.types.IMetricSpecSmall;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
+import es.libresoft.openhealth.android.aidl.types.IOperationalState;
 import es.libresoft.openhealth.android.aidl.types.IPowerStatus;
 import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
 import es.libresoft.openhealth.android.aidl.types.IProductionSpec;
@@ -85,6 +86,7 @@ import ieee_11073.part_20601.asn1.MetricIdList;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.OperationalState;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.PrivateOid;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
@@ -271,6 +273,10 @@ public class IAttrFactory {
 							value.toString());
 	}
 
+	private static IOperationalState OperationalState2parcelable(OperationalState state, int attrId) {
+		return new IOperationalState(state.getValue());
+	}
+
 	private static IBasicNuObsValue BasicNuObsValue2parcelable(BasicNuObsValue obsValue, int attrId) {
 		SFloatType value;
 		try {
@@ -354,6 +360,9 @@ public class IAttrFactory {
 							asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof MetricIdList)
 			parcel = MetricIdList2parcelable((MetricIdList) asnAttr.getAttributeType(),
+							asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof OperationalState)
+			parcel = OperationalState2parcelable((OperationalState) asnAttr.getAttributeType(),
 							asnAttr.getAttributeID());
 
 		if (parcel != null) {
