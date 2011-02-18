@@ -26,10 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.events;
 
+import ieee_11073.part_20601.phd.dim.Attribute;
+
 import java.util.List;
 
 public interface MeasureReporter {
-	void set_attribute(int type, int value);
+	void set_attribute(Attribute att);
 	void addMeasure (int mType, Object data);
 	<T> List<T> getMeasures();
 	<T> List<T> getAttributes();

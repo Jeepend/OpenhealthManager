@@ -26,6 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package cmdTester;
 
+import ieee_11073.part_20601.phd.dim.Attribute;
+
 import java.util.List;
 
 import es.libresoft.openhealth.events.MeasureReporter;
@@ -52,8 +54,8 @@ public class ShellMeasureReporter implements MeasureReporter {
 	}
 
 	@Override
-	public void set_attribute(int type, int value) {
-		metric.addAttribute(new ShellAttribute(type, value));
+	public void set_attribute(Attribute att) {
+		metric.addAttribute(att);
 	}
 
 	@Override

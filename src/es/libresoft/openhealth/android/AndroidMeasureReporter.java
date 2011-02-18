@@ -26,6 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.phd.dim.Attribute;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -38,7 +40,6 @@ import es.libresoft.openhealth.android.aidl.types.measures.IMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasureArray;
 import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
-import es.libresoft.openhealth.android.aidl.types.measures.IMeasureAttribute;
 import es.libresoft.openhealth.events.MeasureReporter;
 
 public class AndroidMeasureReporter implements MeasureReporter{
@@ -94,8 +95,8 @@ public class AndroidMeasureReporter implements MeasureReporter{
 	}
 
 	@Override
-	public void set_attribute(int type, int value) {
-		metric.addAttribute(new IMeasureAttribute(type, value, AttributeUtils.type2string(type), AttributeUtils.value2string(type, value)));
+	public void set_attribute(Attribute att) {
+		System.err.println("TODO: set_attribute is not implemented");
 	}
 
 	public IAgentMetric getMetric() {

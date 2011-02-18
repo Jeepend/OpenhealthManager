@@ -27,9 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.events;
 
 import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.HANDLE;
-import ieee_11073.part_20601.asn1.OID_Type;
-import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 
@@ -51,21 +48,15 @@ public class MeasureReporterUtils {
 		Attribute at;
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
-		if (at != null) {
-			TYPE type = (TYPE)at.getAttributeType();
-			mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
-		}
+		if (at != null)
+			mr.set_attribute(at);
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
-		if (at != null) {
-			OID_Type unit_cod = (OID_Type)at.getAttributeType();
-			mr.set_attribute(Nomenclature.MDC_ATTR_UNIT_CODE, unit_cod.getValue().getValue());
-		}
+		if (at != null)
+			mr.set_attribute(at);
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE);
-		if (at != null) {
-			HANDLE handle = (HANDLE) at.getAttributeType();
-			mr.set_attribute(Nomenclature.MDC_ATTR_ID_HANDLE, handle.getValue().getValue());
-		}
+		if (at != null)
+			mr.set_attribute(at);
 	}
 }
