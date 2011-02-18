@@ -37,6 +37,24 @@ public class AttributeUtils {
 		AttributeUtils.context = context;
 	}
 
+	public static String attIdValue2string(int attId, int attrValue) {
+		String retValue = null;
+		if (context == null)
+			return "Error: Context not set, set context before use this method";
+
+		switch(attId) {
+		case Nomenclature.MDC_ATTR_UNIT_CODE:
+			retValue = partitionValue2string(Nomenclature.MDC_PART_SCADA, attrValue);
+			break;
+		//TODO: Add more cases here
+		}
+
+		if (retValue != null)
+			return retValue;
+		else
+			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for attributeId: " + attId;
+	}
+
 	public static String partitionValue2string(int partition, int attrValue) {
 		String retValue = null;
 		if (context == null)
