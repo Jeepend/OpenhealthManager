@@ -48,6 +48,7 @@ public class MeasureReporterUtils {
 		addAttribute(mr, measure, Nomenclature.MDC_ATTR_ID_TYPE);
 		addAttribute(mr, measure, Nomenclature.MDC_ATTR_UNIT_CODE);
 		addAttribute(mr, measure, Nomenclature.MDC_ATTR_ID_HANDLE);
+		addAttribute(mr, measure, Nomenclature.MDC_ATTR_ID_PHYSIO_LIST);
 	}
 
 	private static void addAttribute(MeasureReporter mr, DIM obj, int attID) {
