@@ -101,7 +101,7 @@ public class IAttrFactory {
 	private static ITYPE TYPE2parcelable(TYPE type) {
 		INomPartition partition = new INomPartition(type.getPartition().getValue());
 		IOID_Type code = new IOID_Type(type.getCode().getValue().getValue());
-		ITYPE itype = new ITYPE(partition, code, AttributeUtils.value2string(partition.getNomPart(), code.getType()));
+		ITYPE itype = new ITYPE(partition, code, AttributeUtils.partitionValue2string(partition.getNomPart(), code.getType()));
 		return itype;
 	}
 

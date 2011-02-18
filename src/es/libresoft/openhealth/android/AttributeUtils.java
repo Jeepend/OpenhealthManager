@@ -37,7 +37,7 @@ public class AttributeUtils {
 		AttributeUtils.context = context;
 	}
 
-	public static String value2string(int partition, int attrValue) {
+	public static String partitionValue2string(int partition, int attrValue) {
 		String retValue = null;
 		if (context == null)
 			return "Error: Context not set, set context before use this method";
