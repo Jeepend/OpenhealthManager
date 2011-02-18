@@ -45,17 +45,13 @@ public class MeasureReporterUtils {
 	 * @param meassure The meassure that will be added to the reporter
 	 */
 	public static void addAttributesToReport (MeasureReporter mr, DIM measure) {
-		Attribute at;
+		addAttribute(mr, measure, Nomenclature.MDC_ATTR_ID_TYPE);
+		addAttribute(mr, measure, Nomenclature.MDC_ATTR_UNIT_CODE);
+		addAttribute(mr, measure, Nomenclature.MDC_ATTR_ID_HANDLE);
+	}
 
-		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
-		if (at != null)
-			mr.set_attribute(at);
-
-		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
-		if (at != null)
-			mr.set_attribute(at);
-
-		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE);
+	private static void addAttribute(MeasureReporter mr, DIM obj, int attID) {
+		Attribute at = obj.getAttribute(attID);
 		if (at != null)
 			mr.set_attribute(at);
 	}
