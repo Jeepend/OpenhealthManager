@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
@@ -39,9 +40,11 @@ import java.util.Vector;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.android.aidl.IAgent;
 import es.libresoft.openhealth.android.aidl.types.IError;
+import es.libresoft.openhealth.android.aidl.types.IOperationalState;
 import es.libresoft.openhealth.android.aidl.IAgentService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
+import es.libresoft.openhealth.android.aidl.IScannerService;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
@@ -59,6 +62,7 @@ import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
@@ -514,12 +518,29 @@ public class HealthService extends Service {
 		}
 	};
 
+	/**
+	 * The IAgentService is defined through IDL
+	 */
+	private final IScannerService.Stub scannerServiceStub = new IScannerService.Stub() {
+
+		@Override
+		public boolean setScannerOperationalState(IScanner scanner,
+				IOperationalState opState, IError err) throws RemoteException {
+			System.err.println("TODO: implement setScannerOperationalState");
+
+			return false;
+		}
+
+	};
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		if (IManagerService.class.getName().equals(intent.getAction()))
 			return managerServiceStub;
 		if (IAgentService.class.getName().equals(intent.getAction()))
 			return agentServiceStub;
+		if (IScannerService.class.getName().equals(intent.getAction()))
+			return scannerServiceStub;
 		return null;
 	}
 
