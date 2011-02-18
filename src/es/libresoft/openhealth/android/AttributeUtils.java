@@ -37,27 +37,37 @@ public class AttributeUtils {
 		AttributeUtils.context = context;
 	}
 
-	public static String value2string(int attrType, int attrValue) {
+	public static String value2string(int partition, int attrValue) {
 		String retValue = null;
 		if (context == null)
 			return "Error: Context not set, set context before use this method";
 
-		switch (attrType) {
-		case Nomenclature.MDC_ATTR_UNIT_CODE:
-			retValue = unitCode2String(attrValue);
+		switch (partition) {
+		case Nomenclature.MDC_PART_OBJ:
 			break;
-		case Nomenclature.MDC_ATTR_ID_TYPE:
-			retValue = idTyep2String(attrValue);
+		case Nomenclature.MDC_PART_SCADA:
+			retValue = scadaType2String(attrValue);
 			break;
-		case Nomenclature.MDC_ATTR_ID_HANDLE:
-			retValue = "" + attrValue;
+		case Nomenclature.MDC_PART_DIM:
+			break;
+		case Nomenclature.MDC_PART_INFRA:
+			break;
+		case Nomenclature.MDC_PART_PHD_DM:
+			break;
+		case Nomenclature.MDC_PART_PHD_HF:
+			break;
+		case Nomenclature.MDC_PART_PHD_AI:
+			break;
+		case Nomenclature.MDC_PART_RET_CODE:
+			break;
+		case Nomenclature.MDC_PART_EXT_NOM:
 			break;
 		}
 
 		if (retValue != null)
 			return retValue;
 		else
-			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for type: " + attrType;
+			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition;
 	}
 
 	private static String unitCode2String(int attrValue) {
@@ -94,7 +104,7 @@ public class AttributeUtils {
 		return null;
 	}
 
-	private static String idTyep2String(int attrValue) {
+	private static String scadaType2String(int attrValue) {
 		switch (attrValue) {
 		case Nomenclature.MDC_PULS_OXIM_PULS_RATE:
 			return context.getString(R.string.MDC_PULS_OXIM_PULS_RATE);
