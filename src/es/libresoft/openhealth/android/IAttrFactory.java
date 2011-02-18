@@ -48,6 +48,7 @@ import es.libresoft.openhealth.android.aidl.types.IHighResRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.IINT_U16;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeCapState;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeInfo;
+import es.libresoft.openhealth.android.aidl.types.IMetricIdList;
 import es.libresoft.openhealth.android.aidl.types.IMetricSpecSmall;
 import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
@@ -75,6 +76,7 @@ import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.HighResRelativeTime;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
+import ieee_11073.part_20601.asn1.MetricIdList;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.PowerStatus;
@@ -211,6 +213,14 @@ public class IAttrFactory {
 		return new IOID_Type(type.getValue().getValue());
 	}
 
+	private static IMetricIdList MetricIdList2parcelable(MetricIdList idList) {
+		ArrayList <IOID_Type> types = new ArrayList<IOID_Type>();
+		for (OID_Type type: idList.getValue())
+			types.add(OID_Type2parcelable(type));
+
+		return new IMetricIdList(types);
+	}
+
 	private static IBasicNuObsValue BasicNuObsValue2parcelable(BasicNuObsValue obsValue) {
 		SFloatType value;
 		try {
@@ -272,6 +282,8 @@ public class IAttrFactory {
 			parcel = BasicNuObsValue2parcelable((BasicNuObsValue) asnAttr);
 		else if (asnAttr instanceof MetricSpecSmall)
 			parcel = MetricSpecSmall2parcelable((MetricSpecSmall) asnAttr);
+		else if (asnAttr instanceof MetricIdList)
+			parcel = MetricIdList2parcelable((MetricIdList) asnAttr);
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
