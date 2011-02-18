@@ -29,6 +29,8 @@ package es.libresoft.openhealth.android;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.bn.types.BitString;
+
 import android.os.Parcelable;
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
@@ -69,17 +71,22 @@ import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
+import ieee_11073.part_20601.asn1.AuthBodyAndStrucType;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BatMeasure;
 import ieee_11073.part_20601.asn1.ConfigId;
+import ieee_11073.part_20601.asn1.FLOAT_Type;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.HighResRelativeTime;
 import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.MdsTimeCapState;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.MetricIdList;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
+import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.PowerStatus;
+import ieee_11073.part_20601.asn1.PrivateOid;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
@@ -99,11 +106,14 @@ public class IAttrFactory {
 		return ihandle;
 	}
 
+	private static INomPartition NomPartition2parcelable(NomPartition partition, int attrId) {
+		return new INomPartition(partition.getValue());
+	}
+
 	private static ITYPE TYPE2parcelable(TYPE type, int attrId) {
-		INomPartition partition = new INomPartition(type.getPartition().getValue());
-		IOID_Type code = new IOID_Type(type.getCode().getValue().getValue());
-		ITYPE itype = new ITYPE(partition, code, AttributeUtils.partitionValue2string(partition.getNomPart(), code.getType()));
-		return itype;
+		INomPartition partition = NomPartition2parcelable(type.getPartition(), attrId);
+		IOID_Type code = OID_Type2parcelable(type.getCode(), attrId);
+		return new ITYPE(partition, code, AttributeUtils.partitionValue2string(partition.getNomPart(), code.getType()));
 	}
 
 	private static ISystemModel SystemModel2parcelable(SystemModel model, int attrId) {
@@ -118,14 +128,29 @@ public class IAttrFactory {
 		return new IConfigId(confId.getValue());
 	}
 
+	private static IAttrValMapEntry AttrValMapEntry2parcelable(AttrValMapEntry entry, int attrId) {
+		return new IAttrValMapEntry(new IOID_Type(entry.getAttribute_id().getValue().getValue()),
+						entry.getAttribute_len());
+	}
+
 	private static IAttrValMap AttrValMap2parcelable(AttrValMap valMap, int attrId) {
 		ArrayList<IAttrValMapEntry> values = new ArrayList<IAttrValMapEntry>();
 		Iterator<AttrValMapEntry> it = valMap.getValue().iterator();
 		while (it.hasNext()) {
 			AttrValMapEntry entry = it.next();
-			values.add(new IAttrValMapEntry(new IOID_Type(entry.getAttribute_id().getValue().getValue()), entry.getAttribute_len()));
+			values.add(AttrValMapEntry2parcelable(entry, attrId));
 		}
 		return new IAttrValMap(values);
+	}
+
+	private static IPrivateOid PrivateOid2parcelable(PrivateOid oid, int attrId) {
+		return new IPrivateOid(oid.getValue().getValue());
+	}
+
+	private static IProductionSpecEntry AttrProdSpec2parcelable(ProdSpecEntry entry, int attrId) {
+		return new IProductionSpecEntry(entry.getSpec_type(),
+				PrivateOid2parcelable(entry.getComponent_id(), attrId),
+				OCTETSTRING2parcelable(entry.getProd_spec(), attrId));
 	}
 
 	private static IProductionSpec AttrProductionSpec2parcelable(ProductionSpec spec, int attrId) {
@@ -133,17 +158,23 @@ public class IAttrFactory {
 		Iterator<ProdSpecEntry> it = spec.getValue().iterator();
 		while (it.hasNext()) {
 			ProdSpecEntry entry = it.next();
-			values.add(new IProductionSpecEntry(entry.getSpec_type(),
-									new IPrivateOid(entry.getComponent_id().getValue().getValue()),
-									new IOCTETSTRING(entry.getProd_spec())));
+			values.add(AttrProdSpec2parcelable(entry, attrId));
 		}
 		return new IProductionSpec(values);
 	}
 
+	private static IBITSTRING BitString2parcelable(BitString bitstring, int attrId) {
+		return new IBITSTRING(bitstring.getValue(), bitstring.getTrailBitsCnt());
+	}
+
+	private static IMdsTimeCapState MdsTimeCapState2parcelable(MdsTimeCapState capState, int attrId) {
+		return new IMdsTimeCapState(BitString2parcelable(capState.getValue(), attrId));
+	}
+
 	private static IMdsTimeInfo MdsTimeInfo2parcelable(MdsTimeInfo timeInfo, int attrId) {
-		return new IMdsTimeInfo(new IMdsTimeCapState(new IBITSTRING(timeInfo.getMds_time_cap_state().getValue().getValue(), timeInfo.getMds_time_cap_state().getValue().getTrailBitsCnt())),
-				new IOID_Type(timeInfo.getTime_sync_protocol().getValue().getValue().getValue()),
-				new IRelativeTime(timeInfo.getTime_sync_accuracy().getValue().getValue()),
+		return new IMdsTimeInfo(MdsTimeCapState2parcelable(timeInfo.getMds_time_cap_state(), attrId),
+				OID_Type2parcelable(timeInfo.getTime_sync_protocol().getValue(), attrId),
+				RelativeTime2parcelable(timeInfo.getTime_sync_accuracy(), attrId),
 				timeInfo.getTime_resolution_abs_time(), timeInfo.getTime_resolution_rel_time(),
 				timeInfo.getTime_resolution_high_res_time().getValue());
 	}
@@ -164,48 +195,61 @@ public class IAttrFactory {
 	}
 
 	private static IHighResRelativeTime HighResRelativeTime2parcelable(HighResRelativeTime relTime, int attrId) {
-		return new IHighResRelativeTime(new IOCTETSTRING(relTime.getValue()));
+		return new IHighResRelativeTime(OCTETSTRING2parcelable(relTime.getValue(), attrId));
 	}
 
 	private static IAbsoluteTimeAdjust AbsoluteTimeAdjust2parcelable(AbsoluteTimeAdjust absTimeAdj, int attrId) {
-		return new IAbsoluteTimeAdjust(new IOCTETSTRING(absTimeAdj.getValue()));
+		return new IAbsoluteTimeAdjust(OCTETSTRING2parcelable(absTimeAdj.getValue(), attrId));
 	}
 
 	private static IPowerStatus PowerStatus2parcelable(PowerStatus powerStatus, int attrId) {
-		return new IPowerStatus(new IBITSTRING(powerStatus.getValue().getValue(), powerStatus.getValue().getTrailBitsCnt()));
+		return new IPowerStatus(BitString2parcelable(powerStatus.getValue(), attrId));
 	}
 
 	private static IINT_U16 INT_U162parcelable(INT_U16 intu16, int attrId) {
 		return new IINT_U16(intu16.getValue());
 	}
 
-	private static IBatMeasure BatMeasure2parcelable(BatMeasure batMeasure, int attrId) {
+	private static IFLOAT_Type FLOAT_Type2parcelable(FLOAT_Type value, int attrId) {
 		try {
-			return new IBatMeasure(new IFLOAT_Type(new FloatType(batMeasure.getValue().getValue().getValue()).doubleValueRepresentation()),
-								new IOID_Type(batMeasure.getUnit_().getValue().getValue()));
+			return new IFLOAT_Type(new FloatType(value.getValue().getValue()).doubleValueRepresentation());
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	private static IBatMeasure BatMeasure2parcelable(BatMeasure batMeasure, int attrId) {
+		return new IBatMeasure(FLOAT_Type2parcelable(batMeasure.getValue(), attrId),
+									OID_Type2parcelable(batMeasure.getUnit_(), attrId));
+	}
+
+	private static IAuthBodyAndStrucType AuthBodyAndStrucType2parcelable(AuthBodyAndStrucType bodyType, int attrId) {
+		return new IAuthBodyAndStrucType(bodyType.getAuth_body().getValue(),
+							bodyType.getAuth_body_struc_type().getValue());
+	}
+
+	private static IRegCertData RecCertData2parcelable(RegCertData certData, int attrId) {
+		return new IRegCertData(AuthBodyAndStrucType2parcelable(certData.getAuth_body_and_struc_type(), attrId), null);
 	}
 
 	private static IRegCertDataList RegCertDataList2parcelable(RegCertDataList asnAttr, int attrId) {
 		ArrayList<IRegCertData> values = new ArrayList<IRegCertData>();
 		Iterator<RegCertData> it = asnAttr.getValue().iterator();
 		while (it.hasNext()) {
-			RegCertData entry = it.next();
-			values.add(new IRegCertData(new IAuthBodyAndStrucType(entry.getAuth_body_and_struc_type().getAuth_body().getValue(),
-											entry.getAuth_body_and_struc_type().getAuth_body_struc_type().getValue()),
-											null));
+			values.add(RecCertData2parcelable(it.next(), attrId));
 		}
 		return new IRegCertDataList(values);
+	}
+
+	private static ITypeVer TypeVer2parcelable(TypeVer ver, int attrId) {
+		return new ITypeVer(OID_Type2parcelable(ver.getType(), attrId), ver.getVersion());
 	}
 
 	private static ITypeVerList TypeVerList2parcelable(TypeVerList verList, int attrId) {
 		ArrayList<ITypeVer> values = new ArrayList<ITypeVer>();
 		Iterator<TypeVer> it = verList.getValue().iterator();
 		while (it.hasNext()) {
-			TypeVer ver = it.next();
-			values.add(new ITypeVer(new IOID_Type(ver.getType().getValue().getValue()), ver.getVersion()));
+			values.add(TypeVer2parcelable(it.next(), attrId));
 		}
 		return new ITypeVerList(values);
 	}
@@ -222,18 +266,23 @@ public class IAttrFactory {
 		return new IMetricIdList(types);
 	}
 
+	private static ISFloatType SFloatType2parcelable(SFloatType value, int attrId) {
+		return new ISFloatType(value.getExponent(), value.getMagnitude(), value.doubleValueRepresentation(),
+							value.toString());
+	}
+
 	private static IBasicNuObsValue BasicNuObsValue2parcelable(BasicNuObsValue obsValue, int attrId) {
 		SFloatType value;
 		try {
 			value = new SFloatType(obsValue.getValue().getValue());
-			return new IBasicNuObsValue(new ISFloatType(value.getExponent(), value.getMagnitude(), value.doubleValueRepresentation(), value.toString()));
+			return new IBasicNuObsValue(SFloatType2parcelable(value, attrId));
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
 	private static IMetricSpecSmall MetricSpecSmall2parcelable(MetricSpecSmall metricSpec, int attrId) {
-		return new IMetricSpecSmall(new IBITSTRING(metricSpec.getValue().getValue(), metricSpec.getValue().getTrailBitsCnt()));
+		return new IMetricSpecSmall(BitString2parcelable(metricSpec.getValue(), attrId));
 	}
 
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
