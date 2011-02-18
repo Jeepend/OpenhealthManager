@@ -51,8 +51,10 @@ public class MeasureReporterUtils {
 		Attribute at;
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_ID_TYPE);
-		TYPE type = (TYPE)at.getAttributeType();
-		mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
+		if (at != null) {
+			TYPE type = (TYPE)at.getAttributeType();
+			mr.set_attribute(Nomenclature.MDC_ATTR_ID_TYPE, type.getCode().getValue().getValue());
+		}
 
 		at = measure.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE);
 		if (at != null) {
