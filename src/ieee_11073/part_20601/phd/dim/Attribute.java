@@ -50,7 +50,7 @@ public class Attribute {
 		String name = DIM_Tools.getAttributeName(id);
 		if (name == null) throw new InvalidAttributeException("Name not found for id " + id +".");
 		//Check attribute types for MDS class
-		Class cls = DIM_Tools.getAttributeClass(id);
+		Class<?> cls = DIM_Tools.getAttributeClass(id);
 		if (cls.equals(ASN1OctetString.class)){
 			try{
 				this.attrType=(byte[])type;
