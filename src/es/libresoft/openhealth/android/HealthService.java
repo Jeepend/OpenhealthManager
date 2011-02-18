@@ -60,7 +60,6 @@ import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
-import es.libresoft.openhealth.utils.DIM_Tools;
 
 import android.app.Service;
 import android.content.Intent;
@@ -255,13 +254,11 @@ public class HealthService extends Service {
 		for (Integer key: attList.keySet()) {
 			Attribute att = attList.get(key);
 			IAttribute iAtt = new IAttribute();
-			if (!IAttrFactory.getParcelableAttribute(att.getAttributeType(), iAtt)) {
+			if (!IAttrFactory.getParcelableAttribute(att, iAtt)) {
 				error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
 				setErrorMessage(error);
 				return;
 			}
-			iAtt.setAttrId(key);
-			iAtt.setAttrIdStr(DIM_Tools.getAttributeName(key));
 
 			attrs.add(iAtt);
 		}
@@ -341,14 +338,11 @@ public class HealthService extends Service {
 				return;
 
 			Attribute at = a.mdsHandler.getMDS().getAttribute(attrId);
-			if (at == null || !IAttrFactory.getParcelableAttribute(at.getAttributeType(), attr)) {
+			if (at == null || !IAttrFactory.getParcelableAttribute(at, attr)) {
 				error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
 				setErrorMessage(error);
 				return;
 			}
-
-			attr.setAttrId(attrId);
-			attr.setAttrIdStr(DIM_Tools.getAttributeName(attrId));
 
 			error.setErrCode(ErrorCodes.NO_ERROR);
 			setErrorMessage(error);
