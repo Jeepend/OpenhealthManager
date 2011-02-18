@@ -49,6 +49,7 @@ public class AttributeUtils {
 			retValue = scadaType2String(attrValue);
 			break;
 		case Nomenclature.MDC_PART_DIM:
+			retValue = dim2String(attrValue);
 			break;
 		case Nomenclature.MDC_PART_INFRA:
 			break;
@@ -70,7 +71,7 @@ public class AttributeUtils {
 			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition;
 	}
 
-	private static String unitCode2String(int attrValue) {
+	private static String dim2String(int attrValue) {
 		switch (attrValue) {
 		case Nomenclature.MDC_DIM_PERCENT:
 			return context.getString(R.string.MDC_DIM_PERCENT);
