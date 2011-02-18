@@ -35,12 +35,14 @@ import java.util.List;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IDateMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasureArray;
 import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.events.MeasureReporter;
+import es.libresoft.openhealth.utils.DIM_Tools;
 
 public class AndroidMeasureReporter implements MeasureReporter{
 
@@ -96,7 +98,13 @@ public class AndroidMeasureReporter implements MeasureReporter{
 
 	@Override
 	public void set_attribute(Attribute att) {
-		System.err.println("TODO: set_attribute is not implemented");
+		IAttribute iAtt = new IAttribute();
+		if (IAttrFactory.getParcelableAttribute(att.getAttributeType(), iAtt)) {
+			iAtt.setAttrId(att.getAttributeID());
+			iAtt.setAttrIdStr(DIM_Tools.getAttributeName(att.getAttributeID()));
+
+			metric.addAttribute(iAtt);
+		}
 	}
 
 	public IAgentMetric getMetric() {
