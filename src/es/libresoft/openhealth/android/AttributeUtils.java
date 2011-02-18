@@ -37,22 +37,6 @@ public class AttributeUtils {
 		AttributeUtils.context = context;
 	}
 
-	public static String type2string(int attrType) {
-		if (context == null)
-			return "Error: Context not set, set context before use this method";
-
-		switch (attrType) {
-		case Nomenclature.MDC_ATTR_ID_TYPE:
-			return context.getString(R.string.MDC_ATTR_ID_TYPE);
-		case Nomenclature.MDC_ATTR_UNIT_CODE:
-			return context.getString(R.string.MDC_ATTR_UNIT_CODE);
-		case Nomenclature.MDC_ATTR_ID_HANDLE:
-			return context.getString(R.string.MDC_ATTR_ID_HANDLE);
-		}
-
-		return context.getString(R.string.UNKNOWN_TYPE) + " " + attrType;
-	}
-
 	public static String value2string(int attrType, int attrValue) {
 		String retValue = null;
 		if (context == null)
@@ -73,7 +57,7 @@ public class AttributeUtils {
 		if (retValue != null)
 			return retValue;
 		else
-			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for type: " + type2string(attrType);
+			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for type: " + attrType;
 	}
 
 	private static String unitCode2String(int attrValue) {
