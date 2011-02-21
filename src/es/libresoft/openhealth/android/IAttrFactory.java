@@ -131,7 +131,7 @@ public class IAttrFactory {
 	}
 
 	private static IAttrValMapEntry AttrValMapEntry2parcelable(AttrValMapEntry entry, int attrId) {
-		return new IAttrValMapEntry(new IOID_Type(entry.getAttribute_id().getValue().getValue()),
+		return new IAttrValMapEntry(OID_Type2parcelable(entry.getAttribute_id(), attrId),
 						entry.getAttribute_len());
 	}
 
