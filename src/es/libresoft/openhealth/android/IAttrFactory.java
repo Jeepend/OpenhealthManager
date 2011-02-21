@@ -257,7 +257,7 @@ public class IAttrFactory {
 	}
 
 	private static IOID_Type OID_Type2parcelable(OID_Type type, int attrId) {
-		return new IOID_Type(type.getValue().getValue());
+		return new IOID_Type(type.getValue().getValue(), AttributeUtils.attIdValue2string(attrId, type.getValue().getValue()));
 	}
 
 	private static IMetricIdList MetricIdList2parcelable(MetricIdList idList, int attrId) {
