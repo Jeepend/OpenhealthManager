@@ -44,6 +44,7 @@ public class AttributeUtils {
 
 		switch(attId) {
 		case Nomenclature.MDC_ATTR_UNIT_CODE:
+		case Nomenclature.MDC_ATTR_ID_TYPE:
 			retValue = partitionValue2string(Nomenclature.MDC_PART_SCADA, attrValue);
 			break;
 		//TODO: Add more cases here
