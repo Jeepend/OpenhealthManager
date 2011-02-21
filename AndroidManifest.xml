@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                      you can bind to. -->
                 <action android:name="es.libresoft.openhealth.android.aidl.IManagerService" />
                 <action android:name="es.libresoft.openhealth.android.aidl.IAgentService" />
+                <action android:name="es.libresoft.openhealth.android.aidl.IPMStoreService" />
                 <!-- This is an action code you can use to select the service
                      without explicitly supplying the implementation class. -->
                 <action android:name="es.libresoft.openhealth.android.OPENHEALTH_SERVICE" />

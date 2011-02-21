@@ -44,6 +44,7 @@ import es.libresoft.openhealth.android.aidl.IAgent;
 import es.libresoft.openhealth.android.aidl.types.IError;
 import es.libresoft.openhealth.android.aidl.types.IOperationalState;
 import es.libresoft.openhealth.android.aidl.IAgentService;
+import es.libresoft.openhealth.android.aidl.IPMStoreService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
 import es.libresoft.openhealth.android.aidl.IScannerService;
@@ -65,6 +66,7 @@ import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.application.SetEventData;
+import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
@@ -586,6 +588,60 @@ public class HealthService extends Service {
 
 	};
 
+	/**
+	 * The IPMStoreService is defined through IDL
+	 */
+	private final IPMStoreService.Stub pmStoreServiceStub = new IPMStoreService.Stub() {
+
+		@Override
+		public boolean updatePMStore(IPM_Store store, IError err) {
+			if (err == null) {
+				err = new IError();
+			}
+
+			if (store == null) {
+				err.setErrCode(ErrorCodes.UNKNOWN_PMSTORE);
+				setErrorMessage(err);
+				return false;
+			}
+
+			Agent a;
+			IAgent ia = store.getAgent();
+			if ( ia == null || (a = getAgent(ia)) == null ) {
+				err.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(err);
+				return false;
+			}
+
+			HANDLE handle = new HANDLE();
+			handle.setValue(new INT_U16(store.getHandle()));
+			GetPmStoreEventData pmEvent = new GetPmStoreEventData(handle);
+			AndroidExternalEvent<Boolean, GetPmStoreEventData> ev = new AndroidExternalEvent<Boolean, GetPmStoreEventData>(EventType.REQ_GET_PM_STORE, pmEvent);
+
+			a.sendEvent(ev);
+
+			try {
+				ev.proccessing();
+			} catch (InterruptedException e) {
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(err);
+				return false;
+			}
+
+			if (ev.wasError()) {
+				err.setErrCode(ev.getError());
+				setErrorMessage(err);
+				return false;
+			}
+
+			err.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(err);
+
+			return ev.getRspData();
+		}
+	};
+
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		if (IManagerService.class.getName().equals(intent.getAction()))
@@ -594,6 +650,8 @@ public class HealthService extends Service {
 			return agentServiceStub;
 		if (IScannerService.class.getName().equals(intent.getAction()))
 			return scannerServiceStub;
+		if (IPMStoreService.class.getName().equals(intent.getAction()))
+			return pmStoreServiceStub;
 		return null;
 	}
 
