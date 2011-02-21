@@ -47,6 +47,7 @@ public class AttributeUtils {
 			retValue = partitionValue2string(Nomenclature.MDC_PART_DIM, attrValue);
 			break;
 		case Nomenclature.MDC_ATTR_ID_TYPE:
+		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST:
 			retValue = partitionValue2string(Nomenclature.MDC_PART_SCADA, attrValue);
 			break;
 		//TODO: Add more cases here
