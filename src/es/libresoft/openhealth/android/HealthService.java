@@ -29,9 +29,11 @@ package es.libresoft.openhealth.android;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.OperationalState;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
+import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -526,9 +528,60 @@ public class HealthService extends Service {
 		@Override
 		public boolean setScannerOperationalState(IScanner scanner,
 				IOperationalState opState, IError err) throws RemoteException {
-			System.err.println("TODO: implement setScannerOperationalState");
 
-			return false;
+			Agent agent = getAgent(scanner.getAgent());
+			if (agent == null) {
+				err.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(err);
+				return false;
+			}
+
+			if (opState == null) {
+				err.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
+				setErrorMessage(err);
+				return false;
+			}
+
+			Attribute attr = null;
+			OperationalState os = new OperationalState();
+			os.setValue(opState.getState());
+			try {
+				attr = new Attribute(Nomenclature.MDC_ATTR_OP_STAT, os);
+			} catch (InvalidAttributeException e) {
+				e.printStackTrace();
+				return false;
+			}
+
+			// Get the handle necessary to create the SetEventData:
+			HANDLE handle = new HANDLE();
+			INT_U16 value = new INT_U16();
+			value.setValue(scanner.getHandle());
+			handle.setValue(value);
+
+			SetEventData setEventData = new SetEventData(handle, attr);
+			AndroidExternalEvent<Boolean, SetEventData> ev =
+				new AndroidExternalEvent<Boolean, SetEventData>(EventType.REQ_SET, setEventData);
+
+			agent.sendEvent(ev);
+
+			try {
+				ev.proccessing();
+			} catch (InterruptedException e) {
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(err);
+				return false;
+			}
+
+			if (ev.wasError()) {
+				err.setErrCode(ev.getError());
+				setErrorMessage(err);
+				return false;
+			}
+
+			err.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(err);
+
+			return ev.getRspData();
 		}
 
 	};
