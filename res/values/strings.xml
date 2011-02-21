@@ -118,8 +118,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="MDC_TRIG">TODO: Set this string MDC_TRIG</string>
 	<string name="MDC_TRIG_BEAT">TODO: Set this string MDC_TRIG_BEAT</string>
 	<string name="MDC_TRIG_BEAT_MAX_INRUSH">TODO: Set this string MDC_TRIG_BEAT_MAX_INRUSH</string>
-	<string name="MDC_MASS_BODY_ACTUAL">TODO: Set this string MDC_MASS_BODY_ACTUAL</string>
-	<string name="MDC_BODY_FAT">TODO: Set this string MDC_BODY_FAT</string>
+	<string name="MDC_MASS_BODY_ACTUAL">Body mass</string>
+	<string name="MDC_BODY_FAT">Body fat</string>
 	<string name="MDC_METRIC_NOS">TODO: Set this string MDC_METRIC_NOS</string>
 
 	<string name="UNKNOWN_VALUE">Unknown attribute value</string>
