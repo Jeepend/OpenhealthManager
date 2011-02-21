@@ -55,8 +55,10 @@ public class AttributeUtils {
 
 		if (retValue != null)
 			return retValue;
-		else
+		else {
+			System.err.println(context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for attributeId: " + attId);
 			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for attributeId: " + attId;
+		}
 	}
 
 	public static String partitionValue2string(int partition, int attrValue) {
@@ -89,8 +91,10 @@ public class AttributeUtils {
 
 		if (retValue != null)
 			return retValue;
-		else
+		else {
+			System.err.println(context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition);
 			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition;
+		}
 	}
 
 	private static String dim2String(int attrValue) {
