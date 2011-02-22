@@ -144,6 +144,8 @@ public class MPM_Store extends PM_Store {
 					List<PM_Segment> segments = new ArrayList<PM_Segment>(MPM_Store.this.getSegments());
 					event.processed(segments, ErrorCodes.NO_ERROR);
 				}
+
+				//TODO: If the timeout expires the event should be unlocked calling "processed"
 			};
 
 			to.setEvent(event);
@@ -202,6 +204,8 @@ public class MPM_Store extends PM_Store {
 					e.printStackTrace();
 				}
 			}
+
+			//TODO: If the timeout expires the event should be unlocked calling "processed"
 		};
 
 		//TODO: Add a timeout for data transfer (see 8.9.5.6 and MDC_ATTR_TRANSFER_TIMEOUT att from PMSegment)
