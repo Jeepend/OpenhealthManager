@@ -29,6 +29,7 @@ package es.libresoft.openhealth.android;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.OperationalState;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
@@ -36,6 +37,7 @@ import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.PM_Segment;
+import ieee_11073.part_20601.phd.dim.PM_Store;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -71,6 +73,7 @@ import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
+import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 import android.app.Service;
@@ -715,8 +718,76 @@ public class HealthService extends Service {
 		@Override
 		public boolean startPMSegmentTransfer(IPM_Segment segment, IError err)
 				throws RemoteException {
-			System.out.println("TODO: implement startPMSegmentTransfer");
-			return false;
+			if (err == null) {
+				err = new IError();
+			}
+
+			if (segment == null) {
+				err.setErrCode(ErrorCodes.UNKNOWN_OBJECT);
+				setErrorMessage(err);
+				return false;
+			}
+
+			Agent a;
+			IAgent ia = segment.getAgent();
+			if ( ia == null || (a = getAgent(ia)) == null ) {
+				err.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(err);
+				return false;
+			}
+
+			IPM_Store store = segment.getPMStore();
+			if (store == null) {
+				err.setErrCode(ErrorCodes.UNKNOWN_OBJECT);
+				setErrorMessage(err);
+				return false;
+			}
+
+			HANDLE handle = new HANDLE();
+			handle.setValue(new INT_U16(store.getHandle()));
+			InstNumber insNumber = null;
+
+			PM_Store pmStore = a.mdsHandler.getMDS().getPM_Store(handle);
+			for (PM_Segment segm: pmStore.getSegments().toArray(new PM_Segment[0])) {
+				HANDLE segHandle = (HANDLE) segm.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+				if (segHandle == null)
+					continue;
+
+				if (segHandle.getValue().getValue() != segment.getHandle())
+					continue;
+
+				insNumber = (InstNumber) segm.getAttribute(Nomenclature.MDC_ATTR_ID_INSTNO).getAttributeType();
+				if (insNumber == null) {
+					err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+					setErrorMessage(err);
+					return false;
+				}
+				break;
+			}
+
+			TrigPMSegmentXferEventData eventData = new TrigPMSegmentXferEventData(handle, insNumber);
+			AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData> ev = new AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData>(EventType.REQ_GET_PM_STORE, eventData);
+
+			a.sendEvent(ev);
+
+			try {
+				ev.proccessing();
+			} catch (InterruptedException e) {
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(err);
+				return false;
+			}
+
+			if (ev.wasError()) {
+				err.setErrCode(ev.getError());
+				setErrorMessage(err);
+				return false;
+			}
+
+			err.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(err);
+
+			return ev.getRspData();
 		}
 	};
 
