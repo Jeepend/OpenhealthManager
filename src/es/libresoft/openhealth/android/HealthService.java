@@ -36,7 +36,6 @@ import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.PM_Segment;
-import ieee_11073.part_20601.phd.dim.PM_Store;
 
 import java.util.Hashtable;
 import java.util.List;

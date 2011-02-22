@@ -25,10 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim.manager;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 
 import org.bn.types.BitString;
 
@@ -51,7 +49,6 @@ import ieee_11073.part_20601.asn1.AttributeList;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
-import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.OID_Type;
@@ -70,11 +67,9 @@ import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferRsp;
 import ieee_11073.part_20601.asn1.TrigSegmXferRsp;
 import ieee_11073.part_20601.phd.dim.Attribute;
-import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.Numeric;
-import ieee_11073.part_20601.phd.dim.PM_Segment;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
