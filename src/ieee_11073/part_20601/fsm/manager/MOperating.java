@@ -40,6 +40,7 @@ import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
 import ieee_11073.part_20601.asn1.SegmentDataResult;
+import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
@@ -57,6 +58,7 @@ import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.events.application.SetEventData;
+import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -133,6 +135,15 @@ public final class MOperating extends Operating {
 			ExternalEvent<List<PM_Segment>, GetPmSegmentEventData> pmSegEvent = (ExternalEvent<List<PM_Segment>, GetPmSegmentEventData>) event;
 			PM_Store store = this.state_handler.getMDS().getPM_Store(pmSegEvent.getPrivData().getHandle());
 			store.Get_Segment_Info(pmSegEvent, pmSegEvent.getPrivData().getSegmSelection());
+			return true;
+
+		case EventType.REQ_TRIG_SEGMENT_DATA_XFER:
+			ExternalEvent<Boolean, TrigPMSegmentXferEventData> xferEvent = (ExternalEvent<Boolean, TrigPMSegmentXferEventData>) event;
+			PM_Store s = this.state_handler.getMDS().getPM_Store(xferEvent.getPrivData().getStoreHandle());
+
+			TrigSegmDataXferReq tsdxr = new TrigSegmDataXferReq();
+			tsdxr.setSeg_inst_no(xferEvent.getPrivData().getInsNumber());
+			s.Trig_Segment_Data_Xfer(xferEvent, tsdxr);
 			return true;
 
 		case EventType.IND_TRANS_DESC:

@@ -37,6 +37,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
+import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -153,7 +154,7 @@ public class MPM_Store extends PM_Store {
 	}
 
 	@Override
-	public void Trig_Segment_Data_Xfer(TrigSegmDataXferReq tsdx) {
+	public void Trig_Segment_Data_Xfer (ExternalEvent<Boolean, TrigPMSegmentXferEventData> event, TrigSegmDataXferReq tsdx) {
 		DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(this, tsdx);
 		ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
 		InvokeIDType invokeId = data.getInvoke_id();
@@ -161,11 +162,15 @@ public class MPM_Store extends PM_Store {
 
 		DimTimeOut to = new DimTimeOut(TimeOut.PM_STORE_TO_CA, invokeId.getValue(), getMDS().getStateHandler()) {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void procResponse(DataApdu data) {
 
+				ExternalEvent<Boolean, TrigPMSegmentXferEventData> event = (ExternalEvent<Boolean, TrigPMSegmentXferEventData>) getEvent();
+
 				if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
 					System.err.println("Error: Unexpected response format");
+					event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 					return;
 				}
 
@@ -173,6 +178,7 @@ public class MPM_Store extends PM_Store {
 				OID_Type oid = ars.getAction_type();
 				if (Nomenclature.MDC_ACT_SEG_TRIG_XFER != oid.getValue().getValue().intValue()) {
 					System.err.println("Error: Unexpected response format");
+					event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 					return;
 				}
 
@@ -183,9 +189,13 @@ public class MPM_Store extends PM_Store {
 					InstNumber in = rsp.getSeg_inst_no();
 					TrigSegmXferRsp tsxr = rsp.getTrig_segm_xfer_rsp();
 					int result = tsxr.getValue().intValue();
-					if (result == 0)
+					if (result == 0) {
+						event.processed(true, ErrorCodes.NO_ERROR);
 						return;
+					}
 
+					// TODO: Create and set proper error using "result" variable
+					event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 					System.err.println("InstNumber " + in.getValue().intValue() + " error " + result);
 
 				} catch (Exception e) {
@@ -196,6 +206,7 @@ public class MPM_Store extends PM_Store {
 
 		//TODO: Add a timeout for data transfer (see 8.9.5.6 and MDC_ATTR_TRANSFER_TIMEOUT att from PMSegment)
 
+		to.setEvent(event);
 		to.start();
 	}
 

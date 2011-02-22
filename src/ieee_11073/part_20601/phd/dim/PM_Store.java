@@ -31,6 +31,7 @@ import java.util.List;
 
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
+import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
 
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.InstNumber;
@@ -132,5 +133,5 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 	 * set to enabled, the agent shall reply with a not-allowed-by-object error (roer) with a return
 	 * code of MDC_RET_CODE_OBJ_BUSY.
 	 */
-	public abstract void Trig_Segment_Data_Xfer (TrigSegmDataXferReq tsdx);
+	public abstract void Trig_Segment_Data_Xfer (ExternalEvent<Boolean, TrigPMSegmentXferEventData> event, TrigSegmDataXferReq tsdx);
 }
