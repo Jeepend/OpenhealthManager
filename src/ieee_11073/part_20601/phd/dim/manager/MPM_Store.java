@@ -25,14 +25,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim.manager;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bn.types.BitString;
 
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
@@ -70,6 +73,7 @@ import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 import ieee_11073.part_20601.phd.dim.Numeric;
+import ieee_11073.part_20601.phd.dim.PM_Segment;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
@@ -86,7 +90,7 @@ public class MPM_Store extends PM_Store {
 	}
 
 	@Override
-	public void Get_Segment_Info(SegmSelection ss) {
+	public void Get_Segment_Info(ExternalEvent<List<PM_Segment>, GetPmSegmentEventData> event, SegmSelection ss) {
 		try {
 			DataApdu data = MessageFactory.PrstRoivCmipAction(this, ss);
 			ApduType apdu = MessageFactory.composeApdu(data, getMDS().getDeviceConf());
@@ -95,11 +99,15 @@ public class MPM_Store extends PM_Store {
 
 			DimTimeOut to = new DimTimeOut(TimeOut.PM_STORE_TO_CA, invokeId.getValue(), getMDS().getStateHandler()) {
 
+				@SuppressWarnings("unchecked")
 				@Override
 				public void procResponse(DataApdu data) {
 
+					ExternalEvent<List<PM_Segment>, GetPmSegmentEventData> event = (ExternalEvent<List<PM_Segment>, GetPmSegmentEventData>) getEvent();
+
 					if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
 						System.out.println("Error: Unexpected response format");
+						event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -107,6 +115,7 @@ public class MPM_Store extends PM_Store {
 					OID_Type oid = ars.getAction_type();
 					if (Nomenclature.MDC_ACT_SEG_GET_INFO != oid.getValue().getValue().intValue()) {
 						System.out.println("Error: Unexpected response format");
+						event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
@@ -135,9 +144,13 @@ public class MPM_Store extends PM_Store {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+
+					List<PM_Segment> segments = new ArrayList<PM_Segment>(MPM_Store.this.getSegments());
+					event.processed(segments, ErrorCodes.NO_ERROR);
 				}
 			};
 
+			to.setEvent(event);
 			to.start();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -27,6 +27,10 @@ package ieee_11073.part_20601.phd.dim;
 
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
+
+import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.InstNumber;
@@ -118,7 +122,7 @@ public abstract class PM_Store extends DIM implements PM_Store_Events, GET_Servi
 	 * Get-Segment-Info method allows the manager to retrieve the Instance-Number attributes of the
 	 * PM-segment object instances and their data contents.
 	 */
-	public abstract void Get_Segment_Info (SegmSelection ss);
+	public abstract void Get_Segment_Info (ExternalEvent<List<PM_Segment>, GetPmSegmentEventData> event, SegmSelection ss);
 
 	/**
 	 * This method allows the manager to start the transfer of the Fixed-Segment-Data attribute of a
