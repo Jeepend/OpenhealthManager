@@ -50,7 +50,6 @@ import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.PeriCfgScanner;
 import ieee_11073.part_20601.phd.dim.SET_Service;
-import es.libresoft.openhealth.android.AndroidExternalEvent;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
@@ -131,7 +130,7 @@ public final class MOperating extends Operating {
 			return true;
 
 		case EventType.REQ_GET_SEGMENT_INFO:
-			AndroidExternalEvent<List<PM_Segment>, GetPmSegmentEventData> pmSegEvent = (AndroidExternalEvent<List<PM_Segment>, GetPmSegmentEventData>) event;
+			ExternalEvent<List<PM_Segment>, GetPmSegmentEventData> pmSegEvent = (ExternalEvent<List<PM_Segment>, GetPmSegmentEventData>) event;
 			PM_Store store = this.state_handler.getMDS().getPM_Store(pmSegEvent.getPrivData().getHandle());
 			store.Get_Segment_Info(pmSegEvent, pmSegEvent.getPrivData().getSegmSelection());
 			return true;
