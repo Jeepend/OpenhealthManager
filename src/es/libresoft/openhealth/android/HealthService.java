@@ -30,10 +30,13 @@ import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.OperationalState;
+import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
+import ieee_11073.part_20601.phd.dim.PM_Segment;
+import ieee_11073.part_20601.phd.dim.PM_Store;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -66,6 +69,7 @@ import es.libresoft.openhealth.events.InternalEventManager;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
+import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
@@ -643,7 +647,70 @@ public class HealthService extends Service {
 
 		@Override
 		public void getAllPMSegments(IPM_Store store, List<IPM_Segment> segments, IError err) throws RemoteException {
-			// TODO: Implement this method
+			Agent a = checkParameters(store, segments, err);
+			if (a == null)
+				return;
+
+			HANDLE handle = new HANDLE();
+			handle.setValue(new INT_U16(store.getHandle()));
+
+			SegmSelection ss = new SegmSelection();
+			ss.selectAll_segments(new INT_U16(new Integer(0)));
+
+			GetPmSegmentEventData event = new GetPmSegmentEventData(handle, ss);
+			AndroidExternalEvent<List<PM_Segment>, GetPmSegmentEventData> ev = new AndroidExternalEvent<List<PM_Segment>, GetPmSegmentEventData>(EventType.REQ_GET_SEGMENT_INFO, event);
+
+			a.sendEvent(ev);
+
+			try {
+				ev.proccessing();
+			} catch (InterruptedException e) {
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(err);
+				return;
+			}
+
+			if (ev.wasError()) {
+				err.setErrCode(ev.getError());
+				setErrorMessage(err);
+				return;
+			}
+
+			err.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(err);
+
+			for (PM_Segment seg: ev.getRspData().toArray(new PM_Segment[0])) {
+				HANDLE id = (HANDLE) seg.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+				if (id != null)
+					segments.add(new IPM_Segment(id.getValue().getValue(), store));
+			}
+		}
+
+		private <T> Agent checkParameters(IPM_Store store, T ret, IError error) {
+			if (error == null)
+				return null;
+
+			if (ret == null) {
+				error.setErrCode(ErrorCodes.INVALID_ARGUMENTS);
+				setErrorMessage(error);
+				return null;
+			}
+
+			if (store == null) {
+				error.setErrCode(ErrorCodes.UNKNOWN_PMSTORE);
+				setErrorMessage(error);
+				return null;
+			}
+
+			Agent a;
+			IAgent ia = store.getAgent();
+			if ( ia == null || (a = getAgent(ia)) == null ) {
+				error.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(error);
+				return null;
+			}
+
+			return a;
 		}
 	};
 
