@@ -23,23 +23,27 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-package es.libresoft.openhealth.events;
 
-public interface EventType {
+package es.libresoft.openhealth.events.application;
 
-	/* A condition asserted by a low layer of software though a well-defined API							*/
-	public static final int IND_TRANS_CONN						=	1;		/* Transport Connection			*/
-	public static final int IND_TRANS_DESC						=	2;		/* Transport Desconnection		*/
-	public static final int IND_TIMEOUT							=	3;		/* Timeout						*/
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.SegmSelection;
 
-	/* A Request from the application software interfacing with the state machine							*/
-	public static final int REQ_ASSOC_REL						= 	4;		/* Association release request	*/
-	public static final int REQ_ASSOC_ABORT						= 	5;		/* Association abort request	*/
+public class GetPmSegmentEventData{
 
+	private HANDLE handle;
+	private SegmSelection ss;
 
-	/* Application defined events*/
-	public static final int REQ_GET_PM_STORE					=	500;
-	public static final int REQ_SET								=	501;
-	public static final int REQ_MDS								=	502;
-	public static final int REQ_GET_SEGMENT_INFO				=	503;
+	public GetPmSegmentEventData(HANDLE handle, SegmSelection ss) {
+		this.handle = handle;
+		this.ss = ss;
+	}
+
+	public HANDLE getHandle() {
+		return handle;
+	}
+
+	public SegmSelection getSegmSelection() {
+		return ss;
+	}
 }
