@@ -372,7 +372,7 @@ public class IAttrFactory {
 			return true;
 		}
 
-		System.err.println("Unknown method provided. Can't create parcelable attribute for type " + asnAttr.getClass());
+		System.err.println("Unknown method provided. Can't create parcelable attribute for type " + asnAttr.getAttributeType().getClass());
 		return false;
 	}
 
