@@ -226,6 +226,8 @@ public class ManagerStateController implements StateController {
 					semEvents.acquire();
 					//Send input Event to finite state machine
 					state.processEvent(eventQueue.remove());
+					//TODO: Check the return of the processEvent method
+					// If the event is an external event it should be unlocked using "processed" method.
 				} catch (InterruptedException e1) {
 					System.out.println("Interrupted dispatcher Events thread");
 					repeat = false;
