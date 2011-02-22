@@ -52,6 +52,7 @@ import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
 import es.libresoft.openhealth.android.aidl.types.objects.IEnumeration;
+import es.libresoft.openhealth.android.aidl.types.objects.IPM_Segment;
 import es.libresoft.openhealth.android.aidl.types.objects.IPM_Store;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.android.aidl.types.objects.IRT_SA;
@@ -638,6 +639,11 @@ public class HealthService extends Service {
 			setErrorMessage(err);
 
 			return ev.getRspData();
+		}
+
+		@Override
+		public void getAllPMSegments(IPM_Store store, List<IPM_Segment> segments, IError err) throws RemoteException {
+			// TODO: Implement this method
 		}
 	};
 
