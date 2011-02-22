@@ -196,12 +196,6 @@ public class MPM_Store extends PM_Store {
 		to.start();
 	}
 
-	private SegmSelection getAllSegments() {
-		SegmSelection ss = new SegmSelection();
-		ss.selectAll_segments(new INT_U16(new Integer(0)));
-		return ss;
-	}
-
 	public void GET(Event event) {
 		try {
 			HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
@@ -260,10 +254,6 @@ public class MPM_Store extends PM_Store {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
-					//TODO: Remove Get_Setment_Info from here, should be done by a user petition
-					SegmSelection ss = getAllSegments();
-					Get_Segment_Info(ss);
 
 					if (event != null)
 						event.processed(true, ErrorCodes.NO_ERROR);
