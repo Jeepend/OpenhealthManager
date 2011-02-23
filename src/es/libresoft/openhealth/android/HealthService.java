@@ -682,9 +682,11 @@ public class HealthService extends Service {
 			setErrorMessage(err);
 
 			for (PM_Segment seg: ev.getRspData().toArray(new PM_Segment[0])) {
-				HANDLE id = (HANDLE) seg.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+				if (seg == null || seg.getAttribute(Nomenclature.MDC_ATTR_ID_INSTNO) == null)
+					continue;
+				InstNumber id = (InstNumber) seg.getAttribute(Nomenclature.MDC_ATTR_ID_INSTNO).getAttributeType();
 				if (id != null)
-					segments.add(new IPM_Segment(id.getValue().getValue(), store));
+					segments.add(new IPM_Segment(id.getValue(), store));
 			}
 		}
 
