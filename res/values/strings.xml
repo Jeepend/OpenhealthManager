@@ -72,6 +72,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="MDC_ATTR_ID_HANDLE">Object handle</string>
 	<string name="MDC_ATTR_ID_TYPE">Attribute id type</string>
 	<string name="MDC_ATTR_UNIT_CODE">Unit code</string>
+	<string name="MDC_ATTR_TIME_STAMP_ABS">TODO: Set this string MDC_ATTR_TIME_STAMP_ABS</string>
+	<string name="MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR">TODO: Set this string MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR</string>
 	<string name="UNKNOWN_TYPE">Unknown attribute type</string>
 
 	<!-- Measure Attributes Values Section -->
@@ -122,6 +124,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="MDC_MASS_BODY_ACTUAL">Body mass</string>
 	<string name="MDC_BODY_FAT">Body fat</string>
 	<string name="MDC_METRIC_NOS">TODO: Set this string MDC_METRIC_NOS</string>
+
+		<!-- Locations -->
+	<string name="MDC_AI_LOCATION_KITCHEN">TODO: Set this string MDC_AI_LOCATION_KITCHEN</string>
+
+	<string name="MDC_AI_TYPE_SENSOR_TEMP">TODO: Set this string MDC_AI_TYPE_SENSOR_TEMP</string>
 
 	<string name="UNKNOWN_VALUE">Unknown attribute value</string>
 

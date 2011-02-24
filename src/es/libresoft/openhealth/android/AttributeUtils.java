@@ -50,6 +50,12 @@ public class AttributeUtils {
 		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST:
 			retValue = partitionValue2string(Nomenclature.MDC_PART_SCADA, attrValue);
 			break;
+		case Nomenclature.MDC_ATTR_SUPPLEMENTAL_TYPES:
+			retValue = partitionValue2string(Nomenclature.MDC_AI_LOCATION_KITCHEN, attrValue);
+			break;
+		case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
+			retValue = partitionValue2string(Nomenclature.MDC_ATTR_TIME_STAMP_ABS, attrValue);
+			break;
 		//TODO: Add more cases here
 		}
 
@@ -82,11 +88,17 @@ public class AttributeUtils {
 		case Nomenclature.MDC_PART_PHD_HF:
 			break;
 		case Nomenclature.MDC_PART_PHD_AI:
+			retValue = ai2String(attrValue);
 			break;
 		case Nomenclature.MDC_PART_RET_CODE:
 			break;
 		case Nomenclature.MDC_PART_EXT_NOM:
 			break;
+		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
+			retValue = timeStampAbs2String(attrValue);
+			break;
+		case Nomenclature.MDC_AI_LOCATION_KITCHEN:
+			retValue = locationKitchen2String(attrValue);
 		}
 
 		if (retValue != null)
@@ -191,6 +203,36 @@ public class AttributeUtils {
 			return context.getString(R.string.MDC_BODY_FAT);
 		case Nomenclature.MDC_METRIC_NOS:
 			return context.getString(R.string.MDC_METRIC_NOS);
+		case Nomenclature.MDC_AI_TYPE_SENSOR_TEMP:
+			return context.getString(R.string.MDC_AI_TYPE_SENSOR_TEMP);
+		}
+		return null;
+	}
+
+	private static String ai2String(int attrValue) {
+		switch (attrValue) {
+			case Nomenclature.MDC_AI_LOCATION_KITCHEN:
+				return context.getString(R.string.MDC_AI_LOCATION_KITCHEN);
+			case Nomenclature.MDC_AI_TYPE_SENSOR_TEMP:
+				return context.getString(R.string.MDC_AI_TYPE_SENSOR_TEMP);
+		}
+		return null;
+	}
+
+	private static String timeStampAbs2String(int attrValue) {
+		switch (attrValue) {
+			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
+				return context.getString(R.string.MDC_ATTR_TIME_STAMP_ABS);
+			case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
+				return context.getString(R.string.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR);
+		}
+		return null;
+	}
+
+	private static String locationKitchen2String(int attrValue) {
+		switch (attrValue) {
+			case Nomenclature.MDC_AI_LOCATION_KITCHEN:
+				return context.getString(R.string.MDC_AI_LOCATION_KITCHEN);
 		}
 		return null;
 	}
