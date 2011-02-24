@@ -64,6 +64,7 @@ import es.libresoft.openhealth.android.aidl.types.IRegCertData;
 import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISFloatType;
+import es.libresoft.openhealth.android.aidl.types.ISupplementalTypeList;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import es.libresoft.openhealth.android.aidl.types.ITypeVer;
@@ -94,6 +95,7 @@ import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
 import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
+import ieee_11073.part_20601.asn1.SupplementalTypeList;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.asn1.TypeVer;
@@ -277,6 +279,15 @@ public class IAttrFactory {
 		return new IOperationalState(state.getValue());
 	}
 
+	private static ISupplementalTypeList SupplementalTypeList2parcelable(SupplementalTypeList supTypeList, int attrId) {
+		ArrayList<ITYPE> values = new ArrayList<ITYPE>();
+		Iterator<TYPE> it = supTypeList.getValue().iterator();
+		while (it.hasNext()) {
+			values.add(TYPE2parcelable(it.next(), attrId));
+		}
+		return new ISupplementalTypeList(values);
+	}
+
 	private static IBasicNuObsValue BasicNuObsValue2parcelable(BasicNuObsValue obsValue, int attrId) {
 		SFloatType value;
 		try {
@@ -363,6 +374,9 @@ public class IAttrFactory {
 							asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof OperationalState)
 			parcel = OperationalState2parcelable((OperationalState) asnAttr.getAttributeType(),
+							asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SupplementalTypeList)
+			parcel = SupplementalTypeList2parcelable((SupplementalTypeList) asnAttr.getAttributeType(),
 							asnAttr.getAttributeID());
 
 		if (parcel != null) {
