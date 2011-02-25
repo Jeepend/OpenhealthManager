@@ -791,6 +791,13 @@ public class HealthService extends Service {
 
 			return ev.getRspData();
 		}
+
+		@Override
+		public void getPMSegmentsTimeRange(IPM_Store store, long startTime,
+				long endTime, List<IPM_Store> stores, IError err)
+				throws RemoteException {
+			System.out.println("TODO: implement getPMSegmentsTimeRange");
+		}
 	};
 
 
