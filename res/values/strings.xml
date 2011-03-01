@@ -65,6 +65,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="UNKNOWN_OBJECT">Unknown object</string>
 	<string name="UNKNOWN_PMSTORE">Unknown pm_store</string>
 
+	<string name="ASSOCIATION_ERROR">Association error</string>
+
 	<string name="INVALID_ARGUMENTS">Invalid arguments</string>
 
 	<!-- Measure Attributes Types Section -->

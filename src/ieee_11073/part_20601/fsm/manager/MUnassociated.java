@@ -40,6 +40,7 @@ import ieee_11073.part_20601.phd.dim.manager.MDSManager;
 import java.util.Collection;
 import java.util.Iterator;
 
+import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.DeviceConfigCreator;
@@ -47,6 +48,7 @@ import es.libresoft.openhealth.ManagerConfig;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.storage.ConfigStorage;
@@ -138,10 +140,12 @@ public final class MUnassociated extends Unassociated {
 			if (!selected) {
 				/* Reject because there is not common data protocol found in DataProtoList sent from the agent */
 				state_handler.send(MessageFactory.AareRejectApdu_NO_COMMON_PROTOCOL());
+				InternalEventReporter.error((Agent) state_handler.getMDS().getDevice(), ErrorCodes.ASSOCIATION_ERROR);
 			}
 
 		}else{
 			state_handler.send(MessageFactory.AareRejectApdu_UNSUPPORTED_ASSOC_VERSION());
+			InternalEventReporter.error((Agent) state_handler.getMDS().getDevice(), ErrorCodes.ASSOCIATION_ERROR);
 		}
 	}
 

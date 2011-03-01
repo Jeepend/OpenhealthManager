@@ -83,6 +83,8 @@ public class AndroidError implements ErrorString {
 			return context.getString(R.string.INVALID_ARGUMENTS);
 		case ErrorCodes.UNKNOWN_PMSTORE:
 			return context.getString(R.string.UNKNOWN_PMSTORE);
+		case ErrorCodes.ASSOCIATION_ERROR:
+			return context.getString(R.string.ASSOCIATION_ERROR);
 		default:
 			return context.getString(R.string.UNEXPECTED_ERROR);
 		}
