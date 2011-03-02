@@ -56,6 +56,7 @@ import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
 import es.libresoft.openhealth.android.aidl.types.objects.IEnumeration;
+import es.libresoft.openhealth.android.aidl.types.objects.IMDS;
 import es.libresoft.openhealth.android.aidl.types.objects.IPM_Segment;
 import es.libresoft.openhealth.android.aidl.types.objects.IPM_Store;
 import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
@@ -410,6 +411,17 @@ public class HealthService extends Service {
 
 			state.setStateCode(a.getStateCode());
 			state.setStateName(a.getStateName());
+		}
+
+		@Override
+		public void getMDS(IAgent agent, IMDS mds, IError error)
+				throws RemoteException {
+			Agent a = checkParameters(agent, mds, error);
+			if (a == null)
+				return;
+
+			IMDS rmds = new IMDS(0, agent);
+			mds.copy(rmds);
 		}
 
 		@Override
