@@ -478,10 +478,10 @@ public class HealthService extends Service {
 		}
 
 		@Override
-		public void getObjectAttrs(IAgent agent, IDIMClass obj, List<IAttribute> attrs, IError error)
+		public void getObjectAttrs(IDIMClass obj, List<IAttribute> attrs, IError error)
 					throws RemoteException {
 
-			Agent a = checkParameters(agent, attrs, error);
+			Agent a = checkParameters(obj.getAgent(), attrs, error);
 			if (a == null)
 				return;
 
