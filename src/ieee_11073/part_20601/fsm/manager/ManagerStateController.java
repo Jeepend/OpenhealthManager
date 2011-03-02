@@ -30,6 +30,8 @@ import java.util.Timer;
 import java.util.concurrent.Semaphore;
 
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.android.AndroidExternalEvent;
+import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.utils.IFIFO;
@@ -224,10 +226,12 @@ public class ManagerStateController implements StateController {
 			while(repeat) {
 				try {
 					semEvents.acquire();
+					Event event = eventQueue.remove();
 					//Send input Event to finite state machine
-					state.processEvent(eventQueue.remove());
-					//TODO: Check the return of the processEvent method
-					// If the event is an external event it should be unlocked using "processed" method.
+					boolean result = state.processEvent(event);
+					if (!result && event instanceof AndroidExternalEvent){
+						((AndroidExternalEvent<?, ?>)event).processed(null, ErrorCodes.INVALID_ACTION);
+					}
 				} catch (InterruptedException e1) {
 					System.out.println("Interrupted dispatcher Events thread");
 					repeat = false;

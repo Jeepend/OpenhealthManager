@@ -80,7 +80,8 @@ public final class ErrorCodes {
 	public static final int INVALID_ARGUMENTS		=	20;
 	/** Unknown PM_Store */
 	public static final int UNKNOWN_PMSTORE			=	21;
-
 	/** Association error */
 	public static final int ASSOCIATION_ERROR		=	22;
+	/** Invalid action */
+	public static final int INVALID_ACTION			=	22;
 }
