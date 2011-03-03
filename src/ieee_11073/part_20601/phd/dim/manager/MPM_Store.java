@@ -25,25 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.phd.dim.manager;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-
-import org.bn.types.BitString;
-
-import es.libresoft.openhealth.error.ErrorCodes;
-import es.libresoft.openhealth.events.Event;
-import es.libresoft.openhealth.events.application.ExternalEvent;
-import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
-import es.libresoft.openhealth.events.application.GetPmStoreEventData;
-import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
-import es.libresoft.openhealth.messages.MessageFactory;
-import es.libresoft.openhealth.utils.ASN1_Tools;
-import es.libresoft.openhealth.utils.ASN1_Values;
-import es.libresoft.openhealth.utils.DIM_Tools;
-import es.libresoft.openhealth.utils.RawDataExtractor;
-
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.ActionResultSimple;
 import ieee_11073.part_20601.asn1.ApduType;
@@ -77,6 +58,25 @@ import ieee_11073.part_20601.phd.dim.Numeric;
 import ieee_11073.part_20601.phd.dim.PM_Segment;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.TimeOut;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+
+import org.bn.types.BitString;
+
+import es.libresoft.openhealth.error.ErrorCodes;
+import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
+import es.libresoft.openhealth.events.application.GetPmStoreEventData;
+import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
+import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
+import es.libresoft.openhealth.utils.ASN1_Values;
+import es.libresoft.openhealth.utils.DIM_Tools;
+import es.libresoft.openhealth.utils.RawDataExtractor;
 
 public class MPM_Store extends PM_Store {
 
@@ -145,7 +145,6 @@ public class MPM_Store extends PM_Store {
 					event.processed(segments, ErrorCodes.NO_ERROR);
 				}
 
-				//TODO: If the timeout expires the event should be unlocked calling "processed"
 			};
 
 			to.setEvent(event);
@@ -204,8 +203,6 @@ public class MPM_Store extends PM_Store {
 					e.printStackTrace();
 				}
 			}
-
-			//TODO: If the timeout expires the event should be unlocked calling "processed"
 		};
 
 		//TODO: Add a timeout for data transfer (see 8.9.5.6 and MDC_ATTR_TRANSFER_TIMEOUT att from PMSegment)
@@ -278,9 +275,9 @@ public class MPM_Store extends PM_Store {
 				}
 
 			};
+
 			to.setEvent(event);
 			to.start();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

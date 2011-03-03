@@ -26,9 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.dim;
 
-import es.libresoft.openhealth.events.Event;
 import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.fsm.StateHandler;
+import es.libresoft.openhealth.error.ErrorCodes;
+import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.events.application.ExternalEvent;
 
 public abstract class DimTimeOut extends TimeOut {
 
@@ -51,6 +54,32 @@ public abstract class DimTimeOut extends TimeOut {
 
 	public Event getEvent() {
 		return event;
+	}
+
+	private int getProperTimeoutError() {
+		switch (event.getTypeOfEvent()) {
+		case EventType.REQ_GET_PM_STORE:
+			return ErrorCodes.TIMEOUT_PM_GET;
+		case EventType.REQ_MDS:
+			return ErrorCodes.TIMEOUT_MDS_GET;
+		case EventType.REQ_GET_SEGMENT_INFO:
+		case EventType.REQ_TRIG_SEGMENT_DATA_XFER:
+		default:
+			System.err.println("Unknown timeout for external event "
+					+ event.getTypeOfEvent());
+			return ErrorCodes.TIMEOUT;
+		}
+	}
+
+	/**
+	 * External events should unblock the client's call when timeout expires.
+	 */
+	protected void expiredTimeout() {
+		super.expiredTimeout();
+
+		if (event instanceof ExternalEvent<?, ?>)
+			((ExternalEvent<?, ?>) event).processed(null,
+					getProperTimeoutError());
 	}
 
 	/**

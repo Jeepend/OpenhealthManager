@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	<string name="NO_ERROR">No error</string>
 
+	<string name="TIMEOUT" >Timeout expired</string>
 	<string name="TIMEOUT_ASSOC" >Timeout in association</string>
 	<string name="TIMEOUT_CONFIG">Timeout in configuration</string>
 	<string name="TIMEOUT_ASSOC_REL">Timeout in association release</string>

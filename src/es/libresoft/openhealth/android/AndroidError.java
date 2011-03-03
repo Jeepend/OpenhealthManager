@@ -43,6 +43,8 @@ public class AndroidError implements ErrorString {
 		switch (errCode) {
 		case ErrorCodes.NO_ERROR:
 			return context.getString(R.string.NO_ERROR);
+		case ErrorCodes.TIMEOUT:
+			return context.getString(R.string.TIMEOUT);
 		case ErrorCodes.TIMEOUT_ASSOC:
 			return context.getString(R.string.TIMEOUT_ASSOC);
 		case ErrorCodes.TIMEOUT_CONFIG:
