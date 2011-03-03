@@ -34,56 +34,54 @@ public final class ErrorCodes {
 	/** Indicates no error */
 	public static final int NO_ERROR 				=	0;
 
+	/** Generic TIMEOUT */
+	public static final int TIMEOUT					=	100;
 	/** Timeout in association */
-	public static final int TIMEOUT_ASSOC			=	1;
+	public static final int TIMEOUT_ASSOC			=	101;
 	/** Timeout in configuration */
-	public static final int TIMEOUT_CONFIG			=	2;
+	public static final int TIMEOUT_CONFIG			=	102;
 	/** Timeout in association release */
-	public static final int TIMEOUT_ASSOC_REL		=	3;
-
+	public static final int TIMEOUT_ASSOC_REL		=	103;
 	/** Timeout in MDS confirmed action */
-	public static final int TIMEOUT_MDS_CONF_ACION	=	4;
+	public static final int TIMEOUT_MDS_CONF_ACION	=	104;
 	/** Timeout in MDS confirmed event report */
-	public static final int TIMEOUT_MDS_CONF_EV_REP	=	5;
+	public static final int TIMEOUT_MDS_CONF_EV_REP	=	105;
 	/** Timeout in MDS Get */
-	public static final int TIMEOUT_MDS_GET			=	6;
+	public static final int TIMEOUT_MDS_GET			=	106;
 	/** Timeout in MDS Set */
-	public static final int TIMEOUT_MDS_CONF_SET	=	7;
+	public static final int TIMEOUT_MDS_CONF_SET	=	107;
 	/** Timeout in MDS inter-service */
-	public static final int TIMEOUT_MDS_SPECIAL		=	8;
+	public static final int TIMEOUT_MDS_SPECIAL		=	108;
 
 	/** Timeout in PM-Store confirmed action */
-	public static final int TIMEOUT_PM_CONF_ACION	=	9;
+	public static final int TIMEOUT_PM_CONF_ACION	=	109;
 	/** Timeout in PM-Store confirmed event report */
-	public static final int TIMEOUT_PM_CONF_EV_REP	=	10;
+	public static final int TIMEOUT_PM_CONF_EV_REP	=	110;
 	/** Timeout in PM-Store Get */
-	public static final int TIMEOUT_PM_GET			=	11;
+	public static final int TIMEOUT_PM_GET			=	111;
 	/** Timeout in PM-Store Set */
-	public static final int TIMEOUT_PM_CONF_SET		=	12;
+	public static final int TIMEOUT_PM_CONF_SET		=	112;
 	/** Timeout in PM-Store (end of segment) */
-	public static final int TIMEOUT_PM_SPECIAL		=	13;
-
+	public static final int TIMEOUT_PM_SPECIAL		=	113;
 	/** Timeout in Scanner Set */
-	public static final int TIMEOUT_SCN_CONF_SET	=	14;
+	public static final int TIMEOUT_SCN_CONF_SET	=	114;
 	/** Timeout in Scanner confirmed event report */
-	public static final int TIMEOUT_SCN_CONF_EV_REP	=	15;
-	/** Generic TIMEOUT */
-	public static final int TIMEOUT = 23;
+	public static final int TIMEOUT_SCN_CONF_EV_REP	=	115;
 
 	/** Unexpected error*/
-	public static final int UNEXPECTED_ERROR		=	16;
+	public static final int UNEXPECTED_ERROR		=	200;
 	/** Unknown agent error*/
-	public static final int UNKNOWN_AGENT			=	17;
+	public static final int UNKNOWN_AGENT			=	201;
 	/** Invalid attribute */
-	public static final int INVALID_ATTRIBUTE		=	18;
+	public static final int INVALID_ATTRIBUTE		=	202;
 	/** Unknown object */
-	public static final int UNKNOWN_OBJECT			=	19;
+	public static final int UNKNOWN_OBJECT			=	203;
 	/** Invalid arguments */
-	public static final int INVALID_ARGUMENTS		=	20;
+	public static final int INVALID_ARGUMENTS		=	204;
 	/** Unknown PM_Store */
-	public static final int UNKNOWN_PMSTORE			=	21;
+	public static final int UNKNOWN_PMSTORE			=	205;
 	/** Association error */
-	public static final int ASSOCIATION_ERROR		=	22;
+	public static final int ASSOCIATION_ERROR		=	206;
 	/** Invalid action */
-	public static final int INVALID_ACTION			=	22;
+	public static final int INVALID_ACTION			=	207;
 }
