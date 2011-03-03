@@ -56,6 +56,9 @@ public class AttributeUtils {
 		case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
 			retValue = partitionValue2string(Nomenclature.MDC_ATTR_TIME_STAMP_ABS, attrValue);
 			break;
+		case Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST:
+			retValue = partitionValue2string(
+					Nomenclature.MDC_DEV_SPEC_PROFILE_TEMP, attrValue);
 		//TODO: Add more cases here
 		}
 
@@ -99,6 +102,9 @@ public class AttributeUtils {
 			break;
 		case Nomenclature.MDC_AI_LOCATION_KITCHEN:
 			retValue = locationKitchen2String(attrValue);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_TEMP:
+			retValue = devSpecProfile2String(attrValue);
+			break;
 		}
 
 		if (retValue != null)
@@ -235,5 +241,32 @@ public class AttributeUtils {
 				return context.getString(R.string.MDC_AI_LOCATION_KITCHEN);
 		}
 		return null;
+	}
+
+	private static String devSpecProfile2String(int attrValue) {
+		switch (attrValue) {
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_PULS_OXIM:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_PULS_OXIM);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_BP:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_BP);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_TEMP:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_TEMP);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_SCALE:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_SCALE);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_GLUCOSE:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_GLUCOSE);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_HF_CARDIO:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_HF_CARDIO);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_HF_STRENGTH:
+			return context.getString(R.string.MDC_DEV_SPEC_PROFILE_HF_STRENGTH);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_AI_ACTIVITY_HUB:
+			return context
+					.getString(R.string.MDC_DEV_SPEC_PROFILE_AI_ACTIVITY_HUB);
+		case Nomenclature.MDC_DEV_SPEC_PROFILE_AI_MED_MINDER:
+			return context
+					.getString(R.string.MDC_DEV_SPEC_PROFILE_AI_MED_MINDER);
+		default:
+			return context.getString(R.string.UNKNOWN_VALUE);
+		}
 	}
 }

@@ -133,6 +133,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	<string name="MDC_AI_TYPE_SENSOR_TEMP">TODO: Set this string MDC_AI_TYPE_SENSOR_TEMP</string>
 
+		<!-- Device Specialization Profile -->
+	<string name="MDC_DEV_SPEC_PROFILE_PULS_OXIM">Pulse Oximeter</string>
+	<string name="MDC_DEV_SPEC_PROFILE_BP">Blood Pressure</string>
+	<string name="MDC_DEV_SPEC_PROFILE_TEMP">Thermometer</string>
+	<string name="MDC_DEV_SPEC_PROFILE_SCALE">Weight Scale</string>
+	<string name="MDC_DEV_SPEC_PROFILE_GLUCOSE">Glucose Meter</string>
+	<string name="MDC_DEV_SPEC_PROFILE_HF_CARDIO">Cardiovascular</string>
+	<string name="MDC_DEV_SPEC_PROFILE_HF_STRENGTH">Strenght Fitness</string>
+	<string name="MDC_DEV_SPEC_PROFILE_AI_ACTIVITY_HUB">Activity Hub</string>
+	<string name="MDC_DEV_SPEC_PROFILE_AI_MED_MINDER">TODO: Set this string MDC_DEV_SPEC_PROFILE_AI_MED_MINDER</string>
+
 	<string name="UNKNOWN_VALUE">Unknown attribute value</string>
 
 </resources>
