@@ -30,10 +30,10 @@ import java.util.Timer;
 import java.util.concurrent.Semaphore;
 
 import es.libresoft.openhealth.Agent;
-import es.libresoft.openhealth.android.AndroidExternalEvent;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
+import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.utils.IFIFO;
 import es.libresoft.openhealth.utils.IUnlock;
 import ieee_11073.part_20601.asn1.ApduType;
@@ -229,8 +229,9 @@ public class ManagerStateController implements StateController {
 					Event event = eventQueue.remove();
 					//Send input Event to finite state machine
 					boolean result = state.processEvent(event);
-					if (!result && event instanceof AndroidExternalEvent){
-						((AndroidExternalEvent<?, ?>)event).processed(null, ErrorCodes.INVALID_ACTION);
+					if (!result && event instanceof ExternalEvent) {
+						((ExternalEvent<?, ?>) event).processed(null,
+								ErrorCodes.INVALID_ACTION);
 					}
 				} catch (InterruptedException e1) {
 					System.out.println("Interrupted dispatcher Events thread");
