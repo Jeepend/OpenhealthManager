@@ -43,26 +43,30 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.os.RemoteException;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.android.aidl.IAgent;
-import es.libresoft.openhealth.android.aidl.types.IError;
-import es.libresoft.openhealth.android.aidl.types.IOperationalState;
 import es.libresoft.openhealth.android.aidl.IAgentService;
-import es.libresoft.openhealth.android.aidl.IPMStoreService;
 import es.libresoft.openhealth.android.aidl.IManagerClientCallback;
 import es.libresoft.openhealth.android.aidl.IManagerService;
+import es.libresoft.openhealth.android.aidl.IPMStoreService;
 import es.libresoft.openhealth.android.aidl.IScannerService;
+import es.libresoft.openhealth.android.aidl.IState;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.types.IError;
+import es.libresoft.openhealth.android.aidl.types.IOperationalState;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.objects.IDIMClass;
 import es.libresoft.openhealth.android.aidl.types.objects.IEnumeration;
 import es.libresoft.openhealth.android.aidl.types.objects.IMDS;
+import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.android.aidl.types.objects.IPM_Segment;
 import es.libresoft.openhealth.android.aidl.types.objects.IPM_Store;
-import es.libresoft.openhealth.android.aidl.types.objects.INumeric;
 import es.libresoft.openhealth.android.aidl.types.objects.IRT_SA;
 import es.libresoft.openhealth.android.aidl.types.objects.IScanner;
-import es.libresoft.openhealth.android.aidl.IState;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.error.ErrorException;
 import es.libresoft.openhealth.error.ErrorFactory;
@@ -72,15 +76,10 @@ import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
-import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
+import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
-
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.os.RemoteException;
 
 public class HealthService extends Service {
 
@@ -333,35 +332,6 @@ public class HealthService extends Service {
 				setErrorMessage(error);
 				return false;
 			}
-		}
-
-		@Override
-		public void getAttributes(IAgent agent, List<IAttribute> attrs, IError error) {
-
-			Agent a = checkParameters(agent, attrs, error);
-			if (a == null)
-				return;
-
-			parcelAttributes(a.mdsHandler.getMDS(), attrs, error);
-		}
-
-		@Override
-		public void getAttribute(IAgent agent, int attrId, IAttribute attr, IError error)
-				throws RemoteException {
-
-			Agent a = checkParameters(agent, attr, error);
-			if (a == null)
-				return;
-
-			Attribute at = a.mdsHandler.getMDS().getAttribute(attrId);
-			if (at == null || !IAttrFactory.getParcelableAttribute(at, attr)) {
-				error.setErrCode(ErrorCodes.INVALID_ATTRIBUTE);
-				setErrorMessage(error);
-				return;
-			}
-
-			error.setErrCode(ErrorCodes.NO_ERROR);
-			setErrorMessage(error);
 		}
 
 		@Override
