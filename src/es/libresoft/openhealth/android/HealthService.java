@@ -241,7 +241,11 @@ public class HealthService extends Service {
 		@Override
 		public void unregisterApplication(IManagerClientCallback mc)
 				throws RemoteException {
-			clients.removeElement(mc);
+			for (IManagerClientCallback client: clients){
+				if (client.asBinder().equals(mc.asBinder())){
+					clients.removeElement(client);
+				}
+			}
 			if (clients.size() == 0) {
 				HealthService.this.stopSelf();
 			}
