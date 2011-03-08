@@ -720,36 +720,26 @@ public class HealthService extends Service {
 				return false;
 			}
 
-			IPM_Store store = segment.getPMStore();
-			if (store == null) {
-				err.setErrCode(ErrorCodes.UNKNOWN_OBJECT);
+			HANDLE pm_handle = new HANDLE();
+			pm_handle.setValue(new INT_U16(segment.getHandle()));
+			InstNumber insNumber = null;
+
+			PM_Store pmStore = a.mdsHandler.getMDS().getPM_Store(pm_handle);
+			for (PM_Segment segm: pmStore.getSegments().toArray(new PM_Segment[0])) {
+				insNumber = (InstNumber) segm.getAttribute(
+						Nomenclature.MDC_ATTR_ID_INSTNO).getAttributeType();
+				if (insNumber != null)
+					break;
+			}
+
+			if (insNumber == null) {
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
 				setErrorMessage(err);
 				return false;
 			}
 
-			HANDLE handle = new HANDLE();
-			handle.setValue(new INT_U16(store.getHandle()));
-			InstNumber insNumber = null;
-
-			PM_Store pmStore = a.mdsHandler.getMDS().getPM_Store(handle);
-			for (PM_Segment segm: pmStore.getSegments().toArray(new PM_Segment[0])) {
-				HANDLE segHandle = (HANDLE) segm.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
-				if (segHandle == null)
-					continue;
-
-				if (segHandle.getValue().getValue() != segment.getHandle())
-					continue;
-
-				insNumber = (InstNumber) segm.getAttribute(Nomenclature.MDC_ATTR_ID_INSTNO).getAttributeType();
-				if (insNumber == null) {
-					err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
-					setErrorMessage(err);
-					return false;
-				}
-				break;
-			}
-
-			TrigPMSegmentXferEventData eventData = new TrigPMSegmentXferEventData(handle, insNumber);
+			TrigPMSegmentXferEventData eventData = new TrigPMSegmentXferEventData(
+					pm_handle, insNumber);
 			AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData> ev = new AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData>(EventType.REQ_GET_PM_STORE, eventData);
 
 			a.sendEvent(ev);
