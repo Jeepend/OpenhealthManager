@@ -234,8 +234,17 @@ public class HealthService extends Service {
 		@Override
 		public void registerApplication(IManagerClientCallback mc)
 				throws RemoteException {
-			if (mc != null)
-				clients.add(mc);
+			if (mc != null){
+				boolean isAdded = false;
+				for (IManagerClientCallback client: clients){
+					if (client.asBinder().equals(mc.asBinder())){
+						isAdded = true;
+						break;
+					}
+				}
+				if (!isAdded)
+					clients.add(mc);
+			}
 		}
 
 		@Override
