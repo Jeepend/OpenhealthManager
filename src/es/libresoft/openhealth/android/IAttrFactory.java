@@ -26,6 +26,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.asn1.AbsoluteTime;
+import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
+import ieee_11073.part_20601.asn1.AttrValMap;
+import ieee_11073.part_20601.asn1.AttrValMapEntry;
+import ieee_11073.part_20601.asn1.AuthBodyAndStrucType;
+import ieee_11073.part_20601.asn1.BasicNuObsValue;
+import ieee_11073.part_20601.asn1.BatMeasure;
+import ieee_11073.part_20601.asn1.ConfigId;
+import ieee_11073.part_20601.asn1.FLOAT_Type;
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.HighResRelativeTime;
+import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.INT_U32;
+import ieee_11073.part_20601.asn1.MdsTimeCapState;
+import ieee_11073.part_20601.asn1.MdsTimeInfo;
+import ieee_11073.part_20601.asn1.MetricIdList;
+import ieee_11073.part_20601.asn1.MetricSpecSmall;
+import ieee_11073.part_20601.asn1.NomPartition;
+import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.OperationalState;
+import ieee_11073.part_20601.asn1.PowerStatus;
+import ieee_11073.part_20601.asn1.PrivateOid;
+import ieee_11073.part_20601.asn1.ProdSpecEntry;
+import ieee_11073.part_20601.asn1.ProductionSpec;
+import ieee_11073.part_20601.asn1.RegCertData;
+import ieee_11073.part_20601.asn1.RegCertDataList;
+import ieee_11073.part_20601.asn1.RelativeTime;
+import ieee_11073.part_20601.asn1.SupplementalTypeList;
+import ieee_11073.part_20601.asn1.SystemModel;
+import ieee_11073.part_20601.asn1.TYPE;
+import ieee_11073.part_20601.asn1.TypeVer;
+import ieee_11073.part_20601.asn1.TypeVerList;
+import ieee_11073.part_20601.phd.dim.Attribute;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -36,9 +70,9 @@ import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTime;
 import es.libresoft.openhealth.android.aidl.types.IAbsoluteTimeAdjust;
-import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMap;
 import es.libresoft.openhealth.android.aidl.types.IAttrValMapEntry;
+import es.libresoft.openhealth.android.aidl.types.IAttribute;
 import es.libresoft.openhealth.android.aidl.types.IAuthBodyAndStrucType;
 import es.libresoft.openhealth.android.aidl.types.IBITSTRING;
 import es.libresoft.openhealth.android.aidl.types.IBasicNuObsValue;
@@ -48,6 +82,7 @@ import es.libresoft.openhealth.android.aidl.types.IFLOAT_Type;
 import es.libresoft.openhealth.android.aidl.types.IHANDLE;
 import es.libresoft.openhealth.android.aidl.types.IHighResRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.IINT_U16;
+import es.libresoft.openhealth.android.aidl.types.IINT_U32;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeCapState;
 import es.libresoft.openhealth.android.aidl.types.IMdsTimeInfo;
 import es.libresoft.openhealth.android.aidl.types.IMetricIdList;
@@ -69,38 +104,6 @@ import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import es.libresoft.openhealth.android.aidl.types.ITypeVer;
 import es.libresoft.openhealth.android.aidl.types.ITypeVerList;
-import ieee_11073.part_20601.asn1.AbsoluteTime;
-import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
-import ieee_11073.part_20601.asn1.AttrValMap;
-import ieee_11073.part_20601.asn1.AttrValMapEntry;
-import ieee_11073.part_20601.asn1.AuthBodyAndStrucType;
-import ieee_11073.part_20601.asn1.BasicNuObsValue;
-import ieee_11073.part_20601.asn1.BatMeasure;
-import ieee_11073.part_20601.asn1.ConfigId;
-import ieee_11073.part_20601.asn1.FLOAT_Type;
-import ieee_11073.part_20601.asn1.HANDLE;
-import ieee_11073.part_20601.asn1.HighResRelativeTime;
-import ieee_11073.part_20601.asn1.INT_U16;
-import ieee_11073.part_20601.asn1.MdsTimeCapState;
-import ieee_11073.part_20601.asn1.MdsTimeInfo;
-import ieee_11073.part_20601.asn1.MetricIdList;
-import ieee_11073.part_20601.asn1.MetricSpecSmall;
-import ieee_11073.part_20601.asn1.NomPartition;
-import ieee_11073.part_20601.asn1.OID_Type;
-import ieee_11073.part_20601.asn1.OperationalState;
-import ieee_11073.part_20601.asn1.PowerStatus;
-import ieee_11073.part_20601.asn1.PrivateOid;
-import ieee_11073.part_20601.asn1.ProdSpecEntry;
-import ieee_11073.part_20601.asn1.ProductionSpec;
-import ieee_11073.part_20601.asn1.RegCertData;
-import ieee_11073.part_20601.asn1.RegCertDataList;
-import ieee_11073.part_20601.asn1.RelativeTime;
-import ieee_11073.part_20601.asn1.SupplementalTypeList;
-import ieee_11073.part_20601.asn1.SystemModel;
-import ieee_11073.part_20601.asn1.TYPE;
-import ieee_11073.part_20601.asn1.TypeVer;
-import ieee_11073.part_20601.asn1.TypeVerList;
-import ieee_11073.part_20601.phd.dim.Attribute;
 
 
 public class IAttrFactory {
@@ -212,6 +215,10 @@ public class IAttrFactory {
 
 	private static IINT_U16 INT_U162parcelable(INT_U16 intu16, int attrId) {
 		return new IINT_U16(intu16.getValue());
+	}
+
+	private static IINT_U32 INT_U322parcelable(INT_U32 intu32, int attrId) {
+		return new IINT_U32(intu32.getValue());
 	}
 
 	private static IFLOAT_Type FLOAT_Type2parcelable(FLOAT_Type value, int attrId) {
@@ -351,6 +358,9 @@ public class IAttrFactory {
 		else if (asnAttr.getAttributeType() instanceof INT_U16)
 			parcel = INT_U162parcelable((INT_U16) asnAttr.getAttributeType(),
 							asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof INT_U32)
+			parcel = INT_U322parcelable((INT_U32) asnAttr.getAttributeType(),
+					asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof BatMeasure)
 			parcel = BatMeasure2parcelable((BatMeasure) asnAttr.getAttributeType(),
 							asnAttr.getAttributeID());
