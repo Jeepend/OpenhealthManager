@@ -53,6 +53,7 @@ import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
 import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
+import ieee_11073.part_20601.asn1.StoSampleAlg;
 import ieee_11073.part_20601.asn1.SupplementalTypeList;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
@@ -99,6 +100,7 @@ import es.libresoft.openhealth.android.aidl.types.IRegCertData;
 import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISFloatType;
+import es.libresoft.openhealth.android.aidl.types.IStoSampleAlg;
 import es.libresoft.openhealth.android.aidl.types.ISupplementalTypeList;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
@@ -215,6 +217,11 @@ public class IAttrFactory {
 
 	private static IINT_U16 INT_U162parcelable(INT_U16 intu16, int attrId) {
 		return new IINT_U16(intu16.getValue());
+	}
+
+	private static IStoSampleAlg StoSampleAlg2parcelable(StoSampleAlg ssa,
+			int attrId) {
+		return new IStoSampleAlg(ssa.getValue());
 	}
 
 	private static IINT_U32 INT_U322parcelable(INT_U32 intu32, int attrId) {
@@ -388,6 +395,9 @@ public class IAttrFactory {
 		else if (asnAttr.getAttributeType() instanceof SupplementalTypeList)
 			parcel = SupplementalTypeList2parcelable((SupplementalTypeList) asnAttr.getAttributeType(),
 							asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof StoSampleAlg)
+			parcel = StoSampleAlg2parcelable((StoSampleAlg) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
 
 		if (parcel != null) {
 			attr.setAttr(parcel);
