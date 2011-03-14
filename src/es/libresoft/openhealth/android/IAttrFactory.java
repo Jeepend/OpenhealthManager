@@ -3,6 +3,7 @@ Copyright (C) 2008-2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 Author: Santiago Carot-Nemesio <scarot@libresoft.es>
+Author: Jorge Fernández González <jfernandez@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -46,6 +47,7 @@ import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.OperationalState;
+import ieee_11073.part_20601.asn1.PmStoreCapab;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.PrivateOid;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
@@ -92,6 +94,7 @@ import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.IOperationalState;
+import es.libresoft.openhealth.android.aidl.types.IPmStoreCapab;
 import es.libresoft.openhealth.android.aidl.types.IPowerStatus;
 import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
 import es.libresoft.openhealth.android.aidl.types.IProductionSpec;
@@ -222,6 +225,11 @@ public class IAttrFactory {
 	private static IStoSampleAlg StoSampleAlg2parcelable(StoSampleAlg ssa,
 			int attrId) {
 		return new IStoSampleAlg(ssa.getValue());
+	}
+
+	private static IPmStoreCapab PmStoreCapab2parcelable(PmStoreCapab pmsc,
+			int attrId) {
+		return new IPmStoreCapab(BitString2parcelable(pmsc.getValue(), attrId));
 	}
 
 	private static IINT_U32 INT_U322parcelable(INT_U32 intu32, int attrId) {
@@ -397,6 +405,9 @@ public class IAttrFactory {
 							asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof StoSampleAlg)
 			parcel = StoSampleAlg2parcelable((StoSampleAlg) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof PmStoreCapab)
+			parcel = PmStoreCapab2parcelable((PmStoreCapab) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 
 		if (parcel != null) {
