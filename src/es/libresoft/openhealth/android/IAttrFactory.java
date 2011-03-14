@@ -57,6 +57,9 @@ import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
 import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
+import ieee_11073.part_20601.asn1.SegmStatType;
+import ieee_11073.part_20601.asn1.SegmentStatisticEntry;
+import ieee_11073.part_20601.asn1.SegmentStatistics;
 import ieee_11073.part_20601.asn1.StoSampleAlg;
 import ieee_11073.part_20601.asn1.SupplementalTypeList;
 import ieee_11073.part_20601.asn1.SystemModel;
@@ -107,6 +110,9 @@ import es.libresoft.openhealth.android.aidl.types.IRegCertData;
 import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISFloatType;
+import es.libresoft.openhealth.android.aidl.types.ISegmStatType;
+import es.libresoft.openhealth.android.aidl.types.ISegmentStatisticEntry;
+import es.libresoft.openhealth.android.aidl.types.ISegmentStatistics;
 import es.libresoft.openhealth.android.aidl.types.IStoSampleAlg;
 import es.libresoft.openhealth.android.aidl.types.ISupplementalTypeList;
 import es.libresoft.openhealth.android.aidl.types.ISystemModel;
@@ -336,6 +342,26 @@ public class IAttrFactory {
 		return new IPersonId(personId.getValue());
 	}
 
+	private static ISegmentStatistics SegmentStatistics2parcelable(
+			SegmentStatistics segmentStatistics, int attrId){
+		ArrayList<ISegmentStatisticEntry> values = new ArrayList<ISegmentStatisticEntry>();
+		Iterator<SegmentStatisticEntry> it = segmentStatistics.getValue().iterator();
+		while (it.hasNext()) {
+			values.add(SegmentStatisticEntry2parcelable(it.next(), attrId));
+		}
+		return new ISegmentStatistics(values);
+	}
+
+	private static ISegmentStatisticEntry SegmentStatisticEntry2parcelable(SegmentStatisticEntry segmStatEntry, int attrId){
+		return new ISegmentStatisticEntry(
+				SegmStatType2parcelable(segmStatEntry.getSegm_stat_type(), attrId),
+				OCTETSTRING2parcelable(segmStatEntry.getSegm_stat_entry(), attrId));
+	}
+
+	private static ISegmStatType SegmStatType2parcelable(SegmStatType segmStatType, int attrId){
+		return new ISegmStatType(segmStatType.getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -426,6 +452,15 @@ public class IAttrFactory {
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof PersonId)
 			parcel = PersonId2parcelable((PersonId) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SegmentStatistics)
+			parcel = SegmentStatistics2parcelable((SegmentStatistics) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SegmentStatisticEntry)
+			parcel = SegmentStatisticEntry2parcelable((SegmentStatisticEntry) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SegmStatType)
+			parcel = SegmStatType2parcelable((SegmStatType) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 
 		if (parcel != null) {
