@@ -48,6 +48,7 @@ import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.OperationalState;
+import ieee_11073.part_20601.asn1.PersonId;
 import ieee_11073.part_20601.asn1.PmStoreCapab;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.PrivateOid;
@@ -96,6 +97,7 @@ import es.libresoft.openhealth.android.aidl.types.INomPartition;
 import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.IOperationalState;
+import es.libresoft.openhealth.android.aidl.types.IPersonId;
 import es.libresoft.openhealth.android.aidl.types.IPmStoreCapab;
 import es.libresoft.openhealth.android.aidl.types.IPowerStatus;
 import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
@@ -330,6 +332,10 @@ public class IAttrFactory {
 		return new IInstNumber(instNumber.getValue());
 	}
 
+	private static IPersonId PersonId2parcelable(PersonId personId, int attrId) {
+		return new IPersonId(personId.getValue());
+	}
+
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -417,6 +423,9 @@ public class IAttrFactory {
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof InstNumber)
 			parcel = InstNumber2parcelable((InstNumber) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof PersonId)
+			parcel = PersonId2parcelable((PersonId) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 
 		if (parcel != null) {
