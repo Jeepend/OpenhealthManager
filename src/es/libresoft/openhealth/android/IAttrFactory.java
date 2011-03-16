@@ -59,6 +59,7 @@ import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.SegmEntryElem;
 import ieee_11073.part_20601.asn1.SegmEntryElemList;
+import ieee_11073.part_20601.asn1.SegmEntryHeader;
 import ieee_11073.part_20601.asn1.SegmStatType;
 import ieee_11073.part_20601.asn1.SegmentStatisticEntry;
 import ieee_11073.part_20601.asn1.SegmentStatistics;
@@ -114,6 +115,7 @@ import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISFloatType;
 import es.libresoft.openhealth.android.aidl.types.ISegmEntryElem;
 import es.libresoft.openhealth.android.aidl.types.ISegmEntryElemList;
+import es.libresoft.openhealth.android.aidl.types.ISegmEntryHeader;
 import es.libresoft.openhealth.android.aidl.types.ISegmStatType;
 import es.libresoft.openhealth.android.aidl.types.ISegmentStatisticEntry;
 import es.libresoft.openhealth.android.aidl.types.ISegmentStatistics;
@@ -384,6 +386,10 @@ public class IAttrFactory {
 		return new ISegmEntryElemList(values);
 	}
 
+	private static ISegmEntryHeader SegmEntryHeader2parcelable(SegmEntryHeader segmEntryHeader, int attrId){
+		return new ISegmEntryHeader(BitString2parcelable(segmEntryHeader.getValue(), attrId));
+	}
+
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -483,6 +489,9 @@ public class IAttrFactory {
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmStatType)
 			parcel = SegmStatType2parcelable((SegmStatType) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SegmEntryHeader)
+			parcel = SegmEntryHeader2parcelable((SegmEntryHeader) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmEntryElemList)
 			parcel = SegmEntryElemList2parcelable((SegmEntryElemList) asnAttr
