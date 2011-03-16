@@ -57,6 +57,7 @@ import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
 import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
+import ieee_11073.part_20601.asn1.SegmEntryElem;
 import ieee_11073.part_20601.asn1.SegmStatType;
 import ieee_11073.part_20601.asn1.SegmentStatisticEntry;
 import ieee_11073.part_20601.asn1.SegmentStatistics;
@@ -110,6 +111,7 @@ import es.libresoft.openhealth.android.aidl.types.IRegCertData;
 import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISFloatType;
+import es.libresoft.openhealth.android.aidl.types.ISegmEntryElem;
 import es.libresoft.openhealth.android.aidl.types.ISegmStatType;
 import es.libresoft.openhealth.android.aidl.types.ISegmentStatisticEntry;
 import es.libresoft.openhealth.android.aidl.types.ISegmentStatistics;
@@ -362,6 +364,15 @@ public class IAttrFactory {
 		return new ISegmStatType(segmStatType.getValue());
 	}
 
+	private static ISegmEntryElem SegmEntryElem2parcelable(SegmEntryElem segmEntryElem, int attrId) {
+		return new ISegmEntryElem(
+				OID_Type2parcelable(segmEntryElem.getClass_id(), attrId),
+				TYPE2parcelable(segmEntryElem.getMetric_type(), attrId),
+				HANDLE2parcelable(segmEntryElem.getHandle(), attrId),
+				AttrValMap2parcelable(segmEntryElem.getAttr_val_map(), attrId)
+				);
+	}
+
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -461,6 +472,9 @@ public class IAttrFactory {
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmStatType)
 			parcel = SegmStatType2parcelable((SegmStatType) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SegmEntryElem)
+			parcel = SegmEntryElem2parcelable((SegmEntryElem) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 
 		if (parcel != null) {
