@@ -58,6 +58,7 @@ import ieee_11073.part_20601.asn1.RegCertData;
 import ieee_11073.part_20601.asn1.RegCertDataList;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.SegmEntryElem;
+import ieee_11073.part_20601.asn1.SegmEntryElemList;
 import ieee_11073.part_20601.asn1.SegmStatType;
 import ieee_11073.part_20601.asn1.SegmentStatisticEntry;
 import ieee_11073.part_20601.asn1.SegmentStatistics;
@@ -112,6 +113,7 @@ import es.libresoft.openhealth.android.aidl.types.IRegCertDataList;
 import es.libresoft.openhealth.android.aidl.types.IRelativeTime;
 import es.libresoft.openhealth.android.aidl.types.ISFloatType;
 import es.libresoft.openhealth.android.aidl.types.ISegmEntryElem;
+import es.libresoft.openhealth.android.aidl.types.ISegmEntryElemList;
 import es.libresoft.openhealth.android.aidl.types.ISegmStatType;
 import es.libresoft.openhealth.android.aidl.types.ISegmentStatisticEntry;
 import es.libresoft.openhealth.android.aidl.types.ISegmentStatistics;
@@ -373,6 +375,15 @@ public class IAttrFactory {
 				);
 	}
 
+	private static ISegmEntryElemList SegmEntryElemList2parcelable(SegmEntryElemList segmEntryElemList, int attrId){
+		ArrayList<ISegmEntryElem> values = new ArrayList<ISegmEntryElem>();
+		Iterator<SegmEntryElem> it = segmEntryElemList.getValue().iterator();
+		while (it.hasNext()) {
+			values.add(SegmEntryElem2parcelable(it.next(), attrId));
+		}
+		return new ISegmEntryElemList(values);
+	}
+
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -472,6 +483,9 @@ public class IAttrFactory {
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmStatType)
 			parcel = SegmStatType2parcelable((SegmStatType) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof SegmEntryElemList)
+			parcel = SegmEntryElemList2parcelable((SegmEntryElemList) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmEntryElem)
 			parcel = SegmEntryElem2parcelable((SegmEntryElem) asnAttr
