@@ -49,6 +49,7 @@ import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.OperationalState;
 import ieee_11073.part_20601.asn1.PersonId;
+import ieee_11073.part_20601.asn1.PmSegmentEntryMap;
 import ieee_11073.part_20601.asn1.PmStoreCapab;
 import ieee_11073.part_20601.asn1.PowerStatus;
 import ieee_11073.part_20601.asn1.PrivateOid;
@@ -104,6 +105,7 @@ import es.libresoft.openhealth.android.aidl.types.IOCTETSTRING;
 import es.libresoft.openhealth.android.aidl.types.IOID_Type;
 import es.libresoft.openhealth.android.aidl.types.IOperationalState;
 import es.libresoft.openhealth.android.aidl.types.IPersonId;
+import es.libresoft.openhealth.android.aidl.types.IPmSegmentEntryMap;
 import es.libresoft.openhealth.android.aidl.types.IPmStoreCapab;
 import es.libresoft.openhealth.android.aidl.types.IPowerStatus;
 import es.libresoft.openhealth.android.aidl.types.IPrivateOid;
@@ -390,6 +392,13 @@ public class IAttrFactory {
 		return new ISegmEntryHeader(BitString2parcelable(segmEntryHeader.getValue(), attrId));
 	}
 
+	private static IPmSegmentEntryMap PmSegmentEntryMap2parcelable(PmSegmentEntryMap pmSegmentEntryMap, int attrId){
+		return new IPmSegmentEntryMap(
+				SegmEntryHeader2parcelable(pmSegmentEntryMap.getSegm_entry_header(), attrId),
+				SegmEntryElemList2parcelable(pmSegmentEntryMap.getSegm_entry_elem_list(), attrId)
+				);
+	}
+
 	public static final boolean getParcelableAttribute (Attribute asnAttr, IAttribute attr) {
 
 		Parcelable parcel = null;
@@ -489,6 +498,9 @@ public class IAttrFactory {
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmStatType)
 			parcel = SegmStatType2parcelable((SegmStatType) asnAttr
+					.getAttributeType(), asnAttr.getAttributeID());
+		else if (asnAttr.getAttributeType() instanceof PmSegmentEntryMap)
+			parcel = PmSegmentEntryMap2parcelable((PmSegmentEntryMap) asnAttr
 					.getAttributeType(), asnAttr.getAttributeID());
 		else if (asnAttr.getAttributeType() instanceof SegmEntryHeader)
 			parcel = SegmEntryHeader2parcelable((SegmEntryHeader) asnAttr
