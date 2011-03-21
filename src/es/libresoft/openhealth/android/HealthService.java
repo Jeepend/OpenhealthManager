@@ -47,6 +47,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.android.aidl.IAgent;
 import es.libresoft.openhealth.android.aidl.IAgentService;
@@ -759,8 +760,9 @@ public class HealthService extends Service {
 
 			TrigPMSegmentXferEventData eventData = new TrigPMSegmentXferEventData(
 					pm_handle, insNumber);
-			AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData> ev = new AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData>(EventType.REQ_GET_PM_STORE, eventData);
-
+			AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData> ev =
+				new AndroidExternalEvent<Boolean, TrigPMSegmentXferEventData>(
+						EventType.REQ_TRIG_SEGMENT_DATA_XFER, eventData);
 			a.sendEvent(ev);
 
 			try {
