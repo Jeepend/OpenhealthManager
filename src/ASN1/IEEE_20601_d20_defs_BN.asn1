@@ -1327,7 +1327,7 @@ ObservationScanFixed ::= SEQUENCE {
 
 
 ScanReportInfoGrouped ::= SEQUENCE {
-	data-req-id INTEGER (0..65535),
+	data-req-id DataReqId,
 	scan-report-no INTEGER (0..65535), 				--counter for detection of missing scan reports
 	obs-scan-grouped SEQUENCE OF ObservationScanGrouped }	-- obs-scan-grouped is a SEQUENCE OF so episodic measurements can
 								-- combine more than one report into a single scan report. Periodic

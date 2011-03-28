@@ -3,6 +3,7 @@ Copyright (C) 2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 Author: Santiago Carot-Nemesio <scarot@libresoft.es>
+Author: Jorge Fernández González <jfernandez@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -43,18 +44,10 @@ import org.bn.types.*;
     @ASN1PreparedElement
     @ASN1Sequence ( name = "ScanReportInfoGrouped", isSet = false )
     public class ScanReportInfoGrouped implements IASN1PreparedElement {
-            @ASN1Integer( name = "" )
-    @ASN1ValueRangeConstraint (
 
-		min = 0L,
+	@ASN1Element ( name = "data-req-id", isOptional =  false , hasTag =  false  , hasDefaultValue =  false, hasExplicitOrder = true, declarationOrder = 0  )
 
-		max = 65535L
-
-	   )
-
-        @ASN1Element ( name = "data-req-id", isOptional =  false , hasTag =  false  , hasDefaultValue =  false, hasExplicitOrder = true, declarationOrder = 0  )
-
-	private Integer data_req_id = null;
+	private DataReqId data_req_id = null;
 
   @ASN1Integer( name = "" )
     @ASN1ValueRangeConstraint (
@@ -70,7 +63,7 @@ import org.bn.types.*;
 	private Integer scan_report_no = null;
 
 
-@ASN1SequenceOf( name = "", isSetOf = false )
+@ASN1SequenceOf( name = "obs-scan-grouped", isSetOf = false )
 
 
         @ASN1Element ( name = "obs-scan-grouped", isOptional =  false , hasTag =  false  , hasDefaultValue =  false, hasExplicitOrder = true, declarationOrder = 2  )
@@ -79,13 +72,13 @@ import org.bn.types.*;
 
 
 
-        public Integer getData_req_id () {
+        public DataReqId getData_req_id () {
             return this.data_req_id;
         }
 
 
 
-        public void setData_req_id (Integer value) {
+        public void setData_req_id (DataReqId value) {
             this.data_req_id = value;
         }
 
