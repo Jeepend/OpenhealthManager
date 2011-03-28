@@ -3,6 +3,7 @@ IEEE_11073_20601_ASN1 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- ASN.1 definitions from IEEE 20601 for OpenHealth
 -- ***************************************************
 -- Santiago Carot Nemesio
+-- Jorge Fern√°ndez Gonz√°lez
 -- Jan 21, 2009
 -- Libresoft
 -- ***************************************************
@@ -181,7 +182,7 @@ AVA-Type ::= SEQUENCE {
 -- A.2.7 Attribute list data type
 -- ***************************************************
 
--- Frequently, a list of attribute IDñattribute value pairs is needed. The attribute list data type is a special data
+-- Frequently, a list of attribute ID-attribute value pairs is needed. The attribute list data type is a special data
 -- type that is provided for this situation and is defined as follows:
 
 AttributeList ::= SEQUENCE OF AVA-Type
@@ -210,7 +211,7 @@ FLOAT-Type ::= INT-U32 --32-bit float type; the integer type is a placeholder on
 -- NaN (not a number) [exponent 0, mantissa +(2**23-1) . 0x007FFFFF]
 -- NRes (not at this resolution) [exponent 0, mantissa -(2**23) . 0x00800000]
 -- + INFINITY [exponent 0, mantissa +(2**23-2) . 0x007FFFFE]
--- ñ INFINITY [exponent 0, mantissa -(2**23-2) . 0x00800002]
+-- - INFINITY [exponent 0, mantissa -(2**23-2) . 0x00800002]
 -- Reserved for future use [exponent 0, mantissa -(2**23-1) . 0x00800001]
 
 -- ***************************************************
@@ -224,13 +225,13 @@ FLOAT-Type ::= INT-U32 --32-bit float type; the integer type is a placeholder on
 
 SFLOAT-Type ::= INTEGER (0..65535) --16-bit float type; the integer type is a placeholder only
 
--- The 16ñbit value contains a 4-bit exponent to base 10, followed by a 12-bit mantissa. Each is in 2ís
+-- The 16-bit value contains a 4-bit exponent to base 10, followed by a 12-bit mantissa. Each is in twos
 -- complement form
 -- Special values are assigned to express:
 -- NaN (not a number) [exponent 0, mantissa +(2**11 -1) . 0x07FF]
 -- NRes (not at this resolution) [exponent 0, mantissa -(2**11) . 0x0800]
 -- + INFINITY [exponent 0, mantissa +(2**11 -2) . 0x07FE]
--- ñ INFINITY [exponent 0, mantissa -(2**11 -2) . 0x0802]
+-- - INFINITY [exponent 0, mantissa -(2**11 -2) . 0x0802]
 -- Reserved for future use [exponent 0, mantissa -(2**11 -1) . 0x0801]
 
 -- ***************************************************
@@ -239,7 +240,7 @@ SFLOAT-Type ::= INTEGER (0..65535) --16-bit float type; the integer type is a pl
 
 -- The relative time data type is a time counter that is used to determine the relative time between events. This
 -- data type is used to position events relative to each other. It is defined as follows:
--- Relative time has a resolution of 125 µs [least significant bit (LSB)], which is sufficient for sampling
+-- Relative time has a resolution of 125 us [least significant bit (LSB)], which is sufficient for sampling
 -- rates up to 8 kHz and spans time periods up to 6.2 days.
 -- The value of 0xFFFFFFFF shall be used when an Agent is required to send a relative time in an ASN.1
 -- structure but does not support a relative time clock.
@@ -324,7 +325,7 @@ SystemModel ::= SEQUENCE {
 
 -- Production Specification deals with serial numbers, part numbers, revisions, and etc.
 -- Note that an Agent may have multiple components so the prod-spec should be an
--- ASCII printable string of the format ìspec-type: vendor-specified-strî where spec-type is
+-- ASCII printable string of the format "spec-type: vendor-specified-str" where spec-type is
 -- replaced by the string representation of spec-type. The format of the vendor-specified-str
 -- is determined by the vendor.
 
@@ -342,7 +343,7 @@ ProdSpecEntry ::= SEQUENCE {
 	component-id PrivateOid,
 	prod-spec OCTET STRING } --string size shall be even
 
--- Note: The Global Medical Device Nomenclature (GMDN) is based on EN ISO 15225 Nomenclature ñ
+-- Note: The Global Medical Device Nomenclature (GMDN) is based on EN ISO 15225 Nomenclature
 -- Specification for a nomenclature system for medical devices for the purpose of regulatory data exchange,
 -- and was developed under the auspices of CEN TC257 SC1.
 -- Power State defines whether device is on battery or on mains. Upper bits define the charging state.
@@ -552,7 +553,7 @@ SetTimeInvoke ::= SEQUENCE {
 
 SegmSelection ::= CHOICE { 	-- The SegmSelection selects the PM-Segments that are subject to the method
 all-segments [1] INT-U16, 	-- if this type is chosen to select all segments
- 				-- the actual contents of the field is donít care
+				-- the actual contents of the field is don't care
  				-- and shall be zero
 segm-id-list [2] SegmIdList, 	-- using this list requires that the Manager already
 				-- knows the Instance-Number attributes of the
@@ -969,7 +970,7 @@ TypeVerList ::= SEQUENCE OF TypeVer
 -- nom-part-infrastruct partition, sub-partition DEVspec, a simple OID-Type is used rather
 -- than a TYPE.
 -- The individual IEEE 11073-104zz specializations define which specification is classified
--- as version 1, 2, Ö, and so on; thus, version 3 may correspond to specification version 1.5.
+-- as version 1, 2, ..., and so on; thus, version 3 may correspond to specification version 1.5.
 
 TypeVer ::= SEQUENCE {
 	type OID-Type,
@@ -994,8 +995,8 @@ AttributeModEntry ::= SEQUENCE {
 --All unassigned " ModifyOperator " values are reserved for future expansion and shall not be used.
 ModifyOperator ::= INTEGER {
 	replace(0),
-	addValues(1), 		--used for modifying the values contained in ìlistî like data types
-	removeValues(2), 	--used for modifying the values contained in ìlistî like data types
+	addValues(1), 		--used for modifying the values contained in list-like data types
+	removeValues(2), 	--used for modifying the values contained in list-like data types
 	setToDefault(3) }
 
 -- The obj-handle shall be set to the value received in the SetArgumentSimple
@@ -1066,7 +1067,7 @@ MdsTimeInfo ::= SEQUENCE {
 						-- nom-part-infrastruct partition
 	time-sync-accuracy RelativeTime, 	-- 0xFFFFFFFF if unknown
 						-- 0 if better than 1/8ms
-	time-resolution-abs-time INTEGER (0..65535), 	-- Resolution of the Agentís
+	time-resolution-abs-time INTEGER (0..65535), 	-- Resolution of the Agent's
 						-- absolute time clock.
 	 					-- 0 if unknown, otherwise
 	 					-- the number of 1/100 seconds
@@ -1075,7 +1076,7 @@ MdsTimeInfo ::= SEQUENCE {
 	 					-- Agent has a clock that clicks at
 	 					-- 1 second intervals, this value
 	 					-- would be 100.
-	 time-resolution-rel-time INTEGER (0..65535), 	-- Resolution of the Agentís
+	 time-resolution-rel-time INTEGER (0..65535), 	-- Resolution of the Agent's
 	 					-- relative time clock. 0 if
 		 				-- unknown, otherwise the number
 	 					-- of 125 microseconds that elapse
@@ -1083,7 +1084,7 @@ MdsTimeInfo ::= SEQUENCE {
 	 					-- example, if an Agent has a clock
 	 					-- that clicks at 1 second intervals,
  						-- this value would be 8000.
- 	time-resolution-high-res-time INT-U32 }	-- Resolution of the Agentís
+	time-resolution-high-res-time INT-U32 }	-- Resolution of the Agent's
  						-- high resolution time clock.
 						-- 0 if unknown, otherwise the
 						-- the number of microseconds
@@ -1334,7 +1335,7 @@ ScanReportPerGrouped ::= SEQUENCE {
 	person-id PersonId,
 	obs-scan-grouped ObservationScanGrouped }
 
--- The ConfigReport definition is used when reporting an Agentís configuration to a Manager (see
+-- The ConfigReport definition is used when reporting an Agent's configuration to a Manager (see
 -- Table 4)
 
 ConfigReport ::= SEQUENCE {
