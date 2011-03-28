@@ -60,6 +60,11 @@ INT-U16 ::= INTEGER (0..65535) 			-- 16-bit unsigned integer
 INT-I16 ::= INTEGER (-32768..32767) 		-- 16-bit signed integer
 INT-U32 ::= INTEGER (0..4294967295) 		-- 32-bit unsigned integer
 INT-I32 ::= INTEGER (-2147483648..2147483647) 	-- 32-bit signed integer
+--
+-- Unless otherwise stated, all unused (reserved) bits in any of the BITS-* constructs shall be set to 0
+-- by the sender and unless otherwise stated, shall be ignored by the receiver if they are set to 1.
+--
+BITS-8 ::= BIT STRING (SIZE(8))		-- 8-bit bit string
 BITS-16 ::= BIT STRING (SIZE(16))		-- 16-bit bit string
 BITS-32 ::= BIT STRING (SIZE(32))		-- 32-bit bit string
 --
