@@ -1,7 +1,6 @@
 /*
 Copyright (C) 2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
-Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 Author: Santiago Carot-Nemesio <scarot@libresoft.es>
 Author: Jorge Fernández González <jfernandez@libresoft.es>
 
