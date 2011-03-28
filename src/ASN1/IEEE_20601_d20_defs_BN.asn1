@@ -765,10 +765,13 @@ assoc-version1(0) }(SIZE(32))	-- This bit shall be set if version 1 of the assoc
 				-- shall be set to zero.
 
 ProtocolVersion ::= BIT STRING {
-protocol-version1(0) }(SIZE(32)) -- This bit shall be set if version 1 of the data
- 				-- exchange protocol is supported
-				-- All unassigned " ProtocolVersion " bit values are reserved for future expansion
-				-- and shall be set to zero.
+protocol-version1(0),	-- This bit shall be set if IEEE Std 11073-20601-2008
+						-- is supported
+protocol-version2(1)	-- This bit shall be set if IEEE Std 11073-20601a
+						-- is supported
+}(SIZE(32))
+			-- All unassigned " ProtocolVersion " bit values are reserved for future expansion
+			-- and shall be set to zero.
 
 -- The Agent and Manager shall always support MDER.
 -- The Agent and Manager may negotiate other encoding rules besides MDER.
