@@ -1098,7 +1098,10 @@ MdsTimeInfo ::= SEQUENCE {
 						-- nom-part-infrastruct partition
 	time-sync-accuracy RelativeTime, 	-- 0xFFFFFFFF if unknown
 						-- 0 if better than 1/8ms
-	time-resolution-abs-time INTEGER (0..65535), 	-- Resolution of the Agent's
+	time-resolution-abs-time INTEGER (0..65535), 	-- if
+						-- mds-time-capab-real-time-clock
+						-- is set then this indicates the
+						-- resolution of the Agent's
 						-- absolute time clock.
 	 					-- 0 if unknown, otherwise
 	 					-- the number of 1/100 seconds
@@ -1107,6 +1110,16 @@ MdsTimeInfo ::= SEQUENCE {
 	 					-- Agent has a clock that clicks at
 	 					-- 1 second intervals, this value
 	 					-- would be 100.
+						-- if mds-time-capab-bo-time
+						-- is set then this indicates the
+						-- resolution of the agent’s
+						-- base time clock.
+						-- 0 if unknown; otherwise,
+						-- the number of 1/65 536 s
+						-- that elapse with each clock
+						-- increment. The value of 0xFFFF
+						-- is reserved to indicate an interval
+						-- 1 s.
 	 time-resolution-rel-time INTEGER (0..65535), 	-- Resolution of the Agent's
 	 					-- relative time clock. 0 if
 		 				-- unknown, otherwise the number
@@ -1118,7 +1131,7 @@ MdsTimeInfo ::= SEQUENCE {
 	time-resolution-high-res-time INT-U32 }	-- Resolution of the Agent's
  						-- high resolution time clock.
 						-- 0 if unknown, otherwise the
-						-- the number of microseconds
+						-- number of microseconds
 						-- that elapse with each clock
 						-- increment. For example, if an
 						-- Agent has a clock that clicks
