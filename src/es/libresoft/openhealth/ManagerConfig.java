@@ -28,6 +28,8 @@ package es.libresoft.openhealth;
 public interface ManagerConfig {
 
 	public static byte[] HEX_80000000 = {(byte)128, (byte)0, (byte)0, (byte)0};
+	public static byte[] PROTOCOL_VERSION1 = {(byte)128, (byte)0, (byte)0, (byte)0};
+	public static byte[] PROTOCOL_VERSION2 = {(byte)64, (byte)0, (byte)0, (byte)0};
 
 	/* The unique system ID of the manager (EUI-64) Copied from CESL
 	 * TODO: Change it for our (EUI-64)
@@ -36,9 +38,6 @@ public interface ManagerConfig {
 
 	/* The version of the association procedure supported by the manager */
 	public static byte[] assoc_version = HEX_80000000; /*0x80000000 (assoc-version1=0)*/
-
-	/* Version of the protocol supported by the manager */
-	public static byte[] protocol_version = HEX_80000000; /*0x80000000 (protocol-version1=0) */
 
 	/* Nomenclature supported by the manager*/
 	public static byte[] nomenclature_version = HEX_80000000; /*0x80000000 (version=0) */

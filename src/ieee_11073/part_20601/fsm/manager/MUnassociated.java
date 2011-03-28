@@ -163,7 +163,9 @@ public final class MUnassociated extends Unassociated {
 	private boolean isValidPhdAssociationInformation (PhdAssociationInformation phd) {
 
 		/* Check protocol version (only version 1) */
-		if (!areArraysEquals(phd.getProtocol_version().getValue().getValue(),ManagerConfig.protocol_version)){
+		//if (!areArraysEquals(phd.getProtocol_version().getValue().getValue(),ManagerConfig.protocol_version)){
+		if ((phd.getProtocol_version().getValue().getValue()[0] &
+				(ManagerConfig.PROTOCOL_VERSION1[0] | ManagerConfig.PROTOCOL_VERSION2[0])) == 0) {
 			/*TODO: If there is not a common protocol version, the manager shall reject the association
 			request and set the protocolVersion to all zeros.
 			*/
@@ -225,7 +227,11 @@ public final class MUnassociated extends Unassociated {
 		DeviceConfigCreator dev_conf = new DeviceConfigCreator();
 		dev_conf.setDataProtoId(data_proto_id);
 		dev_conf.setPhdId(phd.getDev_config_id().getValue().intValue());
-		dev_conf.setProtocolVersion(1);
+
+		if (phd.getProtocol_version().getValue().getValue()[0] == 0x70)
+			dev_conf.setProtocolVersion(2);
+		else
+			dev_conf.setProtocolVersion(1);
 
 		/* Check encoding rules */
 		int bytes = 0x000000FF & phd.getEncoding_rules().getValue().getValue()[0];
