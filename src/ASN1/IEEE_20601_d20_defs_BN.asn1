@@ -584,6 +584,14 @@ AbsTimeRange ::= SEQUENCE { 		-- The Time Range allows selection of PM-Segments 
 	from-time AbsoluteTime,
 	to-time AbsoluteTime }
 
+--
+-- BOTimeRange allows selection of PM-segments by time period specified as base offset time.
+--
+BOTimeRange ::= SEQUENCE {
+               from-time         BaseOffsetTime,
+               to-time           BaseOffsetTime
+}
+
 -- The SegmentInfoList data type returns the object attributes (except the Fixed-Segment-Data) of all
 -- selected PM-Segment object instances in response to the Get-Segment-Info PM-Store method.
 -- This is required by the Manager to retrieve the dynamic information about the segments.
