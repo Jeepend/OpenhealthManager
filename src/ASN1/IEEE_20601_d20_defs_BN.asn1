@@ -137,7 +137,7 @@ TYPE ::= SEQUENCE {
 -- The following nomenclature partitions exist
 
 NomPartition ::= INTEGER {
-	nom-part-unspec(0),
+	nom-part-unspec(0),	-- unspecified
 	nom-part-obj(1), 	-- object-oriented partition
 	nom-part-metric(2), 	-- metric [supervisory control and data acquisition (SCADA)] partition
 	nom-part-alert(3), 	-- alerts/events partition
@@ -148,6 +148,7 @@ NomPartition ::= INTEGER {
 	nom-part-infrastruct(8), --i nfrastructure elements partition
 	nom-part-fef(9), 	-- file exchange format partition
 	nom-part-ecg-extn(10), 	-- ECG extensions partition
+	nom-part-idco-extn(11),	-- implantable cardiac device observation extensions
 	nom-part-phd-dm(128), 	-- Disease Mgmt (New, needs to be added)
 	nom-part-phd-hf(129), 	-- Health & Fitness (New, needs to be added)
 	nom-part-phd-ai(130), 	-- Aging Independently (New, needs to be added)
