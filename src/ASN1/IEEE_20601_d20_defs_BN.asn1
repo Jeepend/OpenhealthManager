@@ -558,6 +558,14 @@ SetTimeInvoke ::= SEQUENCE {
 					-- inherited from ISO/IEEE Std 11073-10201, but not
 					-- used. Thus, it shall be zero (0)
 
+--
+-- SetBOTimeInvoke selects the date and time to be set in base offset time format. If both seconds and
+-- fraction fields are set to 0x0, they are ignored in the action and only the offset is changed.
+--
+SetBOTimeInvoke ::= SEQUENCE {
+              date-time     BaseOffsetTime
+}
+
 
 
 SegmSelection ::= CHOICE { 	-- The SegmSelection selects the PM-Segments that are subject to the method
