@@ -1138,23 +1138,30 @@ MdsTimeInfo ::= SEQUENCE {
 						-- at 1 second intervals, this value
 						-- would be 1000000.
 
-
+-- Only one of mds-time-capab-real-time-clock and mds-time-capab-bo-time shall be specified.
+-- Only one of mds-time-capab-sync-abs-time and mds-time-capab-sync-bo-time shall be specified.
+-- Only one of mds-time-state-abs-time-synced and mds-time-state-bo-time-synced shall be specified.
 --All unassigned " MdsTimeCapState " bit values are reserved for future expansion and shall be set to zero.
 
 MdsTimeCapState ::= BIT STRING  {
 	mds-time-capab-real-time-clock(0), 		-- device supports an internal RTC
+											-- following absolute time
 	mds-time-capab-set-clock(1), 			-- device supports Set Time Action
+											-- or Set-Base-Offset-Time Action
 	mds-time-capab-relative-time(2), 		-- device supports RelativeTime
 	mds-time-capab-high-res-relative-time(3), 	-- device supports
 							-- HighResRelativeTime
 	mds-time-capab-sync-abs-time(4), 		-- device syncs AbsoluteTime
 	mds-time-capab-sync-rel-time(5), 		-- device syncs RelativeTime
 	mds-time-capab-sync-hi-res-relative-time(6), 	-- device syncs HiResRelativeTime
+	mds-time-capab-bo-time(7), 				-- device supports BaseOffsetTime
 	mds-time-state-abs-time-synced(8), 		-- AbsoluteTime is synced
 	mds-time-state-rel-time-synced(9), 		-- RelativeTime is synced
 	mds-time-state-hi-res-relative-time-synced(10), -- HiResRelativeTime is synced
-	mds-time-mgr-set-time(11) 			-- Manager is encouraged to
-	--set the time
+	mds-time-mgr-set-time(11), 			-- Manager shall set the time
+	mds-time-capab-sync-bo-time(12),       -- device syncs BaseOffsetTime
+	mds-time-state-bo-time-synced(13),    -- Base time is synced
+	mds-time-state-bo-time-UTC-aligned(14) -- Base time is aligned to UTC
 }(SIZE(16))
 
 -- ***************************************************
