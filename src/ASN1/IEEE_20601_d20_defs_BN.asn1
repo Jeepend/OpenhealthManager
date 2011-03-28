@@ -576,8 +576,11 @@ segm-id-list [2] SegmIdList, 	-- using this list requires that the Manager alrea
 				-- knows the Instance-Number attributes of the
 				-- PM-Segments, e.g. from a previous
 				-- Get-Segment-Info method call.
-abs-time-range [3] AbsTimeRange -- support of abs-time-range is optional, indicated in
-}				-- the PM-Store-Capab attribute
+abs-time-range [3] AbsTimeRange, -- support of abs-time-range is optional, indicated in
+				-- the PM-Store-Capab attribute
+bo-time-range [4] BOTimeRange	-- support of bo-time-range is optional, indicated in
+				-- the PM-Store-Capab attribute
+}
 
 SegmIdList ::= SEQUENCE OF InstNumber 	-- The SegmIdList selects PM-Segments by ID
 AbsTimeRange ::= SEQUENCE { 		-- The Time Range allows selection of PM-Segments by time period

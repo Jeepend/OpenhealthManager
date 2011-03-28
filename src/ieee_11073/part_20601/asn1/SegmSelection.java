@@ -3,6 +3,7 @@ Copyright (C) 2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 Author: Santiago Carot-Nemesio <scarot@libresoft.es>
+Author: Jorge Fernández González <jfernandez@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -59,6 +60,11 @@ import org.bn.types.*;
 	private AbsTimeRange abs_time_range = null;
 
 
+        @ASN1Element ( name = "bo-time-range", isOptional =  false , hasTag =  true, tag = 4 , hasDefaultValue =  false, hasExplicitOrder = true, declarationOrder = 3  )
+
+	private BOTimeRange bo_time_range = null;
+
+
 
         public INT_U16 getAll_segments () {
             return this.all_segments;
@@ -76,11 +82,13 @@ import org.bn.types.*;
         public void selectAll_segments (INT_U16 value) {
             this.all_segments = value;
 
-                    //setAll_segments(null);
+            //setAll_segments(null);
 
                     setSegm_id_list(null);
 
                     setAbs_time_range(null);
+
+                    setBo_time_range(null);
 
         }
 
@@ -105,9 +113,11 @@ import org.bn.types.*;
 
                     setAll_segments(null);
 
+                    setAbs_time_range(null);
+
                     //setSegm_id_list(null);
 
-                    setAbs_time_range(null);
+                    setBo_time_range(null);
 
         }
 
@@ -135,6 +145,37 @@ import org.bn.types.*;
                     setSegm_id_list(null);
 
                     //setAbs_time_range(null);
+
+                    setBo_time_range(null);
+
+        }
+
+
+
+
+        public BOTimeRange getBo_time_range () {
+            return this.bo_time_range;
+        }
+
+        public boolean isBo_time_rangeSelected () {
+            return this.bo_time_range != null;
+        }
+
+        private void setBo_time_range (BOTimeRange value) {
+            this.bo_time_range = value;
+        }
+
+
+        public void selectBo_time_range (BOTimeRange value) {
+            this.bo_time_range = value;
+
+                    setAll_segments(null);
+
+                    setSegm_id_list(null);
+
+                    setAbs_time_range(null);
+
+                    //setBo_time_range(null);
 
         }
 
