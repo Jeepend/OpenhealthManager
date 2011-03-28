@@ -289,6 +289,21 @@ AbsoluteTime ::= SEQUENCE {
 -- sec-fractions is always zero). Agents should have a resolution of one second or better.
 
 -- ***************************************************
+-- A.2.13a Base time with offset data type
+-- ***************************************************
+
+-- The base time with offset data type specifies the time of day and includes a time offset field to specify the
+-- difference in minutes between the base time and the local time. Base time is encoded as the number
+-- seconds since midnight of 1st January 1900 specified as INT-U32 and the fraction of x/65 536 s as INT-
+-- U16. The time offset field is specified as INT-I16. The base offset time data type is defined as follows:
+
+BaseOffsetTime ::= SEQUENCE {
+                 bo-seconds		INT-U32,
+                 bo-fraction	INT-U16,
+                 bo-time-offset	INT-I16
+}
+
+-- ***************************************************
 -- A.2.14 Operational state data type
 -- ***************************************************
 
