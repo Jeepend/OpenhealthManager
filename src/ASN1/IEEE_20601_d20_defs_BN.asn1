@@ -1378,7 +1378,7 @@ ScanReportPerFixed ::= SEQUENCE {
  	obs-scan-fixed SEQUENCE OF ObservationScanFixed }
 
 ScanReportInfoMPGrouped ::= SEQUENCE {
-	data-req-id INTEGER (0..65535),
+	data-req-id DataReqId,
 	scan-report-no INTEGER (0..65535), -- counter for detection of missing scan reports
 	scan-per-grouped SEQUENCE OF ScanReportPerGrouped }
 
