@@ -1629,8 +1629,12 @@ SegmEntryHeader ::= BIT STRING {
 						-- (data type AbsoluteTime)
 	seg-elem-hdr-relative-time(1), 		-- entry preceded by relative time
 						-- (data type RelativeTime)
-	seg-elem-hdr-hires-relative-time(2) }(SIZE(16))	-- entry preceded by high resolution relative time
-						-- (data type HighResRelativeTime)
+	seg-elem-hdr-hires-relative-time(2),
+	seg-elem-hdr-bo-time(3) -- entry preceded by base offset time
+                        -- (data type BaseOffsetTime)
+                        -- option (0) and option (3) are mutually exclusive
+}(SIZE(16))	-- entry preceded by high resolution relative time
+			-- (data type HighResRelativeTime)
 
 SegmEntryElemList ::= SEQUENCE OF SegmEntryElem
 
