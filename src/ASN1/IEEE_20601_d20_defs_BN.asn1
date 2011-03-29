@@ -145,7 +145,7 @@ NomPartition ::= INTEGER {
 	nom-part-vattr(5), 	-- virtual attribute partition for Operation objects
 	nom-part-pgrp(6), 	-- parameter group ID partition
 	nom-part-sites(7), 	-- measurement and body site locations
-	nom-part-infrastruct(8), --i nfrastructure elements partition
+	nom-part-infrastruct(8), -- infrastructure elements partition
 	nom-part-fef(9), 	-- file exchange format partition
 	nom-part-ecg-extn(10), 	-- ECG extensions partition
 	nom-part-idco-extn(11),	-- implantable cardiac device observation extensions
@@ -285,7 +285,7 @@ AbsoluteTime ::= SEQUENCE {
  	second INT-U8,
  	sec-fractions INT-U8 } --1/100 of second if available
 
--- Note that the Agent defines the actual time resolution used (i.e. if the clock resolution is one second, then
+-- Note that the Agent defines the actual time resolution used (e.g. if the clock resolution is one second, then
 -- sec-fractions is always zero). Agents should have a resolution of one second or better.
 
 -- ***************************************************
@@ -312,7 +312,8 @@ BaseOffsetTime ::= SEQUENCE {
 OperationalState ::= INTEGER {
 	disabled(0),
 	enabled(1),
-	notAvailable(2) }
+	notAvailable(2)	-- the value notAvailable is not used in this standard
+}
 
 
 -- ***************************************************
@@ -788,8 +789,7 @@ NomenclatureVersion ::= BIT STRING  { 	--values reference a specific nomenclatur
  					-- shall be set to zero.
 
 FunctionalUnits ::= BIT STRING  {
-	fun-units-unidirectional(0), 	-- Reserved for future use. This bit shall be set if
-					-- the Agent is uni-directional
+	fun-units-unidirectional(0), 	-- Reserved for future use.
 	fun-units-havetestcap(1), 	-- This bit indicates if the device can enter a
 					-- test association
 	fun-units-createtestassoc(2) }(SIZE(32))	-- This bit is used to indicate an intention to
@@ -915,8 +915,11 @@ RoerErrorValue ::= INTEGER {
 					-- The higher layer may report the reason for aborting the action as an OID-Type
 					-- in the parameter field using a return code taken from the return code partition
 
--- The RejectResult shall be used when a message is rejected.
-
+-- At any point, if a DataApdu invoked action (roiv-*) requires the receiver to reject an
+-- operation prior to attempting to execute it, the receiver shall send
+-- back a RejectResult. The invokeID is used to determine which invocation resulted in a
+-- rejection condition. The problem field shall be filled in with a value from the RorjProblem list
+-- below.
  RejectResult ::= SEQUENCE {
  	problem RorjProblem }
 
@@ -1048,7 +1051,7 @@ SetResultSimple ::= SEQUENCE {
 -- a handle representing a PM-Store object.
 -- For the action-types defined in Table 3 and Table 10 the corresponding action-info-args
 -- structures shall be used. Accordingly action-info-args will be one of DataRequest,
--- SetTimeInvoke, SegmSelection, or TrigSegmDataXferReq
+-- SetTimeInvoke, SetBOTimeInvoke, SegmSelection, or TrigSegmDataXferReq
 
 ActionArgumentSimple ::= SEQUENCE {
 	obj-handle HANDLE,
@@ -1212,7 +1215,8 @@ SupplementalTypeList ::= SEQUENCE OF TYPE
 
 -- The Metric Spec Small attribute is an abbreviated MetricSpec attribute as defined in ISO/IEEE Std
 -- 11073-10201. It defines availability, periodicity and category of the measurement.
--- If the metric corresponds to default values (no bits set) the attribute is not required.
+-- The setting of bits 0 to 5 is primarily informational and shall be set if the condition is true but
+-- a manager cannot assume that if they are set, the behavior will be observed.
 -- All unassigned " MetricSpecSmall " bit values are reserved for future expansion and shall be set to zero.
 
 MetricSpecSmall ::= BIT STRING {
@@ -1249,8 +1253,13 @@ MetricSpecSmall ::= BIT STRING {
 	 				-- and / or manually entered values.
 
 
- -- This attribute is partly inherited from ISO/IEEE Std 11073-10201, but enhanced by
- -- value ms-struct::fix-comp-no.
+-- This attribute is partly inherited from ISO/IEEE Std 11073-10201, but enhanced by
+-- value ms-struct::ms-struct-compound-fix. For this release of the standard, ms-struct-compound
+-- and ms-struct-compound-fix shall only be used for Numeric objects. Additional structures would
+-- need to be introduced in RT-SA and Enumeration objects to allow the use of compound structures.
+-- If compound is used, the agent shall send no more than ms-comp-no observed values.
+--
+
 
 MetricStructureSmall ::= SEQUENCE {
  	ms-struct INTEGER {
@@ -1299,8 +1308,9 @@ HandleAttrValMapEntry ::= SEQUENCE {
 -- and ActionArgumentSimple.
 -- The Scan Report Info types are utilized as the result data types for the various
 -- MDS-Dynamic-Data-Update* family of events (see 7.3.2.5 for more detail).
--- The ScanReport* definitions are used when reporting information about measurements
--- that were sampled. There are two vectors: A) single person or multiple person and
+-- The ScanReport* definitions are used when reporting information about object
+-- attribute value changes (Attribute Change Sets). There are two vectors:
+-- A) single person or multiple person and
 -- B) variable format fixed format, or grouped format leading to the six top-level definitions:
 -- ScanReportInfoVar, ScanReportInfoFixed, ScanReportInfoGrouped,
 -- ScanReportInfoMPVar, ScanReportInfoMPFixed, and ScanReportInfoMPGrouped.
@@ -1321,7 +1331,7 @@ ScanReportInfoFixed ::= SEQUENCE {
  	obs-scan-fixed SEQUENCE OF ObservationScanFixed }
 
 ObservationScanFixed ::= SEQUENCE {
-	obj-handle HANDLE, 		--unique identification of metric object
+	obj-handle HANDLE, 		--unique identification of the object
 	obs-val-data OCTET STRING } 	--observed value data defined by obj-handle
 
 
@@ -1357,7 +1367,7 @@ DataReqId ::= INTEGER {
 							--data transmission.
 							--Values between 0xF001 and 0xFFFF, inclusive, are reserved.
 
--- The value used for person-id is vendor determined (i.e. if an Agent has two buttons
+-- The value used for person-id is vendor determined (e.g. if an Agent has two buttons
 -- to distinguish between two people, the Agent may use id 1 and 2 or 35 and 97).
 -- The process of mapping this id to a specific person is outside the scope of this
 -- standard.
@@ -1574,7 +1584,7 @@ PmStoreCapab ::=BIT STRING {
 					-- contained in this PM-Store is dynamic and may
 					-- change
 	pmsc-segm-id-list-select(3), -- PM-segments in the SegmSelection data type can
-					-- be selected by defining a rangelist of segment
+					-- be selected by defining a list of segment
 					-- identifiers
  	pmsc-epi-seg-entries(4), 	-- Some or all PM-Segments contain
  					-- episodic/ aperiodic entries and therefore have
@@ -1701,7 +1711,8 @@ SegmEvtStatus ::= BIT STRING {
 	sevtsta-agent-abort(4), 	-- transfer aborted by Agent (Manager shall reply
 					-- with the same status)
 	sevtsta-manager-confirm(8), 	-- set in reply if segment was received correctly (if
-					-- not set in reply, Agent shall repeat the last event)
+					-- not set in reply, Agent shall stop the segment transfer and respond
+					-- with an error (roer) code of protocol-violation).
 	sevtsta-manager-abort(12) 	-- sent in reply by Manager, Agent shall stop sending
 					-- messages)
 }(SIZE(16))
