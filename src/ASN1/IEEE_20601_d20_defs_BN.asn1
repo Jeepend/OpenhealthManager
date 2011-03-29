@@ -1573,6 +1573,9 @@ PmStoreCapab ::=BIT STRING {
  	pmsc-var-no-of-segm(0), 	-- indicates that the number of PM-Segments
 					-- contained in this PM-Store is dynamic and may
 					-- change
+	pmsc-segm-id-list-select(3), -- PM-segments in the SegmSelection data type can
+					-- be selected by defining a rangelist of segment
+					-- identifiers
  	pmsc-epi-seg-entries(4), 	-- Some or all PM-Segments contain
  					-- episodic/ aperiodic entries and therefore have
  					-- to contain explicit time stamp information
@@ -1580,15 +1583,20 @@ PmStoreCapab ::=BIT STRING {
 					-- sampled entries and therefore the PM-Segment
 					-- or PM-Store shall support the
 					-- Sample-Period attribute
- 	pmsc-abs-time-select(6), 	-- PM-Segments in the SegmSelection data type can
- 					-- be selected by defining an abs-time-range
- 	pmsc-clear-segm-by-list-sup(7), -- clearing a list of segments is supported
- 	pmsc-clear-segm-by-time-sup(8), -- clearing segments by time range is supported
- 	pmsc-clear-segm-remove(9), 	-- if this bit is set, the Agent will completely remove
+	pmsc-abs-time-select(6), 	-- PM-Segments in the SegmSelection data type can
+					-- be selected by defining an abs-time-range range or
+					-- bo-time-range depending upon which time
+					-- mode the device supports
+	pmsc-clear-segm-by-list-sup(7), -- clearing a list of segments is supported
+	pmsc-clear-segm-by-time-sup(8), -- clearing segments by abs time range or
+					-- bo time range is supported depending
+					-- upon which time mode the device supports
+	pmsc-clear-segm-remove(9), 	-- if this bit is set, the Agent will completely remove
 					-- the specified PM-Segment instance as part of the
 					-- Clear-Segment method. If this bit is not set, it will
 					-- just remove all entries from the specified
 					-- PM-Segment.
+	pmsc-clear-segm-all-sup(10) , -- clearing all segments is supported
  	pmsc-multi-person(12) }(SIZE(16)) 	-- The PM-Store supports PM-Segment for more
  					-- than one person
 
