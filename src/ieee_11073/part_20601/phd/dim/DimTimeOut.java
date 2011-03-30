@@ -32,6 +32,7 @@ import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.logging.Logging;
 
 public abstract class DimTimeOut extends TimeOut {
 
@@ -65,7 +66,7 @@ public abstract class DimTimeOut extends TimeOut {
 		case EventType.REQ_GET_SEGMENT_INFO:
 		case EventType.REQ_TRIG_SEGMENT_DATA_XFER:
 		default:
-			System.err.println("Unknown timeout for external event "
+			Logging.error("Unknown timeout for external event "
 					+ event.getTypeOfEvent());
 			return ErrorCodes.TIMEOUT;
 		}

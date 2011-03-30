@@ -59,6 +59,7 @@ import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -86,7 +87,7 @@ public final class MOperating extends Operating {
 			};
 		}else{
 			//TODO: Add here support for data-proto-id-external...
-			System.err.println("Data_Proto_id: " + data_proto_id +" is not supported");
+			Logging.error("Data_Proto_id: " + data_proto_id +" is not supported");
 		}
 	}
 
@@ -122,7 +123,7 @@ public final class MOperating extends Operating {
 				SET_Service serv = (SET_Service) obj;
 				serv.SET(setEvent, setEvent.getPrivData().getAttribute());
 			} catch (ClassCastException e) {
-				System.err.println("Set cannot be done in object: " + setEvent.getPrivData().getObjectHandle().getValue().getValue() +
+				Logging.error("Set cannot be done in object: " + setEvent.getPrivData().getObjectHandle().getValue().getValue() +
 							" it does not implement a SET service");
 			}
 			return true;
@@ -147,7 +148,7 @@ public final class MOperating extends Operating {
 			return true;
 
 		case EventType.IND_TRANS_DESC:
-			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
+			Logging.error("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 			return true;
 
@@ -191,7 +192,7 @@ public final class MOperating extends Operating {
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules()));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Error getting DataApdu encoded with " +
+			Logging.error("Error getting DataApdu encoded with " +
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules() +
 					". The connection will be released.");
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
@@ -204,43 +205,43 @@ public final class MOperating extends Operating {
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_event_report");
+			Logging.debug(">> Roiv_cmip_event_report");
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
-			System.out.println(">> Roiv_cmip_confirmed_event_report");
+			Logging.debug(">> Roiv_cmip_confirmed_event_report");
 			roiv_cmip_confirmed_event_report(data);
 		}else if (msg.isRoiv_cmip_getSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_get");
+			Logging.debug(">> Roiv_cmip_get");
 		}else if (msg.isRoiv_cmip_setSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_set");
+			Logging.debug(">> Roiv_cmip_set");
 		}else if (msg.isRoiv_cmip_confirmed_setSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_confirmed_set");
+			Logging.debug(">> Roiv_cmip_confirmed_set");
 		}else if (msg.isRoiv_cmip_actionSelected()){
 			//TODO:
-			System.out.println(">> Roiv_cmip_action");
+			Logging.debug(">> Roiv_cmip_action");
 		}else if (msg.isRoiv_cmip_confirmed_actionSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_confirmed_action");
+			Logging.debug(">> Roiv_cmip_confirmed_action");
 		}else if (msg.isRors_cmip_confirmed_event_reportSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_confirmed_event_report");
+			Logging.debug(">> Rors_cmip_confirmed_event_report");
 		}else if (msg.isRors_cmip_getSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_get");
+			Logging.debug(">> Rors_cmip_get");
 		}else if (msg.isRors_cmip_confirmed_setSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_confirmed_set");
+			Logging.debug(">> Rors_cmip_confirmed_set");
 		}else if (msg.isRors_cmip_confirmed_actionSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_confirmed_action");
+			Logging.debug(">> Rors_cmip_confirmed_action");
 		}else if (msg.isRoerSelected()){
 			//TODO:
-			System.out.println(">> Roer");
+			Logging.debug(">> Roer");
 		}else if (msg.isRorjSelected()){
 			//TODO:
-			System.out.println(">> Rorj");
+			Logging.debug(">> Rorj");
 		}
 
 		DimTimeOut to = state_handler.retireTimeout(data.getInvoke_id().getValue());
@@ -256,7 +257,7 @@ public final class MOperating extends Operating {
 			return;
 
 		RelativeTime rt = event.getEvent_time();
-		System.out.println("Relative Time: " + rt.getValue().getValue().intValue());
+		Logging.debug("Relative Time: " + rt.getValue().getValue().intValue());
 
 		try {
 			SegmentDataEvent sde = ASN1_Tools.decodeData(event.getEvent_info(),
@@ -302,7 +303,7 @@ public final class MOperating extends Operating {
 				break;
 			}
 		} catch(ClassCastException e) {
-			System.err.println("Only Periodic Scanners can receive Buffered scanner events");
+			Logging.error("Only Periodic Scanners can receive Buffered scanner events");
 		}
 	}
 
@@ -330,7 +331,7 @@ public final class MOperating extends Operating {
 				break;
 			}
 		} catch(ClassCastException e) {
-			System.err.println("Only Episodic Scanner can receive UnBuffered scanner events");
+			Logging.error("Only Episodic Scanner can receive UnBuffered scanner events");
 		}
 	}
 
@@ -366,7 +367,7 @@ public final class MOperating extends Operating {
 				break;
 			default:
 				//TODO: handle representing a scanner or PM-store object.
-				System.err.println("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in Operating state. Ignore.");
+				Logging.error("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in Operating state. Ignore.");
 			}
 		}
 	}
@@ -375,7 +376,7 @@ public final class MOperating extends Operating {
 		switch (event.getEvent_type().getValue().getValue().intValue()){
 			case Nomenclature.MDC_NOTI_CONFIG:
 				//TODO:
-				System.out.println("MDC_NOTI_CONFIG");
+				Logging.debug("MDC_NOTI_CONFIG");
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_VAR:
 				mdc_noti_scan_report_var(event.getEvent_info());
@@ -385,11 +386,11 @@ public final class MOperating extends Operating {
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR:
 				//TODO:
-				System.out.println("MDC_NOTI_SCAN_REPORT_MP_VAR");
+				Logging.debug("MDC_NOTI_SCAN_REPORT_MP_VAR");
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_FIXED:
 				//TODO:
-				System.out.println("MDC_NOTI_SCAN_REPORT_MP_FIXED");
+				Logging.debug("MDC_NOTI_SCAN_REPORT_MP_FIXED");
 				break;
 		}
 	}
@@ -401,7 +402,7 @@ public final class MOperating extends Operating {
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Fixed(srif);
 		} catch (Exception e) {
-			System.out.println("Error decoding mdc_noti_scan_report_fixed");
+			Logging.debug("Error decoding mdc_noti_scan_report_fixed");
 			e.printStackTrace();
 		}
 
@@ -414,7 +415,7 @@ public final class MOperating extends Operating {
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Var(sriv);
 		} catch (Exception e) {
-			System.out.println("Error decoding mdc_noti_scan_report_var");
+			Logging.debug("Error decoding mdc_noti_scan_report_var");
 			e.printStackTrace();
 		}
 

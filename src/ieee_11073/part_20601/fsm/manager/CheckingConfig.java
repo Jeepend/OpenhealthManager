@@ -34,6 +34,7 @@ import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -89,7 +90,7 @@ public final class CheckingConfig extends Configuring {
 	@Override
 	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
-			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
+			Logging.error("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.IND_TIMEOUT) {
 			state_handler.send(MessageFactory.AbrtApdu_CONFIGURATION_TIMEOUT());
@@ -126,7 +127,7 @@ public final class CheckingConfig extends Configuring {
 		} catch (Exception e) {
 			//TODO: Send Response Error same as roiv_cmip_confirmed_event_repor function of WaitingForConfig state
 			e.printStackTrace();
-			System.err.println("TODO: Send Response Error");
+			Logging.error("TODO: Send Response Error");
 		}
 	}
 
@@ -142,7 +143,7 @@ public final class CheckingConfig extends Configuring {
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules()));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Error getting DataApdu encoded with " +
+			Logging.error("Error getting DataApdu encoded with " +
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules() +
 					". The connection will be released.");
 			state_handler.send(MessageFactory.RlrqApdu_NORMAL());
@@ -187,22 +188,22 @@ public final class CheckingConfig extends Configuring {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if (msg.isRors_cmip_confirmed_event_reportSelected()){
 			//TODO:
-			System.out.println(">> TODO: Rors_cmip_confirmed_event_report");
+			Logging.debug(">> TODO: Rors_cmip_confirmed_event_report");
 		}else if (msg.isRors_cmip_getSelected()){
 			//TODO:
-			System.out.println(">> TODO: Rors_cmip_get");
+			Logging.debug(">> TODO: Rors_cmip_get");
 		}else if (msg.isRors_cmip_confirmed_setSelected()){
 			//TODO:
-			System.out.println(">> TODO: Rors_cmip_confirmed_set");
+			Logging.debug(">> TODO: Rors_cmip_confirmed_set");
 		}else if (msg.isRors_cmip_confirmed_actionSelected()){
 			//TODO:
-			System.out.println(">> TODO: Rors_cmip_confirmed_action");
+			Logging.debug(">> TODO: Rors_cmip_confirmed_action");
 		}else if (msg.isRoerSelected()){
 			//TODO:
-			System.out.println(">> TODO: Roer");
+			Logging.debug(">> TODO: Roer");
 		}else if (msg.isRorjSelected()){
 			//TODO:
-			System.out.println(">> TODO: Rorj");
+			Logging.debug(">> TODO: Rorj");
 		}
 	}
 
@@ -215,12 +216,12 @@ public final class CheckingConfig extends Configuring {
 				process_MDS_Object_Event(data);
 			}else{
 				//TODO: handle representing a scanner or PM-store object.
-				System.err.println("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in CheckingConfig state. Ignore.");
+				Logging.error("Warning: Received Handle=" + event.getObj_handle().getValue().getValue() + " in CheckingConfig state. Ignore.");
 			}
 		}catch (Exception e){
 			//TODO: Send Response Error
 			e.printStackTrace();
-			System.err.println("TODO: Send Response Error");
+			Logging.error("TODO: Send Response Error");
 		}
 	}
 
@@ -256,7 +257,7 @@ public final class CheckingConfig extends Configuring {
 		//Set next state
 		if (response.getConfig_result().getValue() == ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG) {
 			state_handler.changeState(new MOperating(state_handler));
-			System.out.println("Configuration agreed, going to operating state.");
+			Logging.debug("Configuration agreed, going to operating state.");
 		}
 		else state_handler.changeState(new WaitingForConfig(state_handler));
 	}

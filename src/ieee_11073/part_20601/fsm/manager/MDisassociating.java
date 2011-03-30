@@ -27,6 +27,7 @@ package ieee_11073.part_20601.fsm.manager;
 
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.fsm.Disassociating;
@@ -59,7 +60,7 @@ public final class MDisassociating extends Disassociating {
 	@Override
 	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
-			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
+			Logging.error("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.IND_TIMEOUT) {
 			state_handler.send(MessageFactory.AbrtApdu_CONFIGURATION_TIMEOUT());

@@ -39,6 +39,7 @@ import org.bn.IEncoder;
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.utils.IFIFO;
 
 public abstract class Channel {
@@ -94,7 +95,7 @@ public abstract class Channel {
 				receiver.interrupt();
 			}
 		} catch (InterruptedException e) {
-			System.out.println("Interrupted receiver (" + this.getChannelId() + ")");
+			Logging.debug("Interrupted receiver (" + this.getChannelId() + ")");
 		} finally {
 			repeatSem.release();
 		}
@@ -106,7 +107,7 @@ public abstract class Channel {
 			repeatSem.acquire();
 			r = this.repeat;
 		} catch (InterruptedException e) {
-			System.out.println("Interrupted receiver (" + this.getChannelId() + ")");
+			Logging.debug("Interrupted receiver (" + this.getChannelId() + ")");
 		} finally {
 			repeatSem.release();
 		}
@@ -129,17 +130,17 @@ public abstract class Channel {
 		 			recvApdu.setChannel(id);
 		 			inputQueue.add(recvApdu);
 		 		}catch (InterruptedException e) {
-					System.out.println("Interrupted receiver (" + id + ")");
+					Logging.debug("Interrupted receiver (" + id + ")");
 		 		}catch (NullPointerException e) {
 		 			//An APDUType is not received Ignore
-		 			System.err.println("APDUType is not received");
+		 			Logging.error("APDUType is not received");
 				}catch (Exception e) {
 					//EOF readed because channel is closed
 					if (primary)
 						eventHandler.processEvent(new Event(EventType.IND_TRANS_DESC));
 				}
 			}
-			System.out.println("Receiver thread exiting (" + id + ").");
+			Logging.debug("Receiver thread exiting (" + id + ").");
 			releaseChannel();
 		}
 	}

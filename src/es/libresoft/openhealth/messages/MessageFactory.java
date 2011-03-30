@@ -87,6 +87,7 @@ import org.bn.types.BitString;
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
 import es.libresoft.openhealth.ManagerConfig;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
@@ -329,7 +330,7 @@ public class MessageFactory {
 		DataApdu data = new DataApdu();
 		InvokeIDType iit = new InvokeIDType(da.getInvoke_id().getValue()); //Mirrored from invocation
 		DataApdu.MessageChoiceType msg = getMessageResponse(da);
-		System.out.println("Invoke id type: " + iit.getValue());
+		Logging.debug("Invoke id type: " + iit.getValue());
 		data.setInvoke_id(iit);
 		data.setMessage(msg);
 		return data;
@@ -340,43 +341,43 @@ public class MessageFactory {
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
 			//TODO:
-			System.out.println("(>> Roiv_cmip_event_report) FAIL: Manager Shall not confirm cmip_event report");
+			Logging.debug("(>> Roiv_cmip_event_report) FAIL: Manager Shall not confirm cmip_event report");
 			//return rors_cmip_event_repor(da);
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
 			return rors_cmip_confirmed_event_report(da);
 		}else if (msg.isRoiv_cmip_getSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_get");
+			Logging.debug(">> Roiv_cmip_get");
 		}else if (msg.isRoiv_cmip_setSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_set");
+			Logging.debug(">> Roiv_cmip_set");
 		}else if (msg.isRoiv_cmip_confirmed_setSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_confirmed_set");
+			Logging.debug(">> Roiv_cmip_confirmed_set");
 		}else if (msg.isRoiv_cmip_actionSelected()){
 			//TODO:
-			System.out.println(">> Roiv_cmip_action");
+			Logging.debug(">> Roiv_cmip_action");
 		}else if (msg.isRoiv_cmip_confirmed_actionSelected()) {
 			//TODO:
-			System.out.println(">> Roiv_cmip_confirmed_action");
+			Logging.debug(">> Roiv_cmip_confirmed_action");
 		}else if (msg.isRors_cmip_confirmed_event_reportSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_confirmed_event_report");
+			Logging.debug(">> Rors_cmip_confirmed_event_report");
 		}else if (msg.isRors_cmip_getSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_get");
+			Logging.debug(">> Rors_cmip_get");
 		}else if (msg.isRors_cmip_confirmed_setSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_confirmed_set");
+			Logging.debug(">> Rors_cmip_confirmed_set");
 		}else if (msg.isRors_cmip_confirmed_actionSelected()){
 			//TODO:
-			System.out.println(">> Rors_cmip_confirmed_action");
+			Logging.debug(">> Rors_cmip_confirmed_action");
 		}else if (msg.isRoerSelected()){
 			//TODO:
-			System.out.println(">> Roer");
+			Logging.debug(">> Roer");
 		}else if (msg.isRorjSelected()){
 			//TODO:
-			System.out.println(">> Rorj");
+			Logging.debug(">> Rorj");
 		}
 		return null;
 	}
@@ -389,7 +390,7 @@ public class MessageFactory {
 		h.setValue(new INT_U16(0)); //The MDS object
 
 		if (da.getMessage().getRoiv_cmip_event_report().getEvent_time().getValue().getValue() != 0x00FFFFFFFFL)
-			System.err.println("Warning: Agent supports Relative time. Response sent is not valid");
+			Logging.error("Warning: Agent supports Relative time. Response sent is not valid");
 
 		RelativeTime rt = new RelativeTime();
 		rt.setValue(new INT_U32(0L));
@@ -414,7 +415,7 @@ public class MessageFactory {
 		h.setValue(new INT_U16(0)); //The MDS object
 
 		if (da.getMessage().getRoiv_cmip_confirmed_event_report().getEvent_time().getValue().getValue() != 0x00FFFFFFFFL)
-			System.err.println("Warning: Agent supports Relative time. Response sent is not valid");
+			Logging.error("Warning: Agent supports Relative time. Response sent is not valid");
 
 		RelativeTime rt = new RelativeTime();
 		rt.setValue(new INT_U32(0L));

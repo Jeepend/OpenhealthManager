@@ -36,6 +36,7 @@ import es.libresoft.hdp.HDPConfig;
 import es.libresoft.hdp.HDPDataChannel;
 import es.libresoft.hdp.HDPDevice;
 import es.libresoft.hdp.HDPSession;
+import es.libresoft.openhealth.logging.Logging;
 
 public class TestJNI {
 
@@ -44,23 +45,23 @@ public class TestJNI {
 	public static HDPCallbacks callbacks = new HDPCallbacks(){
 		@Override
 		public void dc_connected(HDPDataChannel dc) {
-			System.out.println("callback: dc_connected");
+			Logging.debug("callback: dc_connected");
 			list.add(dc);
 		}
 
 		@Override
 		public void dc_deleted(HDPDataChannel dc) {
-			System.out.println("callback: dc_deleted");
+			Logging.debug("callback: dc_deleted");
 		}
 
 		@Override
 		public void device_disconected(HDPDevice dev) {
-			System.out.println("callback: device_disconected");
+			Logging.debug("callback: device_disconected");
 		}
 
 		@Override
 		public void new_device_connected(HDPDevice dev) {
-			System.out.println("callback: new_device_connected");
+			Logging.debug("callback: new_device_connected");
 		}
 
 	};
@@ -79,12 +80,12 @@ public class TestJNI {
 		try {
 			HDPSession hdp = new HDPSession(conf, callbacks);
 			hdp.close();
-			System.out.println("Push any key to exit");
+			Logging.debug("Push any key to exit");
 			System.in.read();
 			hdp.free();
-			System.out.println("Exiting...");
+			Logging.debug("Exiting...");
 			System.in.read();
-			System.out.println("Exited.");
+			Logging.debug("Exited.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

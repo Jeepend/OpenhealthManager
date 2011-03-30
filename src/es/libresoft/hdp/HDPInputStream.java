@@ -58,10 +58,10 @@ public class HDPInputStream extends InputStream{
 					return -1;
 				coun = ret;
 				pos = 0;
-				//System.out.println("readed: " + coun + ", pos: " + pos);
+				//Logging.debug("readed: " + coun + ", pos: " + pos);
 			}
 
-			//System.out.println("coun: " + coun + ", pos: " + pos);
+			//Logging.debug("coun: " + coun + ", pos: " + pos);
 
 			return (int)buff[pos++] & 0xff;
 		}

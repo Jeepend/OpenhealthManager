@@ -42,6 +42,7 @@ import es.libresoft.openhealth.android.aidl.types.measures.IMeasureArray;
 import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.events.MeasureReporter;
+import es.libresoft.openhealth.logging.Logging;
 
 public class AndroidMeasureReporter implements MeasureReporter{
 
@@ -70,7 +71,7 @@ public class AndroidMeasureReporter implements MeasureReporter{
 			return new IMeasureArray(mType, values);
 		}
 
-		System.err.println("The unknown data type " + mType + " won't be reported to the manager.");
+		Logging.error("The unknown data type " + mType + " won't be reported to the manager.");
 		return null;
 	}
 

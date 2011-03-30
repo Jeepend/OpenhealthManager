@@ -127,6 +127,7 @@ import es.libresoft.openhealth.android.aidl.types.ISystemModel;
 import es.libresoft.openhealth.android.aidl.types.ITYPE;
 import es.libresoft.openhealth.android.aidl.types.ITypeVer;
 import es.libresoft.openhealth.android.aidl.types.ITypeVerList;
+import es.libresoft.openhealth.logging.Logging;
 
 
 public class IAttrFactory {
@@ -519,7 +520,7 @@ public class IAttrFactory {
 			return true;
 		}
 
-		System.err.println("Unknown method provided. Can't create parcelable attribute for type " + asnAttr.getAttributeType().getClass());
+		Logging.error("Unknown method provided. Can't create parcelable attribute for type " + asnAttr.getAttributeType().getClass());
 		return false;
 	}
 

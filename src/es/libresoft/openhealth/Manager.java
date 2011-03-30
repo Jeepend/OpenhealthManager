@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth;
 
+import es.libresoft.openhealth.logging.Logging;
+
 public final class Manager extends Device {
 
 	public Manager(String transportDescription) {
@@ -33,12 +35,12 @@ public final class Manager extends Device {
 
 	@Override
 	public void notifyDevicePlugged() {
-		System.out.println("TODO: manager notifyDevicePlugged not implemented");
+		Logging.debug("TODO: manager notifyDevicePlugged not implemented");
 	}
 
 	@Override
 	public void notifyDeviceUnplugged() {
-		System.out.println("TODO: manager notifyDeviceUnplugged not implemented");
+		Logging.debug("TODO: manager notifyDeviceUnplugged not implemented");
 	}
 
 }

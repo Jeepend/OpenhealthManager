@@ -40,6 +40,7 @@ import java.util.Iterator;
 import org.bn.annotations.ASN1OctetString;
 
 import es.libresoft.openhealth.DeviceConfig;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 import es.libresoft.openhealth.storage.StorageException;
@@ -124,7 +125,7 @@ public abstract class DIM {
 			ava = it.next();
 			Class<?> attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
 			if (attrClass == null) {
-				System.out.println("Error: Can't get Attribute " + ava.getAttribute_id().getValue().getValue());
+				Logging.debug("Error: Can't get Attribute " + ava.getAttribute_id().getValue().getValue());
 			}
 
 			if (attrClass == ASN1OctetString.class) {
@@ -172,7 +173,7 @@ public abstract class DIM {
 		} catch (StorageException e) {
 			throw e;
 		} catch (Exception e) {
-			System.err.println("Configuration won't be stored for object " + handle.getValue().getValue());
+			Logging.error("Configuration won't be stored for object " + handle.getValue().getValue());
 			throw new StorageException(e);
 		}
 	}

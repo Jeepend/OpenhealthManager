@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import es.libresoft.openhealth.logging.Logging;
 import ieee_11073.part_10101.Nomenclature;
 import android.content.Context;
 
@@ -65,7 +66,7 @@ public class AttributeUtils {
 		if (retValue != null)
 			return retValue;
 		else {
-			System.err.println(context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for attributeId: " + attId);
+			Logging.error(context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for attributeId: " + attId);
 			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for attributeId: " + attId;
 		}
 	}
@@ -110,7 +111,7 @@ public class AttributeUtils {
 		if (retValue != null)
 			return retValue;
 		else {
-			System.err.println(context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition);
+			Logging.error(context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition);
 			return context.getString(R.string.UNKNOWN_VALUE) + " " + attrValue + " for partition: " + partition;
 		}
 	}

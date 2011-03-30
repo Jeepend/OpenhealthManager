@@ -27,6 +27,8 @@ package es.libresoft.mdnf;
 
 import java.lang.Math;
 
+import es.libresoft.openhealth.logging.Logging;
+
 public class FloatType {
 
 	public static final int MINEXP = -128;				//-1*(2^7)
@@ -91,7 +93,7 @@ public class FloatType {
 	}
 
 	public double doubleValueRepresentation (){
-		System.out.println("exponente: " + this.exponent + ", calc: " + Math.pow(10, this.exponent));
+		Logging.debug("exponente: " + this.exponent + ", calc: " + Math.pow(10, this.exponent));
 		if (isMDNFSpecialValue(this.magnitude))
 			return this.magnitude;
 		else return magnitude*(Math.pow(10, exponent));

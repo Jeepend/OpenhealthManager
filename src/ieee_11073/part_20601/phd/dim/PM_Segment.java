@@ -28,6 +28,8 @@ package ieee_11073.part_20601.phd.dim;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import es.libresoft.openhealth.logging.Logging;
+
 import ieee_11073.part_10101.Nomenclature;
 
 	/**
@@ -55,7 +57,7 @@ public class PM_Segment extends DIM {
 	}
 
 	private void printValues() {
-		System.out.println("Printing attributes PM_SEGMENT");
+		Logging.debug("Printing attributes PM_SEGMENT");
 
 		Iterator<Integer> attrs = attributeList.keySet().iterator();
 		while (attrs.hasNext()) {
@@ -67,7 +69,7 @@ public class PM_Segment extends DIM {
 			if (attr.getAttributeID() == Nomenclature.MDC_ATTR_PM_SEG_LABEL_STRING) {
 				byte[] octet = (byte[]) attr.getAttributeType();
 				String sysId = new String(octet);
-				System.out.println("Label String: " + sysId);
+				Logging.debug("Label String: " + sysId);
 			}
 		}
 	}

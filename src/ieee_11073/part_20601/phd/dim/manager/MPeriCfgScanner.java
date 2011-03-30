@@ -32,6 +32,7 @@ import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.SetEventData;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
@@ -58,32 +59,32 @@ public class MPeriCfgScanner extends PeriCfgScanner {
 
 	@Override
 	public void Buf_Scan_Report_Fixed(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Buf_Scan_Report_Fixed");
+		Logging.debug("TODO: implement Buf_Scan_Report_Fixed");
 	}
 
 	@Override
 	public void Buf_Scan_Report_Grouped(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Buf_Scan_Report_Grouped");
+		Logging.debug("TODO: implement Buf_Scan_Report_Grouped");
 	}
 
 	@Override
 	public void Buf_Scan_Report_MP_Fixed(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Buf_Scan_Report_MP_Fixed");
+		Logging.debug("TODO: implement Buf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
 	public void Buf_Scan_Report_MP_Grouped(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Buf_Scan_Report_MP_Grouped");
+		Logging.debug("TODO: implement Buf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
 	public void Buf_Scan_Report_MP_Var(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Buf_Scan_Report_MP_Var");
+		Logging.debug("TODO: implement Buf_Scan_Report_MP_Var");
 	}
 
 	@Override
 	public void Buf_Scan_Report_Var(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Buf_Scan_Report_Var");
+		Logging.debug("TODO: implement Buf_Scan_Report_Var");
 	}
 
 	@SuppressWarnings("unchecked")

@@ -27,6 +27,7 @@ package ieee_11073.part_20601.phd.channel;
 
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.utils.*;
 import ieee_11073.part_20601.asn1.ApduType;
 
@@ -114,7 +115,7 @@ public class VirtualChannel {
 		if (initialized)
 			throw new InitializedException("VirtualChannel is already initialized.");
 
-		System.out.println("Canal virtual configurado");
+		Logging.debug("Canal virtual configurado");
 		this.eventQueue = eventQueue;
 		this.outputQueue = outputQueue;
 		this.inputQueue = inputQueue;
@@ -144,7 +145,7 @@ public class VirtualChannel {
 		else {
 			channel = apdu.getChannel();
 			if (channel < 0) {
-				System.out.println("TODO: The APDU can be sended for other channel (not primary)");
+				Logging.debug("TODO: The APDU can be sended for other channel (not primary)");
 				/* Not preferences are setted */
 				channel = 0;
 			}
@@ -161,15 +162,15 @@ public class VirtualChannel {
 					sem.acquire();
 					sendApdu(outputQueue.remove());
 				} catch (InterruptedException e) {
-					System.out.println("Interrupted sender");
+					Logging.debug("Interrupted sender");
 					repeat = false;
 				}catch (Exception e) {
-					System.out.println("Exception sender thread");
+					Logging.debug("Exception sender thread");
 					repeat = false;
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Exiting sender");
+			Logging.debug("Exiting sender");
 		}
 	}
 }

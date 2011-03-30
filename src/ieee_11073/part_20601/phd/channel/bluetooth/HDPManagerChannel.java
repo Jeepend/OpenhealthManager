@@ -34,6 +34,7 @@ import es.libresoft.hdp.HDPConfig;
 import es.libresoft.hdp.HDPDataChannel;
 import es.libresoft.hdp.HDPDevice;
 import es.libresoft.hdp.HDPSession;
+import es.libresoft.openhealth.logging.Logging;
 
 public class HDPManagerChannel {
 
@@ -48,7 +49,7 @@ public class HDPManagerChannel {
 
 		@Override
 		public void dc_connected(HDPDataChannel dc) {
-			System.out.println("JAVA_DATA_CHANNEL_CREATE on " + dc.getDevice().getBtAddress() + " mdlid " + dc.getChannelId());
+			Logging.debug("JAVA_DATA_CHANNEL_CREATE on " + dc.getDevice().getBtAddress() + " mdlid " + dc.getChannelId());
 
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
 			con.addDataChannel(dc);
@@ -56,7 +57,7 @@ public class HDPManagerChannel {
 
 		@Override
 		public void dc_deleted(HDPDataChannel dc) {
-			System.out.println("JAVA_DATA_CHANNEL_DELETED");
+			Logging.debug("JAVA_DATA_CHANNEL_DELETED");
 			/*
 			HDPConnection con = devices.getHDPConnection(dc.getDevice());
 			con.delDataChannel(dc);
@@ -65,11 +66,11 @@ public class HDPManagerChannel {
 
 		@Override
 		public void device_disconected(HDPDevice dev) {
-			System.out.println("JAVA_DISCONNECTED");
+			Logging.debug("JAVA_DISCONNECTED");
 
 			HDPConnection con = devices.getHDPConnection(dev);
 			if (con == null) {
-				System.out.println("TODO: Revice disconnect device");
+				Logging.debug("TODO: Revice disconnect device");
 				return;
 			}
 			devices.delHDPDevice(con);
@@ -77,10 +78,10 @@ public class HDPManagerChannel {
 
 		@Override
 		public void new_device_connected(HDPDevice dev) {
-			System.out.println("JAVA_CONNECTED");
+			Logging.debug("JAVA_CONNECTED");
 			HDPConnection con = devices.getHDPConnection(dev);
 			if (con != null) {
-				System.out.println("TODO: HDP Dispositivo reconectado");
+				Logging.debug("TODO: HDP Dispositivo reconectado");
 				return;
 			}
 
@@ -109,7 +110,7 @@ public class HDPManagerChannel {
 	}
 
 	public void finish() {
-		System.out.println("Closing HDP manager service...");
+		Logging.debug("Closing HDP manager service...");
 		hdps.close();
 		hdps.free();
 		devices.freeAllResources();

@@ -46,7 +46,7 @@ public class InputStreamTester {
 				if (r > 0)
 					System.out.print((char)r );
 				else
-					System.out.println("-");
+					Logging.debug("-");
 			}
 
 			HDPInputStream in2 = new HDPInputStream (
@@ -58,12 +58,12 @@ public class InputStreamTester {
 			while (true) {
 				r = in2.read(buff, offset, len);
 				if (r < 0) {
-					System.out.println("Fin con offset="+offset);
+					Logging.debug("Fin con offset="+offset);
 					break;
 				}
 				offset = offset + r;
 				len = buff.length - offset;
-				System.out.println("offset=" + offset + ", len=" + len);
+				Logging.debug("offset=" + offset + ", len=" + len);
 			}
 			for (int i = 0; i < 33; i++)
 				System.out.print((char)buff[i]);

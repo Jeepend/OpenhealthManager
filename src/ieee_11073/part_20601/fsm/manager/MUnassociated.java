@@ -50,6 +50,7 @@ import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
@@ -76,7 +77,7 @@ public final class MUnassociated extends Unassociated {
 	@Override
 	public synchronized boolean processEvent(Event event) {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
-			System.err.println("2.2) IND Transport disconnect. Should indicate to application layer...");
+			Logging.error("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 			try {
 				ExternalEvent<Boolean, Object> eevent = (ExternalEvent<Boolean, Object> ) event;
@@ -91,11 +92,11 @@ public final class MUnassociated extends Unassociated {
 		//else: Ignore
 		/*
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_REL){
-			System.err.println("2.6) REQ AssocRel. Should not happen. Ignore");
+			Logging.error("2.6) REQ AssocRel. Should not happen. Ignore");
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT) {
-			System.err.println("2.7) REQ AssocAbort. Should not happen. Ignore");
+			Logging.error("2.7) REQ AssocAbort. Should not happen. Ignore");
 		}else{
-			System.err.println("Warning: unexpected event (" + event.getTypeOfEvent() + ") arrived in disconnected state.");
+			Logging.error("Warning: unexpected event (" + event.getTypeOfEvent() + ") arrived in disconnected state.");
 		}
 		*/
 	}
@@ -133,7 +134,7 @@ public final class MUnassociated extends Unassociated {
 				}
 				/*
 				 * else if (dp.getData_proto_id().getValue().intValue() == ASN1_Values.DATA_PROTO_ID_EXTERNAL)
-					System.err.println("Warning: DATA_PROTO_ID_EXTERNAL configuration is not supported.");
+					Logging.error("Warning: DATA_PROTO_ID_EXTERNAL configuration is not supported.");
 				 */
 			}
 
@@ -265,7 +266,7 @@ public final class MUnassociated extends Unassociated {
 			processStoredConfiguration(phd, cs.recover(phd.getSystem_id(), dev_conf));
 			return;
 		} catch (Exception e) {
-			System.out.println("Not stored configuration for device, requesting configuration");
+			Logging.debug("Not stored configuration for device, requesting configuration");
 			if (cs != null)
 				cs.delete(phd.getSystem_id(), dev_conf);
 
@@ -309,13 +310,13 @@ public final class MUnassociated extends Unassociated {
 			mds.configureMDS(data);
 		} catch (InvalidAttributeException e) {
 			e.printStackTrace();
-			System.err.println("Stored configuration can't be loaded, deleting the stored configuration");
+			Logging.error("Stored configuration can't be loaded, deleting the stored configuration");
 
 			try {
 				ConfigStorage cs = ConfigStorageFactory.getDefaultConfigStorage();
 				cs.delete(phd.getSystem_id(), dev_conf);
 			} catch (StorageException e1) {
-				System.err.println("Error while the bad configuration was being deleted");
+				Logging.error("Error while the bad configuration was being deleted");
 				e1.printStackTrace();
 			}
 
@@ -329,7 +330,7 @@ public final class MUnassociated extends Unassociated {
 
 	private void processStandardConfiguration(PhdAssociationInformation phd) {
 		// TODO:
-		System.out.println("Standard configuration not implemented, using unknown");
+		Logging.debug("Standard configuration not implemented, using unknown");
 		processUnknownConfiguration(phd);
 	}
 }

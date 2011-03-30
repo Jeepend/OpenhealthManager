@@ -84,6 +84,7 @@ import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
@@ -213,7 +214,7 @@ public class MDSManager extends MDS {
 					try {
 						mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,de.getData(length), this.getDeviceConf().getEncondigRules()));
 					}catch(Exception e){
-						System.err.println("Error: Can not get attribute " + attrId);
+						Logging.error("Error: Can not get attribute " + attrId);
 						e.printStackTrace();
 					}
 				}
@@ -263,125 +264,124 @@ public class MDSManager extends MDS {
 		while (i.hasNext()){
 			int id = i.next();
 			attribs.get(id);
-			System.out.println("Checking attribute: " + DIM_Tools.getAttributeName(id) + " " + id);
+			Logging.debug("Checking attribute: " + DIM_Tools.getAttributeName(id) + " " + id);
 			Attribute attr = attribs.get(id);
 			switch (id){
 			case Nomenclature.MDC_ATTR_ID_TYPE :
 				TYPE t = (TYPE) attribs.get(new Integer(id)).getAttributeType();
-				System.out.println("partition: " + t.getPartition().getValue());
-				System.out.println("code: " + t.getCode().getValue().getValue());
-				System.out.println("ok.");
+				Logging.debug("partition: " + t.getPartition().getValue());
+				Logging.debug("code: " + t.getCode().getValue().getValue());
+				Logging.debug("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_TIME_ABS:
 			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS :
 				AbsoluteTime time = (AbsoluteTime) attr.getAttributeType();
-				System.out.println("century: " + Integer.toHexString(time.getCentury().getValue()));
-				System.out.println("year: " + Integer.toHexString(time.getYear().getValue()));
-				System.out.println("month: " + Integer.toHexString(time.getMonth().getValue()));
-				System.out.println("day: "+ Integer.toHexString(time.getDay().getValue()));
-				System.out.println("hour: " + Integer.toHexString(time.getHour().getValue()));
-				System.out.println("minute: " + Integer.toHexString(time.getMinute().getValue()));
-				System.out.println("second: " + Integer.toHexString(time.getSecond().getValue()));
-				System.out.println("sec-fraction: " + Integer.toHexString(time.getSec_fractions().getValue()));
+				Logging.debug("century: " + Integer.toHexString(time.getCentury().getValue()));
+				Logging.debug("year: " + Integer.toHexString(time.getYear().getValue()));
+				Logging.debug("month: " + Integer.toHexString(time.getMonth().getValue()));
+				Logging.debug("day: "+ Integer.toHexString(time.getDay().getValue()));
+				Logging.debug("hour: " + Integer.toHexString(time.getHour().getValue()));
+				Logging.debug("minute: " + Integer.toHexString(time.getMinute().getValue()));
+				Logging.debug("second: " + Integer.toHexString(time.getSecond().getValue()));
+				Logging.debug("sec-fraction: " + Integer.toHexString(time.getSec_fractions().getValue()));
 				break;
 			case Nomenclature.MDC_ATTR_UNIT_CODE:
 				OID_Type oid = (OID_Type)attribs.get(new Integer(id)).getAttributeType();
-				System.out.println("oid: " + oid.getValue().getValue());
-				System.out.println("ok.");
+				Logging.debug("oid: " + oid.getValue().getValue());
+				Logging.debug("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL:
 				MetricSpecSmall mss = (MetricSpecSmall)attribs.get(new Integer(id)).getAttributeType();
-				//System.out.println("partition: " + getHexString(mss.getValue().getValue()));
-				System.out.println("ok.");
+				//Logging.debug("partition: " + getHexString(mss.getValue().getValue()));
+				Logging.debug("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC :
 				BasicNuObsValue val = (BasicNuObsValue)attribs.get(new Integer(id)).getAttributeType();
 				try {
 						SFloatType sf = new SFloatType(val.getValue().getValue());
-						System.out.println("BasicNuObsValue: " + sf.doubleValueRepresentation());
+						Logging.debug("BasicNuObsValue: " + sf.doubleValueRepresentation());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				System.out.println("ok.");
+				Logging.debug("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
 				AttrValMap avm = (AttrValMap)attribs.get(new Integer(id)).getAttributeType();
 				Iterator<AttrValMapEntry> iter = avm.getValue().iterator();
 				while (iter.hasNext()){
 					AttrValMapEntry entry = iter.next();
-					System.out.println("--");
-					System.out.println("attrib-id: " + entry.getAttribute_id().getValue().getValue());
-					System.out.println("attrib-len: " + entry.getAttribute_len());
+					Logging.debug("--");
+					Logging.debug("attrib-id: " + entry.getAttribute_id().getValue().getValue());
+					Logging.debug("attrib-len: " + entry.getAttribute_len());
 				}
-				System.out.println("ok.");
+				Logging.debug("ok.");
 				break;
 			case Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST:
 				TypeVerList sysTypes = (TypeVerList) attr.getAttributeType();
 				Iterator<TypeVer> it = sysTypes.getValue().iterator();
-				System.out.println("Spec. list values:");
+				Logging.debug("Spec. list values:");
 				while (it.hasNext()) {
-					System.out.println("\t" + it.next().getType().getValue().getValue());
+					Logging.debug("\t" + it.next().getType().getValue().getValue());
 				}
 				break;
 			case Nomenclature.MDC_ATTR_DEV_CONFIG_ID:
 				ConfigId configId = (ConfigId) attr.getAttributeType();
-				System.out.println("Dev config id: " + configId.getValue());
+				Logging.debug("Dev config id: " + configId.getValue());
 				break;
 			case Nomenclature.MDC_ATTR_SYS_ID:
 				byte[] octet = (byte[]) attr.getAttributeType();
 				String sysId = new String(octet);
-				System.out.println("Sys id: " + sysId);
+				Logging.debug("Sys id: " + sysId);
 				break;
 			case Nomenclature.MDC_ATTR_ID_MODEL:
 				SystemModel systemModel = (SystemModel) attr.getAttributeType();
-				System.out.println("System manufactures: " + new String(systemModel.getManufacturer()));
-				System.out.println("System model number: " + new String(systemModel.getModel_number()));
+				Logging.debug("System manufactures: " + new String(systemModel.getManufacturer()));
+				Logging.debug("System model number: " + new String(systemModel.getModel_number()));
 				break;
 			case Nomenclature.MDC_ATTR_ID_HANDLE:
 				HANDLE handle = (HANDLE) attr.getAttributeType();
-				System.out.println("Id handle: " + handle.getValue().getValue());
+				Logging.debug("Id handle: " + handle.getValue().getValue());
 				break;
 			case Nomenclature.MDC_ATTR_REG_CERT_DATA_LIST:
-				System.out.println("Reg cert. data list: ");
+				Logging.debug("Reg cert. data list: ");
 				RegCertDataList regList = (RegCertDataList) attr.getAttributeType();
 				Iterator<RegCertData> regIt = regList.getValue().iterator();
 				while (regIt.hasNext()) {
 					RegCertData cert = regIt.next();
-					System.out.println("\t" + cert.getAuth_body_and_struc_type().getAuth_body().getValue() +
+					Logging.debug("\t" + cert.getAuth_body_and_struc_type().getAuth_body().getValue() +
 								" " + cert.getAuth_body_and_struc_type().getAuth_body_struc_type().getValue());
 				}
 				break;
 			case Nomenclature.MDC_ATTR_MDS_TIME_INFO:
-				System.out.println("Mds time information:");
+				Logging.debug("Mds time information:");
 				MdsTimeInfo timeInfo = (MdsTimeInfo) attr.getAttributeType();
 				byte[] capabilities = timeInfo.getMds_time_cap_state().getValue().getValue();
-				System.out.print("\t");
+
 				for (int i1 = 0; i1 < capabilities.length; i1++) {
 					String binary = Integer.toBinaryString(capabilities[i1]);
 					if (binary.length() > 8)
 						binary = binary.substring(binary.length() - 8, binary.length());
-					System.out.print(binary);
 				}
-				System.out.println();
-				System.out.println("\t" + timeInfo.getTime_sync_protocol().getValue().getValue().getValue());
-				System.out.println("\t" + timeInfo.getTime_sync_accuracy().getValue().getValue());
-				System.out.println("\t" + timeInfo.getTime_resolution_abs_time());
-				System.out.println("\t" + timeInfo.getTime_resolution_rel_time());
-				System.out.println("\t" + timeInfo.getTime_resolution_high_res_time().getValue());
+
+				Logging.debug("\t" + timeInfo.getTime_sync_protocol().getValue().getValue().getValue());
+				Logging.debug("\t" + timeInfo.getTime_sync_accuracy().getValue().getValue());
+				Logging.debug("\t" + timeInfo.getTime_resolution_abs_time());
+				Logging.debug("\t" + timeInfo.getTime_resolution_rel_time());
+				Logging.debug("\t" + timeInfo.getTime_resolution_high_res_time().getValue());
 				break;
 			case Nomenclature.MDC_ATTR_ID_PROD_SPECN:
-				System.out.println("Production specification:");
+				Logging.debug("Production specification:");
 				ProductionSpec ps = (ProductionSpec) attr.getAttributeType();
 				Iterator<ProdSpecEntry> itps = ps.getValue().iterator();
 				while (itps.hasNext()) {
 					ProdSpecEntry pse = itps.next();
-					System.out.println("\tSpec type: " + pse.getSpec_type());
-					System.out.println("\tComponent id: " + pse.getComponent_id().getValue().getValue());
-					System.out.println("\tProd spec: " + new String(pse.getProd_spec()));
+					Logging.debug("\tSpec type: " + pse.getSpec_type());
+					Logging.debug("\tComponent id: " + pse.getComponent_id().getValue().getValue());
+					Logging.debug("\tProd spec: " + new String(pse.getProd_spec()));
 				}
 				break;
 			default:
-				System.out.println(">>>>>>>Id not implemented yet");
+				Logging.debug(">>>>>>>Id not implemented yet");
 				break;
 			}
 		}
@@ -414,7 +414,7 @@ public class MDSManager extends MDS {
 
 				@Override
 				public void procResponse(DataApdu data) {
-					System.out.println("Received response for get MDS");
+					Logging.debug("Received response for get MDS");
 					ExternalEvent<Boolean, Object> event = null;
 					try {
 						event = (ExternalEvent<Boolean, Object>) this.getEvent();
@@ -424,7 +424,7 @@ public class MDSManager extends MDS {
 
 					if (!data.getMessage().isRors_cmip_getSelected()) {
 						//TODO: Unexpected response format
-						System.out.println("Unexpected response format");
+						Logging.debug("Unexpected response format");
 						if (event != null)
 							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
 						return;
@@ -434,7 +434,7 @@ public class MDSManager extends MDS {
 
 					if (grs.getObj_handle().getValue().getValue() != 0) {
 						//TODO: Unexpected object handle, should be reserved value 0
-						System.out.println("Unexpected object handle, should be reserved value 0");
+						Logging.debug("Unexpected object handle, should be reserved value 0");
 						if (event != null)
 							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
 						return;
@@ -483,21 +483,21 @@ public class MDSManager extends MDS {
 
 	@Override
 	public void MDS_DATA_REQUEST() {
-		System.out.println("TODO: Implement MDS_DATA_REQUEST");
+		Logging.debug("TODO: Implement MDS_DATA_REQUEST");
 	}
 
 	@Override
 	public void Set_Time() {
-		System.out.println("TODO: Implement Set_Time");
+		Logging.debug("TODO: Implement Set_Time");
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Fixed(ScanReportInfoMPFixed info) {
-		System.out.println("TODO: Implement MDS_Dynamic_Data_Update_MP_Fixed");
+		Logging.debug("TODO: Implement MDS_Dynamic_Data_Update_MP_Fixed");
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info) {
-		System.out.println("TODO: Implement MDS_Dynamic_Data_Update_MP_Var");
+		Logging.debug("TODO: Implement MDS_Dynamic_Data_Update_MP_Var");
 	}
 }

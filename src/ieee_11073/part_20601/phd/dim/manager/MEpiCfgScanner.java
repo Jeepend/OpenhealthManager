@@ -38,6 +38,7 @@ import es.libresoft.openhealth.events.MeasureReporterFactory;
 import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.SetEventData;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -74,7 +75,7 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 
 	@Override
 	public void Unbuf_Scan_Report_Fixed(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
+		Logging.debug("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
@@ -83,13 +84,13 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 			ScanReportInfoGrouped srig = ASN1_Tools.decodeData(event.getEvent_info(),
 									ScanReportInfoGrouped.class,
 									getMDS().getDeviceConf().getEncondigRules());
-			System.out.println("Grouped scan report #" + srig.getScan_report_no());
+			Logging.debug("Grouped scan report #" + srig.getScan_report_no());
 			// TODO: use the report number to detect missing packets
 
 			Iterator<ObservationScanGrouped> i= srig.getObs_scan_grouped().iterator();
 			Attribute ValMapAtt = getAttribute(Nomenclature.MDC_ATTR_SCAN_HANDLE_ATTR_VAL_MAP);
 			if (ValMapAtt == null) {
-				System.err.println("Warninig: received Grouped Scan Report but Scan-Handle-Attr-Val-Map is not found");
+				Logging.error("Warninig: received Grouped Scan Report but Scan-Handle-Attr-Val-Map is not found");
 				return;
 			}
 			HandleAttrValMap havm = (HandleAttrValMap) ValMapAtt.getAttributeType();
@@ -118,7 +119,7 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 							mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,
 									de.getData(length), getMDS().getDeviceConf().getEncondigRules()));
 						}catch(Exception e){
-							System.err.println("Error: Can not get attribute " + attrId);
+							Logging.error("Error: Can not get attribute " + attrId);
 							e.printStackTrace();
 						}
 					}
@@ -133,22 +134,22 @@ public class MEpiCfgScanner extends EpiCfgScanner {
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Fixed(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Fixed");
+		Logging.debug("TODO: implement Unbuf_Scan_Report_MP_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Grouped(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Unbuf_Scan_Report_MP_Grouped");
+		Logging.debug("TODO: implement Unbuf_Scan_Report_MP_Grouped");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_MP_Var(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Unbuf_Scan_Report_Fixed");
+		Logging.debug("TODO: implement Unbuf_Scan_Report_Fixed");
 	}
 
 	@Override
 	public void Unbuf_Scan_Report_Var(EventReportArgumentSimple event) {
-		System.out.println("TODO: implement Unbuf_Scan_Report_Var");
+		Logging.debug("TODO: implement Unbuf_Scan_Report_Var");
 	}
 
 	@SuppressWarnings("unchecked")

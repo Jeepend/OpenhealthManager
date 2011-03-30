@@ -72,6 +72,7 @@ import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
@@ -107,7 +108,7 @@ public class MPM_Store extends PM_Store {
 					ExternalEvent<List<PM_Segment>, GetPmSegmentEventData> event = (ExternalEvent<List<PM_Segment>, GetPmSegmentEventData>) getEvent();
 
 					if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
-						System.out.println("Error: Unexpected response format");
+						Logging.debug("Error: Unexpected response format");
 						event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
@@ -115,7 +116,7 @@ public class MPM_Store extends PM_Store {
 					ActionResultSimple ars = data.getMessage().getRors_cmip_confirmed_action();
 					OID_Type oid = ars.getAction_type();
 					if (Nomenclature.MDC_ACT_SEG_GET_INFO != oid.getValue().getValue().intValue()) {
-						System.out.println("Error: Unexpected response format");
+						Logging.debug("Error: Unexpected response format");
 						event.processed(null, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
@@ -134,7 +135,7 @@ public class MPM_Store extends PM_Store {
 							attribs = getAttributes(al, getMDS().getDeviceConf().getEncondigRules());
 							MPM_Segment pm_segment = new MPM_Segment(attribs);
 							addPM_Segment(pm_segment);
-							System.out.println("Got PM_Segment " + in.getValue().intValue());
+							Logging.debug("Got PM_Segment " + in.getValue().intValue());
 						}
 
 					} catch (Exception e) {
@@ -170,7 +171,7 @@ public class MPM_Store extends PM_Store {
 				ExternalEvent<Boolean, TrigPMSegmentXferEventData> event = (ExternalEvent<Boolean, TrigPMSegmentXferEventData>) getEvent();
 
 				if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
-					System.err.println("Error: Unexpected response format");
+					Logging.error("Error: Unexpected response format");
 					event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 					return;
 				}
@@ -178,7 +179,7 @@ public class MPM_Store extends PM_Store {
 				ActionResultSimple ars = data.getMessage().getRors_cmip_confirmed_action();
 				OID_Type oid = ars.getAction_type();
 				if (Nomenclature.MDC_ACT_SEG_TRIG_XFER != oid.getValue().getValue().intValue()) {
-					System.err.println("Error: Unexpected response format");
+					Logging.error("Error: Unexpected response format");
 					event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 					return;
 				}
@@ -197,7 +198,7 @@ public class MPM_Store extends PM_Store {
 
 					// TODO: Create and set proper error using "result" variable
 					event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
-					System.err.println("InstNumber " + in.getValue().intValue() + " error " + result);
+					Logging.error("InstNumber " + in.getValue().intValue() + " error " + result);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -224,7 +225,7 @@ public class MPM_Store extends PM_Store {
 				@SuppressWarnings("unchecked")
 				@Override
 				public void procResponse(DataApdu data) {
-					System.out.println("GOT_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
+					Logging.debug("GOT_PMSOTRE invoke_id " + data.getInvoke_id().getValue().intValue());
 					ExternalEvent<Boolean, GetPmStoreEventData> event = null;
 					try {
 						event = (ExternalEvent<Boolean, GetPmStoreEventData>) this.getEvent();
@@ -233,7 +234,7 @@ public class MPM_Store extends PM_Store {
 					}
 
 					if (!data.getMessage().isRors_cmip_getSelected()) {
-						System.out.println("TODO: Unexpected response format");
+						Logging.debug("TODO: Unexpected response format");
 						if (event != null)
 							event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 						return;
@@ -242,14 +243,14 @@ public class MPM_Store extends PM_Store {
 					GetResultSimple grs = data.getMessage().getRors_cmip_get();
 					HANDLE handle = (HANDLE) getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
 					if (handle == null) {
-						System.out.println("Error: Can't get HANDLE attribute in PM_STORE object");
+						Logging.debug("Error: Can't get HANDLE attribute in PM_STORE object");
 						if (event != null)
 							event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
 
 					if (grs.getObj_handle().getValue().getValue().intValue() != handle.getValue().getValue().intValue()) {
-						System.out.println("TODO: Unexpected object handle, should be value " +
+						Logging.debug("TODO: Unexpected object handle, should be value " +
 																				handle.getValue().getValue().intValue());
 						if (event != null)
 							event.processed(false, ErrorCodes.UNEXPECTED_ERROR);
@@ -311,18 +312,18 @@ public class MPM_Store extends PM_Store {
 		status[0] = (byte) (mask | sde.getSegm_data_event_descr().getSegm_evt_status().getValue().getValue()[0]);
 		status[1] = 0;
 
-		//System.out.println("Segment Number: " + sded.getSegm_instance().getValue().intValue());
+		//Logging.debug("Segment Number: " + sded.getSegm_instance().getValue().intValue());
 
 		MPM_Segment pmseg = (MPM_Segment) getPM_Segment(sded.getSegm_instance());
 		if (pmseg == null) {
-			System.err.println("Error: Can't get PM_Segment " + sded.getSegm_instance().getValue());
+			Logging.error("Error: Can't get PM_Segment " + sded.getSegm_instance().getValue());
 			/* TODO :Send error reply */
 			return null;
 		}
 
 		Attribute attr = pmseg.getAttribute(Nomenclature.MDC_ATTR_PM_SEG_MAP);
 		if (attr == null) {
-			System.err.println("Error: Attribute " +
+			Logging.error("Error: Attribute " +
 						DIM_Tools.getAttributeName(Nomenclature.MDC_ATTR_PM_SEG_MAP) + " not defined");
 			status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
 			return createSegmentDataResult(status, sde);
@@ -330,13 +331,13 @@ public class MPM_Store extends PM_Store {
 
 		int first = sded.getSegm_evt_entry_index().getValue().intValue();
 		int count = sded.getSegm_evt_entry_count().getValue().intValue();
-		//System.out.println("Count of entries in this event: " + count);
-		//System.out.println("Index of the first entry in this event: " + first);
+		//Logging.debug("Count of entries in this event: " + count);
+		//Logging.debug("Index of the first entry in this event: " + first);
 
 		try {
 			SegmEvtStatus ses = sded.getSegm_evt_status();
 			String bitstring = ASN1_Tools.getHexString(ses.getValue().getValue());
-			//System.out.println("Segment event status: " + bitstring);
+			//Logging.debug("Segment event status: " + bitstring);
 
 			PmSegmentEntryMap psem = (PmSegmentEntryMap) attr.getAttributeType();
 
@@ -357,7 +358,7 @@ public class MPM_Store extends PM_Store {
 					attrId = Nomenclature.MDC_ATTR_TIME_REL_HI_RES;
 					len = 8; /* HighResRelativeTime */
 				} else {
-					System.err.println("Bad entry value: " + bytes);
+					Logging.error("Bad entry value: " + bytes);
 					status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
 					return createSegmentDataResult(status, sde);
 				}
@@ -384,35 +385,35 @@ public class MPM_Store extends PM_Store {
 					HANDLE handle = see.getHandle();
 
 					if (type.getCode().getValue().getValue().intValue() == Nomenclature.MDC_CONC_GLU_CAPILLARY_WHOLEBLOOD)
-						System.out.println("*Glucose Capillary Whole Blood*");
+						Logging.debug("*Glucose Capillary Whole Blood*");
 
 					/* We can check also type.Nompartition to see if it is set to 2 for metric */
 					if (oid.getValue().getValue().intValue() != Nomenclature.MDC_MOC_VMO_METRIC_NU) {
-						System.err.println("Error: No metric object received.");
+						Logging.error("Error: No metric object received.");
 						status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
 						return createSegmentDataResult(status, sde);
 					}
 
 					Numeric num = getMDS().getNumeric(handle);
 					if (num == null) {
-						System.err.println("Error: Invalid numeric received.");
+						Logging.error("Error: Invalid numeric received.");
 						status[1] = 0 | ASN1_Values.SEVTSTA_MANAGER_ABORT;
 						return createSegmentDataResult(status, sde);
 					}
 
 					OID_Type unitCode = (OID_Type) num.getAttribute(Nomenclature.MDC_ATTR_UNIT_CODE).getAttributeType();
 					if (unitCode == null) {
-						System.err.println("Can't get unit code");
+						Logging.error("Can't get unit code");
 					} else {
 						switch (unitCode.getValue().getValue().intValue()) {
 							case Nomenclature.MDC_DIM_MILLI_G_PER_DL:
-								System.out.println("Units: mg/dl");
+								Logging.debug("Units: mg/dl");
 								break;
 							case Nomenclature.MDC_DIM_MILLI_MOLE_PER_L:
-								System.out.println("Units: mmol/L");
+								Logging.debug("Units: mmol/L");
 								break;
 							default:
-								System.err.println("Unknown unit code for the measure " +
+								Logging.error("Unknown unit code for the measure " +
 															unitCode.getValue().getValue().intValue());
 						}
 					}

@@ -27,6 +27,7 @@ package ieee_11073.part_20601.fsm.manager;
 
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.logging.Logging;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.fsm.Disconnected;
 import ieee_11073.part_20601.fsm.StateHandler;
@@ -47,7 +48,7 @@ public final class MDisconnected extends Disconnected {
 		if (event.getTypeOfEvent() == EventType.IND_TRANS_CONN)
 			state_handler.changeState(new MUnassociated(state_handler));
 		else {
-			System.out.println("Warning: unexpected event (" + event.getTypeOfEvent() + ") arrived in disconnected state.");
+			Logging.debug("Warning: unexpected event (" + event.getTypeOfEvent() + ") arrived in disconnected state.");
 			return false;
 		}
 		return true;

@@ -31,6 +31,7 @@ import java.util.TimerTask;
 
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.utils.ASN1_Values;
 
 	/**************************************************************************************************************
@@ -78,7 +79,7 @@ public abstract class TimeOut extends TimerTask {
 	 * This method will be called when the timeout expires
 	 * */
 	protected void expiredTimeout() {
-		System.err.println("Timeout expired.");
+		Logging.error("Timeout expired.");
 		Event event = new Event(EventType.IND_TIMEOUT);
 		event.setReason(ASN1_Values.ABRT_RE_RESPONSE_TIMEOUT);
 		stateHandler.sendEvent(event);

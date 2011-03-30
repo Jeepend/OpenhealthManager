@@ -208,7 +208,7 @@ public class HealthService extends Service {
 		ConfigStorageFactory.setDefaultConfigStorage(new AndroidConfigStorage(this.getApplicationContext()));
 		AttributeUtils.setContext(getApplicationContext());
 		ErrorFactory.setDefaultErrorGenerator(new AndroidError(this.getApplicationContext()));
-		System.out.println("Service created");
+		Logging.debug("Service created");
 		channelTCP = new TcpManagerChannel();
 		super.onCreate();
 	}
@@ -329,7 +329,7 @@ public class HealthService extends Service {
 
 		@Override
 		public void connect(IAgent agent) throws RemoteException {
-			System.out.println("TODO: Connect with the agent");
+			Logging.debug("TODO: Connect with the agent");
 		}
 
 		@Override
@@ -810,7 +810,7 @@ public class HealthService extends Service {
 		public void getPMSegmentsTimeRange(IPM_Store store, long startTime,
 				long endTime, List<IPM_Store> stores, IError err)
 				throws RemoteException {
-			System.out.println("TODO: implement getPMSegmentsTimeRange");
+			Logging.debug("TODO: implement getPMSegmentsTimeRange");
 		}
 	};
 

@@ -29,6 +29,7 @@ import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.fsm.Associating;
 import ieee_11073.part_20601.fsm.StateHandler;
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.logging.Logging;
 
 public final class MAssociating extends Associating {
 
@@ -38,12 +39,12 @@ public final class MAssociating extends Associating {
 
 	@Override
 	public synchronized void process(ApduType apdu) {
-		System.out.println("Associating process ");
+		Logging.debug("Associating process ");
 	}
 
 	@Override
 	public synchronized boolean processEvent(Event event) {
-		System.out.println("Associating process events");
+		Logging.debug("Associating process events");
 		return false;
 	}
 

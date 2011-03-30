@@ -30,6 +30,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import es.libresoft.openhealth.Agent;
+import es.libresoft.openhealth.logging.Logging;
 
 //import android.util.Log;
 
@@ -42,8 +43,8 @@ public class TcpManagerChannel extends Thread {
 		String status="";
 		try {
 			ss = new ServerSocket (9999);
-			System.out.println("Server attached on " + ss.getInetAddress() + ":" + ss.getLocalPort());
-			System.out.println("Waiting for clients...");
+			Logging.debug("Server attached on " + ss.getInetAddress() + ":" + ss.getLocalPort());
+			Logging.debug("Waiting for clients...");
 			while(!this.finish){
 				Socket s = ss.accept();
 				Agent a = new Agent(s.getRemoteSocketAddress().toString());
@@ -58,24 +59,24 @@ public class TcpManagerChannel extends Thread {
 				status = "Ok";
 			}else{
 				status = "Error";
-				System.out.println("Error: Can't create a server socket in 9999." + e.getMessage());
+				Logging.debug("Error: Can't create a server socket in 9999." + e.getMessage());
 			}
 		} catch (Exception e) {
 			status = "Unexpected error";
-			System.out.println("Unexpected error: " + e.getMessage());
+			Logging.debug("Unexpected error: " + e.getMessage());
 		} finally {
-			System.out.println("manager service exiting..." + status);
+			Logging.debug("manager service exiting..." + status);
 		}
 		agents.freeAllResources();
 	}
 
 	public void finish() {
 		this.finish = true;
-		System.out.println("Closing manager service...");
+		Logging.debug("Closing manager service...");
 		try {
 			ss.close();
 		} catch (IOException e) {
-			System.out.println("Error: " + e.getMessage());
+			Logging.debug("Error: " + e.getMessage());
 		}
 	}
 

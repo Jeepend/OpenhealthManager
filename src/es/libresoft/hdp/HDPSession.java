@@ -28,6 +28,8 @@ package es.libresoft.hdp;
 
 import java.io.IOException;
 
+import es.libresoft.openhealth.logging.Logging;
+
 public class HDPSession {
 
 	/* peer field stores the underlying C++ pointer class */
@@ -59,7 +61,7 @@ public class HDPSession {
 	}
 
 	public void close(){
-		System.out.println("Adios");
+		Logging.debug("Adios");
 	}
 
 	/* Invoked from native code */

@@ -45,6 +45,7 @@ import org.bn.IDecoder;
 
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
+import es.libresoft.openhealth.logging.Logging;
 
 public class RawDataExtractor {
 	private int index;
@@ -78,20 +79,20 @@ public class RawDataExtractor {
 		IDecoder decoder = CoderFactory.getInstance().newDecoder(eRules);
 		switch (attrId){
 		case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
-			//System.out.println("MDC_ATTR_NU_VAL_OBS_BASIC");
+			//Logging.debug("MDC_ATTR_NU_VAL_OBS_BASIC");
 			INT_U16 iu = decoder.decode(input, INT_U16.class);
 			SFloatType ft = new SFloatType(iu.getValue());
-			System.out.println("Measure: " + ft.doubleValueRepresentation());
+			Logging.debug("Measure: " + ft.doubleValueRepresentation());
 			return (T)ft;
 		case Nomenclature.MDC_ATTR_NU_VAL_OBS_SIMP:
-			//System.out.println("MDC_ATTR_NU_VAL_OBS_SIMP");
+			//Logging.debug("MDC_ATTR_NU_VAL_OBS_SIMP");
 			INT_U32 iu2 = decoder.decode(input, INT_U32.class);
 			FloatType ft2 = new FloatType(iu2.getValue());
-			System.out.println("Measure: " + ft2.doubleValueRepresentation());
+			Logging.debug("Measure: " + ft2.doubleValueRepresentation());
 			return (T)ft2;
 		case Nomenclature.MDC_ATTR_TIME_ABS:
 		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
-			//System.out.println("AbsoluteTime");
+			//Logging.debug("AbsoluteTime");
 			/*
 			 * The absolute time data type specifies the time of day with a resolution of 1/100
 			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
@@ -111,10 +112,10 @@ public class RawDataExtractor {
 					rawDate.substring(14); /* frac-sec last 2B */
 			SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
 			Date d = sdf.parse(source);
-			System.out.println("date: " + d);
+			Logging.debug("date: " + d);
 			return (T)d;
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC:
-			//System.out.println("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
+			//Logging.debug("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
 			BasicNuObsValueCmp cmp_val = decoder.decode(input, BasicNuObsValueCmp.class);
 			Iterator<BasicNuObsValue> it = cmp_val.getValue().iterator();
 			ArrayList<SFloatType> measures = new ArrayList<SFloatType>();
@@ -122,25 +123,25 @@ public class RawDataExtractor {
 			while (it.hasNext()) {
 				BasicNuObsValue value = it.next();
 				SFloatType ms = new SFloatType(value.getValue().getValue());
-				System.out.println("Measure: " + ms.doubleValueRepresentation());
+				Logging.debug("Measure: " + ms.doubleValueRepresentation());
 				measures.add(ms);
 			}
 			return (T)measures;
 		case Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE:
-			//System.out.println("MDC_ATTR_TIME_PD_MSMT_ACTIVE");
+			//Logging.debug("MDC_ATTR_TIME_PD_MSMT_ACTIVE");
 			INT_U32 iu3 = decoder.decode(input, INT_U32.class);
 			FloatType ft3 = new FloatType(iu3.getValue());
-			System.out.println("Measure: " + ft3.doubleValueRepresentation());
+			Logging.debug("Measure: " + ft3.doubleValueRepresentation());
 			return (T)ft3;
 		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_OID:
-			//System.out.println("MDC_ATTR_ENUM_OBS_VAL_SIMP_OID");
+			//Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_OID");
 			OID_Type oid = decoder.decode(input, OID_Type.class);
-			System.out.println("Measure oid_type: " + oid.getValue().getValue());
+			Logging.debug("Measure oid_type: " + oid.getValue().getValue());
 			return (T)oid.getValue().getValue();
 		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
-			//System.out.println("MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
+			//Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
 			BITS_32 bits32 = decoder.decode(input, BITS_32.class);
-			System.out.println("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
+			Logging.debug("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
 			return (T) bits32.getValue().getValue();
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");

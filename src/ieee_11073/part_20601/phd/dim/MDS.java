@@ -46,6 +46,7 @@ import java.util.Set;
 
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 import es.libresoft.openhealth.storage.StorageException;
@@ -309,12 +310,12 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 				storeList(sys_id, pm_stores.values().iterator());
 
 			} catch (StorageException e) {
-				System.err.println("Storage aborted, deleting all configurations");
+				Logging.error("Storage aborted, deleting all configurations");
 				cs.delete(sys_id, dev_conf);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("An error ocurred during configuration storage, storage aborted.");
+			Logging.error("An error ocurred during configuration storage, storage aborted.");
 			if (cs != null && sys_id != null)
 				cs.delete(sys_id, dev_conf);
 		}

@@ -34,6 +34,7 @@ import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.application.ExternalEvent;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.utils.IFIFO;
 import es.libresoft.openhealth.utils.IUnlock;
 import ieee_11073.part_20601.asn1.ApduType;
@@ -204,15 +205,15 @@ public class ManagerStateController implements StateController {
 					//Send input ADPU to finite state machine
 					state.process(inputQueue.remove());
 				} catch (InterruptedException e1) {
-					System.out.println("Interrupted dispatcher Apdu thread");
+					Logging.debug("Interrupted dispatcher Apdu thread");
 					repeat = false;
 				}catch (Exception e) {
-					System.out.println("Exception dispatcher Apdu thread");
+					Logging.debug("Exception dispatcher Apdu thread");
 					repeat = false;
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Exiting dispatcher");
+			Logging.debug("Exiting dispatcher");
 		}
 	}
 
@@ -234,15 +235,15 @@ public class ManagerStateController implements StateController {
 								ErrorCodes.INVALID_ACTION);
 					}
 				} catch (InterruptedException e1) {
-					System.out.println("Interrupted dispatcher Events thread");
+					Logging.debug("Interrupted dispatcher Events thread");
 					repeat = false;
 				}catch (Exception e) {
-					System.out.println("Exception dispatcher Events thread");
+					Logging.debug("Exception dispatcher Events thread");
 					repeat = false;
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Exiting dispatcher event");
+			Logging.debug("Exiting dispatcher event");
 		}
 	}
 }
