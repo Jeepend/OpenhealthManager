@@ -80,6 +80,8 @@ import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
 import es.libresoft.openhealth.events.application.GetPmStoreEventData;
 import es.libresoft.openhealth.events.application.SetEventData;
 import es.libresoft.openhealth.events.application.TrigPMSegmentXferEventData;
+import es.libresoft.openhealth.logging.ILogging;
+import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
 
 public class HealthService extends Service {
@@ -90,6 +92,23 @@ public class HealthService extends Service {
 	private TcpManagerChannel channelTCP;
 	private boolean started = false;
 	private Vector<Agent> agents = new Vector<Agent>();
+	private ILogging log = new ILogging(){
+
+		@Override
+		public void error(String str) {
+			Log.e("HealthService", str);
+		}
+
+		@Override
+		public void debug(String str) {
+			Log.d("HealthService", str);
+		}
+
+		@Override
+		public void info(String str) {
+			Log.i("HealthService", str);
+		}
+	};
 
 	/************************************************************
 	 * Internal events triggered from manager thread
@@ -180,6 +199,8 @@ public class HealthService extends Service {
 
 	@Override
 	public void onCreate() {
+		// Set android logging system
+		Logging.setDefaultLogGenerator(log);
 		//Set the event manager handler to get internal events from the manager thread
 		InternalEventReporter.setDefaultEventManager(ieManager);
 		//Set target platform to android to report measures using IPC mechanism
