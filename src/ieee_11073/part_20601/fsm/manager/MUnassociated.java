@@ -229,7 +229,7 @@ public final class MUnassociated extends Unassociated {
 		dev_conf.setDataProtoId(data_proto_id);
 		dev_conf.setPhdId(phd.getDev_config_id().getValue().intValue());
 
-		if (phd.getProtocol_version().getValue().getValue()[0] == 0x70)
+		if ((phd.getProtocol_version().getValue().getValue()[0] & ManagerConfig.PROTOCOL_VERSION2[0]) == ManagerConfig.PROTOCOL_VERSION2[0])
 			dev_conf.setProtocolVersion(2);
 		else
 			dev_conf.setProtocolVersion(1);
