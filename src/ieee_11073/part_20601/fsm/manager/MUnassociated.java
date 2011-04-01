@@ -238,8 +238,8 @@ public final class MUnassociated extends Unassociated {
 		int bytes = 0x000000FF & phd.getEncoding_rules().getValue().getValue()[0];
 		bytes = (bytes << 8) | phd.getEncoding_rules().getValue().getValue()[1];
 		String srules = Device.MDER_DEFAULT;
-		if ((bytes & ASN1_Values.ENC_PER) == ASN1_Values.ENC_PER)
-			srules = "PER";
+		//if ((bytes & ASN1_Values.ENC_PER) == ASN1_Values.ENC_PER)
+		//	srules = "PER";
 		//else  if ((bytes & ASN1_Values.ENC_XER) == ASN1_Values.ENC_XER)
 		//	srules = "XER"; //Not supported by binary notes
 		dev_conf.setEncondigRules(srules);
