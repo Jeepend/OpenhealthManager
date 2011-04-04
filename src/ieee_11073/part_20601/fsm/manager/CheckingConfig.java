@@ -258,8 +258,8 @@ public final class CheckingConfig extends Configuring {
 		if (response.getConfig_result().getValue() == ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG) {
 			state_handler.changeState(new MOperating(state_handler));
 			Logging.debug("Configuration agreed, going to operating state.");
-		}
-		else state_handler.changeState(new WaitingForConfig(state_handler));
+		} else
+			state_handler.changeState(new WaitingForConfig(state_handler));
 	}
 
 	private ApduType composeResponse (DataApdu data, ConfigReportRsp response) throws Exception {

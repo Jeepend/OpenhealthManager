@@ -77,6 +77,7 @@ import java.util.Iterator;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.Agent;
 import es.libresoft.openhealth.Device;
+import es.libresoft.openhealth.ManagerConfig;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.InternalEventReporter;
@@ -166,11 +167,24 @@ public class MDSManager extends MDS {
 		}
 	}
 
+	private boolean is_supported(int conf_id) {
+		final int spec_base = 10404;
+
+		for (int i = 0; i < ManagerConfig.supported_spec.length; i++)
+			if ((ManagerConfig.supported_spec[0] - 10404) == conf_id)
+				return true;
+
+		return false;
+	}
+
 	@Override
 	public ConfigReportRsp MDS_Configuration_Event(ConfigReport config) {
 		int configId = config.getConfig_report_id().getValue();
 
 		try {
+			if (!is_supported(configId))
+				throw new Exception("Unsuppoted specialization: " + configId);
+
 			configureMDS(config.getConfig_obj_list().getValue());
 			/* Store current configuration */
 			storeConfiguration();

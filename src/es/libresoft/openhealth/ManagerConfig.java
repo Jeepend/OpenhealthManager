@@ -49,4 +49,16 @@ public interface ManagerConfig {
 
 	/* System type */
 	public static byte[] syste_type = HEX_80000000; /*0x80000000 (manager=0) */
+
+	/* Supported specializations */
+	public static int[] supported_spec = {
+		10404,	/* Pulse Oximeter */
+//		10407,	/* Blood Pressure */
+//		10408,	/* Thermometer */
+//		10415,	/* Wighing Scale */
+//		10417,	/* Glucose */
+//		10441,	/* H&F */
+//		10442,	/* Cardio & Strength*/
+//		10471,	/* Activity Hub */
+	};
 }
