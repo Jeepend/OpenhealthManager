@@ -178,8 +178,9 @@ public final class WaitingForConfig extends Configuring {
 					state_handler.getMDS().getDeviceConf()));
 		}else if (msg.isRoiv_cmip_getSelected()) {
 			//Not allowed
-			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
-					state_handler.getMDS().getDeviceConf()));
+			ApduType apdu = MessageFactory.AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED);
+			state_handler.send(apdu);
+			state_handler.changeState(new MUnassociated(state_handler));
 		}else if (msg.isRoiv_cmip_setSelected()) {
 			//Not allowed
 			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
