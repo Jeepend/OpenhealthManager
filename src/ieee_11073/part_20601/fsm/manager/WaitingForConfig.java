@@ -172,31 +172,6 @@ public final class WaitingForConfig extends Configuring {
 		//Process the message received
 		if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
 			roiv_cmip_confirmed_event_repor(data);
-		}else if (msg.isRoiv_cmip_event_reportSelected()) {
-			//Not allowed
-			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
-					state_handler.getMDS().getDeviceConf()));
-		}else if (msg.isRoiv_cmip_getSelected()) {
-			//Not allowed
-			ApduType apdu = MessageFactory.AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED);
-			state_handler.send(apdu);
-			state_handler.changeState(new MUnassociated(state_handler));
-		}else if (msg.isRoiv_cmip_setSelected()) {
-			//Not allowed
-			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
-					state_handler.getMDS().getDeviceConf()));
-		}else if (msg.isRoiv_cmip_confirmed_setSelected()) {
-			//Not allowed
-			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
-					state_handler.getMDS().getDeviceConf()));
-		}else if (msg.isRoiv_cmip_actionSelected()){
-			//Not allowed
-			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
-					state_handler.getMDS().getDeviceConf()));
-		}else if (msg.isRoiv_cmip_confirmed_actionSelected()) {
-			//Not allowed
-			state_handler.send(MessageFactory.ROER_NO_SUCH_OBJECT_INSTANCE_Apdu(data,
-					state_handler.getMDS().getDeviceConf()));
 		}else if (msg.isRors_cmip_confirmed_event_reportSelected()){
 			//TODO:
 			Logging.debug(">> TODO: Rors_cmip_confirmed_event_report");
@@ -215,6 +190,10 @@ public final class WaitingForConfig extends Configuring {
 		}else if (msg.isRorjSelected()){
 			//TODO:
 			Logging.debug(">> TODO: Rorj");
+		}else {
+			//Not allowed
+			state_handler.send(MessageFactory.AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED));
+			state_handler.changeState(new MUnassociated(state_handler));
 		}
 	}
 
