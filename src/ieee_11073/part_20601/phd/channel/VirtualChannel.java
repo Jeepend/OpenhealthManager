@@ -55,8 +55,10 @@ public class VirtualChannel {
 		@Override
 		public synchronized void processEvent(Event e) {
 			int len = channels.size();
-			if (e.getTypeOfEvent()!=EventType.IND_TRANS_DESC)
+			if (e.getTypeOfEvent()!=EventType.IND_TRANS_DESC) {
+				eventQueue.add(e);
 				return;
+			}
 
 			//interrupt all threads blocked in input channels
 			for (int i=0; i < len; i++){

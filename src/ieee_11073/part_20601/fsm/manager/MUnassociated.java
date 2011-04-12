@@ -76,7 +76,10 @@ public final class MUnassociated extends Unassociated {
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean processEvent(Event event) {
-		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
+		if (event.getTypeOfEvent() == EventType.REC_CORRUPTED_APDU) {
+			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+			return true;
+		} else if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			Logging.error("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));
 			try {
@@ -293,7 +296,7 @@ public final class MUnassociated extends Unassociated {
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(dev_conf));
 		state_handler.changeState(new WaitingForConfig(state_handler));
 
-		mds.GET(null);
+		//mds.GET(null);
 	}
 
 	private void processStoredConfiguration(PhdAssociationInformation phd, Collection<ConfigObject> data) throws InvalidAttributeException {
@@ -325,7 +328,7 @@ public final class MUnassociated extends Unassociated {
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED(dev_conf));
 		state_handler.changeState(new MOperating(state_handler));
 
-		mds.GET(null);
+		//mds.GET(null);
 	}
 
 	private void processStandardConfiguration(PhdAssociationInformation phd) {

@@ -90,7 +90,10 @@ public final class WaitingForConfig extends Configuring {
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean processEvent(Event event) {
-		if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
+		if (event.getTypeOfEvent() == EventType.REC_CORRUPTED_APDU) {
+			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+			state_handler.changeState(new MUnassociated(state_handler));
+		} else if (event.getTypeOfEvent() == EventType.IND_TRANS_DESC) {
 			timeOut.cancel();
 			Logging.error("2.2) IND Transport disconnect. Should indicate to application layer...");
 			state_handler.changeState(new MDisconnected(state_handler));

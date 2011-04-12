@@ -36,6 +36,7 @@ public interface EventType {
 	public static final int REQ_ASSOC_REL						= 	4;		/* Association release request	*/
 	public static final int REQ_ASSOC_ABORT						= 	5;		/* Association abort request	*/
 
+	public static final int REC_CORRUPTED_APDU					= 	6;		/* Received corrupted APPDU */
 
 	/* Application defined events*/
 	public static final int REQ_GET_PM_STORE					=	500;

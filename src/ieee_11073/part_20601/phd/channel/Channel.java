@@ -28,6 +28,7 @@ package ieee_11073.part_20601.phd.channel;
 
 import ieee_11073.part_20601.asn1.ApduType;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Semaphore;
@@ -37,9 +38,11 @@ import org.bn.IDecoder;
 import org.bn.IEncoder;
 
 import es.libresoft.openhealth.Device;
+import es.libresoft.openhealth.ManagerConfig;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.logging.Logging;
+import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.IFIFO;
 
 public abstract class Channel {
@@ -132,8 +135,18 @@ public abstract class Channel {
 		 		}catch (InterruptedException e) {
 					Logging.debug("Interrupted receiver (" + id + ")");
 		 		}catch (NullPointerException e) {
-		 			//An APDUType is not received Ignore
-		 			Logging.error("APDUType is not received");
+					Logging.error("Corrupted APDUType received");
+					eventHandler.processEvent(new Event(EventType.REC_CORRUPTED_APDU));
+					Logging.debug("Flushing buffer");
+					byte b[] = new byte[ManagerConfig.A2M_MAX_SIZE];
+					try {
+						int r = input.read(b);
+						Logging.debug("Freed " + r + "bytes");
+					} catch (IOException e1) {
+						e1.printStackTrace();
+						if (primary)
+							eventHandler.processEvent(new Event(EventType.IND_TRANS_DESC));
+					}
 				}catch (Exception e) {
 					//EOF readed because channel is closed
 					if (primary)

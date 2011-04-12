@@ -173,6 +173,11 @@ public final class MOperating extends Operating {
 			state_handler.changeState(new MUnassociated(state_handler));
 			return true;
 
+		case EventType.REC_CORRUPTED_APDU:
+			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+			state_handler.changeState(new MUnassociated(state_handler));
+			return true;
+
 		default:
 			return false;
 		}
