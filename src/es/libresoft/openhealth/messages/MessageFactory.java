@@ -282,7 +282,7 @@ public class MessageFactory {
 	private static final ApduType createAbrtApdu(int reason){
 		ApduType apdu = new ApduType();
 		AbrtApdu abrt = new AbrtApdu();
-		Abort_reason abrt_reason = new Abort_reason(ASN1_Values.ABRT_RE_UNDEFINED);
+		Abort_reason abrt_reason = new Abort_reason(reason);
 		abrt.setReason(abrt_reason);
 		apdu.selectAbrt(abrt);
 		return apdu;
