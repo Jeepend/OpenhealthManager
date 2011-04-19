@@ -125,9 +125,9 @@ public interface ASN1_Values {
 	public static final int CONF_RESULT_STANDARD_CONFIG_UNKNOWN		= 2;
 
 	/*Operational state*/
-	public static final int OP_STATE_DISABLED						=0;
-	public static final int OP_STATE_ENABLED						=1;
-	public static final int OP_STATE_NOT_AVAILABLE					=2;
+	public static final int OP_STATE_DISABLED						= 0;
+	public static final int OP_STATE_ENABLED						= 1;
+	public static final int OP_STATE_NOT_AVAILABLE					= 2;
 
 	/*Modify operator*/
 	public static final int MOD_OP_REPLACE							= 0;
@@ -146,4 +146,18 @@ public interface ASN1_Values {
 	public static final int SEVTSTA_AGENT_ABORT						= 4;
 	public static final int SEVTSTA_MANAGER_CONFIRM					= 8;
 	public static final int SEVTSTA_MANAGER_ABORT					= 12;
+
+	/*MdsTimeCapState bitmap values*/
+	public static final int mds_time_capab_real_time_clock			= 0;
+	public static final int mds_time_capab_set_clock				= 1;
+	public static final int mds_time_capab_relative_time			= 2;
+	public static final int mds_time_capab_high_res_relative_time	= 3;
+	public static final int mds_time_capab_sync_abs_time			= 4;
+	public static final int mds_time_capab_sync_rel_time			= 5;
+	public static final int mds_time_capab_sync_hi_res_relative_time = 6;
+	public static final int mds_time_state_abs_time_synced			= 8;
+	public static final int mds_time_state_rel_time_synced			= 9;
+	public static final int mds_time_state_hi_res_relative_time_synced = 10;
+	public static final int mds_time_mgr_set_time					= 11;
+
 }

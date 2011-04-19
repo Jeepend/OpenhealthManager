@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth.utils;
 
+import ieee_11073.part_20601.asn1.INT_U8;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -88,4 +90,21 @@ public class ASN1_Tools {
 	    (byte)'8', (byte)'9', (byte)'a', (byte)'b',
 	    (byte)'c', (byte)'d', (byte)'e', (byte)'f'
 	  };
+
+	public static int isSetBit(byte[] raw, int bit) {
+		if (bit > raw.length*8) //out of range
+			return -1;
+		return ( ( raw[bit/8] & (1 << (bit%8)) ) == 0)? 0: 1;
+	}
+
+	public static byte byteToBCD(byte b) {
+		return (byte) ( ((b>>4)*10) + (b%16) );
+	}
+
+	public static INT_U8 toIntU8(byte v) {
+		INT_U8 rv = new INT_U8();
+
+		rv.setValue((int)v);
+		return rv;
+	}
 }

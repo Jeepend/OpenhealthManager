@@ -525,6 +525,44 @@ public class HealthService extends Service {
 			parcelAttributes(o, attrs, error);
 		}
 
+		@Override
+		public boolean setTime(IAgent agent, IError err)
+				throws RemoteException {
+			Agent a = getAgent(agent);
+
+			if (err == null) {
+				err = new IError();
+			}
+
+			if (a == null) {
+				err.setErrCode(ErrorCodes.UNKNOWN_AGENT);
+				setErrorMessage(err);
+				return false;
+			}
+
+			AndroidExternalEvent<Boolean, Object> ev = new AndroidExternalEvent<Boolean, Object>(EventType.REQ_SET_TIME, null);
+
+			a.sendEvent(ev);
+
+			try {
+				ev.proccessing();
+			} catch (InterruptedException e) {
+				err.setErrCode(ErrorCodes.UNEXPECTED_ERROR);
+				setErrorMessage(err);
+				return false;
+			}
+
+			if (ev.wasError()) {
+				err.setErrCode(ev.getError());
+				setErrorMessage(err);
+				return false;
+			}
+
+			err.setErrCode(ErrorCodes.NO_ERROR);
+			setErrorMessage(err);
+			return true;
+		}
+
 		private <T> Agent checkParameters(IAgent agent, T ret, IError error) {
 			if (error == null)
 				return null;

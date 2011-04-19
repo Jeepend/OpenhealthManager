@@ -44,4 +44,5 @@ public interface EventType {
 	public static final int REQ_MDS								=	502;
 	public static final int REQ_GET_SEGMENT_INFO				=	503;
 	public static final int REQ_TRIG_SEGMENT_DATA_XFER			=	504;
+	public static final int REQ_SET_TIME						=	505;
 }

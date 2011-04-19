@@ -26,31 +26,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.fsm.manager;
 
-import java.util.List;
-
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
 import ieee_11073.part_20601.asn1.EventReportResultSimple;
+import ieee_11073.part_20601.asn1.FLOAT_Type;
+import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.InvokeIDType;
+import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
 import ieee_11073.part_20601.asn1.SegmentDataResult;
+import ieee_11073.part_20601.asn1.SetTimeInvoke;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
-import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Operating;
 import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.EpiCfgScanner;
+import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.PM_Segment;
 import ieee_11073.part_20601.phd.dim.PM_Store;
-import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.PeriCfgScanner;
 import ieee_11073.part_20601.phd.dim.SET_Service;
+
+import java.util.Calendar;
+import java.util.List;
+
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.events.EventType;
@@ -106,6 +115,21 @@ public final class MOperating extends Operating {
 		}
 	}
 
+	private AbsoluteTime getAbsTime() {
+		AbsoluteTime t = new AbsoluteTime();
+
+		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)(Calendar.YEAR/100))));
+		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)(Calendar.YEAR%100))));
+		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.MONTH)));
+		t.setDay(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.DAY_OF_MONTH)));
+		t.setHour(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.HOUR_OF_DAY)));
+		t.setMinute(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.MINUTE)));
+		t.setSecond(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.SECOND)));
+		t.setSec_fractions(ASN1_Tools.toIntU8((byte)0));
+
+		return t;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized boolean processEvent(Event event) {
@@ -145,6 +169,43 @@ public final class MOperating extends Operating {
 			TrigSegmDataXferReq tsdxr = new TrigSegmDataXferReq();
 			tsdxr.setSeg_inst_no(xferEvent.getPrivData().getInsNumber());
 			s.Trig_Segment_Data_Xfer(xferEvent, tsdxr);
+			return true;
+
+		case EventType.REQ_SET_TIME:
+			MDS mds = state_handler.getMDS();
+
+			//Check needed capabilities
+			Attribute attr = mds.getAttribute(Nomenclature.MDC_ATTR_MDS_TIME_INFO);
+			if (attr == null) {
+				Logging.error("Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
+				return false;
+			}
+			MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
+			byte[] timeCap = timeInfo.getMds_time_cap_state().getValue().getValue();
+			if (ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_capab_set_clock) != 1 ||
+				ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
+				) {
+				Logging.error("Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
+				return false;
+			}
+
+			SetTimeInvoke timeInv = new SetTimeInvoke();
+
+			INT_U32 cero = new INT_U32();
+			FLOAT_Type accuracy = new FLOAT_Type();
+			cero.setValue((long) 0);
+			accuracy.setValue(cero);
+
+			timeInv.setDate_time(getAbsTime());
+			timeInv.setAccuracy(accuracy);
+			DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(mds, timeInv);
+			if (data == null) {
+				Logging.error("Error creating DataApdu for setTime, is null");
+				return false;
+			}
+			
+			state_handler.send(MessageFactory.composeApdu(data, mds.getDeviceConf()));
+
 			return true;
 
 		case EventType.IND_TRANS_DESC:

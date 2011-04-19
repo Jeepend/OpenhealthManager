@@ -68,6 +68,7 @@ import ieee_11073.part_20601.asn1.RoerErrorValue;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.asn1.SegmentDataResult;
 import ieee_11073.part_20601.asn1.SetArgumentSimple;
+import ieee_11073.part_20601.asn1.SetTimeInvoke;
 import ieee_11073.part_20601.asn1.SystemType;
 import ieee_11073.part_20601.asn1.TrigSegmDataXferReq;
 import ieee_11073.part_20601.phd.dim.Attribute;
@@ -616,6 +617,29 @@ public class MessageFactory {
 		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_ACT_SEG_TRIG_XFER)));
 
 		ActionArgumentSimple aas = genActionArgumentSimple(handle, oid, tsdxr, pmstore.getMDS().getDeviceConf().getEncondigRules());
+		if (aas == null)
+			return null;
+
+		DataApdu.MessageChoiceType msg = new DataApdu.MessageChoiceType();
+		msg.selectRoiv_cmip_confirmed_action(aas);
+		data.setMessage(msg);
+
+		return data;
+	}
+
+	public static final DataApdu PrstRoivCmipConfirmedAction(MDS mds, SetTimeInvoke timeInv) {
+		DataApdu data = new DataApdu();
+
+		data.setInvoke_id(new InvokeIDType(mds.getNextInvokeId()));
+
+		HANDLE handle = (HANDLE) mds.getAttribute(Nomenclature.MDC_ATTR_ID_HANDLE).getAttributeType();
+		if (handle == null)
+			return null;
+
+		OID_Type oid = new OID_Type();
+		oid.setValue(new INT_U16(new Integer(Nomenclature.MDC_ACT_SET_TIME)));
+
+		ActionArgumentSimple aas = genActionArgumentSimple(handle, oid, timeInv, mds.getDeviceConf().getEncondigRules());
 		if (aas == null)
 			return null;
 
