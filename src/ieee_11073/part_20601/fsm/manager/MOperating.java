@@ -56,6 +56,7 @@ import ieee_11073.part_20601.phd.dim.PM_Segment;
 import ieee_11073.part_20601.phd.dim.PM_Store;
 import ieee_11073.part_20601.phd.dim.PeriCfgScanner;
 import ieee_11073.part_20601.phd.dim.SET_Service;
+import ieee_11073.part_20601.phd.dim.TimeOut;
 
 import java.util.Calendar;
 import java.util.List;
@@ -117,17 +118,130 @@ public final class MOperating extends Operating {
 
 	private AbsoluteTime getAbsTime() {
 		AbsoluteTime t = new AbsoluteTime();
+		Calendar c = Calendar.getInstance();
 
-		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)(Calendar.YEAR/100))));
-		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)(Calendar.YEAR%100))));
-		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.MONTH)));
-		t.setDay(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.DAY_OF_MONTH)));
-		t.setHour(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.HOUR_OF_DAY)));
-		t.setMinute(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.MINUTE)));
-		t.setSecond(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD((byte)Calendar.SECOND)));
-		t.setSec_fractions(ASN1_Tools.toIntU8((byte)0));
+		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.YEAR/100) )));
+		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.YEAR%100) )));
+		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MONTH) )));
+		t.setDay(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD(( byte)c.get(Calendar.DAY_OF_MONTH) )));
+		t.setHour(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.HOUR_OF_DAY) )));
+		t.setMinute(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MINUTE) )));
+		t.setSecond(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.SECOND) )));
+		t.setSec_fractions(ASN1_Tools.toIntU8( (byte)0) );
 
 		return t;
+	}
+
+	private void eventSetTime (Event event) {
+		MDS mds = state_handler.getMDS();
+
+		//Check needed capabilities
+		Attribute attr = mds.getAttribute(Nomenclature.MDC_ATTR_MDS_TIME_INFO);
+		if (attr == null) {
+			Logging.error("eventSetTime: Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
+			return;
+		}
+		MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
+		byte[] timeCap = timeInfo.getMds_time_cap_state().getValue().getValue();
+		if (ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_capab_set_clock) != 1 ||
+			ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
+			) {
+			Logging.error("eventSetTime: Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
+			return;
+		}
+
+		//Compose Apdu
+		SetTimeInvoke timeInv = new SetTimeInvoke();
+
+		INT_U32 cero = new INT_U32();
+		FLOAT_Type accuracy = new FLOAT_Type();
+		cero.setValue((long) 0);
+		accuracy.setValue(cero);
+
+		timeInv.setDate_time(getAbsTime());
+		timeInv.setAccuracy(accuracy);
+		DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(mds, timeInv);
+		if (data == null) {
+			Logging.error("Error creating DataApdu for setTime, is null");
+			return;
+		}
+
+		ApduType apdu = MessageFactory.composeApdu(data, mds.getDeviceConf());
+
+		try{
+			InvokeIDType invokeId = data.getInvoke_id();
+			state_handler.send(apdu);
+			DimTimeOut to = new DimTimeOut(TimeOut.MDS_TO_CA, invokeId.getValue(), state_handler) {
+
+				@Override
+				public void procResponse(DataApdu data) {
+					Logging.debug("Received response for setTime on MDS");
+					ExternalEvent<Boolean, Object> event = null;
+					try {
+						event = (ExternalEvent<Boolean, Object>) this.getEvent();
+					} catch (ClassCastException e) {
+
+					}
+
+					if (!data.getMessage().isRoiv_cmip_confirmed_actionSelected()) {
+						//TODO: Unexpected response format
+						Logging.debug("Unexpected response format");
+						if (event != null)
+							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
+						return;
+					}
+//TODO: Check the content of response
+/*
+					GetResultSimple grs = data.getMessage().getRors_cmip_get();
+
+					if (grs.getObj_handle().getValue().getValue() != 0) {
+						//TODO: Unexpected object handle, should be reserved value 0
+						Logging.debug("Unexpected object handle, should be reserved value 0");
+						if (event != null)
+							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
+						return;
+					}
+
+					try {
+						Hashtable<Integer, Attribute> attribs;
+						attribs = getAttributes(grs.getAttribute_list(), getDeviceConf().getEncondigRules());
+						checkGotAttributes(attribs);
+						addCheckedAttributes(attribs);
+*/
+						/* Store received configuration */
+/*
+						byte[] sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
+						storeConfiguration(sys_id, getDeviceConf());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+*/
+					if (event != null)
+						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
+				}
+
+				@Override
+				protected void expiredTimeout(){
+					super.expiredTimeout();
+					ExternalEvent<Boolean, Object> event;
+					try {
+						event = (ExternalEvent<Boolean, Object>) this.getEvent();
+					} catch (ClassCastException e) {
+						return;
+					}
+
+					if (event == null)
+						return;
+
+					event.processed(new Boolean(false), ErrorCodes.TIMEOUT_MDS_CONF_ACION);
+				}
+			};
+			to.setEvent(event);
+			to.start();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -172,40 +286,7 @@ public final class MOperating extends Operating {
 			return true;
 
 		case EventType.REQ_SET_TIME:
-			MDS mds = state_handler.getMDS();
-
-			//Check needed capabilities
-			Attribute attr = mds.getAttribute(Nomenclature.MDC_ATTR_MDS_TIME_INFO);
-			if (attr == null) {
-				Logging.error("Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
-				return false;
-			}
-			MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
-			byte[] timeCap = timeInfo.getMds_time_cap_state().getValue().getValue();
-			if (ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_capab_set_clock) != 1 ||
-				ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
-				) {
-				Logging.error("Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
-				return false;
-			}
-
-			SetTimeInvoke timeInv = new SetTimeInvoke();
-
-			INT_U32 cero = new INT_U32();
-			FLOAT_Type accuracy = new FLOAT_Type();
-			cero.setValue((long) 0);
-			accuracy.setValue(cero);
-
-			timeInv.setDate_time(getAbsTime());
-			timeInv.setAccuracy(accuracy);
-			DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(mds, timeInv);
-			if (data == null) {
-				Logging.error("Error creating DataApdu for setTime, is null");
-				return false;
-			}
-			
-			state_handler.send(MessageFactory.composeApdu(data, mds.getDeviceConf()));
-
+			eventSetTime(event);
 			return true;
 
 		case EventType.IND_TRANS_DESC:
