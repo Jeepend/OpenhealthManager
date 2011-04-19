@@ -33,10 +33,11 @@ public interface ManagerConfig {
 
 	public static int A2M_MAX_SIZE = 64512; /* MAX APDU size in the agent-to-manager direction */
 
-	/* The unique system ID of the manager (EUI-64) Copied from CESL
+	/* The unique system ID of the manager (EUI-64)
 	 * TODO: Change it for our (EUI-64)
 	 */
-	public static byte[] Manager_Id = {(byte)76, (byte)78, (byte)73, (byte)95, (byte)77, (byte)71, (byte)82, (byte)48};
+	//public static byte[] Manager_Id = {(byte)76, (byte)78, (byte)73, (byte)95, (byte)77, (byte)71, (byte)82, (byte)48};
+	public static byte[] Manager_Id = {(byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)1};
 
 	/* The version of the association procedure supported by the manager */
 	public static byte[] assoc_version = HEX_80000000; /*0x80000000 (assoc-version1=0)*/
