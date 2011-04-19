@@ -120,8 +120,8 @@ public final class MOperating extends Operating {
 		AbsoluteTime t = new AbsoluteTime();
 		Calendar c = Calendar.getInstance();
 
-		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.YEAR/100) )));
-		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.YEAR%100) )));
+		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.YEAR)/100) )));
+		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.YEAR)%100) )));
 		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MONTH) )));
 		t.setDay(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD(( byte)c.get(Calendar.DAY_OF_MONTH) )));
 		t.setHour(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.HOUR_OF_DAY) )));
