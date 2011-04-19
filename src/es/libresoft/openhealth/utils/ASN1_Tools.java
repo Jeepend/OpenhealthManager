@@ -98,7 +98,7 @@ public class ASN1_Tools {
 	}
 
 	public static byte byteToBCD(byte b) {
-		return (byte) ( ((b>>4)*10) + (b%16) );
+		return (byte)( ((b/10)<<4) | (b%10) );
 	}
 
 	public static INT_U8 toIntU8(byte v) {
