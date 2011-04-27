@@ -33,6 +33,7 @@ import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Configuring;
 import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
 import java.util.concurrent.Semaphore;
@@ -195,6 +196,10 @@ public final class WaitingForConfig extends Configuring {
 			state_handler.send(MessageFactory.AbrtApdu(ASN1_Values.ABRT_RE_UNDEFINED));
 			state_handler.changeState(new MUnassociated(state_handler));
 		}
+
+		DimTimeOut to = state_handler.retireTimeout(data.getInvoke_id().getValue());
+		if (to != null)
+			to.procResponse(data);
 	}
 
 	private void roiv_cmip_confirmed_event_repor(DataApdu data){

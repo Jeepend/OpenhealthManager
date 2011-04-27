@@ -52,6 +52,7 @@ import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
 import ieee_11073.part_20601.fsm.Configuring;
 import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
 
 public final class CheckingConfig extends Configuring {
 
@@ -208,6 +209,10 @@ public final class CheckingConfig extends Configuring {
 			//TODO:
 			Logging.debug(">> TODO: Rorj");
 		}
+
+		DimTimeOut to = state_handler.retireTimeout(data.getInvoke_id().getValue());
+		if (to != null)
+			to.procResponse(data);
 	}
 
 	private void roiv_cmip_confirmed_event_repor(DataApdu data){
