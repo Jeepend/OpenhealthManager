@@ -126,6 +126,7 @@ public abstract class DIM {
 			Class<?> attrClass = DIM_Tools.getAttributeClass(ava.getAttribute_id().getValue().getValue());
 			if (attrClass == null) {
 				Logging.debug("Error: Can't get Attribute " + ava.getAttribute_id().getValue().getValue());
+				continue;
 			}
 
 			if (attrClass == ASN1OctetString.class) {
