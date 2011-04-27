@@ -463,13 +463,14 @@ public final class MOperating extends Operating {
 
 	private void roiv_cmip_confirmed_event_report(DataApdu data){
 		EventReportArgumentSimple event = data.getMessage().getRoiv_cmip_confirmed_event_report();
-		process_event_report(data, event);
 
 		if (event.getEvent_type().getValue().getValue().intValue() == Nomenclature.MDC_NOTI_SEGMENT_DATA) {
 			// PM-store object events (only confirmed):
 			processSegmentDataEvent(data.getInvoke_id(), event);
-		}else
+		}else {
+			process_event_report(data, event);
 			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
+		}
 	}
 
 	private void roiv_cmip_event_report(DataApdu data){
