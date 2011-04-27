@@ -144,6 +144,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="MDC_DEV_SPEC_PROFILE_AI_ACTIVITY_HUB">Activity Hub</string>
 	<string name="MDC_DEV_SPEC_PROFILE_AI_MED_MINDER">TODO: Set this string MDC_DEV_SPEC_PROFILE_AI_MED_MINDER</string>
 
+	<string name="MDC_TIME_SYNC_NONE">No time synchronization protocol supported</string>
+
 	<string name="UNKNOWN_VALUE">Unknown attribute value</string>
 
 </resources>

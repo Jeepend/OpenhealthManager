@@ -94,7 +94,7 @@ public class ASN1_Tools {
 	public static int isSetBit(byte[] raw, int bit) {
 		if (bit > raw.length*8) //out of range
 			return -1;
-		return ( ( raw[bit/8] & (1 << (bit%8)) ) == 0)? 0: 1;
+		return ( ( raw[bit/8] & (1 << (7-(bit%8))) ) == 0)? 0: 1;
 	}
 
 	public static byte byteToBCD(byte b) {

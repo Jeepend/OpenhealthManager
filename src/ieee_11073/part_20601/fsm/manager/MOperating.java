@@ -3,6 +3,7 @@ Copyright (C) 2008-2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 Author: Santiago Carot-Nemesio <scarot@libresoft.es>
+Author: Jorge Fernández González <jfernandez@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -143,6 +144,7 @@ public final class MOperating extends Operating {
 		}
 		MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
 		byte[] timeCap = timeInfo.getMds_time_cap_state().getValue().getValue();
+
 		if (ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_capab_set_clock) != 1 ||
 			ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
 			) {
@@ -351,8 +353,8 @@ public final class MOperating extends Operating {
 		MessageChoiceType msg = data.getMessage();
 		//Process the message received
 		if (msg.isRoiv_cmip_event_reportSelected()) {
-			//TODO:
 			Logging.debug(">> Roiv_cmip_event_report");
+			roiv_cmip_event_report(data);
 		}else if (msg.isRoiv_cmip_confirmed_event_reportSelected()) {
 			Logging.debug(">> Roiv_cmip_confirmed_event_report");
 			roiv_cmip_confirmed_event_report(data);
@@ -482,18 +484,30 @@ public final class MOperating extends Operating {
 		}
 	}
 
-	private void roiv_cmip_confirmed_event_report(DataApdu data) { //EventReportArgumentSimple event, MessageChoiceType msg){
+	private void roiv_cmip_confirmed_event_report(DataApdu data){
 		EventReportArgumentSimple event = data.getMessage().getRoiv_cmip_confirmed_event_report();
+		process_event_report(data, event);
+
+		if (event.getEvent_type().getValue().getValue().intValue() == Nomenclature.MDC_NOTI_SEGMENT_DATA) {
+			// PM-store object events (only confirmed):
+			processSegmentDataEvent(data.getInvoke_id(), event);
+		}else
+			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
+	}
+
+	private void roiv_cmip_event_report(DataApdu data){
+		EventReportArgumentSimple event = data.getMessage().getRoiv_cmip_event_report();
+		process_event_report(data, event);
+	}
+
+	private void process_event_report(DataApdu data, EventReportArgumentSimple event){
 		//(A.10.3 EVENT REPORT service)
 		if (event.getObj_handle().getValue().getValue().intValue() == 0){
 			//obj-handle is 0 to represent the MDS
 			process_MDS_Object_Event(event);
-			this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 		} else {
 			switch (event.getEvent_type().getValue().getValue().intValue()) {
-			case Nomenclature.MDC_NOTI_SEGMENT_DATA:
-				processSegmentDataEvent(data.getInvoke_id(), event);
-				break;
+			// Episodic configurable scanner object events:
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_VAR:
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_FIXED:
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_GROUPED:
@@ -501,8 +515,8 @@ public final class MOperating extends Operating {
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_FIXED:
 			case Nomenclature.MDC_NOTI_UNBUF_SCAN_REPORT_MP_GROUPED:
 				processUnbufScannerEvent(event);
-				this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 				break;
+			// Periodic configurable scanner object events:
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_VAR:
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_FIXED:
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_GROUPED:
@@ -510,7 +524,6 @@ public final class MOperating extends Operating {
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_FIXED:
 			case Nomenclature.MDC_NOTI_BUF_SCAN_REPORT_MP_GROUPED:
 				processBufScannerEvent(event);
-				this.state_handler.send(MessageFactory.PrstTypeResponse(data, state_handler.getMDS().getDeviceConf()));
 				break;
 			default:
 				//TODO: handle representing a scanner or PM-store object.

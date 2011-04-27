@@ -296,7 +296,7 @@ public final class MUnassociated extends Unassociated {
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(dev_conf));
 		state_handler.changeState(new WaitingForConfig(state_handler));
 
-		//mds.GET(null);
+		mds.GET(null);
 	}
 
 	private void processStoredConfiguration(PhdAssociationInformation phd, Collection<ConfigObject> data) throws InvalidAttributeException {
@@ -328,7 +328,7 @@ public final class MUnassociated extends Unassociated {
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED(dev_conf));
 		state_handler.changeState(new MOperating(state_handler));
 
-		//mds.GET(null);
+		mds.GET(null);
 	}
 
 	private void processStandardConfiguration(PhdAssociationInformation phd) {

@@ -60,6 +60,8 @@ public class AttributeUtils {
 		case Nomenclature.MDC_ATTR_SYS_TYPE_SPEC_LIST:
 			retValue = partitionValue2string(
 					Nomenclature.MDC_DEV_SPEC_PROFILE_TEMP, attrValue);
+		case Nomenclature.MDC_ATTR_MDS_TIME_INFO:
+			retValue = partitionValue2string(Nomenclature.MDC_PART_OBJ, attrValue);
 		//TODO: Add more cases here
 		}
 
@@ -78,6 +80,7 @@ public class AttributeUtils {
 
 		switch (partition) {
 		case Nomenclature.MDC_PART_OBJ:
+			retValue = objType2String(attrValue);
 			break;
 		case Nomenclature.MDC_PART_SCADA:
 			retValue = scadaType2String(attrValue);
@@ -266,6 +269,16 @@ public class AttributeUtils {
 		case Nomenclature.MDC_DEV_SPEC_PROFILE_AI_MED_MINDER:
 			return context
 					.getString(R.string.MDC_DEV_SPEC_PROFILE_AI_MED_MINDER);
+		default:
+			return context.getString(R.string.UNKNOWN_VALUE);
+		}
+	}
+
+	private static String objType2String(int attrValue) {
+		switch (attrValue) {
+		//TODO: complete all the cases.
+		case Nomenclature.MDC_TIME_SYNC_NONE:
+			return context.getString(R.string.MDC_TIME_SYNC_NONE);
 		default:
 			return context.getString(R.string.UNKNOWN_VALUE);
 		}

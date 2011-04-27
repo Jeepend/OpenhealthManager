@@ -59,6 +59,8 @@ public abstract class DimTimeOut extends TimeOut {
 
 	private int getProperTimeoutError() {
 		switch (event.getTypeOfEvent()) {
+		case EventType.REQ_SET_TIME:
+			return ErrorCodes.TIMEOUT_MDS_CONF_ACION;
 		case EventType.REQ_GET_PM_STORE:
 			return ErrorCodes.TIMEOUT_PM_GET;
 		case EventType.REQ_MDS:
