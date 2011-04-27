@@ -192,32 +192,9 @@ public final class MOperating extends Operating {
 							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
 						return;
 					}
-//TODO: Check the content of response
-/*
-					GetResultSimple grs = data.getMessage().getRors_cmip_get();
 
-					if (grs.getObj_handle().getValue().getValue() != 0) {
-						//TODO: Unexpected object handle, should be reserved value 0
-						Logging.debug("Unexpected object handle, should be reserved value 0");
-						if (event != null)
-							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
-						return;
-					}
+					//TODO: Check the content of response
 
-					try {
-						Hashtable<Integer, Attribute> attribs;
-						attribs = getAttributes(grs.getAttribute_list(), getDeviceConf().getEncondigRules());
-						checkGotAttributes(attribs);
-						addCheckedAttributes(attribs);
-*/
-						/* Store received configuration */
-/*
-						byte[] sys_id = (byte[]) getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType();
-						storeConfiguration(sys_id, getDeviceConf());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-*/
 					if (event != null)
 						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
 				}
