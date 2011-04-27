@@ -421,7 +421,6 @@ public class MessageFactory {
 		RelativeTime rt = new RelativeTime();
 		rt.setValue(new INT_U32(0L));
 
-		byte[] byteArray = {(byte)0, (byte)0};
 		errs.setObj_handle(h);
 		errs.setCurrentTime(rt);
 
@@ -429,7 +428,7 @@ public class MessageFactory {
 		errs.setEvent_type(da.getMessage().
 				getRoiv_cmip_confirmed_event_report().
 				getEvent_type());
-		errs.setEvent_reply_info(byteArray);
+		errs.setEvent_reply_info(new byte[]{});
 
 		msg.selectRors_cmip_confirmed_event_report(errs);
 		return msg;
