@@ -197,12 +197,8 @@ public class MDSManager extends MDS {
 		} catch (Exception e) {
 			e.printStackTrace();
 			clearObjectsFromMds();
-			if ((ASN1_Values.CONF_ID_STANDARD_CONFIG_START <= configId) && (configId <= ASN1_Values.CONF_ID_STANDARD_CONFIG_END))
-				//Error in standard configuration
-				return generateConfigReportRsp(configId,
-						ASN1_Values.CONF_RESULT_STANDARD_CONFIG_UNKNOWN);
-			else return generateConfigReportRsp(configId,
-					ASN1_Values.CONF_RESULT_UNSUPPORTED_CONFIG);
+			return  generateConfigReportRsp(configId,
+						ASN1_Values.CONF_RESULT_UNSUPPORTED_CONFIG);
 		}
 
 	}
