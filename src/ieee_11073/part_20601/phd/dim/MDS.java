@@ -46,6 +46,7 @@ import java.util.Set;
 
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.DeviceConfig;
+import es.libresoft.openhealth.events.Event;
 import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.storage.ConfigStorage;
 import es.libresoft.openhealth.storage.ConfigStorageFactory;
@@ -245,7 +246,7 @@ public abstract class MDS extends DIM implements MDS_Events, GET_Service {
 	 * absolute time. The agent indicates whether the Set-Time command is valid by
 	 * using the mds-time-capab-set-clock bit in the Mds-Time-Info attribute.
 	 */
-	public abstract void Set_Time ();
+	public abstract void Set_Time (Event event);
 
 
 	//----------------------------------PRIVATE----------------------------------------

@@ -40,9 +40,11 @@ import ieee_11073.part_20601.asn1.ConfigReport;
 import ieee_11073.part_20601.asn1.ConfigReportRsp;
 import ieee_11073.part_20601.asn1.ConfigResult;
 import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.FLOAT_Type;
 import ieee_11073.part_20601.asn1.GetResultSimple;
 import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
+import ieee_11073.part_20601.asn1.INT_U32;
 import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.MdsTimeInfo;
 import ieee_11073.part_20601.asn1.MetricSpecSmall;
@@ -57,6 +59,7 @@ import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
+import ieee_11073.part_20601.asn1.SetTimeInvoke;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
 import ieee_11073.part_20601.asn1.TypeVer;
@@ -70,6 +73,7 @@ import ieee_11073.part_20601.phd.dim.MDS;
 import ieee_11073.part_20601.phd.dim.Numeric;
 import ieee_11073.part_20601.phd.dim.TimeOut;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -80,6 +84,7 @@ import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.ManagerConfig;
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.InternalEventReporter;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.events.MeasureReporterFactory;
@@ -87,6 +92,7 @@ import es.libresoft.openhealth.events.MeasureReporterUtils;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
 import es.libresoft.openhealth.utils.DIM_Tools;
 import es.libresoft.openhealth.utils.RawDataExtractor;
@@ -469,6 +475,11 @@ public class MDSManager extends MDS {
 
 					if (event != null)
 						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
+
+					//When mds-time-mgr-set-time-bit is set is needed Set_Time
+					//chapter 8.12.2.1 of 11073-20601a-2010
+					Agent a = (Agent) getDevice();
+					a.sendEvent(new Event(EventType.REQ_SET_TIME));
 				}
 
 				@Override
@@ -500,9 +511,108 @@ public class MDSManager extends MDS {
 		Logging.debug("TODO: Implement MDS_DATA_REQUEST");
 	}
 
+	private AbsoluteTime getAbsTime() {
+		AbsoluteTime t = new AbsoluteTime();
+		Calendar c = Calendar.getInstance();
+
+		t.setCentury(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.YEAR)/100) )));
+		t.setYear(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)(c.get(Calendar.YEAR)%100) )));
+		t.setMonth(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MONTH) )));
+		t.setDay(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD(( byte)c.get(Calendar.DAY_OF_MONTH) )));
+		t.setHour(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.HOUR_OF_DAY) )));
+		t.setMinute(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.MINUTE) )));
+		t.setSecond(ASN1_Tools.toIntU8(ASN1_Tools.byteToBCD( (byte)c.get(Calendar.SECOND) )));
+		t.setSec_fractions(ASN1_Tools.toIntU8( (byte)0) );
+
+		return t;
+	}
+
 	@Override
-	public void Set_Time() {
-		Logging.debug("TODO: Implement Set_Time");
+	public void Set_Time(Event event) {
+		//Check needed capabilities
+		Attribute attr = getAttribute(Nomenclature.MDC_ATTR_MDS_TIME_INFO);
+		if (attr == null) {
+			Logging.error("eventSetTime: Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
+			return;
+		}
+		MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
+		byte[] timeCap = timeInfo.getMds_time_cap_state().getValue().getValue();
+
+		if (ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_capab_set_clock) != 1 ||
+			ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
+			) {
+			Logging.error("eventSetTime: Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
+			return;
+		}
+
+		//Compose Apdu
+		SetTimeInvoke timeInv = new SetTimeInvoke();
+
+		INT_U32 cero = new INT_U32();
+		FLOAT_Type accuracy = new FLOAT_Type();
+		cero.setValue((long) 0);
+		accuracy.setValue(cero);
+
+		timeInv.setDate_time(getAbsTime());
+		timeInv.setAccuracy(accuracy);
+		DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(this, timeInv);
+		if (data == null) {
+			Logging.error("Error creating DataApdu for setTime, is null");
+			return;
+		}
+
+		ApduType apdu = MessageFactory.composeApdu(data, getDeviceConf());
+
+		try{
+			InvokeIDType invokeId = data.getInvoke_id();
+			getStateHandler().send(apdu);
+			DimTimeOut to = new DimTimeOut(TimeOut.MDS_TO_CA, invokeId.getValue(), getStateHandler()) {
+
+				@Override
+				public void procResponse(DataApdu data) {
+					Logging.debug("Received response for setTime on MDS");
+					ExternalEvent<Boolean, Object> event = null;
+					try {
+						event = (ExternalEvent<Boolean, Object>) this.getEvent();
+					} catch (ClassCastException e) {
+					}
+
+					if (!data.getMessage().isRoiv_cmip_confirmed_actionSelected()) {
+						//TODO: Unexpected response format
+						Logging.debug("Unexpected response format");
+						if (event != null)
+							event.processed(new Boolean(false), ErrorCodes.UNEXPECTED_ERROR);
+							return;
+					}
+
+					//TODO: Check the content of response
+
+					if (event != null)
+						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
+				}
+
+				@Override
+				protected void expiredTimeout(){
+					super.expiredTimeout();
+					ExternalEvent<Boolean, Object> event;
+					try {
+						event = (ExternalEvent<Boolean, Object>) this.getEvent();
+					} catch (ClassCastException e) {
+						return;
+					}
+
+					if (event == null)
+						return;
+
+					event.processed(new Boolean(false), ErrorCodes.TIMEOUT_MDS_CONF_ACION);
+				}
+			};
+			to.setEvent(event);
+			to.start();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
