@@ -33,6 +33,7 @@ import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.ApduType;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
+import ieee_11073.part_20601.asn1.BaseOffsetTime;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.ConfigId;
 import ieee_11073.part_20601.asn1.ConfigObject;
@@ -400,8 +401,12 @@ public class MDSManager extends MDS {
 					Logging.debug("\tProd spec: " + new String(pse.getProd_spec()));
 				}
 				break;
+			case Nomenclature.MDC_ATTR_TIME_BO:
+				BaseOffsetTime boTime = (BaseOffsetTime) attr.getAttributeType();
+				Logging.debug("BaseOffsetTime: " + boTime.getBo_time_offset().getValue());
+				break;
 			default:
-				Logging.debug(">>>>>>>Id not implemented yet");
+				Logging.debug(">>>>>>>Id " + id + " not implemented yet");
 				break;
 			}
 		}

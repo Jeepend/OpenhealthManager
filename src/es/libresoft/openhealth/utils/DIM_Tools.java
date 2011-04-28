@@ -33,6 +33,7 @@ import ieee_11073.part_20601.asn1.AbsoluteTimeAdjust;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.BITS_16;
 import ieee_11073.part_20601.asn1.BITS_32;
+import ieee_11073.part_20601.asn1.BaseOffsetTime;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
 import ieee_11073.part_20601.asn1.BatMeasure;
@@ -170,6 +171,7 @@ public class DIM_Tools {
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC : return "Compund-Basic-Nu-Observed-Value";
 		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST : return "Metric-Id-List";
 		case Nomenclature.MDC_ATTR_SCAN_HANDLE_LIST : return "Scan-Handle-List";
+		case Nomenclature.MDC_ATTR_TIME_BO : return "Base-Offset-Time";
 		default: return null;
 		}
 	}
@@ -254,6 +256,7 @@ public class DIM_Tools {
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC : return BasicNuObsValueCmp.class;
 		case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST : return MetricIdList.class;
 		case Nomenclature.MDC_ATTR_SCAN_HANDLE_LIST : return HANDLEList.class;
+		case Nomenclature.MDC_ATTR_TIME_BO : return BaseOffsetTime.class;
 		default: return null;
 		}
 	}
