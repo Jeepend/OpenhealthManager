@@ -223,6 +223,10 @@ public class MDSManager extends MDS {
 
 				//Get DIM from Handle_id
 				DIM elem = getObject(obs.getObj_handle());
+				if (elem == null) {
+					Logging.error("MDS_Dynamic_Data_Update_Fixed: Not found DIM for handle " + obs.getObj_handle().getValue().getValue());
+					continue;
+				}
 				AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
