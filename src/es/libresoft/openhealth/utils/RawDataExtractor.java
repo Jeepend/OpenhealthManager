@@ -79,16 +79,16 @@ public class RawDataExtractor {
 		IDecoder decoder = CoderFactory.getInstance().newDecoder(eRules);
 		switch (attrId){
 		case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
-			//Logging.debug("MDC_ATTR_NU_VAL_OBS_BASIC");
+			Logging.debug("MDC_ATTR_NU_VAL_OBS_BASIC");
 			INT_U16 iu = decoder.decode(input, INT_U16.class);
 			SFloatType ft = new SFloatType(iu.getValue());
-			Logging.debug("Measure: " + ft.doubleValueRepresentation());
+			Logging.debug("Measure: " + ft.doubleValueRepresentation() + ", " + ft);
 			return (T)ft;
 		case Nomenclature.MDC_ATTR_NU_VAL_OBS_SIMP:
-			//Logging.debug("MDC_ATTR_NU_VAL_OBS_SIMP");
+			Logging.debug("MDC_ATTR_NU_VAL_OBS_SIMP");
 			INT_U32 iu2 = decoder.decode(input, INT_U32.class);
 			FloatType ft2 = new FloatType(iu2.getValue());
-			Logging.debug("Measure: " + ft2.doubleValueRepresentation());
+			Logging.debug("Measure: " + ft2.doubleValueRepresentation() + ", " + ft2);
 			return (T)ft2;
 		case Nomenclature.MDC_ATTR_TIME_ABS:
 		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
@@ -115,7 +115,7 @@ public class RawDataExtractor {
 			Logging.debug("date: " + d);
 			return (T)d;
 		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC:
-			//Logging.debug("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
+			Logging.debug("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
 			BasicNuObsValueCmp cmp_val = decoder.decode(input, BasicNuObsValueCmp.class);
 			Iterator<BasicNuObsValue> it = cmp_val.getValue().iterator();
 			ArrayList<SFloatType> measures = new ArrayList<SFloatType>();
@@ -123,15 +123,15 @@ public class RawDataExtractor {
 			while (it.hasNext()) {
 				BasicNuObsValue value = it.next();
 				SFloatType ms = new SFloatType(value.getValue().getValue());
-				Logging.debug("Measure: " + ms.doubleValueRepresentation());
+				Logging.debug("Measure: " + ms.doubleValueRepresentation() + ", " + ms);
 				measures.add(ms);
 			}
 			return (T)measures;
 		case Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE:
-			//Logging.debug("MDC_ATTR_TIME_PD_MSMT_ACTIVE");
+			Logging.debug("MDC_ATTR_TIME_PD_MSMT_ACTIVE");
 			INT_U32 iu3 = decoder.decode(input, INT_U32.class);
 			FloatType ft3 = new FloatType(iu3.getValue());
-			Logging.debug("Measure: " + ft3.doubleValueRepresentation());
+			Logging.debug("Measure: " + ft3.doubleValueRepresentation() + ", " + ft3);
 			return (T)ft3;
 		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_OID:
 			//Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_OID");
