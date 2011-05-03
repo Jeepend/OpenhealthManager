@@ -641,6 +641,7 @@ public class MDSManager extends MDS {
 				srpf = i.next();
 
 				PersonId pi = srpf.getPerson_id();
+				Logging.debug("PersonId: " + pi.getValue());
 
 				Iterator<ObservationScanFixed> i_o = srpf.getObs_scan_fixed().iterator();
 				ObservationScanFixed obs;
@@ -695,6 +696,7 @@ public class MDSManager extends MDS {
 			{
 				srpv = i.next();
 				PersonId pi = srpv.getPerson_id();
+				Logging.debug("PersonId: " + pi.getValue());
 
 				Iterator<ObservationScan> i_o = srpv.getObs_scan_var().iterator();
 				ObservationScan obs;
