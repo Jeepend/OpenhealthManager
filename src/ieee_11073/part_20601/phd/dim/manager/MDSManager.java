@@ -634,15 +634,15 @@ public class MDSManager extends MDS {
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
 
-			Iterator<ScanReportPerFixed> i= info.getScan_per_fixed().iterator();
+			Iterator<ScanReportPerFixed> i = info.getScan_per_fixed().iterator();
 			ScanReportPerFixed srpf;
 
 			while (i.hasNext()) {
-				srpf=i.next();
+				srpf = i.next();
 
 				PersonId pi = srpf.getPerson_id();
 
-				Iterator<ObservationScanFixed> i_o= srpf.getObs_scan_fixed().iterator();
+				Iterator<ObservationScanFixed> i_o = srpf.getObs_scan_fixed().iterator();
 				ObservationScanFixed obs;
 
 				while (i_o.hasNext()){
@@ -654,7 +654,7 @@ public class MDSManager extends MDS {
 					Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 					RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
 					MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
-					MeasureReporterUtils.addAttributesToReport(mr,elem);
+					MeasureReporterUtils.addAttributesToReport(mr, elem);
 
 					Attribute at = new Attribute(Nomenclature.MDC_ATTR_PM_SEG_PERSON_ID, pi);
 					mr.set_attribute(at);
@@ -664,7 +664,7 @@ public class MDSManager extends MDS {
 						int attrId = attr.getAttribute_id().getValue().getValue();
 						int length = attr.getAttribute_len();
 						try {
-							mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,de.getData(length), this.getDeviceConf().getEncondigRules()));
+							mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId, de.getData(length), this.getDeviceConf().getEncondigRules()));
 						}catch(Exception e){
 							Logging.error("Error: Can not get attribute " + attrId);
 							e.printStackTrace();
@@ -688,7 +688,7 @@ public class MDSManager extends MDS {
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
 
-			Iterator<ScanReportPerVar> i= info.getScan_per_var().iterator();
+			Iterator<ScanReportPerVar> i = info.getScan_per_var().iterator();
 			ScanReportPerVar srpv;
 
 			while  (i.hasNext())
@@ -718,7 +718,7 @@ public class MDSManager extends MDS {
 						AVA_Type att = it.next();
 						Integer att_id = att.getAttribute_id().getValue().getValue();
 						byte[] att_value = att.getAttribute_value();
-						mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id,att_value, this.getDeviceConf().getEncondigRules()));
+						mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id, att_value, this.getDeviceConf().getEncondigRules()));
 					}
 					InternalEventReporter.receivedMeasure((Agent) device, mr);
 				}

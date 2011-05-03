@@ -409,12 +409,12 @@ public final class MOperating extends Operating {
 				mdc_noti_scan_report_fixed(event.getEvent_info());
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR:
-				mdc_noti_scan_report_MP_var(event.getEvent_info());
 				Logging.debug("MDC_NOTI_SCAN_REPORT_MP_VAR");
+				mdc_noti_scan_report_MP_var(event.getEvent_info());
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_FIXED:
-				mdc_noti_scan_report_MP_fixed(event.getEvent_info());
 				Logging.debug("MDC_NOTI_SCAN_REPORT_MP_FIXED");
+				mdc_noti_scan_report_MP_fixed(event.getEvent_info());
 				break;
 		}
 	}
