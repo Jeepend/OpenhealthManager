@@ -52,6 +52,7 @@ import ieee_11073.part_20601.asn1.MetricSpecSmall;
 import ieee_11073.part_20601.asn1.OID_Type;
 import ieee_11073.part_20601.asn1.ObservationScan;
 import ieee_11073.part_20601.asn1.ObservationScanFixed;
+import ieee_11073.part_20601.asn1.PersonId;
 import ieee_11073.part_20601.asn1.ProdSpecEntry;
 import ieee_11073.part_20601.asn1.ProductionSpec;
 import ieee_11073.part_20601.asn1.RegCertData;
@@ -60,6 +61,8 @@ import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
 import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
+import ieee_11073.part_20601.asn1.ScanReportPerFixed;
+import ieee_11073.part_20601.asn1.ScanReportPerVar;
 import ieee_11073.part_20601.asn1.SetTimeInvoke;
 import ieee_11073.part_20601.asn1.SystemModel;
 import ieee_11073.part_20601.asn1.TYPE;
@@ -626,11 +629,102 @@ public class MDSManager extends MDS {
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Fixed(ScanReportInfoMPFixed info) {
-		Logging.debug("TODO: Implement MDS_Dynamic_Data_Update_MP_Fixed");
+		Logging.debug("MDS_Dynamic_Data_Update_MP_Fixed");
+		try {
+			String system_id = DIM_Tools.byteArrayToString(
+					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+
+			Iterator<ScanReportPerFixed> i= info.getScan_per_fixed().iterator();
+			ScanReportPerFixed srpf;
+
+			while (i.hasNext()) {
+				srpf=i.next();
+
+				PersonId pi = srpf.getPerson_id();
+
+				Iterator<ObservationScanFixed> i_o= srpf.getObs_scan_fixed().iterator();
+				ObservationScanFixed obs;
+
+				while (i_o.hasNext()){
+					obs = i_o.next();
+
+					//Get DIM from Handle_id
+					DIM elem = getObject(obs.getObj_handle());
+					AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
+					Iterator<AttrValMapEntry> it = avm.getValue().iterator();
+					RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
+					MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
+					MeasureReporterUtils.addAttributesToReport(mr,elem);
+
+					Attribute at = new Attribute(Nomenclature.MDC_ATTR_PM_SEG_PERSON_ID, pi);
+					mr.set_attribute(at);
+
+					while (it.hasNext()){
+						AttrValMapEntry attr = it.next();
+						int attrId = attr.getAttribute_id().getValue().getValue();
+						int length = attr.getAttribute_len();
+						try {
+							mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,de.getData(length), this.getDeviceConf().getEncondigRules()));
+						}catch(Exception e){
+							Logging.error("Error: Can not get attribute " + attrId);
+							e.printStackTrace();
+						}
+					}
+
+					InternalEventReporter.receivedMeasure((Agent) device, mr);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void MDS_Dynamic_Data_Update_MP_Var(ScanReportInfoMPVar info) {
-		Logging.debug("TODO: Implement MDS_Dynamic_Data_Update_MP_Var");
+		Logging.debug("MDS_Dynamic_Data_Update_MP_Var");
+		try{
+			String system_id = DIM_Tools.byteArrayToString(
+					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
+
+			Iterator<ScanReportPerVar> i= info.getScan_per_var().iterator();
+			ScanReportPerVar srpv;
+
+			while  (i.hasNext())
+			{
+				srpv = i.next();
+				PersonId pi = srpv.getPerson_id();
+
+				Iterator<ObservationScan> i_o = srpv.getObs_scan_var().iterator();
+				ObservationScan obs;
+
+				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
+
+				while (i_o.hasNext()) {
+					obs = i_o.next();
+					//Get Numeric from Handle_id
+					Numeric numeric = getNumeric(obs.getObj_handle());
+					MeasureReporterUtils.addAttributesToReport(mr,numeric);
+
+					Attribute at = new Attribute(Nomenclature.MDC_ATTR_PM_SEG_PERSON_ID, pi);
+					mr.set_attribute(at);
+
+					if (numeric == null)
+						throw new Exception("Numeric class not found for handle: " + obs.getObj_handle().getValue().getValue());
+
+					Iterator<AVA_Type> it = obs.getAttributes().getValue().iterator();
+					while (it.hasNext()){
+						AVA_Type att = it.next();
+						Integer att_id = att.getAttribute_id().getValue().getValue();
+						byte[] att_value = att.getAttribute_value();
+						mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id,att_value, this.getDeviceConf().getEncondigRules()));
+					}
+					InternalEventReporter.receivedMeasure((Agent) device, mr);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

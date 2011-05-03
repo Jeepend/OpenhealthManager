@@ -37,6 +37,8 @@ import ieee_11073.part_20601.asn1.InvokeIDType;
 import ieee_11073.part_20601.asn1.PrstApdu;
 import ieee_11073.part_20601.asn1.RelativeTime;
 import ieee_11073.part_20601.asn1.ScanReportInfoFixed;
+import ieee_11073.part_20601.asn1.ScanReportInfoMPFixed;
+import ieee_11073.part_20601.asn1.ScanReportInfoMPVar;
 import ieee_11073.part_20601.asn1.ScanReportInfoVar;
 import ieee_11073.part_20601.asn1.SegmentDataEvent;
 import ieee_11073.part_20601.asn1.SegmentDataResult;
@@ -258,8 +260,6 @@ public final class MOperating extends Operating {
 		DimTimeOut to = state_handler.retireTimeout(data.getInvoke_id().getValue());
 		if (to != null)
 			to.procResponse(data);
-
-		//TODO search in the timeouts if is there one for this event
 	}
 
 	private void processSegmentDataEvent(InvokeIDType id, EventReportArgumentSimple event) {
@@ -409,11 +409,11 @@ public final class MOperating extends Operating {
 				mdc_noti_scan_report_fixed(event.getEvent_info());
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_VAR:
-				//TODO:
+				mdc_noti_scan_report_MP_var(event.getEvent_info());
 				Logging.debug("MDC_NOTI_SCAN_REPORT_MP_VAR");
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_MP_FIXED:
-				//TODO:
+				mdc_noti_scan_report_MP_fixed(event.getEvent_info());
 				Logging.debug("MDC_NOTI_SCAN_REPORT_MP_FIXED");
 				break;
 		}
@@ -438,6 +438,32 @@ public final class MOperating extends Operating {
 					ScanReportInfoVar.class,
 					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
 			this.state_handler.getMDS().MDS_Dynamic_Data_Update_Var(sriv);
+		} catch (Exception e) {
+			Logging.debug("Error decoding mdc_noti_scan_report_var");
+			e.printStackTrace();
+		}
+
+	}
+
+	private void mdc_noti_scan_report_MP_fixed (byte[] einfo){
+		try {
+			ScanReportInfoMPFixed srimpf = ASN1_Tools.decodeData(einfo,
+					ScanReportInfoMPFixed.class,
+					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+			this.state_handler.getMDS().MDS_Dynamic_Data_Update_MP_Fixed(srimpf);
+		} catch (Exception e) {
+			Logging.debug("Error decoding mdc_noti_scan_report_fixed");
+			e.printStackTrace();
+		}
+
+	}
+
+	private void mdc_noti_scan_report_MP_var(byte[] einfo) {
+		try {
+			ScanReportInfoMPVar srimpv = ASN1_Tools.decodeData(einfo,
+					ScanReportInfoMPVar.class,
+					this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+			this.state_handler.getMDS().MDS_Dynamic_Data_Update_MP_Var(srimpv);
 		} catch (Exception e) {
 			Logging.debug("Error decoding mdc_noti_scan_report_var");
 			e.printStackTrace();
