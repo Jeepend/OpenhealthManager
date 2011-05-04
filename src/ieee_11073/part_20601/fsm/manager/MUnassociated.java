@@ -290,8 +290,11 @@ public final class MUnassociated extends Unassociated {
 		mds.setStateHandler(state_handler);
 		//Set device config
 		mds.setDeviceConfig(dev_conf);
+		mds.lockConfRsp();
+
 		//Set MDS Object
 		state_handler.setMDS(mds);
+
 		//Send AareApdu Accepted unknown config and transit to configuring state
 		state_handler.send(MessageFactory.AareApdu_20601_ACCEPTED_UNKNOWN_CONFIG(dev_conf));
 		state_handler.changeState(new WaitingForConfig(state_handler));

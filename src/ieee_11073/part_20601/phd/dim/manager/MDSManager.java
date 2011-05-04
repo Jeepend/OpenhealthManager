@@ -103,6 +103,8 @@ import es.libresoft.openhealth.utils.RawDataExtractor;
 
 public class MDSManager extends MDS {
 
+	private boolean delayConfRsp = false;
+	ApduType cfgrsp;
 	/**
 	 * Used only in extended configuration when the agent configuration is unknown
 	 */
@@ -117,6 +119,18 @@ public class MDSManager extends MDS {
 	public MDSManager(Hashtable<Integer, Attribute> attributeList)
 		throws InvalidAttributeException {
 		super(attributeList);
+	}
+
+	public void lockConfRsp() {
+		this.delayConfRsp = true;
+	}
+
+	public void delayConfigRsp(ApduType cfgrsp) {
+		this.cfgrsp = cfgrsp;
+	}
+
+	public boolean isLockConfRsp() {
+		return this.delayConfRsp;
 	}
 
 	public void configureMDS(Collection<ConfigObject> config) throws InvalidAttributeException {
@@ -487,6 +501,12 @@ public class MDSManager extends MDS {
 
 					if (event != null)
 						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
+
+					if (cfgrsp != null) {
+						this.stateHandler.send(cfgrsp);
+						cfgrsp = null;
+						delayConfRsp = false;
+					}
 
 					//When mds-time-mgr-set-time-bit is set is needed Set_Time
 					//chapter 8.12.2.1 of 11073-20601a-2010

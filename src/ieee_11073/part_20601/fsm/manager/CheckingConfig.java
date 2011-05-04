@@ -25,6 +25,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package ieee_11073.part_20601.fsm.manager;
 
+import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.ConfigReport;
+import ieee_11073.part_20601.asn1.ConfigReportRsp;
+import ieee_11073.part_20601.asn1.DataApdu;
+import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
+import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
+import ieee_11073.part_20601.asn1.EventReportResultSimple;
+import ieee_11073.part_20601.asn1.HANDLE;
+import ieee_11073.part_20601.asn1.INT_U32;
+import ieee_11073.part_20601.asn1.PrstApdu;
+import ieee_11073.part_20601.asn1.RelativeTime;
+import ieee_11073.part_20601.fsm.Configuring;
+import ieee_11073.part_20601.fsm.StateHandler;
+import ieee_11073.part_20601.phd.dim.DimTimeOut;
+import ieee_11073.part_20601.phd.dim.manager.MDSManager;
+
 import java.io.ByteArrayOutputStream;
 
 import org.bn.CoderFactory;
@@ -38,21 +55,6 @@ import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
 import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.ASN1_Values;
-import ieee_11073.part_10101.Nomenclature;
-import ieee_11073.part_20601.asn1.ApduType;
-import ieee_11073.part_20601.asn1.ConfigReport;
-import ieee_11073.part_20601.asn1.ConfigReportRsp;
-import ieee_11073.part_20601.asn1.DataApdu;
-import ieee_11073.part_20601.asn1.EventReportArgumentSimple;
-import ieee_11073.part_20601.asn1.EventReportResultSimple;
-import ieee_11073.part_20601.asn1.HANDLE;
-import ieee_11073.part_20601.asn1.INT_U32;
-import ieee_11073.part_20601.asn1.PrstApdu;
-import ieee_11073.part_20601.asn1.RelativeTime;
-import ieee_11073.part_20601.asn1.DataApdu.MessageChoiceType;
-import ieee_11073.part_20601.fsm.Configuring;
-import ieee_11073.part_20601.fsm.StateHandler;
-import ieee_11073.part_20601.phd.dim.DimTimeOut;
 
 public final class CheckingConfig extends Configuring {
 
@@ -126,13 +128,20 @@ public final class CheckingConfig extends Configuring {
 	public void checkNotiConfig (DataApdu data) {
 		state_handler.changeState(this);
 		MessageChoiceType msg = data.getMessage();
+		MDSManager mds = (MDSManager) state_handler.getMDS();
+		ApduType rsp = null;
 		try {
-			checkingConfig (data, getConfigResponse(msg.getRoiv_cmip_confirmed_event_report()));
+			rsp = checkingConfig (data, getConfigResponse(msg.getRoiv_cmip_confirmed_event_report()));
 		} catch (Exception e) {
 			//TODO: Send Response Error same as roiv_cmip_confirmed_event_repor function of WaitingForConfig state
 			e.printStackTrace();
 			Logging.error("TODO: Send Response Error");
 		}
+
+		if (!mds.isLockConfRsp())
+			state_handler.send(rsp);
+		else
+			mds.delayConfigRsp(rsp);
 	}
 
 	//---------------------------------------------PRIVATE--------------------------------------------------------------
@@ -260,14 +269,15 @@ public final class CheckingConfig extends Configuring {
 		return state_handler.getMDS().MDS_Configuration_Event(config);
 	}
 
-	private void checkingConfig (DataApdu data, ConfigReportRsp response) throws Exception{
-		state_handler.send(composeResponse(data,response));
+	private ApduType checkingConfig (DataApdu data, ConfigReportRsp response) throws Exception {
 		//Set next state
 		if (response.getConfig_result().getValue() == ASN1_Values.CONF_RESULT_ACCEPTED_CONFIG) {
 			state_handler.changeState(new MOperating(state_handler));
 			Logging.debug("Configuration agreed, going to operating state.");
 		} else
 			state_handler.changeState(new WaitingForConfig(state_handler));
+
+		return composeResponse(data,response);
 	}
 
 	private ApduType composeResponse (DataApdu data, ConfigReportRsp response) throws Exception {
