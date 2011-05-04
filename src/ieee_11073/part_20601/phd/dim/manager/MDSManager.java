@@ -502,12 +502,6 @@ public class MDSManager extends MDS {
 					if (event != null)
 						event.processed(new Boolean(true), ErrorCodes.NO_ERROR);
 
-					if (cfgrsp != null) {
-						this.stateHandler.send(cfgrsp);
-						cfgrsp = null;
-						delayConfRsp = false;
-					}
-
 					//When mds-time-mgr-set-time-bit is set is needed Set_Time
 					//chapter 8.12.2.1 of 11073-20601a-2010
 					Agent a = (Agent) getDevice();
@@ -559,12 +553,21 @@ public class MDSManager extends MDS {
 		return t;
 	}
 
+	private void send_pending_config_rsp() {
+		if (cfgrsp != null) {
+			getStateHandler().send(cfgrsp);
+			cfgrsp = null;
+			delayConfRsp = false;
+		}
+	}
+
 	@Override
 	public void Set_Time(Event event) {
 		//Check needed capabilities
 		Attribute attr = getAttribute(Nomenclature.MDC_ATTR_MDS_TIME_INFO);
 		if (attr == null) {
 			Logging.debug("Set_Time: Request of setTime in agent without attr MDC_ATTR_MDS_TIME_INFO");
+			send_pending_config_rsp();
 			return;
 		}
 		MdsTimeInfo timeInfo = (MdsTimeInfo)attr.getAttributeType();
@@ -574,6 +577,7 @@ public class MDSManager extends MDS {
 			ASN1_Tools.isSetBit(timeCap, ASN1_Values.mds_time_mgr_set_time) != 1
 			) {
 			Logging.debug("Set_Time: Request of setTime in agent that not support it in MDC_ATTR_MDS_TIME_INFO[" +  timeCap + "]");
+			send_pending_config_rsp();
 			return;
 		}
 
@@ -590,14 +594,17 @@ public class MDSManager extends MDS {
 		DataApdu data = MessageFactory.PrstRoivCmipConfirmedAction(this, timeInv);
 		if (data == null) {
 			Logging.error("Set_Time: Error creating DataApdu for setTime, is null");
+			send_pending_config_rsp();
 			return;
 		}
 
 		ApduType apdu = MessageFactory.composeApdu(data, getDeviceConf());
 
-		try{
+		try {
 			InvokeIDType invokeId = data.getInvoke_id();
 			getStateHandler().send(apdu);
+			send_pending_config_rsp();
+
 			DimTimeOut to = new DimTimeOut(TimeOut.MDS_TO_CA, invokeId.getValue(), getStateHandler()) {
 
 				@Override
@@ -644,6 +651,7 @@ public class MDSManager extends MDS {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			send_pending_config_rsp();
 		}
 	}
 
