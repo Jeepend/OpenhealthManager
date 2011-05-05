@@ -113,7 +113,9 @@ public final class CheckingConfig extends Configuring {
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT){
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
-		} else
+		}else if (event.getTypeOfEvent() == EventType.REQ_SET_TIME)
+			state_handler.getMDS().Set_Time(event);
+		else
 			return false;
 
 		return true;

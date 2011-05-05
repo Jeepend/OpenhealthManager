@@ -554,9 +554,11 @@ public class MDSManager extends MDS {
 	}
 
 	private void send_pending_config_rsp() {
-		if (cfgrsp != null) {
-			getStateHandler().send(cfgrsp);
-			cfgrsp = null;
+		if (delayConfRsp) {
+			if (cfgrsp != null) {
+				getStateHandler().send(cfgrsp);
+				cfgrsp = null;
+			}
 			delayConfRsp = false;
 		}
 	}
