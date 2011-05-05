@@ -55,7 +55,8 @@ public interface ManagerConfig {
 
 	/* Supported specializations */
 	public static int[] supported_spec = {
-		10404,	/* Pulse Oximeter */
+		400,	/* Pulse Oximeter */
+		401,
 //		10407,	/* Blood Pressure */
 //		10408,	/* Thermometer */
 //		10415,	/* Wighing Scale */

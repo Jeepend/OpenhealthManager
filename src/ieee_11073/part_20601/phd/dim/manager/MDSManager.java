@@ -192,10 +192,9 @@ public class MDSManager extends MDS {
 	}
 
 	private boolean is_supported(int conf_id) {
-		final int spec_base = 10400;
 
 		for (int i = 0; i < ManagerConfig.supported_spec.length; i++)
-			if ((ManagerConfig.supported_spec[i] - spec_base) * 100 == conf_id)
+			if (ManagerConfig.supported_spec[i] == conf_id)
 				return true;
 
 		if ((conf_id >= ASN1_Values.CONF_ID_EXTENDED_CONFIG_START ) &&
