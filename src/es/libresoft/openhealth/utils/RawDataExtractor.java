@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.utils;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.AttrValMap;
+import ieee_11073.part_20601.asn1.AttrValMapEntry;
 import ieee_11073.part_20601.asn1.BITS_32;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
@@ -143,6 +145,13 @@ public class RawDataExtractor {
 			BITS_32 bits32 = decoder.decode(input, BITS_32.class);
 			Logging.debug("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
 			return (T) bits32.getValue().getValue();
+		case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
+			Logging.debug("MDC_ATTR_ATTRIBUTE_VAL_MAP");
+			AttrValMap attrValMap = decoder.decode(input, AttrValMap.class);
+			Logging.debug("Attribute Value-Map:");
+			for (AttrValMapEntry attrVal : attrValMap.getValue())
+				Logging.debug("Entry: oid[" + attrVal.getAttribute_id().getValue().getValue() + "]=" + attrVal.getAttribute_len());
+			return (T) attrValMap;
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");
 	}

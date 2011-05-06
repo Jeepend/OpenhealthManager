@@ -402,6 +402,7 @@ public final class MOperating extends Operating {
 				Logging.debug("MDC_NOTI_CONFIG");
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_VAR:
+				Logging.debug("MDC_NOTI_SCAN_REPORT_VAR");
 				mdc_noti_scan_report_var(event.getEvent_info());
 				break;
 			case Nomenclature.MDC_NOTI_SCAN_REPORT_FIXED:

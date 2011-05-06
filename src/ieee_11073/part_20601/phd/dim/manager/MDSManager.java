@@ -228,6 +228,7 @@ public class MDSManager extends MDS {
 
 	@Override
 	public void MDS_Dynamic_Data_Update_Fixed(ScanReportInfoFixed info) {
+
 		try{
 			String system_id = DIM_Tools.byteArrayToString(
 					(byte[])getAttribute(Nomenclature.MDC_ATTR_SYS_ID).getAttributeType());
@@ -266,6 +267,40 @@ public class MDSManager extends MDS {
 		}
 	}
 
+	private void updateAttrValMap(DIM obj, AttrValMap newavm) {
+		Attribute attr = obj.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP);
+
+		if (attr == null) {
+			try {
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP, newavm));
+			} catch (InvalidAttributeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		AttrValMap valMap = (AttrValMap) attr.getAttributeType();
+		Iterator<AttrValMapEntry> i = newavm.getValue().iterator();
+		while (i.hasNext()) {
+			AttrValMapEntry entry1 = i.next();
+			Iterator<AttrValMapEntry> ii = valMap.getValue().iterator();
+			boolean repeated = false;
+
+			while (ii.hasNext()) {
+				AttrValMapEntry entry2 = ii.next();
+				if (entry2.getAttribute_id().getValue().getValue() == entry1.getAttribute_id().getValue().getValue()) {
+					entry2.setAttribute_len(entry1.getAttribute_len());
+					repeated = true;
+					break;
+				}
+			}
+
+			if (!repeated)
+				valMap.add(entry1);
+		}
+	}
+
 	@Override
 	public void MDS_Dynamic_Data_Update_Var(ScanReportInfoVar info) {
 		try{
@@ -289,7 +324,12 @@ public class MDSManager extends MDS {
 					AVA_Type att = it.next();
 					Integer att_id = att.getAttribute_id().getValue().getValue();
 					byte[] att_value = att.getAttribute_value();
-					mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id,att_value, this.getDeviceConf().getEncondigRules()));
+
+					Object data = RawDataExtractor.decodeRawData(att_id, att_value, this.getDeviceConf().getEncondigRules());
+					if (data instanceof AttrValMap)
+						updateAttrValMap(numeric, (AttrValMap) data);
+					else
+						mr.addMeasure(att_id, data);
 				}
 				InternalEventReporter.receivedMeasure((Agent) device, mr);
 			}
