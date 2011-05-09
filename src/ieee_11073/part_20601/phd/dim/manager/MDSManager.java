@@ -268,36 +268,11 @@ public class MDSManager extends MDS {
 	}
 
 	private void updateAttrValMap(DIM obj, AttrValMap newavm) {
-		Attribute attr = obj.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP);
-
-		if (attr == null) {
-			try {
-				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP, newavm));
-			} catch (InvalidAttributeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return;
-		}
-
-		AttrValMap valMap = (AttrValMap) attr.getAttributeType();
-		Iterator<AttrValMapEntry> i = newavm.getValue().iterator();
-		while (i.hasNext()) {
-			AttrValMapEntry entry1 = i.next();
-			Iterator<AttrValMapEntry> ii = valMap.getValue().iterator();
-			boolean repeated = false;
-
-			while (ii.hasNext()) {
-				AttrValMapEntry entry2 = ii.next();
-				if (entry2.getAttribute_id().getValue().getValue() == entry1.getAttribute_id().getValue().getValue()) {
-					entry2.setAttribute_len(entry1.getAttribute_len());
-					repeated = true;
-					break;
-				}
-			}
-
-			if (!repeated)
-				valMap.add(entry1);
+		try {
+			obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP, newavm));
+		} catch (InvalidAttributeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
