@@ -246,11 +246,15 @@ public class MDSManager extends MDS {
 					Logging.error("MDS_Dynamic_Data_Update_Fixed: Not found DIM for handle " + obs.getObj_handle().getValue().getValue());
 					continue;
 				}
+
+				if (isUnsupportedClass(elem))
+					continue;
+
 				AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
 				MeasureReporter mr = MeasureReporterFactory.getDefaultMeasureReporter();
-				MeasureReporterUtils.addAttributesToReport(mr,elem);
+				MeasureReporterUtils.addAttributesToReport(mr, elem);
 				while (it.hasNext()){
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
@@ -292,6 +296,10 @@ public class MDSManager extends MDS {
 				obs=i.next();
 				//Get Numeric from Handle_id
 				Numeric numeric = getNumeric(obs.getObj_handle());
+
+				if (isUnsupportedClass(numeric))
+					continue;
+
 				MeasureReporterUtils.addAttributesToReport(mr,numeric);
 				if (numeric == null)
 					throw new Exception("Numeric class not found for handle: " + obs.getObj_handle().getValue().getValue());
@@ -697,6 +705,10 @@ public class MDSManager extends MDS {
 
 					//Get DIM from Handle_id
 					DIM elem = getObject(obs.getObj_handle());
+
+					if (isUnsupportedClass(elem))
+						continue;
+
 					AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 					Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 					RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
@@ -753,6 +765,10 @@ public class MDSManager extends MDS {
 					obs = i_o.next();
 					//Get Numeric from Handle_id
 					Numeric numeric = getNumeric(obs.getObj_handle());
+
+					if (isUnsupportedClass(numeric))
+						continue;
+
 					MeasureReporterUtils.addAttributesToReport(mr,numeric);
 
 					Attribute at = new Attribute(Nomenclature.MDC_ATTR_PM_SEG_PERSON_ID, pi);
@@ -775,4 +791,15 @@ public class MDSManager extends MDS {
 			e.printStackTrace();
 		}
 	}
+
+	private boolean isUnsupportedClass(DIM dim){
+		for (int j = 0; j < ManagerConfig.unsupported_class.length; j++){
+			if (dim.getNomenclatureCode() == ManagerConfig.unsupported_class[j]){
+				Logging.error("Unsupported class: " + ManagerConfig.unsupported_class[j]);
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

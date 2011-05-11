@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package es.libresoft.openhealth;
 
+import ieee_11073.part_10101.Nomenclature;
+
 public interface ManagerConfig {
 
 	public static byte[] HEX_80000000 = {(byte)128, (byte)0, (byte)0, (byte)0};
@@ -64,5 +66,11 @@ public interface ManagerConfig {
 //		10441,	/* H&F */
 //		10442,	/* Cardio & Strength*/
 //		10471,	/* Activity Hub */
+	};
+
+	/* Unsupported classes */
+	public static int[] unsupported_class = {
+		Nomenclature.MDC_MOC_VMO_METRIC_ENUM,
+		Nomenclature.MDC_MOC_VMO_METRIC_NU
 	};
 }

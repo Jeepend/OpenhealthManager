@@ -52,7 +52,7 @@ public class InternalEventReporter {
 	}
 
 	public static void receivedMeasure(Agent agent, MeasureReporter mr) {
-		if (iEvent!=null)
+		if (iEvent != null)
 			iEvent.receivedMeasure(agent, mr);
 	}
 
