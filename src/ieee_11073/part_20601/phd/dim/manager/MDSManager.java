@@ -174,8 +174,9 @@ public class MDSManager extends MDS {
 				addEnumeration(new Enumeration(attribs));
 				break;
 			case Nomenclature.MDC_MOC_VMO_PMSTORE: // PM-Store Class
-				addPM_Store(new MPM_Store(attribs));
-				break;
+				// To certificate, comment this line:
+				//addPM_Store(new MPM_Store(attribs));
+				throw new UnsupportedOperationException("Unsupported PM-Store Class");
 			case Nomenclature.MDC_MOC_PM_SEGMENT: // PM-Segment Class
 				throw new UnsupportedOperationException("Unsoportedd PM-Segment Class");
 			case Nomenclature.MDC_MOC_SCAN: // Scan Class
@@ -183,8 +184,9 @@ public class MDSManager extends MDS {
 			case Nomenclature.MDC_MOC_SCAN_CFG: // CfgScanner Class
 				throw new UnsupportedOperationException("Unsoportedd CfgScanner Class");
 			case Nomenclature.MDC_MOC_SCAN_CFG_EPI: // EpiCfgScanner Class
-				addScanner(new MEpiCfgScanner(attribs));
-				break;
+				// To certificate, comment this line:
+				//addScanner(new MEpiCfgScanner(attribs));
+				throw new UnsupportedOperationException("Unsupported EpicCfgScanner Class");
 			case Nomenclature.MDC_MOC_SCAN_CFG_PERI: // PeriCfgScanner Class
 				throw new UnsupportedOperationException("Unsoportedd PeriCfgScanner Class");
 			}
