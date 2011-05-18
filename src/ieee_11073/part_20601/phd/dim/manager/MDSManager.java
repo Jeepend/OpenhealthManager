@@ -247,9 +247,6 @@ public class MDSManager extends MDS {
 					continue;
 				}
 
-				if (isUnsupportedClass(elem))
-					continue;
-
 				AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 				Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 				RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
@@ -296,9 +293,6 @@ public class MDSManager extends MDS {
 				obs=i.next();
 				//Get Numeric from Handle_id
 				Numeric numeric = getNumeric(obs.getObj_handle());
-
-				if (isUnsupportedClass(numeric))
-					continue;
 
 				MeasureReporterUtils.addAttributesToReport(mr,numeric);
 				if (numeric == null)
@@ -706,9 +700,6 @@ public class MDSManager extends MDS {
 					//Get DIM from Handle_id
 					DIM elem = getObject(obs.getObj_handle());
 
-					if (isUnsupportedClass(elem))
-						continue;
-
 					AttrValMap avm = (AttrValMap)elem.getAttribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP).getAttributeType();
 					Iterator<AttrValMapEntry> it = avm.getValue().iterator();
 					RawDataExtractor de = new RawDataExtractor(obs.getObs_val_data());
@@ -766,9 +757,6 @@ public class MDSManager extends MDS {
 					//Get Numeric from Handle_id
 					Numeric numeric = getNumeric(obs.getObj_handle());
 
-					if (isUnsupportedClass(numeric))
-						continue;
-
 					MeasureReporterUtils.addAttributesToReport(mr,numeric);
 
 					Attribute at = new Attribute(Nomenclature.MDC_ATTR_PM_SEG_PERSON_ID, pi);
@@ -791,15 +779,4 @@ public class MDSManager extends MDS {
 			e.printStackTrace();
 		}
 	}
-
-	private boolean isUnsupportedClass(DIM dim){
-		for (int j = 0; j < ManagerConfig.unsupported_class.length; j++){
-			if (dim.getNomenclatureCode() == ManagerConfig.unsupported_class[j]){
-				Logging.error("Unsupported class: " + ManagerConfig.unsupported_class[j]);
-				return true;
-			}
-		}
-		return false;
-	}
-
 }

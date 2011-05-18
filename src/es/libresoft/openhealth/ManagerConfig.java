@@ -66,10 +66,4 @@ public interface ManagerConfig {
 //		10442,	/* Cardio & Strength*/
 //		10471,	/* Activity Hub */
 	};
-
-	/* Unsupported classes */
-	public static int[] unsupported_class = {
-		Nomenclature.MDC_MOC_VMO_METRIC_ENUM,
-		Nomenclature.MDC_MOC_VMO_METRIC_NU
-	};
 }
