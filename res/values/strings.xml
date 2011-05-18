@@ -91,7 +91,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	<string name="MDC_DIM_MIN">min</string>
 	<string name="MDC_DIM_HR">h</string>
 	<string name="MDC_DIM_DAY">d</string>
-	<string name="MDC_DIM_BEAT_PER_MIN">bpm 737</string>
+	<string name="MDC_DIM_BEAT_PER_MIN">bpm</string>
 	<string name="MDC_DIM_KILO_PASCAL">kPa</string>
 	<string name="MDC_DIM_MMHG">mmHg</string>
 	<string name="MDC_DIM_MILLI_MOLE_PER_L">mmol L-1</string>
