@@ -31,7 +31,6 @@ public interface ManagerConfig {
 
 	public static byte[] HEX_80000000 = {(byte)128, (byte)0, (byte)0, (byte)0};
 	public static byte[] PROTOCOL_VERSION1 = {(byte)128, (byte)0, (byte)0, (byte)0};
-	public static byte[] PROTOCOL_VERSION2 = {(byte)64, (byte)0, (byte)0, (byte)0};
 
 	public static int A2M_MAX_SIZE = 64512; /* MAX APDU size in the agent-to-manager direction */
 

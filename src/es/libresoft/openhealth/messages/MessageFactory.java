@@ -145,10 +145,8 @@ public class MessageFactory {
 	private static final PhdAssociationInformation generatePhdAssociationInformation(DeviceConfig dev_conf){
 		PhdAssociationInformation pai = new PhdAssociationInformation();
 		ProtocolVersion pv = new ProtocolVersion();
-		if (dev_conf.getProtocolVersion() == 2)
-			pv.setValue(new BitString(ManagerConfig.PROTOCOL_VERSION2));
-		else
-			pv.setValue(new BitString(ManagerConfig.PROTOCOL_VERSION1));
+		// Only support for ProtocolVersion 1:
+		pv.setValue(new BitString(ManagerConfig.PROTOCOL_VERSION1));
 
 		EncodingRules er = new EncodingRules(
 				new BitString(dev_conf.getEncondigRulesToArray()));
