@@ -215,6 +215,12 @@ public class AttributeUtils {
 			return context.getString(R.string.MDC_METRIC_NOS);
 		case Nomenclature.MDC_AI_TYPE_SENSOR_TEMP:
 			return context.getString(R.string.MDC_AI_TYPE_SENSOR_TEMP);
+		case Nomenclature.MDC_MODALITY_FAST:
+			return context.getString(R.string.MDC_MODALITY_FAST);
+		//case Nomenclature.MDC_MODALITY_SLOW:
+		//	return context.getString(R.string.MDC_MODALITY_SLOW);
+		case Nomenclature.MDC_MODALITY_SPOT:
+			return context.getString(R.string.MDC_MODALITY_SPOT);
 		}
 		return null;
 	}

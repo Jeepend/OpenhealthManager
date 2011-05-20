@@ -146,6 +146,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	<string name="MDC_TIME_SYNC_NONE">No time synchronization protocol supported</string>
 
+	<string name="MDC_MODALITY_FAST">FAST</string>
+	<string name="MDC_MODALITY_SLOW">SLOW</string>
+	<string name="MDC_MODALITY_SPOT">SPOT</string>
+
 	<string name="UNKNOWN_VALUE">Unknown attribute value</string>
 
 </resources>
