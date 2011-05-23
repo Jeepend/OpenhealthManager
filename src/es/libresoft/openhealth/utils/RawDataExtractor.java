@@ -29,6 +29,7 @@ package es.libresoft.openhealth.utils;
 import ieee_11073.part_10101.Nomenclature;
 import ieee_11073.part_20601.asn1.AttrValMap;
 import ieee_11073.part_20601.asn1.AttrValMapEntry;
+import ieee_11073.part_20601.asn1.BITS_16;
 import ieee_11073.part_20601.asn1.BITS_32;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
@@ -140,6 +141,11 @@ public class RawDataExtractor {
 			OID_Type oid = decoder.decode(input, OID_Type.class);
 			Logging.debug("Measure oid_type: " + oid.getValue().getValue());
 			return (T)oid.getValue().getValue();
+		case Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL:
+			//Logging.debug("MDC_ATTR_METRIC_SPEC_SMALL");
+			BITS_16 bits16 = decoder.decode(input, BITS_16.class);
+			Logging.debug("Metric Spec Small: " + ASN1_Tools.getHexString(bits16.getValue().getValue()));
+			return (T) bits16.getValue().getValue();
 		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
 			//Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
 			BITS_32 bits32 = decoder.decode(input, BITS_32.class);
