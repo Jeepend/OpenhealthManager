@@ -38,6 +38,8 @@ public interface EventType {
 
 	public static final int REC_CORRUPTED_APDU					= 	6;		/* Received corrupted APPDU */
 
+	public static final int REC_APDU_OVERFLOW					= 	7;		/* Received an APDU that exceeds maximum size */
+
 	/* Application defined events*/
 	public static final int REQ_GET_PM_STORE					=	500;
 	public static final int REQ_SET								=	501;
