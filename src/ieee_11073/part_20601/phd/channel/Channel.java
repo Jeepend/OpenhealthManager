@@ -28,6 +28,7 @@ package ieee_11073.part_20601.phd.channel;
 
 import ieee_11073.part_20601.asn1.ApduType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,9 +41,10 @@ import org.bn.IEncoder;
 import es.libresoft.openhealth.Device;
 import es.libresoft.openhealth.ManagerConfig;
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventAPDUOverflow;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.logging.Logging;
-import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 import es.libresoft.openhealth.utils.IFIFO;
 
 public abstract class Channel {
@@ -129,12 +131,20 @@ public abstract class Channel {
 			ApduType recvApdu;
 			while(shouldRepeat ()){
 		 		try {
-		 			recvApdu = decoder.decode(input, ApduType.class);
-		 			recvApdu.setChannel(id);
-		 			inputQueue.add(recvApdu);
-		 		}catch (InterruptedException e) {
+					byte[] buffer = readApdu();
+					ByteArrayInputStream is = new ByteArrayInputStream(buffer);
+					recvApdu = decoder.decode(is, ApduType.class);
+					recvApdu.setChannel(id);
+					if (buffer.length > ManagerConfig.A2M_MAX_SIZE){
+						Logging.error("Maximum APDU size has been exceeded");
+						Event event = new EventAPDUOverflow(EventType.REC_APDU_OVERFLOW, recvApdu);
+						eventHandler.processEvent(event);
+					}else{
+						inputQueue.add(recvApdu);
+					}
+				}catch (InterruptedException e) {
 					Logging.debug("Interrupted receiver (" + id + ")");
-		 		}catch (NullPointerException e) {
+				}catch (NullPointerException e) {
 					Logging.error("Corrupted APDUType received");
 					eventHandler.processEvent(new Event(EventType.REC_CORRUPTED_APDU));
 					Logging.debug("Flushing buffer");
@@ -156,6 +166,63 @@ public abstract class Channel {
 			Logging.debug("Receiver thread exiting (" + id + ").");
 			releaseChannel();
 		}
+	}
+
+	private int decodeLength(byte[] buff, int offset) {
+		int value = 0;
+
+		for(int i = offset; i < 2 + offset; i++) {
+			int bt = buff[i];
+			if (bt < 0){
+				bt = bt + 256;
+			}
+			value = (value << 8) | bt;
+		}
+		return value;
+	}
+
+	private byte[] readApdu() throws IOException, Exception{
+		byte[] buffer = new byte[4];
+		byte[] bapdu;
+		int apdusize, length = 0;
+
+		while (length < 4){
+			int read;
+			read = input.read(buffer, length, 4 - length);
+			if (read < 0)
+				throw new IOException("IOException while reading from the data channel.");
+
+			length += read;
+		}
+
+		apdusize = decodeLength(buffer, 2);
+		if (apdusize == 0)
+			return buffer;
+		if (apdusize < 0){
+			throw new IOException("Apdu size can't be zero or a negative number");
+		}
+		bapdu = new byte[apdusize + 4];
+
+		// An APDU starts with a Choice codification. We must read four bytes to
+		// know the APDU type and the length of the data.
+
+		for (int i = 0; i < 4; i++){
+			bapdu[i] = buffer[i];
+		}
+		length = 4;
+
+		do {
+			int read;
+
+			read = input.read(bapdu, length, 4 + apdusize-length);
+			if (read < 0)
+				throw new IOException();
+			length += read;
+		}
+		while (length < apdusize + 4);
+
+		//Logging.error(ASN1_Tools.getHexString(bapdu));
+		return bapdu;
 	}
 
 	/**
