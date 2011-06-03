@@ -89,6 +89,9 @@ public final class MUnassociated extends Unassociated {
 
 			}
 			return true;
+		} else if (event.getTypeOfEvent() == EventType.REC_APDU_OVERFLOW){
+			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+			return true;
 		} else
 			return false;
 

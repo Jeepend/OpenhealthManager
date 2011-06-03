@@ -26,10 +26,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ieee_11073.part_20601.fsm.manager;
 
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventAPDUOverflow;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.logging.Logging;
 import es.libresoft.openhealth.messages.MessageFactory;
+import es.libresoft.openhealth.utils.ASN1_Tools;
 import ieee_11073.part_20601.asn1.ApduType;
+import ieee_11073.part_20601.asn1.DataApdu;
 import ieee_11073.part_20601.fsm.Disassociating;
 import ieee_11073.part_20601.fsm.StateHandler;
 
@@ -71,7 +74,26 @@ public final class MDisassociating extends Disassociating {
 		}else if (event.getTypeOfEvent() == EventType.REQ_ASSOC_ABORT){
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
-		} else
+		}else if (event.getTypeOfEvent() == EventType.REC_APDU_OVERFLOW){
+			EventAPDUOverflow eao = (EventAPDUOverflow)event;
+
+			if (!eao.getApduType().isPrstSelected()) {
+				Logging.error("APDU exceeded maximum length is non PrstApdu");
+				state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+				state_handler.changeState(new MUnassociated(state_handler));
+			}
+
+			try {
+				DataApdu data = ASN1_Tools.decodeData(eao.getApduType().getPrst().getValue(),
+						DataApdu.class,
+						this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+				state_handler.send(MessageFactory.ROER_PROTOCOL_VIOLATION_Apdu(data, state_handler.getMDS().getDeviceConf()));
+			} catch (Exception e) {
+				e.printStackTrace();
+				state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+				state_handler.changeState(new MUnassociated(state_handler));
+			}
+		}else
 			return false;
 		return true;
 	}

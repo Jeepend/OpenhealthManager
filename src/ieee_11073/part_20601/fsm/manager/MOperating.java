@@ -57,6 +57,7 @@ import java.util.List;
 
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventAPDUOverflow;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.events.application.GetPmSegmentEventData;
@@ -184,6 +185,28 @@ public final class MOperating extends Operating {
 		case EventType.REC_CORRUPTED_APDU:
 			state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
 			state_handler.changeState(new MUnassociated(state_handler));
+			return true;
+
+		case EventType.REC_APDU_OVERFLOW:
+			EventAPDUOverflow eao = (EventAPDUOverflow)event;
+
+			if (!eao.getApduType().isPrstSelected()) {
+				Logging.error("APDU exceeded maximum length is non PrstApdu");
+				state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+				state_handler.changeState(new MUnassociated(state_handler));
+			}
+
+			try {
+				DataApdu data = ASN1_Tools.decodeData(eao.getApduType().getPrst().getValue(),
+						DataApdu.class,
+						this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+				state_handler.send(MessageFactory.ROER_PROTOCOL_VIOLATION_Apdu(data, state_handler.getMDS().getDeviceConf()));
+			} catch (Exception e) {
+				e.printStackTrace();
+				state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+				state_handler.changeState(new MUnassociated(state_handler));
+			}
+
 			return true;
 
 		default:

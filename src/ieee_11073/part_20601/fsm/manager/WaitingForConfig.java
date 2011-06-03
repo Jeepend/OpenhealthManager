@@ -40,6 +40,7 @@ import java.util.concurrent.Semaphore;
 
 import es.libresoft.openhealth.error.ErrorCodes;
 import es.libresoft.openhealth.events.Event;
+import es.libresoft.openhealth.events.EventAPDUOverflow;
 import es.libresoft.openhealth.events.EventType;
 import es.libresoft.openhealth.events.application.ExternalEvent;
 import es.libresoft.openhealth.logging.Logging;
@@ -117,6 +118,26 @@ public final class WaitingForConfig extends Configuring {
 			state_handler.changeState(new MUnassociated(state_handler));
 		}else if (event.getTypeOfEvent() == EventType.REQ_SET_TIME)
 			state_handler.getMDS().Set_Time(event);
+		else if (event.getTypeOfEvent() == EventType.REC_APDU_OVERFLOW){
+			EventAPDUOverflow eao = (EventAPDUOverflow)event;
+
+			if (!eao.getApduType().isPrstSelected()) {
+				Logging.error("APDU exceeded maximum length is non PrstApdu");
+				state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+				state_handler.changeState(new MUnassociated(state_handler));
+			}
+
+			try {
+				DataApdu data = ASN1_Tools.decodeData(eao.getApduType().getPrst().getValue(),
+						DataApdu.class,
+						this.state_handler.getMDS().getDeviceConf().getEncondigRules());
+				state_handler.send(MessageFactory.ROER_PROTOCOL_VIOLATION_Apdu(data, state_handler.getMDS().getDeviceConf()));
+			} catch (Exception e) {
+				e.printStackTrace();
+				state_handler.send(MessageFactory.AbrtApdu_UNDEFINED());
+				state_handler.changeState(new MUnassociated(state_handler));
+			}
+		}
 		else
 			return false;
 
