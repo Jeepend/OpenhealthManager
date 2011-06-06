@@ -3,6 +3,7 @@ Copyright (C) 2008-2011 GSyC/LibreSoft, Universidad Rey Juan Carlos.
 
 Author: Jose Antonio Santos Cadenas <jcaden@libresoft.es>
 Author: Santiago Carot-Nemesio <scarot@libresoft.es>
+Author: Jorge Fernández González <jfernandez@libresoft.es>
 
 This program is a (FLOS) free libre and open source implementation
 of a multiplatform manager device written in java according to the
@@ -27,20 +28,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package es.libresoft.openhealth.utils;
 
 import ieee_11073.part_10101.Nomenclature;
+import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.asn1.AttrValMap;
-import ieee_11073.part_20601.asn1.AttrValMapEntry;
-import ieee_11073.part_20601.asn1.BITS_16;
 import ieee_11073.part_20601.asn1.BITS_32;
 import ieee_11073.part_20601.asn1.BasicNuObsValue;
 import ieee_11073.part_20601.asn1.BasicNuObsValueCmp;
+import ieee_11073.part_20601.asn1.HANDLE;
 import ieee_11073.part_20601.asn1.INT_U16;
 import ieee_11073.part_20601.asn1.INT_U32;
+import ieee_11073.part_20601.asn1.MeasurementStatus;
+import ieee_11073.part_20601.asn1.MetricIdList;
+import ieee_11073.part_20601.asn1.MetricSpecSmall;
+import ieee_11073.part_20601.asn1.MetricStructureSmall;
+import ieee_11073.part_20601.asn1.NomPartition;
 import ieee_11073.part_20601.asn1.OID_Type;
+import ieee_11073.part_20601.asn1.SupplementalTypeList;
+import ieee_11073.part_20601.asn1.TYPE;
+import ieee_11073.part_20601.phd.dim.Attribute;
+import ieee_11073.part_20601.phd.dim.DIM;
+import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
 
 import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
 import org.bn.CoderFactory;
@@ -80,85 +89,137 @@ public class RawDataExtractor {
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
 		//Decode AttrValMap using accorded enc_rules
 		IDecoder decoder = CoderFactory.getInstance().newDecoder(eRules);
-		switch (attrId){
-		case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
-			Logging.debug("MDC_ATTR_NU_VAL_OBS_BASIC");
-			INT_U16 iu = decoder.decode(input, INT_U16.class);
-			SFloatType ft = new SFloatType(iu.getValue());
-			Logging.debug("Measure: " + ft.doubleValueRepresentation() + ", " + ft);
-			return (T)ft;
-		case Nomenclature.MDC_ATTR_NU_VAL_OBS_SIMP:
-			Logging.debug("MDC_ATTR_NU_VAL_OBS_SIMP");
-			INT_U32 iu2 = decoder.decode(input, INT_U32.class);
-			FloatType ft2 = new FloatType(iu2.getValue());
-			Logging.debug("Measure: " + ft2.doubleValueRepresentation() + ", " + ft2);
-			return (T)ft2;
-		case Nomenclature.MDC_ATTR_TIME_ABS:
-		case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
-			//Logging.debug("AbsoluteTime");
-			/*
-			 * The absolute time data type specifies the time of day with a resolution of 1/100
-			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
-			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit
-			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19
-			 * in the century field and the hexadecimal value 0x96 in the year field. This format is
-			 * easily converted to character- or integer-based representations. See AbsoluteTime
-			 * structure for details.
-			 */
-			final String rawDate = ASN1_Tools.getHexString(data);
-			final String source = rawDate.substring(0, 4) + "/" + /*century + year(first 2Bytes)*/
-					rawDate.substring(4, 6) + "/" +   /* month next 2B*/
-					rawDate.substring(6, 8) + " " +   /* day next 2B */
-					rawDate.substring(8, 10) + ":" +  /* hour next 2B */
-					rawDate.substring(10, 12) + ":" + /* minute next 2B */
-					rawDate.substring(12, 14) + ":" + /* second next 2B */
-					rawDate.substring(14); /* frac-sec last 2B */
-			SimpleDateFormat sdf =  new SimpleDateFormat("yy/MM/dd HH:mm:ss:SS");
-			Date d = sdf.parse(source);
-			Logging.debug("date: " + d);
-			return (T)d;
-		case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC:
-			Logging.debug("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
-			BasicNuObsValueCmp cmp_val = decoder.decode(input, BasicNuObsValueCmp.class);
-			Iterator<BasicNuObsValue> it = cmp_val.getValue().iterator();
-			ArrayList<SFloatType> measures = new ArrayList<SFloatType>();
+		return (T)decoder.decode(input, DIM_Tools.getAttributeClass(attrId));
+	}
 
-			while (it.hasNext()) {
-				BasicNuObsValue value = it.next();
-				SFloatType ms = new SFloatType(value.getValue().getValue());
-				Logging.debug("Measure: " + ms.doubleValueRepresentation() + ", " + ms);
-				measures.add(ms);
+	public static boolean updateAttrValue(DIM obj, int attId, Object data){
+		try{
+			switch(attId){
+			// Metric attributes whose values could be modified:
+			case Nomenclature.MDC_ATTR_ID_HANDLE:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ID_HANDLE, (HANDLE)data));
+				return true;
+			case Nomenclature.MDC_ATTR_ID_TYPE:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ID_TYPE, (TYPE)data));
+				return true;
+			case Nomenclature.MDC_ATTR_SUPPLEMENTAL_TYPES:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_SUPPLEMENTAL_TYPES, (SupplementalTypeList)data));
+				return true;
+			case Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL, (MetricSpecSmall)data));
+				return true;
+			case Nomenclature.MDC_ATTR_METRIC_STRUCT_SMALL:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_METRIC_STRUCT_SMALL, (MetricStructureSmall)data));
+				return true;
+			case Nomenclature.MDC_ATTR_MSMT_STAT:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_MSMT_STAT, (MeasurementStatus)data));
+				return true;
+			case Nomenclature.MDC_ATTR_ID_PHYSIO:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ID_PHYSIO, (OID_Type)data));
+				return true;
+			case Nomenclature.MDC_ATTR_ID_PHYSIO_LIST:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ID_PHYSIO_LIST, (MetricIdList)data));
+				return true;
+			case Nomenclature.MDC_ATTR_METRIC_ID_PART:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_METRIC_ID_PART, (NomPartition)data));
+				return true;
+			case Nomenclature.MDC_ATTR_UNIT_CODE:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_UNIT_CODE, (OID_Type)data));
+				return true;
+			case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP, (AttrValMap)data));
+				return true;
+			case Nomenclature.MDC_ATTR_SOURCE_HANDLE_REF:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_SOURCE_HANDLE_REF, (HANDLE)data));
+				return true;
+			case Nomenclature.MDC_ATTR_ID_LABEL_STRING:
+				//obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ID_LABEL_STRING, (OCTETSTRING)data));
+				return false;
+			case Nomenclature.MDC_ATTR_UNIT_LABEL_STRING:
+				//obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_UNIT_LABEL_STRING, (OCTETSTRING)data));
+				return false;
+			case Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE:
+				obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE, (FloatType)data));
+				return true;
+			default:
+				return false;
 			}
-			return (T)measures;
-		case Nomenclature.MDC_ATTR_TIME_PD_MSMT_ACTIVE:
-			Logging.debug("MDC_ATTR_TIME_PD_MSMT_ACTIVE");
-			INT_U32 iu3 = decoder.decode(input, INT_U32.class);
-			FloatType ft3 = new FloatType(iu3.getValue());
-			Logging.debug("Measure: " + ft3.doubleValueRepresentation() + ", " + ft3);
-			return (T)ft3;
-		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_OID:
-			//Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_OID");
-			OID_Type oid = decoder.decode(input, OID_Type.class);
-			Logging.debug("Measure oid_type: " + oid.getValue().getValue());
-			return (T)oid.getValue().getValue();
-		case Nomenclature.MDC_ATTR_METRIC_SPEC_SMALL:
-			//Logging.debug("MDC_ATTR_METRIC_SPEC_SMALL");
-			BITS_16 bits16 = decoder.decode(input, BITS_16.class);
-			Logging.debug("Metric Spec Small: " + ASN1_Tools.getHexString(bits16.getValue().getValue()));
-			return (T) bits16.getValue().getValue();
-		case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
-			//Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
-			BITS_32 bits32 = decoder.decode(input, BITS_32.class);
-			Logging.debug("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
-			return (T) bits32.getValue().getValue();
-		case Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP:
-			Logging.debug("MDC_ATTR_ATTRIBUTE_VAL_MAP");
-			AttrValMap attrValMap = decoder.decode(input, AttrValMap.class);
-			Logging.debug("Attribute Value-Map:");
-			for (AttrValMapEntry attrVal : attrValMap.getValue())
-				Logging.debug("Entry: oid[" + attrVal.getAttribute_id().getValue().getValue() + "]=" + attrVal.getAttribute_len());
-			return (T) attrValMap;
+		}catch(InvalidAttributeException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static <T> T decodeMeasure(int attrId, byte[] data, String eRules) throws Exception {
+		ByteArrayInputStream input = new ByteArrayInputStream(data);
+		//Decode AttrValMap using accorded enc_rules
+		IDecoder decoder = CoderFactory.getInstance().newDecoder(eRules);
+		switch(attrId){
+			// Numeric attributes whose values could be modified:
+			case Nomenclature.MDC_ATTR_NU_VAL_OBS_SIMP:
+				Logging.debug("MDC_ATTR_NU_VAL_OBS_SIMP");
+				INT_U32 iu = decoder.decode(input, INT_U32.class);
+				FloatType ft = new FloatType(iu.getValue());
+				Logging.debug("Measure: " + ft.doubleValueRepresentation() + ", " + ft);
+				return (T)ft;
+			case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_SIMP:
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_NU_CMPD_VAL_OBS_SIMP");
+				break;
+			case Nomenclature.MDC_ATTR_NU_VAL_OBS_BASIC:
+				Logging.debug("MDC_ATTR_NU_VAL_OBS_BASIC");
+				INT_U16 iu2 = decoder.decode(input, INT_U16.class);
+				SFloatType sft = new SFloatType(iu2.getValue());
+				Logging.debug("Measure: " + sft.doubleValueRepresentation() + ", " + sft);
+				return (T)sft;
+			case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS_BASIC:
+				Logging.debug("MDC_ATTR_NU_CMPD_VAL_OBS_BASIC");
+				BasicNuObsValueCmp cmpVal = decoder.decode(input, BasicNuObsValueCmp.class);
+				Iterator<BasicNuObsValue> it = cmpVal.getValue().iterator();
+				ArrayList<SFloatType> measures = new ArrayList<SFloatType>();
+				while (it.hasNext()) {
+					BasicNuObsValue value = it.next();
+					SFloatType ms = new SFloatType(value.getValue().getValue());
+					Logging.debug("Measure: " + ms.doubleValueRepresentation() + ", " + ms);
+					measures.add(ms);
+				}
+				return (T)measures;
+			case Nomenclature.MDC_ATTR_NU_VAL_OBS:
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_NU_VAL_OBS");
+				break;
+			case Nomenclature.MDC_ATTR_NU_CMPD_VAL_OBS:
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_NU_CMPD_VAL_OBS");
+				break;
+			case Nomenclature.MDC_ATTR_NU_ACCUR_MSMT:
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_NU_ACCUR_MSMT");
+				break;
+			case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_OID:
+				Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_OID");
+				OID_Type oid = decoder.decode(input, OID_Type.class);
+				Logging.debug("Measure oid_type: " + oid.getValue().getValue());
+				return (T)oid.getValue().getValue();
+			case Nomenclature.MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR:
+				Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
+				BITS_32 bits32 = decoder.decode(input, BITS_32.class);
+				Logging.debug("Measure: " + ASN1_Tools.getHexString(bits32.getValue().getValue()));
+				return (T)bits32.getValue().getValue();
+			case Nomenclature.MDC_ATTR_TIME_ABS:
+			case Nomenclature.MDC_ATTR_TIME_STAMP_ABS:
+				Logging.debug("MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
+				AbsoluteTime datetime = decoder.decode(input, AbsoluteTime.class);
+				return (T)datetime;
+			case Nomenclature.MDC_ATTR_TIME_STAMP_BO: // related to BaseOffsetTime
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_TIME_STAMP_BO");
+				break;
+			case Nomenclature.MDC_ATTR_TIME_STAMP_REL:
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_TIME_STAMP_REL");
+				break;
+			case Nomenclature.MDC_ATTR_TIME_STAMP_REL_HI_RES:
+				Logging.debug("TODO decodeMeasure(): MDC_ATTR_ENUM_OBS_VAL_SIMP_BIT_STR");
+				break;
+			default:
+				Logging.debug("TODO decodeMeasure(): DEFAULT");
 		}
 		throw new Exception ("Attribute " + attrId + " unknown.");
 	}
+
 }

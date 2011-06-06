@@ -256,8 +256,12 @@ public class MDSManager extends MDS {
 					AttrValMapEntry attr = it.next();
 					int attrId = attr.getAttribute_id().getValue().getValue();
 					int length = attr.getAttribute_len();
+					byte[] attrValue = de.getData(length);
 					try {
-						mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,de.getData(length), this.getDeviceConf().getEncondigRules()));
+						//mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId,de.getData(length), this.getDeviceConf().getEncondigRules()));
+						Object data = RawDataExtractor.decodeRawData(attrId, attrValue, this.getDeviceConf().getEncondigRules());
+						if (!RawDataExtractor.updateAttrValue(elem, attrId, data))
+							mr.addMeasure(attrId, RawDataExtractor.decodeMeasure(attrId, attrValue, this.getDeviceConf().getEncondigRules()));
 					}catch(Exception e){
 						Logging.error("Error: Can not get attribute " + attrId);
 						e.printStackTrace();
@@ -266,15 +270,6 @@ public class MDSManager extends MDS {
 				InternalEventReporter.receivedMeasure((Agent) device, mr);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	private void updateAttrValMap(DIM obj, AttrValMap newavm) {
-		try {
-			obj.addAttribute(new Attribute(Nomenclature.MDC_ATTR_ATTRIBUTE_VAL_MAP, newavm));
-		} catch (InvalidAttributeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -293,7 +288,6 @@ public class MDSManager extends MDS {
 				obs=i.next();
 				//Get Numeric from Handle_id
 				Numeric numeric = getNumeric(obs.getObj_handle());
-
 				MeasureReporterUtils.addAttributesToReport(mr,numeric);
 				if (numeric == null)
 					throw new Exception("Numeric class not found for handle: " + obs.getObj_handle().getValue().getValue());
@@ -303,12 +297,9 @@ public class MDSManager extends MDS {
 					AVA_Type att = it.next();
 					Integer att_id = att.getAttribute_id().getValue().getValue();
 					byte[] att_value = att.getAttribute_value();
-
 					Object data = RawDataExtractor.decodeRawData(att_id, att_value, this.getDeviceConf().getEncondigRules());
-					if (data instanceof AttrValMap)
-						updateAttrValMap(numeric, (AttrValMap) data);
-					else
-						mr.addMeasure(att_id, data);
+					if (!RawDataExtractor.updateAttrValue(numeric, att_id, data))
+						mr.addMeasure(att_id, RawDataExtractor.decodeMeasure(att_id, att_value, this.getDeviceConf().getEncondigRules()));
 				}
 				InternalEventReporter.receivedMeasure((Agent) device, mr);
 			}
@@ -708,15 +699,18 @@ public class MDSManager extends MDS {
 
 					Attribute at = new Attribute(Nomenclature.MDC_ATTR_PM_SEG_PERSON_ID, pi);
 					mr.set_attribute(at);
-
 					while (it.hasNext()){
 						AttrValMapEntry attr = it.next();
 						int attrId = attr.getAttribute_id().getValue().getValue();
 						int length = attr.getAttribute_len();
+						byte[] attrValue = de.getData(length);
 						try {
-							mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId, de.getData(length), this.getDeviceConf().getEncondigRules()));
+							//mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId, de.getData(length), this.getDeviceConf().getEncondigRules()));
+							Object data = RawDataExtractor.decodeRawData(attrId, attrValue, this.getDeviceConf().getEncondigRules());
+							if (!RawDataExtractor.updateAttrValue(elem, attrId, data))
+								mr.addMeasure(attrId, RawDataExtractor.decodeMeasure(attrId, attrValue, this.getDeviceConf().getEncondigRules()));
 						}catch(Exception e){
-							Logging.error("Error: Can not get attribute " + attrId);
+							Logging.error("Error: Cannot get attribute " + attrId);
 							e.printStackTrace();
 						}
 					}
@@ -770,7 +764,10 @@ public class MDSManager extends MDS {
 						AVA_Type att = it.next();
 						Integer att_id = att.getAttribute_id().getValue().getValue();
 						byte[] att_value = att.getAttribute_value();
-						mr.addMeasure(att_id, RawDataExtractor.decodeRawData(att_id, att_value, this.getDeviceConf().getEncondigRules()));
+						//mr.addMeasure(attrId, RawDataExtractor.decodeRawData(attrId, de.getData(length), this.getDeviceConf().getEncondigRules()));
+						Object data = RawDataExtractor.decodeRawData(att_id, att_value, this.getDeviceConf().getEncondigRules());
+						if (!RawDataExtractor.updateAttrValue(numeric, att_id, data))
+							mr.addMeasure(att_id, RawDataExtractor.decodeMeasure(att_id, att_value, this.getDeviceConf().getEncondigRules()));
 					}
 					InternalEventReporter.receivedMeasure((Agent) device, mr);
 				}
