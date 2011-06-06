@@ -26,8 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package es.libresoft.openhealth.android;
 
+import ieee_11073.part_20601.asn1.AbsoluteTime;
 import ieee_11073.part_20601.phd.dim.Attribute;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -36,11 +39,11 @@ import java.util.List;
 import es.libresoft.mdnf.FloatType;
 import es.libresoft.mdnf.SFloatType;
 import es.libresoft.openhealth.android.aidl.types.IAttribute;
+import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.android.aidl.types.measures.IDateMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasure;
 import es.libresoft.openhealth.android.aidl.types.measures.IMeasureArray;
 import es.libresoft.openhealth.android.aidl.types.measures.IValueMeasure;
-import es.libresoft.openhealth.android.aidl.types.measures.IAgentMetric;
 import es.libresoft.openhealth.events.MeasureReporter;
 import es.libresoft.openhealth.logging.Logging;
 
@@ -69,6 +72,47 @@ public class AndroidMeasureReporter implements MeasureReporter{
 					values.add(m);
 			}
 			return new IMeasureArray(mType, values);
+		}else if (data instanceof AbsoluteTime){
+			/*
+			 * The absolute time data type specifies the time of day with a resolution of 1/100
+			 * of a second. The hour field shall be reported in 24-hr time notion (i.e., from 0 to 23).
+			 * The values in the structure shall be encoded using binary coded decimal (i.e., 4-bit
+			 * nibbles). For example, the year 1996 shall be represented by the hexadecimal value 0x19
+			 * in the century field and the hexadecimal value 0x96 in the year field. This format is
+			 * easily converted to character- or integer-based representations. See AbsoluteTime
+			 * structure for details.
+			 */
+			//final String rawDate = ASN1_Tools.getHexString(data);
+			AbsoluteTime absTime = (AbsoluteTime)data;
+			String century = Integer.toString(absTime.getCentury().getValue(), 16);
+			String year = Integer.toString(absTime.getYear().getValue(), 16);
+			String month = Integer.toString(absTime.getMonth().getValue(), 16);
+			String day = Integer.toString(absTime.getDay().getValue(), 16);
+			String hour = Integer.toString(absTime.getHour().getValue(), 16);
+			String minute = Integer.toString(absTime.getMinute().getValue(), 16);
+			String second = Integer.toString(absTime.getSecond().getValue(), 16);
+			String secFractions = Integer.toString(absTime.getSec_fractions().getValue(), 16);
+			if (year.length() == 1)
+				year = "0" + year;
+			String yyyy = century.concat(year);
+			//final String source = absTime.getCentury().getValue() + absTime.getYear().getValue() + "/" + /*century + year(first 2Bytes)*/ 
+			final String source = yyyy + "/" + /*century + year(first 2Bytes)*/
+					month + "/" +   /* month next 2B*/
+					day + " " +   /* day next 2B */
+					hour + ":" +  /* hour next 2B */
+					minute + ":" + /* minute next 2B */
+					second + ":" + /* second next 2B */
+					secFractions; /* frac-sec last 2B */
+			SimpleDateFormat sdf =  new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SS");
+			Date timestamp;
+			try {
+				timestamp = sdf.parse(source);
+				return new IDateMeasure(mType, timestamp.getTime());
+			} catch (ParseException e) {
+				Logging.error("An AbsoluteTime measure " + mType + " won't be reported to the manager.");
+				e.printStackTrace();
+				return null;
+			}
 		}
 
 		Logging.error("The unknown data type " + mType + " won't be reported to the manager.");
