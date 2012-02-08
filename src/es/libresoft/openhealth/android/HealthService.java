@@ -213,7 +213,7 @@ public class HealthService extends Service {
 		ErrorFactory.setDefaultErrorGenerator(new AndroidError(this.getApplicationContext()));
 		Logging.debug("Service created");
 		channelTCP = new TcpManagerChannel();
-		channelHDP = new HDPManagerChannel();
+		channelHDP = new HDPManagerChannel(this.getBaseContext());
 		super.onCreate();
 	}
 

@@ -26,20 +26,65 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.channel.hdp;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothHealth;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
+import android.widget.Toast;
 import es.libresoft.openhealth.logging.Logging;
 
 public class HDPManagerChannel {
 	private static String TAG = "HDPManagerChannel";
 
-	public HDPManagerChannel() {
-		Logging.info("TODO: ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel constructor method");
+	private Context context;
+	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothHealth mBluetoothHealth;
+
+	public HDPManagerChannel(Context context) {
+		this.context = context;
 	}
 
 	public void start() {
-		Logging.info("TODO: ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel start() method");
+		// Check for Bluetooth availability on the Android platform.
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+		// Ensures user has turned on Bluetooth on the Android device.
+		if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+			// Bluetooth adapter isn't available.  The client of the service is supposed to
+			// verify that it is available and activate before invoking this service.
+			Toast.makeText(context, "bluetooth_not_available", Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		if (!mBluetoothAdapter.getProfileProxy(this.context, mBluetoothServiceListener,
+				BluetoothProfile.HEALTH)) {
+			Toast.makeText(this.context, "bluetooth_health_profile_not_available",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		Logging.info("TODO: ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel check HDP profiles and register apps");
 	}
 
 	public void finish() {
 		Logging.info("TODO: ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel finish() method");
 	}
+
+	// Callbacks to handle connection set up and disconnection clean up.
+	private final BluetoothProfile.ServiceListener mBluetoothServiceListener =
+		new BluetoothProfile.ServiceListener() {
+		public void onServiceConnected(int profile, BluetoothProfile proxy) {
+			if (profile == BluetoothProfile.HEALTH) {
+				mBluetoothHealth = (BluetoothHealth) proxy;
+				Logging.debug(TAG + " - onServiceConnected to profile: " + profile);
+			}
+		}
+
+		public void onServiceDisconnected(int profile) {
+			if (profile == BluetoothProfile.HEALTH) {
+				mBluetoothHealth = null;
+			}
+		}
+	};
+
 }
