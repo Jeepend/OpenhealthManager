@@ -33,6 +33,7 @@ import ieee_11073.part_20601.asn1.InstNumber;
 import ieee_11073.part_20601.asn1.OperationalState;
 import ieee_11073.part_20601.asn1.SegmSelection;
 import ieee_11073.part_20601.phd.channel.tcp.TcpManagerChannel;
+import ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel;
 import ieee_11073.part_20601.phd.dim.Attribute;
 import ieee_11073.part_20601.phd.dim.DIM;
 import ieee_11073.part_20601.phd.dim.InvalidAttributeException;
@@ -90,6 +91,7 @@ public class HealthService extends Service {
 	Vector<IManagerClientCallback> clients = new Vector<IManagerClientCallback>();
 
 	private TcpManagerChannel channelTCP;
+	private HDPManagerChannel channelHDP;
 	private boolean started = false;
 	private Vector<Agent> agents = new Vector<Agent>();
 	private ILogging log = new ILogging(){
@@ -210,15 +212,18 @@ public class HealthService extends Service {
 		ErrorFactory.setDefaultErrorGenerator(new AndroidError(this.getApplicationContext()));
 		Logging.debug("Service created");
 		channelTCP = new TcpManagerChannel();
+		channelHDP = new HDPManagerChannel();
 		super.onCreate();
 	}
 
 	void initTransportLayers() {
 		channelTCP.start();
+		channelHDP.start();
 	}
 
 	void shutdownTransportLayers() {
 		channelTCP.finish();
+		channelHDP.finish();
 	}
 
 	@Override
