@@ -30,10 +30,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Vector;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHealth;
+import android.bluetooth.BluetoothHealthAppConfiguration;
+import android.bluetooth.BluetoothHealthCallback;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.ParcelUuid;
@@ -43,12 +46,26 @@ import es.libresoft.openhealth.logging.Logging;
 
 public class HDPManagerChannel {
 	private static String TAG = "HDPManagerChannel";
+	private static final String srvDescName = "Libresoft 11073-20601 Manager";
 
 	private static UUID HDP_SOURCE = UUID.fromString("00001401-0000-1000-8000-00805f9b34fb");
+
+	// Use the appropriate IEEE 11073 data types based on the devices used.
+	// Below are some examples.  Refer to relevant Bluetooth HDP specifications for detail.
+	//     0x1007 - blood pressure meter
+	//     0x1008 - body thermometer
+	//     0x100F - body weight scale
+	private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE_PULSE_OXIMETER = 0x1004;
+	private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE_BLOOD_PRESSURE_MONITOR = 0x1007;
+	private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE_BODY_THERMOMETER = 0x1008;
+	private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE_BODY_WEIGHT_SCALE = 0x100F;
+	private static final int HEALTH_PROFILE_SOURCE_DATA_TYPE_GLUCOSE_METER = 0x1011;
 
 	private Context context;
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothHealth mBluetoothHealth;
+
+	private Vector<BluetoothHealthAppConfiguration> mHealthAppsConfigs;
 
 	public HDPManagerChannel(Context context) {
 		this.context = context;
@@ -78,7 +95,8 @@ public class HDPManagerChannel {
 			checkHDPProfile(device);
 		}
 
-		Logging.info("TODO: ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel register applications");
+		mHealthAppsConfigs = new Vector<BluetoothHealthAppConfiguration>();
+		registerAllApplications();
 	}
 
 	public void finish() {
@@ -98,6 +116,24 @@ public class HDPManagerChannel {
 		public void onServiceDisconnected(int profile) {
 			if (profile == BluetoothProfile.HEALTH) {
 				mBluetoothHealth = null;
+			}
+		}
+	};
+
+	private final BluetoothHealthCallback mHealthCallback = new BluetoothHealthCallback() {
+		// Callback to handle application registration and unregistration events.  The service
+		// passes the status back to the UI client.
+		public void onHealthAppConfigurationStatusChange(BluetoothHealthAppConfiguration config,
+				int status) {
+			if (status == BluetoothHealth.APP_CONFIG_REGISTRATION_FAILURE) {
+				Logging.error(TAG + " - An error has occurred while unregistering the application.");
+			} else if (status == BluetoothHealth.APP_CONFIG_REGISTRATION_SUCCESS) {
+				mHealthAppsConfigs.add(config);
+				Logging.debug(TAG + " - Application successfully registered.");
+			} else if (status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_FAILURE) {
+				Logging.error(TAG + " - A failure has occurred while unregistering the application.");
+			} else if (status == BluetoothHealth.APP_CONFIG_UNREGISTRATION_SUCCESS) {
+				Logging.debug(TAG + " - Application successfully unregistered.");
 			}
 		}
 	};
@@ -137,6 +173,19 @@ public class HDPManagerChannel {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void registerAllApplications() {
+		registerApp(HEALTH_PROFILE_SOURCE_DATA_TYPE_PULSE_OXIMETER);
+		registerApp(HEALTH_PROFILE_SOURCE_DATA_TYPE_BLOOD_PRESSURE_MONITOR);
+		registerApp(HEALTH_PROFILE_SOURCE_DATA_TYPE_BODY_THERMOMETER);
+		registerApp(HEALTH_PROFILE_SOURCE_DATA_TYPE_BODY_WEIGHT_SCALE);
+		registerApp(HEALTH_PROFILE_SOURCE_DATA_TYPE_GLUCOSE_METER);
+	}
+
+	//Register health application through the Bluetooth Health API.
+	private void registerApp(int dataType) {
+		mBluetoothHealth.registerSinkAppConfiguration(srvDescName, dataType, mHealthCallback);
 	}
 
 }
