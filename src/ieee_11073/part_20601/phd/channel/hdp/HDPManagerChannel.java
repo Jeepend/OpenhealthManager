@@ -26,19 +26,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ieee_11073.part_20601.phd.channel.hdp;
 
+import ieee_11073.part_20601.phd.channel.Channel;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHealth;
 import android.bluetooth.BluetoothHealthAppConfiguration;
 import android.bluetooth.BluetoothHealthCallback;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Looper;
+import android.os.ParcelFileDescriptor;
 import android.os.ParcelUuid;
 import android.widget.Toast;
 import es.libresoft.openhealth.Agent;
@@ -64,6 +70,8 @@ public class HDPManagerChannel {
 	private Context context;
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothHealth mBluetoothHealth;
+
+	private Agent agent;
 
 	private Vector<BluetoothHealthAppConfiguration> mHealthAppsConfigs;
 
@@ -136,7 +144,57 @@ public class HDPManagerChannel {
 				Logging.debug(TAG + " - Application successfully unregistered.");
 			}
 		}
+
+		// Callback to handle channel connection state changes.
+		// Note that the logic of the state machine may need to be modified based on the HDP device.
+		// When the HDP device is connected, the received file descriptor is passed to the
+		// ReadThread to read the content.
+		public void onHealthChannelStateChange(BluetoothHealthAppConfiguration config,
+				BluetoothDevice device, int prevState, int newState, ParcelFileDescriptor fd,
+				int channelId) {
+			Logging.debug(TAG + " - " + String.format("prevState\t%d ----------> newState\t%d",
+					prevState, newState));
+			if ((prevState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED &&
+					newState == BluetoothHealth.STATE_CHANNEL_CONNECTED) ||
+					(prevState == BluetoothHealth.STATE_CHANNEL_CONNECTING &&
+							newState == BluetoothHealth.STATE_CHANNEL_CONNECTED)) {
+				for (BluetoothHealthAppConfiguration mHealthAppConfig: mHealthAppsConfigs){
+					if (config.equals(mHealthAppConfig)) {
+						Channel channel;
+						try {
+							agent = HDPManagerChannel.getAgent(device);
+							channel = new HDPChannel(fd, HDPManagerChannel.this, channelId, agent);
+							agent.addChannel(channel);
+							Logging.debug(TAG + "- HDP channel connected.");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			} else if (prevState == BluetoothHealth.STATE_CHANNEL_CONNECTING &&
+					newState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED) {
+				Looper.prepare();
+				Toast.makeText(HDPManagerChannel.this.context,
+						"An error has occurred while connecting. Please, try again",
+						Toast.LENGTH_LONG).show();
+				Looper.loop();
+			} else if (newState == BluetoothHealth.STATE_CHANNEL_DISCONNECTED) {
+				Logging.debug(TAG + " - HDP channel disconnected.");
+			}
+		}
 	};
+
+	private static Agent getAgent(BluetoothDevice mDevice){
+		String description = null;
+
+		ArrayList<Agent> agents = HDPManagedAgents.getInstance().getAgents();
+		for (Agent agent: agents){
+			description = mDevice.getAddress() + "/ " + mDevice.getBluetoothClass().getDeviceClass();
+			if (agent.getTransportDesc().equals(description))
+				return agent;
+		}
+		return null;
+	}
 
 	private void checkHDPProfile(BluetoothDevice device){
 		try {
@@ -188,4 +246,77 @@ public class HDPManagerChannel {
 		mBluetoothHealth.registerSinkAppConfiguration(srvDescName, dataType, mHealthCallback);
 	}
 
+	// Connect channel through the Bluetooth Health API.
+	public void connect(Agent a) {
+		BluetoothHealthAppConfiguration mHealthAppConfig = null;
+		BluetoothDevice mDevice = null;
+
+		Logging.debug(TAG + " - Connecting HDP Channel...");
+
+		this.agent = a;
+		String transportDesc = this.agent.getTransportDesc();
+		String mDeviceMAC = transportDesc.substring(0, transportDesc.indexOf("/"));
+		mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceMAC);
+
+		int deviceClass = mDevice.getBluetoothClass().getDeviceClass();
+		int deviceDataType = getDeviceDataType(deviceClass);
+
+		if (deviceDataType == -1 && deviceClass == BluetoothClass.Device.HEALTH_UNCATEGORIZED){
+			Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_UNCATEGORIZED");
+			for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs)
+				mBluetoothHealth.connectChannelToSource(mDevice, aux);
+		}else{
+			for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs){
+				if (aux.getDataType() == deviceDataType)
+					mHealthAppConfig = aux;
+			}
+
+			if (mHealthAppConfig != null)
+				mBluetoothHealth.connectChannelToSource(mDevice, mHealthAppConfig);
+		}
+	}
+
+	/**
+	 * Returns de device data type (-1 if the device data type is not supported).
+	 */
+	private int getDeviceDataType(int deviceClass){
+		int deviceDataType = -1;
+
+		switch(deviceClass){
+			case BluetoothClass.Device.HEALTH_BLOOD_PRESSURE:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_BLOOD_PRESSURE supported");
+				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_BLOOD_PRESSURE_MONITOR;
+				break;
+			case BluetoothClass.Device.HEALTH_PULSE_OXIMETER:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_PULSE_OXIMETER supported");
+				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_PULSE_OXIMETER;
+				break;
+			case BluetoothClass.Device.HEALTH_THERMOMETER:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_THERMOMETER supported");
+				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_BODY_THERMOMETER;
+				break;
+			case BluetoothClass.Device.HEALTH_WEIGHING:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_WEIGHIN supported");
+				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_BODY_WEIGHT_SCALE;
+				break;
+			case BluetoothClass.Device.HEALTH_GLUCOSE:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_GLUCOSE supported");
+				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_GLUCOSE_METER;
+				break;
+			case BluetoothClass.Device.HEALTH_DATA_DISPLAY:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_DATA_DISPLAY not supported" );
+				deviceDataType = -1;
+				break;
+			case BluetoothClass.Device.HEALTH_PULSE_RATE:
+				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_PULSE_RATE not supported");
+				deviceDataType = -1;
+				break;
+			default:
+				//deviceDataType = -1;
+				// Pulse Oximeter temporaly (for certification purposes).
+				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_PULSE_OXIMETER;
+				break;
+		}
+		return deviceDataType;
+	}
 }

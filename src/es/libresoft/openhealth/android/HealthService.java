@@ -335,7 +335,8 @@ public class HealthService extends Service {
 
 		@Override
 		public void connect(IAgent agent) throws RemoteException {
-			Logging.debug("TODO: Connect with the agent");
+			//Logging.debug("TODO: Connect with the agent");
+			channelHDP.connect(getAgent(agent));
 		}
 
 		@Override
