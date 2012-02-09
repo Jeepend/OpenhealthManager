@@ -108,7 +108,11 @@ public class HDPManagerChannel {
 	}
 
 	public void finish() {
-		Logging.info("TODO: ieee_11073.part_20601.phd.channel.hdp.HDPManagerChannel finish() method");
+		//Destroying existing channels
+		//Destroying existing applications on DBUS
+		HDPManagedAgents.getInstance().freeAllResources();
+		unregisterAllApplications();
+		mHealthAppsConfigs.clear();
 	}
 
 	// Callbacks to handle connection set up and disconnection clean up.
@@ -244,6 +248,17 @@ public class HDPManagerChannel {
 	//Register health application through the Bluetooth Health API.
 	private void registerApp(int dataType) {
 		mBluetoothHealth.registerSinkAppConfiguration(srvDescName, dataType, mHealthCallback);
+	}
+
+	private void unregisterAllApplications() {
+		for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs){
+			mBluetoothHealth.unregisterAppConfiguration(aux);
+		}
+	}
+
+	// Unregister health application through the Bluetooth Health API.
+	private void unregisterApp(BluetoothHealthAppConfiguration mHealthAppConfig) {
+		mBluetoothHealth.unregisterAppConfiguration(mHealthAppConfig);
 	}
 
 	// Connect channel through the Bluetooth Health API.
