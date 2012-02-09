@@ -31,11 +31,11 @@ import ieee_11073.part_20601.phd.channel.Channel;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import android.os.ParcelFileDescriptor;
 
 import es.libresoft.openhealth.Agent;
-import es.libresoft.openhealth.logging.Logging;
 
 public class HDPChannel extends Channel {
 
@@ -58,7 +58,14 @@ public class HDPChannel extends Channel {
 
 	@Override
 	public void releaseChannel() {
-		Logging.debug("TODO: implement ieee_11073.part_20601.phd.channel.hdp.HDPChannel releaseChannel()");
+		manager.disconnectAgent(this.agent, id);
+		try {
+			fd.close();
+			id = -1;
+			//mBluetoothHealth.disconnectChannel(mDevice, mHealthAppConfig, mChannelId);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
