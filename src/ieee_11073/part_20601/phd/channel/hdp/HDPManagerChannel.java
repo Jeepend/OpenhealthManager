@@ -276,6 +276,28 @@ public class HDPManagerChannel {
 		}
 	}
 
+	// Disconnect channel through the Bluetooth Health API.
+	public void disconnectAgent(Agent a, int channelId) {
+		BluetoothHealthAppConfiguration mHealthAppConfig = null;
+
+		Logging.debug(TAG + " - Disconnecting HDP Channel...");
+
+		String transportDesc = a.getTransportDesc();
+		String mDeviceMAC = transportDesc.substring(0, transportDesc.indexOf("/"));
+		BluetoothDevice mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceMAC);
+
+		int deviceClass = mDevice.getBluetoothClass().getDeviceClass();
+		int deviceDataType = getDeviceDataType(deviceClass);
+
+		for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs){
+			if (aux.getDataType() == deviceDataType)
+				mHealthAppConfig = aux;
+		}
+
+		mBluetoothHealth.disconnectChannel(mDevice, mHealthAppConfig, channelId);
+		HDPManagedAgents.getInstance().delAgent(a);
+	}
+
 	/**
 	 * Returns de device data type (-1 if the device data type is not supported).
 	 */
