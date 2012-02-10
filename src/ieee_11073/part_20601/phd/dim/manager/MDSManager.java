@@ -627,7 +627,7 @@ public class MDSManager extends MDS {
 					} catch (ClassCastException e) {
 					}
 
-					if (!data.getMessage().isRoiv_cmip_confirmed_actionSelected()) {
+					if (!data.getMessage().isRors_cmip_confirmed_actionSelected()) {
 						//TODO: Unexpected response format
 						Logging.debug("Set_Time: Unexpected response format");
 						if (event != null)
