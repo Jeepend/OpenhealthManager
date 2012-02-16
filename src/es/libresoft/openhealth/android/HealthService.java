@@ -232,6 +232,8 @@ public class HealthService extends Service {
 		if (!started) {
 			initTransportLayers();
 			started = true;
+		}else {
+			channelHDP.reloadAgents();
 		}
 
 		// We want this service to continue running until it is explicitly

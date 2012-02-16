@@ -77,6 +77,14 @@ public class HDPManagerChannel {
 		this.context = context;
 	}
 
+	public void reloadAgents() {
+		HDPManagedAgents.getInstance().freeAllResources();
+		Set<BluetoothDevice> btDevices = mBluetoothAdapter.getBondedDevices();
+		for (BluetoothDevice device: btDevices){
+			checkHDPProfile(device);
+		}
+	}
+
 	public void start() {
 		// Check for Bluetooth availability on the Android platform.
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -96,10 +104,7 @@ public class HDPManagerChannel {
 			return;
 		}
 
-		Set<BluetoothDevice> btDevices = mBluetoothAdapter.getBondedDevices();
-		for (BluetoothDevice device: btDevices){
-			checkHDPProfile(device);
-		}
+		reloadAgents();
 
 		mHealthAppsConfigs = new Vector<BluetoothHealthAppConfiguration>();
 		registerAllApplications();
