@@ -71,8 +71,6 @@ public class HDPManagerChannel {
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothHealth mBluetoothHealth;
 
-	private Agent agent;
-
 	private Vector<BluetoothHealthAppConfiguration> mHealthAppsConfigs;
 
 	public HDPManagerChannel(Context context) {
@@ -166,7 +164,7 @@ public class HDPManagerChannel {
 					if (config.equals(mHealthAppConfig)) {
 						Channel channel;
 						try {
-							agent = HDPManagerChannel.getAgent(device);
+							Agent agent = HDPManagerChannel.getAgent(device);
 							channel = new HDPChannel(fd, HDPManagerChannel.this, channelId, agent);
 							agent.addChannel(channel);
 							Logging.debug(TAG + "- HDP channel connected.");
@@ -267,9 +265,7 @@ public class HDPManagerChannel {
 		BluetoothDevice mDevice = null;
 
 		Logging.debug(TAG + " - Connecting HDP Channel...");
-
-		this.agent = a;
-		String transportDesc = this.agent.getTransportDesc();
+		String transportDesc = a.getTransportDesc();
 		String mDeviceMAC = transportDesc.substring(0, transportDesc.indexOf("/"));
 		mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceMAC);
 
