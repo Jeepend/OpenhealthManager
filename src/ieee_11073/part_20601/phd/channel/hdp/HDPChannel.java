@@ -58,7 +58,7 @@ public class HDPChannel extends Channel {
 
 	@Override
 	public void releaseChannel() {
-		manager.disconnectAgent(this.agent, id);
+		manager.disconnect(this.agent, id);
 		try {
 			fd.close();
 			id = -1;

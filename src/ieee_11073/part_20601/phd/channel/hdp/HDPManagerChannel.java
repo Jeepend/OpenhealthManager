@@ -288,7 +288,7 @@ public class HDPManagerChannel {
 	}
 
 	// Disconnect channel through the Bluetooth Health API.
-	public void disconnectAgent(Agent a, int channelId) {
+	public void disconnect(Agent a, int channelId) {
 		BluetoothHealthAppConfiguration mHealthAppConfig = null;
 
 		Logging.debug(TAG + " - Disconnecting HDP Channel...");
@@ -306,7 +306,7 @@ public class HDPManagerChannel {
 		}
 
 		mBluetoothHealth.disconnectChannel(mDevice, mHealthAppConfig, channelId);
-		HDPManagedAgents.getInstance().delAgent(a);
+		//HDPManagedAgents.getInstance().delAgent(a);
 	}
 
 	/**
