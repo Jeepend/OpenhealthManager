@@ -272,11 +272,25 @@ public class HDPManagerChannel {
 		int deviceClass = mDevice.getBluetoothClass().getDeviceClass();
 		int deviceDataType = getDeviceDataType(deviceClass);
 
-		if (deviceDataType == -1 && deviceClass == BluetoothClass.Device.HEALTH_UNCATEGORIZED){
-			Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_UNCATEGORIZED");
-			for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs)
-				mBluetoothHealth.connectChannelToSource(mDevice, aux);
-		}else{
+		if (deviceDataType == -1){
+			Looper.prepare();
+			Toast.makeText(HDPManagerChannel.this.context,
+					"Device not supported or unknown bluetooth class device.",
+					Toast.LENGTH_LONG).show();
+			Looper.loop();
+			return;
+		}else if (deviceClass == BluetoothClass.Device.Major.UNCATEGORIZED){
+			// This case is introduced for certification purposes (Stollman board):
+			Logging.debug(TAG + " - BluetoothClass.Device.Major.UNCATEGORIZED");
+			for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs){
+				if (aux.getDataType() == deviceDataType)
+					mHealthAppConfig = aux;
+			}
+
+			if (mHealthAppConfig != null){
+				mBluetoothHealth.connectChannelToSource(mDevice, mHealthAppConfig);
+			}
+		}else if (deviceDataType > 0){
 			for (BluetoothHealthAppConfiguration aux: mHealthAppsConfigs){
 				if (aux.getDataType() == deviceDataType)
 					mHealthAppConfig = aux;
@@ -344,10 +358,15 @@ public class HDPManagerChannel {
 				Logging.debug(TAG + " - BluetoothClass.Device.HEALTH_PULSE_RATE not supported");
 				deviceDataType = -1;
 				break;
-			default:
-				//deviceDataType = -1;
-				// Pulse Oximeter temporaly (for certification purposes).
+			case BluetoothClass.Device.Major.UNCATEGORIZED:
+				// This case is introduced for certification purposes (stollman board):
+				Logging.debug(TAG + " - BluetoothClass.Device.Major.UNCATEGORIZED");
+				//deviceDataType = BluetoothClass.Device.Major.UNCATEGORIZED;
+				// To certification for pulse oximeters devices:
 				deviceDataType = HEALTH_PROFILE_SOURCE_DATA_TYPE_PULSE_OXIMETER;
+			default:
+				Logging.debug(TAG + " - Unknown BluetoothClass.Device = " + deviceClass + " not supported");
+				deviceDataType = -1;
 				break;
 		}
 		return deviceDataType;
