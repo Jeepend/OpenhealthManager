@@ -78,10 +78,15 @@ public class HDPManagerChannel {
 	}
 
 	public void reloadAgents() {
-		HDPManagedAgents.getInstance().freeAllResources();
-		Set<BluetoothDevice> btDevices = mBluetoothAdapter.getBondedDevices();
-		for (BluetoothDevice device: btDevices){
-			checkHDPProfile(device);
+		if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+			HDPManagedAgents.getInstance().freeAllResources();
+			Set<BluetoothDevice> btDevices = mBluetoothAdapter.getBondedDevices();
+			for (BluetoothDevice device: btDevices){
+				checkHDPProfile(device);
+			}
+		} else {
+			Toast.makeText(context, "bluetooth_not_available", Toast.LENGTH_LONG).show();
+			return;
 		}
 	}
 
