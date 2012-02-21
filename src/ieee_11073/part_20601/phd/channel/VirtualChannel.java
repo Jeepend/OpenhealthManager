@@ -79,12 +79,19 @@ public class VirtualChannel {
 		this.inputQueue = inputQueue;
 		this.outputQueue.setHandler(senderController);
 
-		sender = new SenderThread();
-		sender.start();
+		/*sender = new SenderThread();
+		sender.start();*/
 	}
 
 	public void addChannel (Channel chan) {
 		int size = channels.size();
+
+		if (size == 0){
+			sender = new SenderThread();
+			sender.start();
+			open = false;
+		}
+
 		try {
 			channels.add(chan);
 			chan.configureChannel(size == 0, this.inputQueue, this.eventHandler);
