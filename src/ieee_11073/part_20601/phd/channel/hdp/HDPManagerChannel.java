@@ -119,6 +119,8 @@ public class HDPManagerChannel {
 		//Destroying existing channels
 		//Destroying existing applications on DBUS
 		HDPManagedAgents.getInstance().freeAllResources();
+		if (mHealthAppsConfigs == null)
+			return;
 		unregisterAllApplications();
 		mHealthAppsConfigs.clear();
 	}
