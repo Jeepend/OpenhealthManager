@@ -54,6 +54,12 @@ public abstract class TimeOut extends TimerTask {
 	public static final int PM_STORE_TO_CS	=	3000;	/* 3sg						Confirm Set				8.9.5.5	  */
 	public static final int SCANNER_TO_CS	=	3000;	/* 3sg						Confirm Set				8.9.5.5	  */
 
+	public static final int MDS_TO_CER		=	3003;	/* 3sg						Confirm Event Report	8.9.5.3	  */
+	public static final int PM_STORE_TO_CER	=	3000;	/* 3sg						Confirm Event Report	8.9.5.3	  */
+	public static final int SCANNER_TO_CER	=	3000;	/* 3sg						Confirm Event Report	8.9.5.3	  */
+
+	public static final int RC_ASSOC		=	3;
+
 	private int timeout;
 	protected StateHandler stateHandler;
 
